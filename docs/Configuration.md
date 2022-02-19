@@ -10,7 +10,7 @@ Admin panel configuration consist of this options:
 | `linkAssets`      | Will create a symlink to Admin panel assets. Anyway AP will try to load all assets from /admin/**** and you could copy them manually
 | `identifierField` | Default identifier field into models. This field will be used as identifier. Default: `id`
 | `instances`       | Configuration for instances. Read below...
-
+| `showORMtime`     | Set `true` for enable showing fields createdAt and updatedAt in edit and add sections
 ## Instances
 
 Admin panel devided into `instances` and this is a main part of configuration.
@@ -110,6 +110,7 @@ fieldName: {
     title: "Field title", // You can overwrite field title
     type: "string", //you can overwrite default field type in admin panel
     required: true, // you can mark field required or not
+    tooltip: 'tooltip for field', // You can define tooltip for field 
     editor: true, // you can add WYSTYG editor for the field in admin panel
 }
 ```

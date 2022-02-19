@@ -1,0 +1,62 @@
+<!-- prettier-ignore -->
+<% if (field.model.enum) { %>
+    <% include select %>
+<% } else if(field.model.email) { %>
+    <input label="<%= field.config.title %>"
+            <%= field.config.required && 'required' %>
+            <%= field.config.disabled && 'disabled'%>
+            value="<%= value || '' %>"
+            name="<%= key %>"></input>
+<% } else { %>
+    <%
+    var fieldType = 'text'
+    if (type == "password") {
+        fieldType = 'password'
+    }
+    if (type == "date") {
+        fieldType = 'date'
+    }
+    if (type == "datetime") {
+        fieldType = 'datetime-local'
+    }
+
+    if (type == "time") {
+        fieldType = 'time'
+    }
+
+    if (type == "color") {
+        fieldType = 'color'
+    }
+
+    if (type == "email") {
+        fieldType = 'email'
+    }
+    if (type == "month") {
+        fieldType = 'month'
+    }
+    if (type == "week") {
+        fieldType = 'week'
+    }
+
+    if (type == "range") {
+        fieldType = 'range'
+    }
+
+    if (type == "integer" || type == 'float' || type == "number") {
+        fieldType = 'number'
+    }
+    %>
+    <% if (adminpanel.configHelper.isId(field, instance.config.model)) { %>
+        <% field.config.disabled = true %>
+    <% } %>
+    <div class="widget_narrow">
+        <input label="<%= field.config.title %>"
+                type="<%= fieldType %>"
+                <%= field.config.required && 'required' %>
+                <%= field.config.disabled && 'disabled'%>
+                value="<%= value || '' %>"
+                name="<%= key %>"></input>
+        <br/>
+    </div>
+<% } %>
+

@@ -9,11 +9,15 @@ var async = require('async');
 const Jimp = require('jimp');
 
 module.exports = function (req, res) {
+
     console.log('admin > upload');
     var instance = util.findInstanceObject(req);
     // if (!instance.model) {
     //     return res.notFound();
     // }
+
+    if (!sails.adminpanel.havePermission(req, instance.config, __filename))
+        return res.redirect('/admin/userap/login');
 
     if (req.method.toUpperCase() === 'POST') {
         // if this file must not be loaded
@@ -184,9 +188,8 @@ module.exports = function (req, res) {
                 });
             } else if (type === 'files' || type === 'file') {
                 const ext = filename.substr(filename.lastIndexOf('.') + 1, filename.length);
-                // const url = '/admin/icons/' + ext + '/' + ext + '-128_32.png';
-                const urlIcon = '/admin/icons/' + ext + '/' + ext + '-128_32.png';
-                const url = fullDir + filename;
+                const urlIcon = '/admin/assets/fileuploader/icons/' + ext + '.svg';
+                const url = dirDownload + filename;
                 res.status(201);
                 res.send({
                     name: filenameOrig,

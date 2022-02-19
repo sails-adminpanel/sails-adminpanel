@@ -1,0 +1,73 @@
+<% include head %>
+<% include headContent %>
+
+<script>
+$(document).ready(function() {
+    $('#list thead tr').clone(true).insertBefore( '#list thead tr' );
+    $('#list thead tr:eq(0) th').each( function (i) {
+        if (i === 0) return;
+        $(this).html( '<input type="text" placeholder="" />' );
+
+        $( 'input', this ).on( 'keyup change', function () {
+            if ( table.column(i).search() !== this.value ) {
+                table
+                    .column(i)
+                    .search( this.value )
+                    .draw();
+            }
+        } );
+    } );
+
+    var table = $('#list').DataTable( {
+            "ajax": '<%=instance.uri%>/json',
+            "sDom": 'Rfrtlip',
+            fixedHeader: true,
+            "columnDefs": [
+            {
+                targets: 0,
+                render: function (data, type, row, meta)
+                {
+                    if (type === 'display')
+                    {
+                        data = '<a href="<%=instance.uri%>/view/'+row[0]+'">View</a><br><br><a href="<%=instance.uri%>/edit/'+row[0]+'">Edit</a>';
+                    }
+                    return data;
+                }
+            }]
+    } );
+} );
+</script>
+
+<div class="horizontal layout">
+    <div class="flex">
+        <% var actionType = 'list' %>
+        <a href="<%=instance.uri%>/add" id="add">
+            <button class="btn-add">создать</button>
+        </a>
+        <% include mixin/globalActions %>
+    </div>
+</div>
+<div class="layout">
+    <table class="table" id="list">
+        <thead>
+            <tr>
+                <th>
+                    Actions
+                </th>
+                <% Object.keys(fields).forEach(function(key) { %>
+                    <% var field = fields[key] %>
+                    <th>
+                        <%= field.config.title %>
+                    </th>
+                <% }) %>
+            </tr>
+        </thead>
+    </table>
+    <% if (instance.config.add) { %>
+        <a href="<%= instance.uri %>/add" id="add">
+            <fab shape="add"></fab>
+        </a>
+    <% } %>
+</div>
+
+<% include footer %>

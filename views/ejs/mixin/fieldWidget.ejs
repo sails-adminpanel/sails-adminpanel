@@ -1,0 +1,69 @@
+<%# detection type %>
+<% var type = field.config.type || field.model.type %>
+<% type = type.toLowerCase() %>
+
+
+<%# plain inputs %>
+<% var inputTextTypes = ['string', 'password', 'date', 'datetime', 'time',  'integer', 'number', 'float','color','email','month', 'week', 'range'] %>
+<% if (~inputTextTypes.indexOf(type)) { %>
+    <% include fields/inputText %>
+<% } %>
+
+
+<%# boolean %>
+<% if (type === 'boolean' || type === 'binary') { %>
+    <% include fields/inputBoolean %>
+<% } %>
+
+
+<%# textarea %>
+<% var inputTextAreaTypes = ['text', 'longtext', 'mediumtext' ] %>
+<% if (~inputTextAreaTypes.indexOf(type)) { %>
+    <% include fields/inputTextarea %>
+<% } %>
+
+<%# wysiwyg %>
+<% var widgetWysiwygTypes = ['ckeditor', 'wysiwyg', 'texteditor', 'word'] %>
+<% if (~widgetWysiwygTypes.indexOf(type)) { %>
+    <% include fields/widgetWysiwyg %>
+<% } %>
+
+<%# jsoneditor %>
+<% var widgetJsonEditorTypes = ['jsoneditor', 'json', 'array', 'object'] %>
+<% if (~widgetJsonEditorTypes.indexOf(type)) { %>
+    <% include fields/widgetJsonEditor %>
+<% } %>
+
+
+<%# ace %>
+<% var widgetAceTypes = ['ace', 'html', 'xml', 'aceeditor'] %>
+<% if (~widgetAceTypes.indexOf(type)) { %>
+    <% include fields/widgetAce %>
+<% } %>
+
+
+<%# FileUploader %>
+<% var widgetFileUploader = ['image','images', 'file', 'files'] %>
+<% if (~widgetFileUploader.indexOf(type)) { %>
+    <% include fields/widgetFileUploader %>
+<% } %>
+
+<%# EditNavigation %>
+<% var widgetEditNavigation = ['menu','navigation'] %>
+<% if (~widgetEditNavigation.indexOf(type)) { %>
+    <% include fields/widgetEditNavigation %>
+<% } %>
+
+<%# EditSchedule %>
+<% var widgetEditSchedule = ['schedule','worktime'] %>
+<% if (~widgetEditSchedule.indexOf(type)) { %>
+    <% include fields/widgetEditSchedule %>
+<% } %>
+
+<% if (type == 'association') { %>
+    <% include fields/inputAssociation %>
+<% } %>
+
+<% if (type == 'association-many') { %>
+    <% include fields/inputAssociationMany %>
+<% } %>

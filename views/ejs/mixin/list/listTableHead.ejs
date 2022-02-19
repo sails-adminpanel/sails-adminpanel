@@ -1,0 +1,11 @@
+<tr>
+    <% Object.keys(fields).forEach(function(key) { %>
+        <% var field = fields[key] %>
+        <th>
+            <%= field.config.title %>
+        </th>
+    <% }) %>
+    <th>
+        Actions
+    </th>
+</tr>

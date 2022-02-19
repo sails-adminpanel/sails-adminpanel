@@ -39,7 +39,7 @@ module.exports = function menuHelper(config) {
          */
         getBrandTitle: function() {
             if (!config.menu || !config.menu.brand) {
-                return 'Dashboard';
+                return 'Sails-adminpanel';
             }
             if (_.isString(config.menu.brand)) {
                 return config.menu.brand;
@@ -47,7 +47,7 @@ module.exports = function menuHelper(config) {
             if (_.isObject(config.menu.brand) && _.isString(config.menu.brand.title)) {
                 return config.menu.brand.title;
             }
-            return 'Dashboard';
+            return 'Sails-adminpanel';
         },
 
         /**
@@ -191,10 +191,19 @@ module.exports = function menuHelper(config) {
                 if (val.menuGroup) {
                     return;
                 }
+                if (val.actions && val.actions.length > 0 && val.actions[0].title !== "Overview") {
+                    val.actions.unshift({
+                        link: config.routePrefix + '/' + key,
+                        title: "Overview",
+                        icon: ""
+                    })
+                }
                 menues.push({
                     link: config.routePrefix + '/' + key,
                     title: val.title,
                     icon: val.icon || null,
+                    actions: val.actions || null,
+                    id: val.id || val.title.replace(" ","_"),
                     instanceName: key
                 });
             });
@@ -206,6 +215,7 @@ module.exports = function menuHelper(config) {
                     menues.push({
                         link: menu.link,
                         title: menu.title,
+                        id: menu.id || menu.title.replace(" ","_"),
                         icon: menu.icon || null
                     });
                 });
