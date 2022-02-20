@@ -25,7 +25,9 @@ module.exports = function(req, res) {
     }
 
     if (!sails.adminpanel.havePermission(req, instance.config, __filename))
-        return res.redirect('/admin/login');
+        return res.redirect('/admin/userap/login');
+
+    if (sails.config.adminpanel.auth) req.locals.user = req.session.UserAP;
 
     var total = 0;
     var records = [];

@@ -119,6 +119,9 @@ Yes, see the [v0.11 migration guide](http://sailsjs.org/#/documentation/concepts
 
 for build styles - sass --watch clarity/src:assets/styles/
 
+
+
+Clarity  docs https://vmware.github.io/clarity/documentation/v0.13/
 ## License
 
 MIT

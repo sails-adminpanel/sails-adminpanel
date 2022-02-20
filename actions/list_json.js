@@ -10,7 +10,9 @@ module.exports = async function (req, res) {
     }
 
     if (!sails.adminpanel.havePermission(req, instance.config, __filename))
-        return res.redirect("/admin/login");
+        return res.redirect("/admin/userap/login");
+
+    if (sails.config.adminpanel.auth) req.locals.user = req.session.UserAP;
 
     let records = [];
     var fields = fieldsHelper.getFields(req, instance, 'list');

@@ -4,6 +4,7 @@ var passwordHash = require('password-hash');
 var created = false;
 
 module.exports = function(req, res) {
+    console.log(122222)
     if (req.url.indexOf('login') >= 0) {
         if (req.method.toUpperCase() === 'POST') {
             var username = req.param('username');
@@ -23,6 +24,6 @@ module.exports = function(req, res) {
         }
     } else if (req.url.indexOf('logout') >= 0) {
         req.session.UserAP = undefined;
-        res.redirect('/admin/login');
+        res.redirect('/admin/userap/login');
     }
 };
