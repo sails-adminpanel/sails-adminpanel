@@ -17,7 +17,7 @@ module.exports = function(req, res) {
     }
 
     if (!sails.adminpanel.havePermission(req, instance.config, __filename))
-        return res.redirect('/admin/userap/login');
+        return res.redirect('/admin/login');
 
     var fields = fieldsHelper.getFields(req, instance, 'add');
     var data = {}; //list of field values

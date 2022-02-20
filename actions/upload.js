@@ -17,7 +17,7 @@ module.exports = function (req, res) {
     // }
 
     if (!sails.adminpanel.havePermission(req, instance.config, __filename))
-        return res.redirect('/admin/userap/login');
+        return res.redirect('/admin/login');
 
     if (req.method.toUpperCase() === 'POST') {
         // if this file must not be loaded
