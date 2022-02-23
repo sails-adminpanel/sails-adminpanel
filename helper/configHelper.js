@@ -5,7 +5,7 @@ var _ = require('lodash');
 module.exports = function(sails) {
 
     var config = sails.config.adminpanel;
-    
+
     var ConfigHelper = {
 
         /**
@@ -66,7 +66,7 @@ module.exports = function(sails) {
          * @returns {boolean}
          */
         isCsrfEnabled: function() {
-            return (sails.config.csrf !== false);
+            return (sails.config.security.csrf !== false);
         }
     };
 

@@ -48,9 +48,11 @@
                                     <% include mixin/fieldWidget %>
                                 </div>
                                 <% }) %>
-                                    <div>
-                                        <input type="hidden" name="_csrf" value="<%= _csrf %>" />
-                                    </div>
+                                    <% if (adminpanel.configHelper.isCsrfEnabled()) { %>
+                                        <div>
+                                            <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+                                        </div>
+                                    <% } %>
                                     <p>
                                         <button raised class="btn-save" id="submit" onclick="submitForm()">
                 сохранить
