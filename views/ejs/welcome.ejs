@@ -3,9 +3,9 @@
 
    <div class="layout">
       <% if ( Boolean((adminpanel.configHelper.getConfig()).welcome) && Boolean((adminpanel.configHelper.getConfig()).welcome.title) && Boolean((adminpanel.configHelper.getConfig()).welcome.text)) { %>
-         <div class="title"><%= (adminpanel.configHelper.getConfig()).welcome.title %></div>
+         <div class="title"><%- (adminpanel.configHelper.getConfig()).welcome.title %></div>
          <div class="control__content">
-            <%= (adminpanel.configHelper.getConfig()).welcome.text %>
+            <%- (adminpanel.configHelper.getConfig()).welcome.text %>
          </div>
       <% } else { %>
          <div class="title">Sails-adminpanel</div>
