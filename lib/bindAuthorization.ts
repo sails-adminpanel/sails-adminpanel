@@ -18,8 +18,9 @@ module.exports = function bindAuthorization(sails) {
 
     var apConfName = ['list', 'add', 'edit', 'remove', 'view'];
     var apConf = {
-        title: 'Admin panel users',
+        title: 'Users',
         model: 'UserAP',
+        icon: 'user',
         permission: superAdmin
     };
     for (var i in apConfName) {
