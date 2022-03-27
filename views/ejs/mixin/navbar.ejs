@@ -22,7 +22,7 @@
       <section class="nav-group collapsible">
         <input id="tab-<%=menuItem.id%>" type="checkbox" />
         <div class="nav-label">
-          <label for="tab-<%=menuItem.id%>">
+          <label for="tab-<%=menuItem.id%>" title="<%= menuItem.title %>">
             <% if (menuItem.icon) { %>
             <span class="navbar-icon">
               <i class="las la-<%=menuItem.icon%>"></i>

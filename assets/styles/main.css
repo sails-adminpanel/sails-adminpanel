@@ -11926,6 +11926,7 @@ textarea {
 
 .content-inner {
   width: 100%;
+  overflow: auto;
   background-color: #F6F7F8;
 }
 
