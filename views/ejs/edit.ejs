@@ -20,14 +20,15 @@
             </button>
                     </a>
                     <div class="nav-header-wrap">
-                        <button class="btn-nav">
+                        <!-- <button class="btn-nav">
                 Скрыть
                 <i class="las la-eye-slash"></i>
-            </button>
-                        <button class="btn-nav">
+            </button> -->
+            <a href="<%= instance.uri %>/remove/<%= record[idField] %>">
+                <button class="btn-nav">
                 Удалить
                 <i class="las la-trash-alt"></i>
-            </button>
+            </button></a>
                     </div>
                 </div>
                 <form id="form" action="<%= instance.uri %>/edit/<%= record[idField] %>" method="POST" enctype="multipart/form-data">
