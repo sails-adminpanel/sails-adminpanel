@@ -27,7 +27,7 @@ module.exports = function(req, res) {
      */
     instance.model
         .findOne(req.param('id'))
-        .exec(function(err, record) {
+        .meta({fetch: true}).exec(function(err, record) {
             if (err) {
                 if (req.wantsJSON) {
                     return res.json({

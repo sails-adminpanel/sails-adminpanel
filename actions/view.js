@@ -32,7 +32,7 @@ module.exports = function(req, res) {
     //fieldsHelper.getFieldsToPopulate(fields).forEach(function(val) {
     //    query.populate(val);
     //});
-    query.exec(function(err, record) {
+    query.meta({fetch: true}).exec(function(err, record) {
             if (err) {
                 req._sails.log.error('Admin edit error: ');
                 req._sails.log.error(err);

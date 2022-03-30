@@ -256,7 +256,6 @@ module.exports = {
         //Getting list of fields from model
         let modelAttributes = instance.model.attributes
 
-        console.log("<<<<",modelAttributes)
 
         var that = this;
         /**
