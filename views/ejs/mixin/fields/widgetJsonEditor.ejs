@@ -1,19 +1,21 @@
+<% var data = typeof value === 'object' ? JSON.stringify(value) : (value || '') %>
 <textarea
     <%= field.config.required && 'required' %>
     <%= field.config.disabled && 'disabled'%>
     name="<%= key %>"
     id="form-<%= key %>">
-    <%- JSON.stringify(value)%>
+    <%- data %>
 </textarea>
 
 <script>
 
 $('#form-<%= key %>').hide().after('<div id="form-<%= key %>-jsoneditor" style="width:100%; height:320px;"></div>');
-new JSONEditor(
+jsonEditor['<%= key %>'] = new JSONEditor(
     $('#form-<%= key %>-jsoneditor')[0],
     {
-        modes: ['view', 'tree', 'code']
-    },
-        <%- JSON.stringify(value)%>
+        modes: ['code', 'form', 'text', 'tree', 'view'],
+        mode: "tree"
+    },<%- data %>
 )
+
 </script>

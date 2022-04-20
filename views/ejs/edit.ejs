@@ -32,6 +32,15 @@
                     </div>
                 </div>
                 <form id="form" action="<%= instance.uri %>/edit/<%= record[idField] %>" method="POST" enctype="multipart/form-data">
+
+                    <%# global variables %>
+                    <script>
+                        var jsonEditor = {};
+                        var aceCounter = 0;
+                        let editor = [];
+                        let textarea = [];
+                    </script>
+
                     <% Object.keys(fields).forEach(function(key) { %>
                         <% if ((!config.showORMtime) && (key === 'createdAt' || key === 'updatedAt')) return %>
                         <% var field = fields[key] %>
