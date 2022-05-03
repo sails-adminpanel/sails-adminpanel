@@ -70,7 +70,7 @@ module.exports = function(req, res) {
                     } 
 
 
-                    instance.model.update(params, reqData).exec(function(err, newRecord) {
+                    instance.model.update(params, reqData).meta({fetch: true}).exec(function(err, newRecord) {
                         if (err) {
                             req._sails.log.error(err);
                             req.flash('adminError', err.message || 'Something went wrong...');
