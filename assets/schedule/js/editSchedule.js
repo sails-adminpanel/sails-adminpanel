@@ -61,8 +61,10 @@ class EditSchedule {
 
         // create existing schedules
         if ($(`#form-${this.field}`).val()) {
-            if (!this.dataInput) this.dataInput = [];
             let dataInput = JSON.parse(this.dataInput);
+            if (!dataInput) {
+                dataInput = [];
+            }
             for (let i = 0; i < dataInput.length; i++) {
                 // generating schedule frames
                 $(".schedule-content").append(this.getschedule());
