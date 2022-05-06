@@ -55,6 +55,9 @@ module.exports = function(req, res) {
                     var params = {};
                     params[instance.config.identifierField||req._sails.config.adminpanel.identifierField] = req.param('id');
                     for(let prop in reqData){
+                        if (Number.isNaN(reqData[prop]) || reqData[prop] === undefined || reqData[prop] === null) {
+                            delete reqData[prop]
+                        }
                         if(fields[prop] && fields[prop].model && fields[prop].model.type === 'json' && reqData[prop] !== ''){
                             try{
                                 reqData[prop] = JSON.parse(reqData[prop]);
@@ -63,11 +66,11 @@ module.exports = function(req, res) {
                             }
                         }
                     }
-                    
+
                     // callback before save instance
                     if(typeof instance.config.edit.instanceModifier === "function"){
                         reqData = instance.config.edit.instanceModifier(reqData);
-                    } 
+                    }
 
 
                     instance.model.update(params, reqData).meta({fetch: true}).exec(function(err, newRecord) {
