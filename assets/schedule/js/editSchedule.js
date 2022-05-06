@@ -3,13 +3,14 @@ class EditSchedule {
         this.elName = config.element;
         this.field = config.field;
         this.dataInput = config.data;
+        this.supportOldVersion = config.supportOldVersion || false;
         this.counter = 0;
         let defaultPropertyList = {
             title: {
                 type: "string",
-                    title: "Title",
-                    description: "this is the title",
-                    required: "true",
+                title: "Title",
+                description: "this is the title",
+                required: "true",
             },
             link: {
                 type: "string",
@@ -31,7 +32,7 @@ class EditSchedule {
 
     main(schedule) {
 
-            // add main hint
+        // add main hint
         $(`#form-${this.field}`).before(
             '<div class="admin-panel__title">\n' +
             "   Настройки показа\n" +
@@ -94,6 +95,11 @@ class EditSchedule {
                 if (!this.permutations.time) {
                     $(".add_schedule__time").last().remove();
                 } else {
+                    // optional support of worktime's old version
+                    if (dataInput[i].start && dataInput[i].stop && this.supportOldVersion) {
+                        dataInput[i].timeStart = dataInput[i].start;
+                        dataInput[i].timeStop = dataInput[i].stop;
+                    }
                     if (dataInput[i].timeStart && dataInput[i].timeStop) {
                         let timeStart = dataInput[i].timeStart || "";
                         let timeStop = dataInput[i].timeStop || "";
@@ -118,7 +124,8 @@ class EditSchedule {
                 }
 
                 // choosing date
-                if (!this.permutations.date) {
+                // optional support worktime's old version that does not have dateStart and dateStop
+                if (!this.permutations.date && !this.supportOldVersion) {
                     $(".add_schedule__date").last().remove();
                 } else {
                     if (dataInput[i].dateStart && dataInput[i].dateStop) {
@@ -220,27 +227,27 @@ class EditSchedule {
         // create modal window, append it and hide
         let modal =
             '<div class="modal fade navigation-popup" id="popUp">' +
-                '<div class="modal-dialog modal-dialog-centered navigation-modal" role="dialog">' +
-                    '<div class="modal-content">' +
-                        '<div class="modal-header navigation-header">' +
-                            'Options' +
-                        '</div>' +
-                        '<div class="modal-body">' +
-                            '<div class="navigation-block">' +
-                                '<div class="navigation-wrap">' +
-                                    '<label for="propertyAdder navigation-text">Add option</label>' +
-                                    '<select class="form-select navigation-select" id="propertyAdder" aria-label="Default select example">' +
-                                    '</select>' +
-                                '</div>' +
-                                '<a class="addProperty navigation-plus" href="#"><i class="las la-plus"></i></a>' +
-                            '</div>' +
-                        '</div>' +
-                        '<div class="modal-footer navigation-footer">' +
-                            '<a class="editItem btn btn-success" data-dismiss="modal" itemid="" href="#">Save</a>' +
-                            '<a class="close-btn btn btn-danger" data-dismiss="modal" href="#">Cancel</a>' +
-                        '</div>' +
-                    '</div>' +
-                '</div>' +
+            '<div class="modal-dialog modal-dialog-centered navigation-modal" role="dialog">' +
+            '<div class="modal-content">' +
+            '<div class="modal-header navigation-header">' +
+            'Options' +
+            '</div>' +
+            '<div class="modal-body">' +
+            '<div class="navigation-block">' +
+            '<div class="navigation-wrap">' +
+            '<label for="propertyAdder navigation-text">Add option</label>' +
+            '<select class="form-select navigation-select" id="propertyAdder" aria-label="Default select example">' +
+            '</select>' +
+            '</div>' +
+            '<a class="addProperty navigation-plus" href="#"><i class="las la-plus"></i></a>' +
+            '</div>' +
+            '</div>' +
+            '<div class="modal-footer navigation-footer">' +
+            '<a class="editItem btn btn-success" data-dismiss="modal" itemid="" href="#">Save</a>' +
+            '<a class="close-btn btn btn-danger" data-dismiss="modal" href="#">Cancel</a>' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
             '</div>';
         $(`#form-${this.field}`).after(modal);
         $("#popUp").hide();
@@ -445,6 +452,11 @@ class EditSchedule {
                 timeStart = $(times[0]).val();
                 timeStop = $(times[1]).val();
             }
+            if (this.supportOldVersion) {
+                container.start = timeStart;
+                container.stop = timeStop;
+            }
+
             container.timeStart = timeStart;
             container.timeStop = timeStop;
 
@@ -498,8 +510,8 @@ class EditSchedule {
                     .closest('.navigation-block')
                     .before(`<div class="navigation-wrapper" id="${key}">` +
                         `<div class="navigation-inner">` +
-                            `<label for="item${capitalizedKey}">${capitalizedKey}</label>` +
-                            `<input type=${typeRecognition.inputType} id="item${capitalizedKey}">` +
+                        `<label for="item${capitalizedKey}">${capitalizedKey}</label>` +
+                        `<input type=${typeRecognition.inputType} id="item${capitalizedKey}">` +
                         `</div>` +
                         '<a href="#" class="deleteProp navigation-del"><i class="las la-times"></i></a>' +
                         "</div>");
@@ -554,8 +566,8 @@ class EditSchedule {
                 .closest('.navigation-block')
                 .before(`<div class="navigation-wrapper" id="data-${$("#propertyAdder").val()}">` +
                     `<div class="navigation-inner">` +
-                        `<label for="item${capitalizedKey}">${capitalizedKey}</label>` +
-                        `<input type=${typeRecognition.inputType} id="item${capitalizedKey}">` +
+                    `<label for="item${capitalizedKey}">${capitalizedKey}</label>` +
+                    `<input type=${typeRecognition.inputType} id="item${capitalizedKey}">` +
                     `</div>` +
                     '<a href="#" class="deleteProp navigation-del"><i class="las la-times"></i></a>' +
                     "</div>");
