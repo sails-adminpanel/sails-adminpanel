@@ -1,60 +1,67 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const adminUtil_1 = require("../lib/adminUtil");
+import { AdminUtil } from "../lib/adminUtil";
 let request = require('../lib/requestProcessor');
 let fieldsHelper = require('../helper/fieldsHelper');
-async function add(req, res) {
-    let instance = adminUtil_1.AdminUtil.findInstanceObject(req);
+
+export default async function add(req, res) {
+    let instance = AdminUtil.findInstanceObject(req);
+
     if (!instance.model) {
         return res.notFound();
     }
+
     if (!instance.config.add) {
         return res.redirect(instance.uri);
     }
+
     if (!sails.adminpanel.havePermission(req, instance.config, __filename)) {
         return res.redirect('/admin/userap/login');
     }
+
     if (sails.config.adminpanel.auth) {
         req.locals.user = req.session.UserAP;
     }
+
     let fields = await fieldsHelper.getFields(req, instance, 'add');
     let data = {}; //list of field values
+
     fields = await fieldsHelper.loadAssociations(fields);
+
     if (req.method.toUpperCase() === 'POST') {
         let reqData = request.processRequest(req, fields);
+
         for (let prop in reqData) {
             if (Number.isNaN(reqData[prop]) || reqData[prop] === undefined || reqData[prop] === null) {
-                delete reqData[prop];
+                delete reqData[prop]
             }
+
             if (fields[prop] && fields[prop].model && fields[prop].model.type === 'json' && reqData[prop] !== '') {
                 try {
                     reqData[prop] = JSON.parse(reqData[prop]);
-                }
-                catch (e) {
+                } catch(e){
                     sails.log.error(e);
                 }
             }
         }
+
         // callback before save instance
         if (typeof instance.config.add.instanceModifier === "function") {
             reqData = instance.config.edit.instanceModifier(reqData);
         }
+
         try {
             let record = await instance.model.create(reqData).fetch();
             sails.log(`A new record was created: ${record}`);
             req.flash('adminSuccess', 'Your record was created !');
-        }
-        catch (e) {
+        } catch (e) {
             req._sails.log.error(e);
             req.flash('adminError', e.message || 'Something went wrong...');
             data = reqData;
         }
     }
+
     return res.viewAdmin({
         instance: instance,
         fields: fields,
         data: data
     });
-}
-exports.default = add;
-;
+};

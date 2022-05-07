@@ -1,7 +1,29 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.AdminUtil = void 0;
-class AdminUtil {
+import {Instance} from "../interfaces/types";
+
+export class AdminUtil {
+
+    /**
+     * Default configuration for instance
+     *
+     * @see AdminUtil.findConfig
+     */
+    private static _defaultInstanceConfig = {
+        list: true,
+        add: true,
+        edit: true,
+        remove: true,
+        view: true
+    };
+
+    /**
+     * Default configs that will be returned for action. If nothing exists in config file.
+     *
+     * @see AdminUtil.findActionConfig
+     */
+    private static _defaultActionConfig = {
+        fields: {}
+    };
+
     /**
      * Check if given instance config has all required properties
      *
@@ -9,10 +31,10 @@ class AdminUtil {
      * @returns {boolean}
      * @private
      */
-    static _isValidInstanceConfig(config) {
+    private static _isValidInstanceConfig(config) {
         return (typeof config === "object" && typeof config.model === "string");
-    }
-    ;
+    };
+
     /**
      * Normalizing instance config.
      * Will return fulfilled configuration object.
@@ -22,12 +44,13 @@ class AdminUtil {
      * @returns {Object}
      * @private
      */
-    static _normalizeInstanceConfig(config) {
+    private static _normalizeInstanceConfig(config) {
         if (!this._isValidInstanceConfig(config)) {
             req._sails.log.error('Wrong instance configuration, using default');
             config = {};
         }
         config = Object.assign(config, this._defaultInstanceConfig);
+
         //Check limits
         if (typeof config.list === "boolean") {
             config.list = {
@@ -38,8 +61,8 @@ class AdminUtil {
             config.list.limit = 15;
         }
         return config;
-    }
-    ;
+    };
+
     /**
      * Normalize action config object
      *
@@ -47,54 +70,55 @@ class AdminUtil {
      * @returns {Object}
      * @private
      */
-    static _normalizeActionConfig(config) {
+    private static _normalizeActionConfig(config) {
         //Adding fields
         config.fields = config.fields || {};
         return Object.assign(config, this._defaultActionConfig);
-    }
-    ;
+    };
+
     /**
      * Get admin panel config
      *
      * @returns {Object}
      */
-    static config() {
+    public static config() {
         return sails.config.adminpanel || {};
     }
+
     /**
      * Get model from system
      *
      * @param {string} name
      * @returns {?Model}
      */
-    static getModel(name) {
+    public static getModel(name: string) {
         //Getting model
         // console.log('admin > model > ', sails.models);
         let Model = sails.models[name.toLowerCase()];
         if (!Model) {
             if (!sails) {
                 console.log('No model found in sails.');
-            }
-            else {
+            } else {
                 sails.log.error('No model found in sails.');
             }
             return null;
         }
         return Model;
     }
+
     /**
      * Get instance name
      *
      * @param {Request} req
      * @returns {?string}
      */
-    static findInstanceName(req) {
-        if (!req.param('instance')) {
-            return null;
-        }
-        return req.param('instance');
-    }
-    ;
+    public static findInstanceName(req) {
+      if (!req.param('instance')) {
+        return null;
+      }
+      return req.param('instance');
+    };
+
     /**
      * Searches for config from admin panel
      *
@@ -102,13 +126,14 @@ class AdminUtil {
      * @param {String} instanceName
      * @returns {?Object}
      */
-    static findInstanceConfig(req, instanceName) {
+    public static findInstanceConfig(req, instanceName) {
         if (!this.config().instances || !this.config().instances[instanceName]) {
             req._sails.log.error('No such route exists');
             return null;
         }
         return this._normalizeInstanceConfig(this.config().instances[instanceName] || {});
     }
+
     /**
      * Will get action config from configuration file depending to given action
      *
@@ -132,7 +157,7 @@ class AdminUtil {
      * @param {string} actionType Type of action that config should be loaded for. Example: list, edit, add, remove, view.
      * @returns {Object} Will return object with configs or default configs.
      */
-    static findActionConfig(instance, actionType) {
+    public static findActionConfig(instance, actionType) {
         if (!instance || !actionType) {
             throw new Error('No `instance` or `actionType` passed !');
         }
@@ -149,6 +174,7 @@ class AdminUtil {
         }
         return this._normalizeActionConfig(instance.config[actionType]);
     }
+
     /**
      * Trying to find model by request
      *
@@ -157,12 +183,13 @@ class AdminUtil {
      * @param {Object} instanceConfig
      * @returns {?Model}
      */
-    static findModel(req, instanceConfig) {
+    public static findModel(req, instanceConfig) {
         if (!this._isValidInstanceConfig(instanceConfig)) {
             return null;
         }
         return this.getModel(instanceConfig.model);
     }
+
     /**
      * Will create instance object from request.
      *
@@ -181,8 +208,8 @@ class AdminUtil {
      * @param req
      * @returns {Object}
      */
-    static findInstanceObject(req) {
-        let instance = {};
+    public static findInstanceObject(req) {
+        let instance: Instance = {};
         instance.name = this.findInstanceName(req);
         instance.config = this.findInstanceConfig(req, instance.name);
         instance.model = this.findModel(req, instance.config);
@@ -190,24 +217,3 @@ class AdminUtil {
         return instance;
     }
 }
-exports.AdminUtil = AdminUtil;
-/**
- * Default configuration for instance
- *
- * @see AdminUtil.findConfig
- */
-AdminUtil._defaultInstanceConfig = {
-    list: true,
-    add: true,
-    edit: true,
-    remove: true,
-    view: true
-};
-/**
- * Default configs that will be returned for action. If nothing exists in config file.
- *
- * @see AdminUtil.findActionConfig
- */
-AdminUtil._defaultActionConfig = {
-    fields: {}
-};
