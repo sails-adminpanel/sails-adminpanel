@@ -1,0 +1,30 @@
+{
+  "name": "test-app",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Sails test application",
+  "keywords": [],
+  "dependencies": {
+    "@webresto/core": "^1.0.0",
+    "include-all": "^1.0.8",
+    "module-manager": "file:../..",
+    "rc": "^1.0.1",
+    "request": "^2.88.2",
+    "sails": "^1.5.0",
+    "sails-adminpanel": "git+https://github.com/sails-adminpanel/sails-adminpanel.git#new_design",
+    "sails-hook-orm": "^2.1.1",
+    "sails-hook-stateflow": "^1.0.6",
+    "sails-memory": "^0.10.7"
+  },
+  "scripts": {
+    "debug": "node debug app.js",
+    "start": "node app.js"
+  },
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/webresto/app.git"
+  },
+  "author": "webresto",
+  "license": "MIT"
+}

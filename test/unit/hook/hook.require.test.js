@@ -1,13 +1,6 @@
-//'use strict';
+// var expect = require('chai').expect;
 //
-//var util = require('../helper/liftUtil');
-//
-//var Sails = require('sails').Sails;
-//var _ = require('lodash');
-//
-//var expect = require('chai').expect;
-//
-//var appConfig = {
+// var appConfig = {
 //    log: {level: 'warn'},
 //    hooks: {
 //        // Inject the adminpanel hook in this repo into this Sails app
@@ -18,11 +11,11 @@
 //        engine: 'jade'
 //    },
 //    loadHooks: ['moduleloader', 'userconfig', 'adminpanel']
-//};
+// };
 //
-//var app;
+// var app;
 //
-//describe.skip('Adminpanel dependency :: ', function() {
+// describe.skip('Adminpanel dependency :: ', function() {
 //
 //    it('should fail without `blueprints`', function(done) {
 //        app = Sails();
@@ -117,4 +110,4 @@
 //            app.lower(done);
 //        });
 //    });
-//});
+// });
