@@ -46,7 +46,7 @@ export class AdminUtil {
      */
     private static _normalizeInstanceConfig(config) {
         if (!this._isValidInstanceConfig(config)) {
-            req._sails.log.error('Wrong instance configuration, using default');
+            sails.log.error('Wrong instance configuration, using default');
             config = {};
         }
         config = Object.assign(config, this._defaultInstanceConfig);
