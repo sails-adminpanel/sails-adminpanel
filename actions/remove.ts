@@ -1,34 +1,37 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const adminUtil_1 = require("../lib/adminUtil");
-async function remove(req, res) {
+import { AdminUtil } from "../lib/adminUtil";
+
+export default async function remove(req, res) {
     //Checking id of the record
     if (!req.param('id')) {
         req._sails.log.error(new Error('Admin panel: No id for record provided'));
         return res.notFound();
     }
-    let instance = adminUtil_1.AdminUtil.findInstanceObject(req);
+
+    let instance = AdminUtil.findInstanceObject(req);
     if (!instance.model) {
         req._sails.log.error(new Error('Admin panel: no model found'));
         return res.notFound();
     }
+
     if (!instance.config.remove) {
         return res.redirect(instance.uri);
     }
+
     if (!sails.adminpanel.havePermission(req, instance.config, __filename)) {
         return res.redirect('/admin/userap/login');
     }
+
     if (sails.config.adminpanel.auth) {
         req.locals.user = req.session.UserAP;
     }
+
     /**
      * Searching for record by model
      */
     let record;
     try {
         record = await instance.model.findOne(req.param('id'));
-    }
-    catch (e) {
+    } catch (e) {
         if (req.wantsJSON) {
             return res.json({
                 success: false,
@@ -37,6 +40,7 @@ async function remove(req, res) {
         }
         return res.serverError(e);
     }
+
     if (!record) {
         let msg = 'Admin panel: No record found with id: ' + req.param('id');
         if (req.wantsJSON) {
@@ -48,20 +52,19 @@ async function remove(req, res) {
         return res.notFound();
     }
     console.log('admin > remove > record > ', record);
+
     let destroyedRecord;
     try {
         destroyedRecord = await instance.model.destroyOne(record[instance.config.identifierField || req._sails.config.adminpanel.identifierField]);
-    }
-    catch (e) {
+    } catch (e) {
         sails.log.error('adminpanel > error', e);
     }
+
     if (destroyedRecord) {
         req.flash('adminSuccess', 'Record was removed successfully');
-    }
-    else {
+    } else {
         req.flash('adminError', 'Record was not removed');
     }
+
     res.redirect(instance.uri);
-}
-exports.default = remove;
-;
+};
