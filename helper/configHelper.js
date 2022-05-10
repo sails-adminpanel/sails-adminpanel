@@ -38,26 +38,29 @@ module.exports = function(sails) {
             return sails.config.adminpanel
         },
         getIdentifierField: function(modelOrName) {
-            if (config.identifierField != 'id' || !modelOrName) {
-                return config.identifierField;
+            let instanceConfig =config.instances[modelOrName]
+            
+            if (instanceConfig.identifierField != 'id' || !modelOrName) {
+                return instanceConfig.identifierField;
             }
+
             var model;
             if (_.isString(modelOrName)) {
                 model = sails.models[modelOrName.toLowerCase()];
             } else if (_.isObject(modelOrName) && _.isObject(modelOrName.definition)) {
                 model = modelOrName;
             } else {
-                return config.identifierField;
+                return instanceConfig.identifierField;
             }
             if (!model.definition) {
-                return config.identifierField;
+                return instanceConfig.identifierField;
             }
             var identifier = _.findKey(model.definition, _.find(model.definition, function(val, key) {
                 if (val.primaryKey) {
                     return key;
                 }
             }));
-            return identifier || config.identifierField;
+            return identifier || instanceConfig.identifierField;
         },
 
         /**
