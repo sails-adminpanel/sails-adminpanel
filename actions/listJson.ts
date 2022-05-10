@@ -1,6 +1,6 @@
 import { AdminUtil } from "../lib/adminUtil";
 let fieldsHelper = require("../helper/fieldsHelper");
-let configHelper = require("../helper/configHelper")(sails);
+import { ConfigHelper } from "../helper/configHelper";
 
 export default async function listJson(req, res) {
     let instance = AdminUtil.findInstanceObject(req);
@@ -32,7 +32,7 @@ export default async function listJson(req, res) {
 
     records = await waterlineExec(query);
 
-    let identifierField = configHelper.getIdentifierField(instance.config.model);
+    let identifierField = ConfigHelper.getIdentifierField(instance.config.model);
     let keyFields = Object.keys(fields);
     let result = [];
 

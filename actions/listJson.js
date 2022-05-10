@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const adminUtil_1 = require("../lib/adminUtil");
 let fieldsHelper = require("../helper/fieldsHelper");
-let configHelper = require("../helper/configHelper")(sails);
+const configHelper_1 = require("../helper/configHelper");
 async function listJson(req, res) {
     let instance = adminUtil_1.AdminUtil.findInstanceObject(req);
     if (!instance.model) {
@@ -27,7 +27,7 @@ async function listJson(req, res) {
         query.populate(val);
     });
     records = await waterlineExec(query);
-    let identifierField = configHelper.getIdentifierField(instance.config.model);
+    let identifierField = configHelper_1.ConfigHelper.getIdentifierField(instance.config.model);
     let keyFields = Object.keys(fields);
     let result = [];
     records.forEach((instance) => {
