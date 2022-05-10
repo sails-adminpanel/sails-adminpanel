@@ -94,11 +94,13 @@ export class MenuHelper {
      * @returns {Array}
      */
     public static getGlobalActions(instanceConfig, action) {
-        action = action || 'list';
-        if (!this.hasGlobalActions(instanceConfig, action)) {
-            return [];
-        }
-        return instanceConfig[action].actions.global;
+        // TODO: fix this
+        // action = action || 'list';
+        // if (!this.hasGlobalActions(instanceConfig, action)) {
+        //     return [];
+        // }
+        // return instanceConfig[action].actions.global;
+        return
     }
 
     /**
@@ -127,20 +129,22 @@ export class MenuHelper {
      * @returns {string}
      */
     public static replaceModelFields(url, model) {
-        // Check for model existence
-        if (!model) {
-            return url;
-        }
-        let words = _.words(url, /\:+[a-z\-_]*/gi);
-        // Replacing props
-        words.forEach(function(word) {
-            let variable = word.replace(':', '');
-            if (model && model[variable]) {
-                url = url.replace(word, model[variable]);
-            }
-        });
-
-        return url;
+        // TODO: fix this
+        // // Check for model existence
+        // if (!model) {
+        //     return url;
+        // }
+        // let words = _.words(url, /\:+[a-z\-_]*/gi);
+        // // Replacing props
+        // words.forEach(function(word) {
+        //     let variable = word.replace(':', '');
+        //     if (model && model[variable]) {
+        //         url = url.replace(word, model[variable]);
+        //     }
+        // });
+        //
+        // return url;
+        return
     }
 
     /**

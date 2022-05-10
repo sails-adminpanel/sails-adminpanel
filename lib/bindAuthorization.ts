@@ -7,13 +7,13 @@ module.exports = function bindAuthorization(sails) {
     /**
      * Router
      */
-    var _bindPolicies = require('../lib/bindPolicies')(sails);
-    var policies = sails.config.adminpanel.policies || '';
-    var baseRoute = sails.config.adminpanel.routePrefix + '/:instance';
+    let _bindPolicies = require('../lib/bindPolicies')(sails);
+    let policies = sails.config.adminpanel.policies || '';
+    let baseRoute = sails.config.adminpanel.routePrefix + '/:instance';
     sails.router.bind(baseRoute + '/login', _bindPolicies(policies, _login));
     sails.router.bind(baseRoute + '/logout', _bindPolicies(policies, _login));
 
-    var apConfName = ['list', 'add', 'edit', 'remove', 'view'];
+    let apConfName = ['list', 'add', 'edit', 'remove', 'view'];
     var apConf = {
         title: 'Users',
         model: 'UserAP',
