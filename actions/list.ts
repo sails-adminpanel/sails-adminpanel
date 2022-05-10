@@ -1,6 +1,6 @@
 import { AdminUtil } from "../lib/adminUtil";
 let requestProcessor = require('../lib/requestProcessor');
-let fieldsHelper = require('../helper/fieldsHelper');
+import { FieldsHelper } from "../helper/fieldsHelper";
 
 export default async function list(req, res) {
     let instance = AdminUtil.findInstanceObject(req);
@@ -30,7 +30,7 @@ export default async function list(req, res) {
 
     let total = 0;
     let records = [];
-    let fields = fieldsHelper.getFields(req, instance, 'list');
+    let fields = FieldsHelper.getFields(req, instance, 'list');
 
     //Processing sorting
     //Fetch total records for page
@@ -45,7 +45,7 @@ export default async function list(req, res) {
             await query.sort(req.sort.key + ' ' + req.sort.order);
         }
 
-        fieldsHelper.getFieldsToPopulate(fields).forEach(function(val) {
+        FieldsHelper.getFieldsToPopulate(fields).forEach(function(val) {
             query.populate(val);
         });
 

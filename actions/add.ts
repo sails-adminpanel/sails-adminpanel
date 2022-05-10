@@ -1,6 +1,6 @@
 import { AdminUtil } from "../lib/adminUtil";
 let request = require('../lib/requestProcessor');
-let fieldsHelper = require('../helper/fieldsHelper');
+import { FieldsHelper } from "../helper/fieldsHelper";
 
 export default async function add(req, res) {
     let instance = AdminUtil.findInstanceObject(req);
@@ -21,10 +21,10 @@ export default async function add(req, res) {
         req.locals.user = req.session.UserAP;
     }
 
-    let fields = await fieldsHelper.getFields(req, instance, 'add');
+    let fields = await FieldsHelper.getFields(req, instance, 'add');
     let data = {}; //list of field values
 
-    fields = await fieldsHelper.loadAssociations(fields);
+    fields = await FieldsHelper.loadAssociations(fields);
 
     if (req.method.toUpperCase() === 'POST') {
         let reqData = request.processRequest(req, fields);

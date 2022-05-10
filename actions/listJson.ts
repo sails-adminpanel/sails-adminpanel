@@ -1,5 +1,5 @@
 import { AdminUtil } from "../lib/adminUtil";
-let fieldsHelper = require("../helper/fieldsHelper");
+import { FieldsHelper } from "../helper/fieldsHelper";
 import { ConfigHelper } from "../helper/configHelper";
 
 export default async function listJson(req, res) {
@@ -17,7 +17,7 @@ export default async function listJson(req, res) {
     }
 
     let records: any = [];
-    let fields = fieldsHelper.getFields(req, instance, 'list');
+    let fields = FieldsHelper.getFields(req, instance, 'list');
 
     let query;
     try {
@@ -26,7 +26,7 @@ export default async function listJson(req, res) {
         sails.log.error(e);
     }
 
-    fieldsHelper.getFieldsToPopulate(fields).forEach(function(val) {
+    FieldsHelper.getFieldsToPopulate(fields).forEach(function(val) {
         query.populate(val);
     });
 

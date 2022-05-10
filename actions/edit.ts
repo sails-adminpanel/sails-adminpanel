@@ -1,6 +1,6 @@
 import { AdminUtil } from "../lib/adminUtil";
 let request = require('../lib/requestProcessor');
-let fieldsHelper = require('../helper/fieldsHelper');
+import { FieldsHelper } from "../helper/fieldsHelper";
 
 export default async function edit(req, res) {
     //Check id
@@ -34,10 +34,10 @@ export default async function edit(req, res) {
         return res.serverError();
     }
 
-    let fields = fieldsHelper.getFields(req, instance, 'edit');
+    let fields = FieldsHelper.getFields(req, instance, 'edit');
     let reloadNeeded = false;
 
-    fields = await fieldsHelper.loadAssociations(fields);
+    fields = await FieldsHelper.loadAssociations(fields);
 
     if (req.method.toUpperCase() === 'POST') {
         let reqData = request.processRequest(req, fields);
