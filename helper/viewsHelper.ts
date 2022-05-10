@@ -1,37 +1,42 @@
-'use strict';
-var path = require('path');
-var _ = require('lodash');
-module.exports = {
+import * as path from "path";
+
+export class ViewsHelper {
+
     /**
      * Base path for all views.
      */
-    BASE_VIEWS_PATH: path.join(__dirname, '../views/'),
+    private static BASE_VIEWS_PATH = path.join(__dirname, '../views/');
+
+
     /**
      * Generate path to views files for given view engine
      *
      * @param {string} engine - View engine name. E.g. 'jade', 'ejs'...
      * @returns {string}
      */
-    getPathToEngine: function (engine) {
-        return path.join(this.BASE_VIEWS_PATH, engine, '/');
-    },
+    public static getPathToEngine(engine) {
+        return path.join(this.BASE_VIEWS_PATH, engine, '/')
+    }
+
     /**
      * Will generate path to view file
      *
      * @param {string} view
      * @returns {string}
      */
-    getViewPath: function getViewPath(view) {
+    public static getViewPath(view) {
         return path.resolve(sails.config.adminpanel.pathToViews, view);
-    },
+    }
+
     /**
      *
      * @param {IncommingMessage} req
      * @param {string} type Types: adminError|adminSuccess
      */
-    hasFlash: function (req, type) {
+    public static hasFlash(req, type) {
         return (req.session.flash && req.session.flash[type]);
-    },
+    }
+
     /**
      * Get needed field value from dat provided.
      *
@@ -39,20 +44,22 @@ module.exports = {
      * @param {object} field
      * @param {Array} data
      */
-    getFieldValue: function (key, field, data) {
-        var value = data[key];
-        if (_.isObject(value) && field.config.type == 'association') {
+    public static getFieldValue(key, field, data) {
+        let value = data[key];
+        if (typeof value === "object" && field.config.type == 'association') {
             value = value[field.config.identifierField];
         }
-        if (_.isArray(value) && field.config.type == 'association-many') {
-            var result = [];
+
+        if (Array.isArray(value) && field.config.type == 'association-many') {
+            let result = [];
             value.forEach(function (val) {
                 result.push(val[field.config.identifierField]);
             });
             return result;
         }
         return value;
-    },
+    }
+
     /**
      * Check if given option equals value or is in array
      *
@@ -60,35 +67,38 @@ module.exports = {
      * @param {string|number|Array} value
      * @returns {boolean}
      */
-    isOptionSelected: function (option, value) {
-        if (_.isArray(value)) {
-            return _.includes(value, option);
-        }
-        else {
+    public static isOptionSelected(option, value) {
+        if (Array.isArray(value)) {
+            return value.includes(option);
+        } else {
             return (option == value);
         }
-    },
+    }
+
     /**
      * Get's field value for view screen
      *
      * @param {string|number|boolean|object|Array} value
      * @param {object} field
      */
-    getAssociationValue: function (value, field) {
+    public static getAssociationValue(value, field) {
         if (!value) {
             return '-----------';
         }
-        var displayField = field.config.displayField || 'id';
-        if (_.isArray(value)) {
-            var result = '';
+
+        let displayField = field.config.displayField || 'id';
+        if (Array.isArray(value)) {
+            let result = '';
             value.forEach(function (val) {
                 result += val[displayField] + '<br/>';
             });
             return result;
         }
-        if (_.isObject(value)) {
+
+        if (typeof value === "object") {
             return value[displayField];
         }
+
         return value;
     }
-};
+}

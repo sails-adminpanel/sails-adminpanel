@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const adminUtil_1 = require("../lib/adminUtil");
 let request = require('../lib/requestProcessor');
-let fieldsHelper = require('../helper/fieldsHelper');
+const fieldsHelper_1 = require("../helper/fieldsHelper");
 async function add(req, res) {
     let instance = adminUtil_1.AdminUtil.findInstanceObject(req);
     if (!instance.model) {
@@ -17,9 +17,9 @@ async function add(req, res) {
     if (sails.config.adminpanel.auth) {
         req.locals.user = req.session.UserAP;
     }
-    let fields = await fieldsHelper.getFields(req, instance, 'add');
+    let fields = await fieldsHelper_1.FieldsHelper.getFields(req, instance, 'add');
     let data = {}; //list of field values
-    fields = await fieldsHelper.loadAssociations(fields);
+    fields = await fieldsHelper_1.FieldsHelper.loadAssociations(fields);
     if (req.method.toUpperCase() === 'POST') {
         let reqData = request.processRequest(req, fields);
         for (let prop in reqData) {

@@ -1,10 +1,7 @@
-'use strict';
+import * as path from "path";
+import _login from "../actions/login";
 
-var path = require('path');
-
-var _login = require('../actions/login');
-
-var superAdmin = 'isAdminpanelSuperAdmin';
+let superAdmin = 'isAdminpanelSuperAdmin';
 
 module.exports = function bindAuthorization(sails) {
     /**

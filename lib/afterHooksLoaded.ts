@@ -1,5 +1,4 @@
-'use strict';
-var flash = require('connect-flash');
+let flash = require('connect-flash');
 import * as bindAuthorization from './bindAuthorization'
 
 module.exports = function ToAfterHooksLoaded(sails) {

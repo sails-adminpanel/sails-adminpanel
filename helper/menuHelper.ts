@@ -1,42 +1,45 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.MenuHelper = void 0;
 /**
  * Menu helper
  *
  * @constructor
  */
-let _ = require("lodash"); // заменить lodash реджексом
-class MenuHelper {
+let _ = require("lodash") // заменить lodash реджексом
+export class MenuHelper {
+
+    private static config: any;
+
     constructor(config) {
-        MenuHelper.config = config;
+        MenuHelper.config = config
     }
+
     /**
      * Checks if brand exists
      *
      * @returns {boolean}
      */
-    static hasBrand() {
+    public static hasBrand() {
         return Boolean(this.config.menu && this.config.menu.brand);
     }
+
     /**
      * Get menu brand link
      *
      * @returns {string}
      */
-    static getBrandLink() {
+    public static getBrandLink() {
         if (!this.config.menu || !this.config.menu.brand || typeof this.config.menu.brand !== "object" ||
             !this.config.menu.brand.link) {
             return '/admin';
         }
         return this.config.menu.brand.link;
     }
+
     /**
      * Get menu brand title
      *
      * @returns {string}
      */
-    static getBrandTitle() {
+    public static getBrandTitle() {
         if (!this.config.menu || !this.config.menu.brand) {
             return 'Sails-adminpanel';
         }
@@ -48,6 +51,7 @@ class MenuHelper {
         }
         return 'Sails-adminpanel';
     }
+
     /**
      * Check if global actions buttons added to action
      *
@@ -55,14 +59,16 @@ class MenuHelper {
      * @param {string=} [action] Defaults to `list`
      * @returns {boolean}
      */
-    static hasGlobalActions(instanceConfig, action) {
+    public static hasGlobalActions(instanceConfig, action) {
         action = action || 'list';
         if (!instanceConfig[action] || !instanceConfig[action].actions || !instanceConfig[action].actions.global) {
             return false;
         }
+
         let actions = instanceConfig[action].actions.global;
         return actions.length > 0;
     }
+
     /**
      * Check if inline actions buttons added to action
      *
@@ -70,14 +76,16 @@ class MenuHelper {
      * @param {string=} [action] Defaults to `list`
      * @returns {boolean}
      */
-    static hasInlineActions(instanceConfig, action) {
+    public static hasInlineActions(instanceConfig, action) {
         action = action || 'list';
         if (!instanceConfig[action] || !instanceConfig[action].actions || !instanceConfig[action].actions.inline) {
             return false;
         }
         let actions = instanceConfig[action].actions.inline;
         return actions.length > 0;
+
     }
+
     /**
      * Get list of custom global buttons for action
      *
@@ -85,13 +93,14 @@ class MenuHelper {
      * @param {string=} [action]
      * @returns {Array}
      */
-    static getGlobalActions(instanceConfig, action) {
+    public static getGlobalActions(instanceConfig, action) {
         action = action || 'list';
         if (!this.hasGlobalActions(instanceConfig, action)) {
             return [];
         }
         return instanceConfig[action].actions.global;
     }
+
     /**
      * Get list of custom inline buttons for action
      *
@@ -99,13 +108,14 @@ class MenuHelper {
      * @param {string=} [action]
      * @returns {Array}
      */
-    static getInlineActions(instanceConfig, action) {
+    public static getInlineActions(instanceConfig, action) {
         action = action || 'list';
         if (!this.hasInlineActions(instanceConfig, action)) {
             return [];
         }
         return instanceConfig[action].actions.inline;
     }
+
     /**
      * Replace fields in given URL and binds to model fields.
      *
@@ -116,34 +126,35 @@ class MenuHelper {
      * @param {Object} model
      * @returns {string}
      */
-    static replaceModelFields(url, model) {
+    public static replaceModelFields(url, model) {
         // Check for model existence
         if (!model) {
             return url;
         }
         let words = _.words(url, /\:+[a-z\-_]*/gi);
         // Replacing props
-        words.forEach(function (word) {
+        words.forEach(function(word) {
             let variable = word.replace(':', '');
             if (model && model[variable]) {
                 url = url.replace(word, model[variable]);
             }
         });
+
         return url;
     }
+
     /**
      * Will create a list of groups to show
      *
      * @returns {Array}
      */
-    static getGroups() {
+    public static getGroups() {
         let groups = this.config.menu.groups || [];
-        groups.forEach(function (group, idx) {
-            if (!group.key)
-                return;
+        groups.forEach(function(group, idx) {
+            if (!group.key) return;
             // Clear menus to avoid data duplication
             groups[idx].menues = [];
-            MenuHelper.config.instances.forEach(function (val, key) {
+            MenuHelper.config.instances.forEach(function(val, key) {
                 if (val.menuGroup && val.menuGroup == group.key) {
                     groups[idx].menues.push({
                         link: MenuHelper.config.routePrefix + '/' + key,
@@ -153,7 +164,7 @@ class MenuHelper {
                 }
             });
             if (MenuHelper.config.menu.actions && MenuHelper.config.menu.actions.length > 0) {
-                MenuHelper.config.menu.actions.forEach(function (menu) {
+                MenuHelper.config.menu.actions.forEach(function(menu) {
                     if (!menu.link || !menu.title || !menu.menuGroup || menu.menuGroup != group.key) {
                         return;
                     }
@@ -165,16 +176,18 @@ class MenuHelper {
                 });
             }
         });
+
         return groups;
     }
+
     /**
      * Get list of instance menus that was not bound to groups
      *
      * @returns {Array}
      */
-    static getMenuItems() {
+    public static getMenuItems() {
         let menus = [];
-        this.config.instances.forEach(function (val, key) {
+        this.config.instances.forEach(function(val, key) {
             if (val.menuGroup) {
                 return;
             }
@@ -183,31 +196,31 @@ class MenuHelper {
                     link: MenuHelper.config.routePrefix + '/' + key,
                     title: "Overview",
                     icon: ""
-                });
+                })
             }
             menus.push({
                 link: MenuHelper.config.routePrefix + '/' + key,
                 title: val.title,
                 icon: val.icon || null,
                 actions: val.actions || null,
-                id: val.id || val.title.replace(" ", "_"),
+                id: val.id || val.title.replace(" ","_"),
                 instanceName: key
             });
         });
         if (this.config.menu.actions && this.config.menu.actions.length > 0) {
-            this.config.menu.actions.forEach(function (menu) {
+            this.config.menu.actions.forEach(function(menu) {
                 if (!menu.link || !menu.title || menu.menuGroup || menu.disabled) {
                     return;
                 }
                 menus.push({
                     link: menu.link,
                     title: menu.title,
-                    id: menu.id || menu.title.replace(" ", "_"),
+                    id: menu.id || menu.title.replace(" ","_"),
                     icon: menu.icon || null
                 });
             });
         }
+
         return menus;
     }
 }
-exports.MenuHelper = MenuHelper;

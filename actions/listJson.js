@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const adminUtil_1 = require("../lib/adminUtil");
-let fieldsHelper = require("../helper/fieldsHelper");
+const fieldsHelper_1 = require("../helper/fieldsHelper");
 const configHelper_1 = require("../helper/configHelper");
 async function listJson(req, res) {
     let instance = adminUtil_1.AdminUtil.findInstanceObject(req);
@@ -15,7 +15,7 @@ async function listJson(req, res) {
         req.locals.user = req.session.UserAP;
     }
     let records = [];
-    let fields = fieldsHelper.getFields(req, instance, 'list');
+    let fields = fieldsHelper_1.FieldsHelper.getFields(req, instance, 'list');
     let query;
     try {
         query = await instance.model.find();
@@ -23,7 +23,7 @@ async function listJson(req, res) {
     catch (e) {
         sails.log.error(e);
     }
-    fieldsHelper.getFieldsToPopulate(fields).forEach(function (val) {
+    fieldsHelper_1.FieldsHelper.getFieldsToPopulate(fields).forEach(function (val) {
         query.populate(val);
     });
     records = await waterlineExec(query);

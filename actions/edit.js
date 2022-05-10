@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const adminUtil_1 = require("../lib/adminUtil");
 let request = require('../lib/requestProcessor');
-let fieldsHelper = require('../helper/fieldsHelper');
+const fieldsHelper_1 = require("../helper/fieldsHelper");
 async function edit(req, res) {
     //Check id
     if (!req.param('id')) {
@@ -30,9 +30,9 @@ async function edit(req, res) {
         req._sails.log.error(e);
         return res.serverError();
     }
-    let fields = fieldsHelper.getFields(req, instance, 'edit');
+    let fields = fieldsHelper_1.FieldsHelper.getFields(req, instance, 'edit');
     let reloadNeeded = false;
-    fields = await fieldsHelper.loadAssociations(fields);
+    fields = await fieldsHelper_1.FieldsHelper.loadAssociations(fields);
     if (req.method.toUpperCase() === 'POST') {
         let reqData = request.processRequest(req, fields);
         let params = {};

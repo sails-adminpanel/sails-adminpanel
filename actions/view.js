@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const adminUtil_1 = require("../lib/adminUtil");
-let fieldsHelper = require('../helper/fieldsHelper');
+const fieldsHelper_1 = require("../helper/fieldsHelper");
 async function view(req, res) {
     //Check id
     if (!req.param('id')) {
@@ -14,7 +14,7 @@ async function view(req, res) {
     if (!instance.model) {
         return res.notFound();
     }
-    let fields = fieldsHelper.getFields(req, instance, 'view');
+    let fields = fieldsHelper_1.FieldsHelper.getFields(req, instance, 'view');
     if (!sails.adminpanel.havePermission(req, instance.config, __filename)) {
         return res.redirect('/admin/userap/login');
     }

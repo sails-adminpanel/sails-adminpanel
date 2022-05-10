@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const adminUtil_1 = require("../lib/adminUtil");
 let requestProcessor = require('../lib/requestProcessor');
-let fieldsHelper = require('../helper/fieldsHelper');
+const fieldsHelper_1 = require("../helper/fieldsHelper");
 async function list(req, res) {
     let instance = adminUtil_1.AdminUtil.findInstanceObject(req);
     if (!instance.model) {
@@ -26,7 +26,7 @@ async function list(req, res) {
     }
     let total = 0;
     let records = [];
-    let fields = fieldsHelper.getFields(req, instance, 'list');
+    let fields = fieldsHelper_1.FieldsHelper.getFields(req, instance, 'list');
     //Processing sorting
     //Fetch total records for page
     try {
@@ -37,7 +37,7 @@ async function list(req, res) {
         if (req.sort) {
             await query.sort(req.sort.key + ' ' + req.sort.order);
         }
-        fieldsHelper.getFieldsToPopulate(fields).forEach(function (val) {
+        fieldsHelper_1.FieldsHelper.getFieldsToPopulate(fields).forEach(function (val) {
             query.populate(val);
         });
         console.log('admin > list > page / limit ', page, instance.config.list.limit);
