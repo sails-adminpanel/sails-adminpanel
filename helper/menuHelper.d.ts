@@ -18,7 +18,7 @@ export declare class MenuHelper {
      *
      * @returns {string}
      */
-    static getBrandTitle(): any;
+    getBrandTitle(): any;
     /**
      * Check if global actions buttons added to action
      *
@@ -67,11 +67,11 @@ export declare class MenuHelper {
      *
      * @returns {Array}
      */
-    static getGroups(): any;
+    getGroups(): any;
     /**
      * Get list of instance menus that was not bound to groups
      *
      * @returns {Array}
      */
-    static getMenuItems(): any[];
+    getMenuItems(): any[];
 }

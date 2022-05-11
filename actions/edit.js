@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const adminUtil_1 = require("../lib/adminUtil");
-let request = require('../lib/requestProcessor');
+const requestProcessor_1 = require("../lib/requestProcessor");
 const fieldsHelper_1 = require("../helper/fieldsHelper");
 async function edit(req, res) {
     //Check id
@@ -34,7 +34,7 @@ async function edit(req, res) {
     let reloadNeeded = false;
     fields = await fieldsHelper_1.FieldsHelper.loadAssociations(fields);
     if (req.method.toUpperCase() === 'POST') {
-        let reqData = request.processRequest(req, fields);
+        let reqData = requestProcessor_1.RequestProcessor.processRequest(req, fields);
         let params = {};
         params[instance.config.identifierField || req._sails.config.adminpanel.identifierField] = req.param('id');
         for (let prop in reqData) {

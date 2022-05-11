@@ -217,7 +217,7 @@ export class FieldsHelper {
      */
     public static getFieldsToPopulate(fields) {
         let result = [];
-        fields.forEach(function (field, key) {
+        Object.entries<any>(fields).forEach(function ([key, field]) {
             if (field.config.type === 'association' || field.config.type === 'association-many') {
                 result.push(key);
             }

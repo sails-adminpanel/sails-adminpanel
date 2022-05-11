@@ -36,15 +36,15 @@ class MenuHelper {
      *
      * @returns {string}
      */
-    static getBrandTitle() {
-        if (!this.config.menu || !this.config.menu.brand) {
+    getBrandTitle() {
+        if (!MenuHelper.config.menu || !MenuHelper.config.menu.brand) {
             return 'Sails-adminpanel';
         }
-        if (typeof this.config.menu.brand === "string") {
-            return this.config.menu.brand;
+        if (typeof MenuHelper.config.menu.brand === "string") {
+            return MenuHelper.config.menu.brand;
         }
-        if (typeof this.config.menu.brand === "object" && typeof this.config.menu.brand.title === "string") {
-            return this.config.menu.brand.title;
+        if (typeof MenuHelper.config.menu.brand === "object" && typeof MenuHelper.config.menu.brand.title === "string") {
+            return MenuHelper.config.menu.brand.title;
         }
         return 'Sails-adminpanel';
     }
@@ -141,8 +141,8 @@ class MenuHelper {
      *
      * @returns {Array}
      */
-    static getGroups() {
-        let groups = this.config.menu.groups || [];
+    getGroups() {
+        let groups = MenuHelper.config.menu.groups || [];
         groups.forEach(function (group, idx) {
             if (!group.key)
                 return;
@@ -177,9 +177,10 @@ class MenuHelper {
      *
      * @returns {Array}
      */
-    static getMenuItems() {
+    getMenuItems() {
         let menus = [];
-        this.config.instances.forEach(function (val, key) {
+        console.log("MenuHelper.config", MenuHelper.config);
+        Object.entries(MenuHelper.config.instances).forEach(function ([key, val]) {
             if (val.menuGroup) {
                 return;
             }
@@ -199,8 +200,8 @@ class MenuHelper {
                 instanceName: key
             });
         });
-        if (this.config.menu.actions && this.config.menu.actions.length > 0) {
-            this.config.menu.actions.forEach(function (menu) {
+        if (MenuHelper.config.menu.actions && MenuHelper.config.menu.actions.length > 0) {
+            MenuHelper.config.menu.actions.forEach(function (menu) {
                 if (!menu.link || !menu.title || menu.menuGroup || menu.disabled) {
                     return;
                 }

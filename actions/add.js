@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const adminUtil_1 = require("../lib/adminUtil");
-let request = require('../lib/requestProcessor');
+const requestProcessor_1 = require("../lib/requestProcessor");
 const fieldsHelper_1 = require("../helper/fieldsHelper");
 async function add(req, res) {
     let instance = adminUtil_1.AdminUtil.findInstanceObject(req);
@@ -21,7 +21,7 @@ async function add(req, res) {
     let data = {}; //list of field values
     fields = await fieldsHelper_1.FieldsHelper.loadAssociations(fields);
     if (req.method.toUpperCase() === 'POST') {
-        let reqData = request.processRequest(req, fields);
+        let reqData = requestProcessor_1.RequestProcessor.processRequest(req, fields);
         for (let prop in reqData) {
             if (Number.isNaN(reqData[prop]) || reqData[prop] === undefined || reqData[prop] === null) {
                 delete reqData[prop];

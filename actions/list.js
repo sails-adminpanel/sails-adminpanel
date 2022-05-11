@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const adminUtil_1 = require("../lib/adminUtil");
-let requestProcessor = require('../lib/requestProcessor');
+const requestProcessor_1 = require("../lib/requestProcessor");
 const fieldsHelper_1 = require("../helper/fieldsHelper");
 async function list(req, res) {
     let instance = adminUtil_1.AdminUtil.findInstanceObject(req);
@@ -50,7 +50,7 @@ async function list(req, res) {
     }
     console.log("Fields: ", fields);
     res.viewAdmin({
-        requestProcessor: requestProcessor,
+        requestProcessor: requestProcessor_1.RequestProcessor,
         instance: instance,
         list: records,
         fields: fields,

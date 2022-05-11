@@ -30,9 +30,15 @@ class ConfigHelper {
     static getIdentifierField(modelOrName) {
         let config = sails.config.adminpanel;
         let instanceConfig;
-        Object.keys(config.instances);
-        if (config.identifierField != 'id' || !modelOrName) {
-            return config.identifierField;
+        Object.keys(config.instances).forEach((instanceName) => {
+            if (config.instances[instanceName].model === modelOrName) {
+                instanceConfig = config.instances[instanceName];
+            }
+        });
+        if (instanceConfig) {
+            if (instanceConfig.identifierField !== "id" || !modelOrName) {
+                return instanceConfig.identifierField;
+            }
         }
         let model;
         if (typeof modelOrName === "string") {
@@ -42,10 +48,10 @@ class ConfigHelper {
             model = modelOrName;
         }
         else {
-            return config.identifierField;
+            return instanceConfig.identifierField;
         }
         if (!model.definition) {
-            return config.identifierField;
+            return sails.models[instanceConfig.model].primaryKey;
         }
         let identifier;
         for (let [key, value] of Object.entries(model.definition)) {
@@ -53,7 +59,7 @@ class ConfigHelper {
                 identifier = key;
             }
         }
-        return identifier || config.identifierField;
+        return identifier || instanceConfig.identifierField;
     }
     /**
      * Checks if CSRF protection enabled in website

@@ -3,7 +3,7 @@ import _login from "../actions/login";
 
 let superAdmin = 'isAdminpanelSuperAdmin';
 
-module.exports = function bindAuthorization(sails) {
+module.exports = function bindAuthorization() {
     /**
      * Router
      */

@@ -21,6 +21,6 @@ export default function bindConfig() {
     sails.config.views.locals.adminpanel.config = sails.config.adminpanel;
     sails.config.views.locals.adminpanel.viewHelper = ViewsHelper;
     sails.config.views.locals.adminpanel.fieldsHelper = FieldsHelper;
-    sails.config.views.locals.adminpanel.menuHelper = MenuHelper;
+    sails.config.views.locals.adminpanel.menuHelper = new MenuHelper(sails.config.adminpanel);
     sails.config.views.locals.adminpanel.configHelper = ConfigHelper;
 };

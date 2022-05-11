@@ -39,15 +39,15 @@ export class MenuHelper {
      *
      * @returns {string}
      */
-    public static getBrandTitle() {
-        if (!this.config.menu || !this.config.menu.brand) {
+    public getBrandTitle() {
+        if (!MenuHelper.config.menu || !MenuHelper.config.menu.brand) {
             return 'Sails-adminpanel';
         }
-        if (typeof this.config.menu.brand === "string") {
-            return this.config.menu.brand;
+        if (typeof MenuHelper.config.menu.brand === "string") {
+            return MenuHelper.config.menu.brand;
         }
-        if (typeof this.config.menu.brand === "object" && typeof this.config.menu.brand.title === "string") {
-            return this.config.menu.brand.title;
+        if (typeof MenuHelper.config.menu.brand === "object" && typeof MenuHelper.config.menu.brand.title === "string") {
+            return MenuHelper.config.menu.brand.title;
         }
         return 'Sails-adminpanel';
     }
@@ -152,8 +152,8 @@ export class MenuHelper {
      *
      * @returns {Array}
      */
-    public static getGroups() {
-        let groups = this.config.menu.groups || [];
+    public getGroups() {
+        let groups = MenuHelper.config.menu.groups || [];
         groups.forEach(function(group, idx) {
             if (!group.key) return;
             // Clear menus to avoid data duplication
@@ -189,9 +189,10 @@ export class MenuHelper {
      *
      * @returns {Array}
      */
-    public static getMenuItems() {
+    public getMenuItems() {
         let menus = [];
-        this.config.instances.forEach(function(val, key) {
+        console.log("MenuHelper.config", MenuHelper.config)
+        Object.entries<any>(MenuHelper.config.instances).forEach(function([key, val]) {
             if (val.menuGroup) {
                 return;
             }
@@ -211,8 +212,8 @@ export class MenuHelper {
                 instanceName: key
             });
         });
-        if (this.config.menu.actions && this.config.menu.actions.length > 0) {
-            this.config.menu.actions.forEach(function(menu) {
+        if (MenuHelper.config.menu.actions && MenuHelper.config.menu.actions.length > 0) {
+            MenuHelper.config.menu.actions.forEach(function(menu) {
                 if (!menu.link || !menu.title || menu.menuGroup || menu.disabled) {
                     return;
                 }
