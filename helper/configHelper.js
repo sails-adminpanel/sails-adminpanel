@@ -38,10 +38,19 @@ module.exports = function(sails) {
             return sails.config.adminpanel
         },
         getIdentifierField: function(modelOrName) {
-            let instanceConfig =config.instances[modelOrName]
-            
-            if (instanceConfig.identifierField != 'id' || !modelOrName) {
-                return instanceConfig.identifierField;
+            let instanceConfig
+            Object.keys(config.instances).forEach((instanceName)=>{ 
+                if (config.instances[instanceName].model === modelOrName) {
+                    instanceConfig = config.instances[instanceName]
+                }
+                
+            })
+
+            console.log(`111`,instanceConfig, modelOrName, config)
+            if (instanceConfig) {
+                if (instanceConfig.identifierField != 'id' || !modelOrName) {
+                    return instanceConfig.identifierField;
+                }
             }
 
             var model;
@@ -53,7 +62,7 @@ module.exports = function(sails) {
                 return instanceConfig.identifierField;
             }
             if (!model.definition) {
-                return instanceConfig.identifierField;
+                return sails.models[instanceConfig.model].primaryKey;
             }
             var identifier = _.findKey(model.definition, _.find(model.definition, function(val, key) {
                 if (val.primaryKey) {
