@@ -1,17 +1,17 @@
 let flash = require('connect-flash');
-import * as bindAuthorization from './bindAuthorization'
+import * as bindAuthorization from './bindAuthorization';
 
-module.exports = function ToAfterHooksLoaded() {
+export default function ToAfterHooksLoaded() {
     sails.hooks.http.app.use(flash());
     return function afterHooksLoaded() {
         // Binding list of function for rendering
-        require('./bindResView')(sails);
+        require('./bindResView').default();
 
         // bind config for views
-        require('./bindConfig')(sails);
+        require('./bindConfig').default();
 
         //binding all routes.
-        require('./bindRoutes')(sails);
+        require('./bindRoutes').default();
 
         //binding authorization
         bindAuthorization();

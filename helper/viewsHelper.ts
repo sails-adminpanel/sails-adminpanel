@@ -5,7 +5,7 @@ export class ViewsHelper {
     /**
      * Base path for all views.
      */
-    private static BASE_VIEWS_PATH = path.join(__dirname, '../views/');
+    public static BASE_VIEWS_PATH = path.join(__dirname, '../views/');
 
 
     /**

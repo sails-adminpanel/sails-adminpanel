@@ -29,6 +29,8 @@ class ConfigHelper {
      */
     static getIdentifierField(modelOrName) {
         let config = sails.config.adminpanel;
+        let instanceConfig;
+        Object.keys(config.instances);
         if (config.identifierField != 'id' || !modelOrName) {
             return config.identifierField;
         }

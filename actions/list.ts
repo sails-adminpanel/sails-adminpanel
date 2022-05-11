@@ -1,5 +1,5 @@
 import { AdminUtil } from "../lib/adminUtil";
-let requestProcessor = require('../lib/requestProcessor');
+import { RequestProcessor } from "../lib/requestProcessor";
 import { FieldsHelper } from "../helper/fieldsHelper";
 
 export default async function list(req, res) {
@@ -59,7 +59,7 @@ export default async function list(req, res) {
 
     console.log("Fields: ", fields);
     res.viewAdmin({
-        requestProcessor: requestProcessor,
+        requestProcessor: RequestProcessor,
         instance: instance,
         list: records,
         fields: fields,

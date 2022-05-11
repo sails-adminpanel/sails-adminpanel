@@ -1,5 +1,5 @@
 import { AdminUtil } from "../lib/adminUtil";
-let request = require('../lib/requestProcessor');
+import { RequestProcessor } from "../lib/requestProcessor";
 import { FieldsHelper } from "../helper/fieldsHelper";
 
 export default async function add(req, res) {
@@ -27,7 +27,7 @@ export default async function add(req, res) {
     fields = await FieldsHelper.loadAssociations(fields);
 
     if (req.method.toUpperCase() === 'POST') {
-        let reqData = request.processRequest(req, fields);
+        let reqData = RequestProcessor.processRequest(req, fields);
 
         for (let prop in reqData) {
             if (Number.isNaN(reqData[prop]) || reqData[prop] === undefined || reqData[prop] === null) {

@@ -29,8 +29,17 @@ export class ConfigHelper {
      */
     public static getIdentifierField(modelOrName) {
         let config = sails.config.adminpanel;
-        if (config.identifierField != 'id' || !modelOrName) {
-            return config.identifierField;
+        let instanceConfig;
+        Object.keys(config.instances).forEach((instanceName) => {
+            if (config.instances[instanceName].model === modelOrName) {
+                instanceConfig = config.instances[instanceName]
+            }
+        })
+
+        if (instanceConfig) {
+            if (instanceConfig.identifierField !== "id" || !modelOrName) {
+                return instanceConfig.identifierField;
+            }
         }
 
         let model;
@@ -39,11 +48,11 @@ export class ConfigHelper {
         } else if (typeof modelOrName === "object" && typeof modelOrName.definition === "object") {
             model = modelOrName;
         } else {
-            return config.identifierField;
+            return instanceConfig.identifierField;
         }
 
         if (!model.definition) {
-            return config.identifierField;
+            return sails.models[instanceConfig.model].primaryKey;
         }
 
         let identifier;
@@ -52,7 +61,7 @@ export class ConfigHelper {
                 identifier = key
             }
         }
-        return identifier || config.identifierField;
+        return identifier || instanceConfig.identifierField;
     }
 
     /**

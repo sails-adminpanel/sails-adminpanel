@@ -7,7 +7,7 @@ module.exports = function bindAuthorization(sails) {
     /**
      * Router
      */
-    let _bindPolicies = require('../lib/bindPolicies')(sails);
+    let _bindPolicies = require('../lib/bindPolicies').default();
     let policies = sails.config.adminpanel.policies || '';
     let baseRoute = sails.config.adminpanel.routePrefix + '/:instance';
     sails.router.bind(baseRoute + '/login', _bindPolicies(policies, _login));

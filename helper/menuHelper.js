@@ -86,11 +86,13 @@ class MenuHelper {
      * @returns {Array}
      */
     static getGlobalActions(instanceConfig, action) {
-        action = action || 'list';
-        if (!this.hasGlobalActions(instanceConfig, action)) {
-            return [];
-        }
-        return instanceConfig[action].actions.global;
+        // TODO: fix this
+        // action = action || 'list';
+        // if (!this.hasGlobalActions(instanceConfig, action)) {
+        //     return [];
+        // }
+        // return instanceConfig[action].actions.global;
+        return;
     }
     /**
      * Get list of custom inline buttons for action
@@ -117,19 +119,22 @@ class MenuHelper {
      * @returns {string}
      */
     static replaceModelFields(url, model) {
-        // Check for model existence
-        if (!model) {
-            return url;
-        }
-        let words = _.words(url, /\:+[a-z\-_]*/gi);
-        // Replacing props
-        words.forEach(function (word) {
-            let variable = word.replace(':', '');
-            if (model && model[variable]) {
-                url = url.replace(word, model[variable]);
-            }
-        });
-        return url;
+        // TODO: fix this
+        // // Check for model existence
+        // if (!model) {
+        //     return url;
+        // }
+        // let words = _.words(url, /\:+[a-z\-_]*/gi);
+        // // Replacing props
+        // words.forEach(function(word) {
+        //     let variable = word.replace(':', '');
+        //     if (model && model[variable]) {
+        //         url = url.replace(word, model[variable]);
+        //     }
+        // });
+        //
+        // return url;
+        return;
     }
     /**
      * Will create a list of groups to show

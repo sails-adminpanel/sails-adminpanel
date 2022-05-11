@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.content = void 0;
-exports.content = {
+export declare const content: {
     /**
      * Default admin config
      */
@@ -9,47 +6,44 @@ exports.content = {
         /**
          * Default url prefix for admin panel
          */
-        routePrefix: '\/admin',
+        routePrefix: string;
         /**
          * Will set method how assets will be placed into project
          */
-        assets: 'copy',
+        assets: string;
         /**
          * Default path to views
          *
          * @type {?string}
          */
-        pathToViews: null,
+        pathToViews: any;
         /**
          * Name of model identifier field
          */
-        identifierField: 'id',
+        identifierField: string;
         /**
          * Default policy that will be used to check access
          */
-        policy: '',
+        policy: string;
         /**
          * Base menu configuration
          */
         menu: {
-            // Should admin panel brand be visible ?
-            brand: true,
-            // Menu groups
-            groups: [],
-            // List of additional actions
-            actions: []
-        },
+            brand: boolean;
+            groups: any[];
+            actions: any[];
+        };
         /**
          * List of admin pages
          */
-        instances: {},
+        instances: {};
         /**
          * List of custom actions
          */
-        actions: [],
+        actions: any[];
         /**
          * List of sections in head
          */
-        sections: []
-    }
+        sections: any[];
+    };
 };

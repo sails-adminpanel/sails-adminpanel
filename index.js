@@ -1,4 +1,5 @@
 'use strict';
+let { MenuHelper } = require('./helper/menuHelper');
 
 module.exports = function (sails) {
 
@@ -7,15 +8,15 @@ module.exports = function (sails) {
         /**
          * Creating default settings for hook
          */
-        defaults: require('./lib/defaults'),
+        defaults: require('./lib/defaults').content,
 
-        configure: require('./lib/configure')(sails),
+        configure: require('./lib/configure').default(),
 
-        initialize: require('./lib/initialize').default(sails),
+        initialize: require('./lib/initialize').default(),
 
         addMenuItem: function (link, label, icon, group) {
             if (!link)
-                throw 'first argumant is required';
+                throw 'first argument is required';
 
             sails.config.adminpanel.menu = sails.config.adminpanel.menu || {};
             sails.config.adminpanel.menu.actions = sails.config.adminpanel.menu.actions || [];
@@ -26,12 +27,12 @@ module.exports = function (sails) {
                 menuGroup: group
             });
 
-            sails.config.views.locals.adminpanel.menuHelper = require('./helper/menuHelper')(sails.config.adminpanel);
+            sails.config.views.locals.adminpanel.menuHelper = new MenuHelper(sails.config.adminpanel);
         },
 
         addGroup: function (key, title) {
             if (!key)
-                throw 'first argumant is required';
+                throw 'first argument is required';
 
             sails.config.adminpanel.menu = sails.config.adminpanel.menu || {};
             sails.config.adminpanel.menu.groups = sails.config.adminpanel.menu.groups || [];

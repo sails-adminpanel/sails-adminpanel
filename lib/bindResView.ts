@@ -1,8 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const viewsHelper_1 = require("../helper/viewsHelper");
-function bindResView() {
+import { ViewsHelper } from "../helper/viewsHelper";
+
+export default function bindResView() {
+
     let bindResFunctions = function (req, res, next) {
+
         /**
          * Guess view name by request
          *
@@ -13,6 +14,7 @@ function bindResView() {
             if (!req || !req.route || !req.route.path || typeof req.route.path !== "string") {
                 return '';
             }
+
             let routeSplit = req.route.path.split('/');
             let viewName = routeSplit.pop();
             // :instance = list
@@ -25,13 +27,15 @@ function bindResView() {
             }
             return viewName;
         };
+
         /**
          * Show admin panel view.
          */
-        res.viewAdmin = function ( /* specifiedPath, locals, cb_view */) {
+        res.viewAdmin = function (/* specifiedPath, locals, cb_view */) {
             let specifiedPath = arguments[0];
             let locals = arguments[1];
             let cb_view = arguments[2];
+
             if (typeof arguments[0] === "object") {
                 locals = arguments[0];
             }
@@ -44,26 +48,28 @@ function bindResView() {
             // Set local layout to view engine
             if (sails.config.views.extension == 'ejs') {
                 if (!locals) {
-                    locals = { ...sails.config.views.locals };
+                    locals = {...sails.config.views.locals};
                 }
                 locals.layout = false;
             }
+
             // set theme for admin panel
             if (!locals) {
                 locals = {};
             }
             locals.theme = sails.config.adminpanel.theme || 'light';
             locals.button = sails.config.adminpanel.button || 'solid';
-            return res.view(viewsHelper_1.ViewsHelper.getViewPath(specifiedPath), locals, cb_view);
+
+            return res.view(ViewsHelper.getViewPath(specifiedPath), locals, cb_view);
         };
+
         next();
     };
+
     // Bind to /admin
     console.log('admin > route bind > ', sails.config.adminpanel.routePrefix);
     sails.router.bind(sails.config.adminpanel.routePrefix, bindResFunctions);
     // Bind to /admin/*
     sails.router.bind(sails.config.adminpanel.routePrefix + '\/*', bindResFunctions);
-    sails.emit("adminpanel:viewadmin:loaded");
-}
-exports.default = bindResView;
-;
+    sails.emit("adminpanel:viewadmin:loaded")
+};

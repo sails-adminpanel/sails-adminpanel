@@ -1,18 +1,14 @@
-'use strict';
-
-var _ = require('lodash');
-var fs = require('fs');
-var viewsHelper = require('../helper/viewsHelper');
+import * as fs from 'fs';
+import { ViewsHelper } from "../helper/viewsHelper";
 import * as path from "path";
 import bindAssets from "./bindAssets"
 
-
-export default function ToInitialize(sails) {
+export default function ToInitialize() {
 
     /**
      * List of hooks that required for adminpanel to work
      */
-    var requiredHooks = [
+    let requiredHooks: string[] = [
         'blueprints',
         'controllers',
         'http',
@@ -21,7 +17,7 @@ export default function ToInitialize(sails) {
         'views'
     ];
 
-    return  async function initialize(cb) {
+    return async function initialize(cb) {
 
         // If disabled. Do not load anything
         if (!sails.config.adminpanel) {
@@ -34,14 +30,14 @@ export default function ToInitialize(sails) {
         // If policies hook is enabled, also wait until policies are bound.
         // If orm hook is enabled, also wait until models are known.
         // If controllers hook is enabled, also wait until controllers are known.
-        var eventsToWaitFor = [];
+        let eventsToWaitFor = [];
         eventsToWaitFor.push('router:after');
 
         try {
             /**
              * Check hooks availability
              */
-            _.forEach(requiredHooks, function (hook) {
+            requiredHooks.forEach(function(hook) {
                 // if (!sails.hooks[hook]) {
                 //     throw new Error('Cannot use `adminpanel` hook without the `' + hook + '` hook.');
                 // }
@@ -54,20 +50,20 @@ export default function ToInitialize(sails) {
         }
 
         //Check views engine and check if folder with templates exist
-        if (!fs.existsSync(viewsHelper.getPathToEngine(sails.config.views.extension))) {
+        if (!fs.existsSync(ViewsHelper.getPathToEngine(sails.config.views.extension))) {
             return cb(new Error('For now adminpanel hook could work only with Pug template engine.'));
         }
 
-        var initAuth = require('./initializeAuthorization')(sails, cb);
+        require('./initializeAuthorization').default(cb);
 
         // sails.after(eventsToWaitFor, require('../lib/afterHooksLoaded')(sails));
-        sails.on("lifted", require('../lib/afterHooksLoaded')(sails));
+        sails.on("lifted", require('../lib/afterHooksLoaded').default());
 
-        sails.config.adminpanel.templateRootPath = viewsHelper.BASE_VIEWS_PATH;
-        sails.config.adminpanel.rootPath = path.resolve(__dirname+"/..")
+        sails.config.adminpanel.templateRootPath = ViewsHelper.BASE_VIEWS_PATH;
+        sails.config.adminpanel.rootPath = path.resolve(__dirname + "/..")
 
         // Bind assets
-        await bindAssets(sails);
+        await bindAssets();
         cb();
     }
 };

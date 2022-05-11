@@ -1,8 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const path = require("path");
+import * as path from "path";
+
 let buildDictionary = require('sails-build-dictionary');
-function initializeAuthorization(cb) {
+
+export default function initializeAuthorization(cb) {
     /**
      * Model
      */
@@ -24,17 +24,20 @@ function initializeAuthorization(cb) {
         }, function (err, supplements) {
             if (err)
                 return cb(err);
+
             // console.log('admin > init > ', models, supplements, sails.models, sails.hooks.orm.models);
             // var finalModels = {...models, ...supplements};
             // var temp = sails.models || {};
             // sails.models = {...sails.models, ...models, ...supplements};
-            let finalModels = { ...models, ...supplements };
+
+            let finalModels = {...models, ...supplements};
+
             sails.hooks.orm.models = Object.assign(finalModels || {}, sails.hooks.orm.models || {});
             sails.models = Object.assign(finalModels || {}, sails.models || {});
+
             // console.log('sails.hooks.orm.models > ', sails.hooks.orm.models);
             // console.log('sails.models > ', sails.models);
+
         });
     });
-}
-exports.default = initializeAuthorization;
-;
+};

@@ -1,1 +1,1 @@
-export default function upload(req: any, res: any): any;
+export default function upload(req: any, res: any): void;

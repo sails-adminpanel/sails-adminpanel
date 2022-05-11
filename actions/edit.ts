@@ -1,5 +1,5 @@
 import { AdminUtil } from "../lib/adminUtil";
-let request = require('../lib/requestProcessor');
+import { RequestProcessor } from "../lib/requestProcessor";
 import { FieldsHelper } from "../helper/fieldsHelper";
 
 export default async function edit(req, res) {
@@ -40,7 +40,7 @@ export default async function edit(req, res) {
     fields = await FieldsHelper.loadAssociations(fields);
 
     if (req.method.toUpperCase() === 'POST') {
-        let reqData = request.processRequest(req, fields);
+        let reqData = RequestProcessor.processRequest(req, fields);
         let params = {};
         params[instance.config.identifierField || req._sails.config.adminpanel.identifierField] = req.param('id');
 

@@ -1,17 +1,17 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-function ToConfigure() {
+export default function ToConfigure() {
+
     return function configure() {
         // Check for disable admin panel
         if (!sails.config.adminpanel) {
             return;
         }
         // Add hooks here
-        sails.config.adminpanel.hooks = [];
-        sails.config.adminpanel.styles = [];
-        sails.config.adminpanel.script = {};
-        sails.config.adminpanel.script.header = [];
-        sails.config.adminpanel.script.footer = [];
+        sails.config.adminpanel.hooks=[];
+        sails.config.adminpanel.styles=[];
+        sails.config.adminpanel.script={};
+        sails.config.adminpanel.script.header=[];
+        sails.config.adminpanel.script.footer=[];
+
         //recheck route prefix
         sails.config.adminpanel.routePrefix = sails.config.adminpanel.routePrefix || '/admin';
         //check and adding base slash
@@ -19,6 +19,4 @@ function ToConfigure() {
             sails.config.adminpanel.routePrefix = '/' + sails.config.adminpanel.routePrefix;
         }
     };
-}
-exports.default = ToConfigure;
-;
+};

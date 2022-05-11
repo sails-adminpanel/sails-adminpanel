@@ -1,14 +1,15 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-function bindPolicies() {
+export default function bindPolicies() {
+
     return function (policies, action) {
         if (typeof policies === "function" && !action) {
             action = policies;
             policies = '';
         }
+
         if (!policies) {
             return action;
         }
+
         let result = [];
         /**
          * Bind policy to action
@@ -23,15 +24,13 @@ function bindPolicies() {
             //Check for policy existence
             if (!sails.hooks.policies.middleware[policy.toLowerCase()]) {
                 sails.log.error('AdminPanel: No policy exist: ' + policy);
-            }
-            else {
+            } else {
                 result.push(sails.hooks.policies.middleware[policy.toLowerCase()]);
             }
         };
         if (Array.isArray(policies)) {
             policies.forEach(bindPolicy);
-        }
-        else {
+        } else {
             bindPolicy(policies);
         }
         if (result.length === 0) {
@@ -40,6 +39,4 @@ function bindPolicies() {
         result.push(action);
         return result;
     };
-}
-exports.default = bindPolicies;
-;
+};
