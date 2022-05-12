@@ -172,19 +172,19 @@ export class FieldsHelper {
          */
         let loadAssoc = async function(key) {
             if (fields[key].config.type !== 'association' && fields[key].config.type !== 'association-many') {
-                throw new Error("FieldsHelper > Invalid config type when loading associations");
+                return;
             }
             fields[key].config.records = [];
 
             let modelName = fields[key].model.model || fields[key].model.collection;
             if (!modelName) {
                 sails.log.error('No model found for field: ', fields[key]);
-                throw new Error("FieldsHelper > Modelname not found");
+                return;
             }
 
             let Model = AdminUtil.getModel(modelName);
             if (!Model) {
-                throw new Error("FieldsHelper > Model not found");
+                return;
             }
 
             let list;

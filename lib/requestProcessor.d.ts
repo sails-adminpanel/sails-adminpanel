@@ -40,5 +40,5 @@ export declare class RequestProcessor {
      * @see AdminUtil#getFields to know what data should be passed into fields
      * @returns {Object} List of processed values from request
      */
-    static processRequest(req: any, fields: any): Promise<{}>;
+    static processRequest(req: any, fields: any): {};
 }

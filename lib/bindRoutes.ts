@@ -1,5 +1,6 @@
 import _dashboard from "../actions/dashboard";
 import _welcome from "../actions/welcome";
+import _list from "../actions/list";
 import _listJson from "../actions/listJson";
 import _edit from "../actions/edit";
 import _add from "../actions/add";
@@ -23,6 +24,7 @@ export default function bindRoutes() {
     /**
      * List of records
      */
+    sails.router.bind(baseRoute, _bindPolicies(policies, _list));
     sails.router.bind(baseRoute+"/json", _bindPolicies(policies, _listJson));
     /**
      * Create new record
