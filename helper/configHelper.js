@@ -34,7 +34,7 @@ class ConfigHelper {
         let config = sails.config.adminpanel;
         let instanceConfig;
         Object.keys(config.instances).forEach((instanceName) => {
-            if ((config.instances[instanceName].model).toLowerCase() === modelName.toLowerCase()) {
+            if (config.instances[instanceName].model === modelName.toLowerCase()) {
                 instanceConfig = config.instances[instanceName];
             }
         });
