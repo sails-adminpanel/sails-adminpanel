@@ -38,7 +38,9 @@ export default async function add(req, res) {
                 try {
                     reqData[prop] = JSON.parse(reqData[prop]);
                 } catch(e){
-                    sails.log.error(e);
+                    if (typeof reqData[prop] === "string" && reqData[prop].replace(/(\r\n|\n|\r|\s{2,})/gm, "")) {
+                        sails.log.error(e);
+                    }
                 }
             }
         }
@@ -50,10 +52,10 @@ export default async function add(req, res) {
 
         try {
             let record = await instance.model.create(reqData).fetch();
-            sails.log(`A new record was created: ${record}`);
+            sails.log(`A new record was created: `, record);
             req.flash('adminSuccess', 'Your record was created !');
         } catch (e) {
-            req._sails.log.error(e);
+            sails.log.error(e);
             req.flash('adminError', e.message || 'Something went wrong...');
             data = reqData;
         }

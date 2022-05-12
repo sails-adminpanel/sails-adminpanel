@@ -132,7 +132,10 @@ export class RequestProcessor {
                 try {
                     postParams[key] = JSON.parse(postParams[key]);
                 } catch (error) {
-                    sails.log.error("Adminpanel > processRequest: json parse error", error)
+                    // show error only when string and when string is not empty
+                    if (typeof postParams[key] === "string" && postParams[key].replace(/(\r\n|\n|\r|\s{2,})/gm, "")) {
+                        sails.log.error(`Adminpanel > processRequest: json parse error when parsing ${postParams[key]}`, error)
+                    }
                 }
             }
 
@@ -142,7 +145,7 @@ export class RequestProcessor {
             }
         }
 
-        // Hook for seting boolean vars to false.
+        // Hook for setting boolean vars to false.
         // HTTP wouldn't send data here
         for (let key in booleanFields) {
             if (!postParams[key]) {

@@ -53,7 +53,9 @@ export default async function edit(req, res) {
                 try {
                     reqData[prop] = JSON.parse(reqData[prop]);
                 } catch (e) {
-                    sails.log.error(e);
+                    if (typeof reqData[prop] === "string" && reqData[prop].replace(/(\r\n|\n|\r|\s{2,})/gm, "")) {
+                        sails.log.error(JSON.stringify(reqData[prop]), e);
+                    }
                 }
             }
         }
@@ -65,7 +67,7 @@ export default async function edit(req, res) {
 
         try {
             let newRecord = await instance.model.update(params, reqData).fetch();
-            sails.log(`Record was updated: ${newRecord}`);
+            sails.log(`Record was updated: `, newRecord);
             req.flash('adminSuccess', 'Your record was updated !');
             reloadNeeded = true;
         } catch (e) {
