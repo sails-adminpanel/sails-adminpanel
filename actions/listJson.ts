@@ -21,7 +21,9 @@ export default async function listJson(req, res) {
 
     let query;
     try {
-        query = await instance.model.find();
+        // adminpanel design do not support list of more than 20000 lines per request
+        // !TODO take off this limit
+        query = await instance.model.find().limit(20000);
     } catch (e) {
         sails.log.error(e);
     }
@@ -30,7 +32,7 @@ export default async function listJson(req, res) {
         query.populate(val);
     });
 
-    records = await waterlineExec(query);
+    records = query;
 
     let identifierField = ConfigHelper.getIdentifierField(instance.config.model);
     let keyFields = Object.keys(fields);
@@ -79,13 +81,3 @@ export default async function listJson(req, res) {
         data: result
     });
 };
-
-
-async function waterlineExec(query) {
-    return new Promise((resolve, reject) => {
-        query.exec(function(err, records) {
-            if (err) reject(err);
-            resolve(records)
-        });
-      });
-}

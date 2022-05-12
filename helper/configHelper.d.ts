@@ -17,10 +17,10 @@ export declare class ConfigHelper {
      *
      * **Warning** If you will pass record - method will return 'id'
      *
-     * @param {Object|string=} [model]
      * @returns {string}
+     * @param modelName
      */
-    static getIdentifierField(modelOrName: any): any;
+    static getIdentifierField(modelName: any): any;
     /**
      * Checks if CSRF protection enabled in website
      *

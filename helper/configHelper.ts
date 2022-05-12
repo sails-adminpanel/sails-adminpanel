@@ -24,44 +24,30 @@ export class ConfigHelper {
      *
      * **Warning** If you will pass record - method will return 'id'
      *
-     * @param {Object|string=} [model]
      * @returns {string}
+     * @param modelName
      */
-    public static getIdentifierField(modelOrName) {
+    public static getIdentifierField(modelName) {
+
+        if (!modelName) {
+            throw new Error("Model name is not defined")
+        }
+
         let config = sails.config.adminpanel;
         let instanceConfig;
         Object.keys(config.instances).forEach((instanceName) => {
-            if (config.instances[instanceName].model === modelOrName) {
+            if ((config.instances[instanceName].model).toLowerCase() === modelName.toLowerCase()) {
                 instanceConfig = config.instances[instanceName]
             }
         })
 
-        if (instanceConfig) {
-            if (instanceConfig.identifierField !== "id" || !modelOrName) {
-                return instanceConfig.identifierField;
-            }
-        }
-
-        let model;
-        if (typeof modelOrName === "string") {
-            model = sails.models[modelOrName.toLowerCase()];
-        } else if (typeof modelOrName === "object" && typeof modelOrName.definition === "object") {
-            model = modelOrName;
-        } else {
+        if (instanceConfig && instanceConfig.identifierField) {
             return instanceConfig.identifierField;
+        } else if (sails.models[modelName.toLowerCase()].primaryKey) {
+            return sails.models[modelName.toLowerCase()].primaryKey
+        } else {
+            throw new Error("ConfigHelper > Identifier field was not found")
         }
-
-        if (!model.definition) {
-            return sails.models[instanceConfig.model].primaryKey;
-        }
-
-        let identifier;
-        for (let [key, value] of Object.entries<any>(model.definition)) {
-            if (value.primaryKey) {
-                identifier = key
-            }
-        }
-        return identifier || instanceConfig.identifierField;
     }
 
     /**

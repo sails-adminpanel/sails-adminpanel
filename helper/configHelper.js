@@ -24,42 +24,29 @@ class ConfigHelper {
      *
      * **Warning** If you will pass record - method will return 'id'
      *
-     * @param {Object|string=} [model]
      * @returns {string}
+     * @param modelName
      */
-    static getIdentifierField(modelOrName) {
+    static getIdentifierField(modelName) {
+        if (!modelName) {
+            throw new Error("Model name is not defined");
+        }
         let config = sails.config.adminpanel;
         let instanceConfig;
         Object.keys(config.instances).forEach((instanceName) => {
-            if (config.instances[instanceName].model === modelOrName) {
+            if ((config.instances[instanceName].model).toLowerCase() === modelName.toLowerCase()) {
                 instanceConfig = config.instances[instanceName];
             }
         });
-        if (instanceConfig) {
-            if (instanceConfig.identifierField !== "id" || !modelOrName) {
-                return instanceConfig.identifierField;
-            }
-        }
-        let model;
-        if (typeof modelOrName === "string") {
-            model = sails.models[modelOrName.toLowerCase()];
-        }
-        else if (typeof modelOrName === "object" && typeof modelOrName.definition === "object") {
-            model = modelOrName;
-        }
-        else {
+        if (instanceConfig && instanceConfig.identifierField) {
             return instanceConfig.identifierField;
         }
-        if (!model.definition) {
-            return sails.models[instanceConfig.model].primaryKey;
+        else if (sails.models[modelName.toLowerCase()].primaryKey) {
+            return sails.models[modelName.toLowerCase()].primaryKey;
         }
-        let identifier;
-        for (let [key, value] of Object.entries(model.definition)) {
-            if (value.primaryKey) {
-                identifier = key;
-            }
+        else {
+            throw new Error("ConfigHelper > Identifier field was not found");
         }
-        return identifier || instanceConfig.identifierField;
     }
     /**
      * Checks if CSRF protection enabled in website

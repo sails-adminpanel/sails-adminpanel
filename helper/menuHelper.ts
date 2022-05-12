@@ -59,7 +59,7 @@ export class MenuHelper {
      * @param {string=} [action] Defaults to `list`
      * @returns {boolean}
      */
-    public static hasGlobalActions(instanceConfig, action) {
+    public hasGlobalActions(instanceConfig, action) {
         action = action || 'list';
         if (!instanceConfig[action] || !instanceConfig[action].actions || !instanceConfig[action].actions.global) {
             return false;
@@ -76,7 +76,7 @@ export class MenuHelper {
      * @param {string=} [action] Defaults to `list`
      * @returns {boolean}
      */
-    public static hasInlineActions(instanceConfig, action) {
+    public hasInlineActions(instanceConfig, action) {
         action = action || 'list';
         if (!instanceConfig[action] || !instanceConfig[action].actions || !instanceConfig[action].actions.inline) {
             return false;
@@ -110,7 +110,7 @@ export class MenuHelper {
      * @param {string=} [action]
      * @returns {Array}
      */
-    public static getInlineActions(instanceConfig, action) {
+    public getInlineActions(instanceConfig, action) {
         action = action || 'list';
         if (!this.hasInlineActions(instanceConfig, action)) {
             return [];
@@ -191,7 +191,6 @@ export class MenuHelper {
      */
     public getMenuItems() {
         let menus = [];
-        console.log("MenuHelper.config", MenuHelper.config)
         Object.entries<any>(MenuHelper.config.instances).forEach(function([key, val]) {
             if (val.menuGroup) {
                 return;

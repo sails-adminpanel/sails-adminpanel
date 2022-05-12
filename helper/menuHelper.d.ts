@@ -26,7 +26,7 @@ export declare class MenuHelper {
      * @param {string=} [action] Defaults to `list`
      * @returns {boolean}
      */
-    static hasGlobalActions(instanceConfig: any, action: any): boolean;
+    hasGlobalActions(instanceConfig: any, action: any): boolean;
     /**
      * Check if inline actions buttons added to action
      *
@@ -34,7 +34,7 @@ export declare class MenuHelper {
      * @param {string=} [action] Defaults to `list`
      * @returns {boolean}
      */
-    static hasInlineActions(instanceConfig: any, action: any): boolean;
+    hasInlineActions(instanceConfig: any, action: any): boolean;
     /**
      * Get list of custom global buttons for action
      *
@@ -50,7 +50,7 @@ export declare class MenuHelper {
      * @param {string=} [action]
      * @returns {Array}
      */
-    static getInlineActions(instanceConfig: any, action: any): any;
+    getInlineActions(instanceConfig: any, action: any): any;
     /**
      * Replace fields in given URL and binds to model fields.
      *

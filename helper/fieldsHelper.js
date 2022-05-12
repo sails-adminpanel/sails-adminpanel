@@ -268,7 +268,7 @@ class FieldsHelper {
          * @param {string} key
          * @private
          */
-        let _prepareField = function (modelField, key) {
+        let _prepareField = function ([key, modelField]) {
             /**
              * Checks for short type in waterline:
              * fieldName: 'string'
@@ -335,7 +335,7 @@ class FieldsHelper {
         };
         // creating result
         let result = {};
-        modelAttributes.forEach(_prepareField);
+        Object.entries(modelAttributes).forEach(_prepareField);
         return result;
     }
 }
