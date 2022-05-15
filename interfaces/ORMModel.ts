@@ -4,12 +4,8 @@ import {Callback} from "waterline";
  * Описывает ORM представление
  */
 
-type CreateDeleteBuilder = {
+type CRUDBuilder = {
   fetch(): Promise<any>;
-};
-
-type UpdateBuilder = {
-  fetch(): Promise<any>[];
 };
 
 type QueryBuilder = {
@@ -29,23 +25,20 @@ type QueryBuilder = {
   meta(options: any): QueryBuilder;
 };
 
-export interface ORMModelData {
-  [key: string]: string | boolean | number | object
-}
-
 export default interface ORMModel {
-  create?(params: any): CreateDeleteBuilder;
-  create?(params: any[]): CreateDeleteBuilder[];
+  create?(params: any): CRUDBuilder;
+  create?(params: any[]): CRUDBuilder;
 
   find?(criteria?: any): QueryBuilder;
   findOne?(criteria?: any): QueryBuilder;
   findOrCreate?(criteria?: any, values?: any): QueryBuilder;
 
-  update?(criteria: any, changes: any): UpdateBuilder[];
-  update?(criteria: any, changes: any[]): UpdateBuilder[];
+  update?(criteria: any, changes: any): CRUDBuilder;
+  update?(criteria: any, changes: any[]): CRUDBuilder;
 
-  destroy?(criteria: any): CreateDeleteBuilder[];
-  destroy?(criteria: any[]): CreateDeleteBuilder[];
+  destroy?(criteria: any): CRUDBuilder;
+  destroy?(criteria: any[]): CRUDBuilder;
+  destroyOne?(criteria: any[]): CRUDBuilder;
 
   count?(criteria?: any): number;
   count?(criteria: any[]): number;

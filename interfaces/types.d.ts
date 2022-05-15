@@ -21,8 +21,8 @@ export interface AdminpanelConfig {
         footer: string[]
     }
     welcome?: {
-        title: string
-        text: string
+        title?: string
+        text?: string
     }
 }
 

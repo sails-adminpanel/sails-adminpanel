@@ -3,11 +3,8 @@ import { Callback } from "waterline";
 /**
  * Описывает ORM представление
  */
-declare type CreateDeleteBuilder = {
+declare type CRUDBuilder = {
     fetch(): Promise<any>;
-};
-declare type UpdateBuilder = {
-    fetch(): Promise<any>[];
 };
 declare type QueryBuilder = {
     where(condition: any): QueryBuilder;
@@ -32,19 +29,17 @@ declare type QueryBuilder = {
     average(attribute: string): QueryBuilder;
     meta(options: any): QueryBuilder;
 };
-export interface ORMModelData {
-    [key: string]: string | boolean | number | object;
-}
 export default interface ORMModel {
-    create?(params: any): CreateDeleteBuilder;
-    create?(params: any[]): CreateDeleteBuilder[];
+    create?(params: any): CRUDBuilder;
+    create?(params: any[]): CRUDBuilder;
     find?(criteria?: any): QueryBuilder;
     findOne?(criteria?: any): QueryBuilder;
     findOrCreate?(criteria?: any, values?: any): QueryBuilder;
-    update?(criteria: any, changes: any): UpdateBuilder[];
-    update?(criteria: any, changes: any[]): UpdateBuilder[];
-    destroy?(criteria: any): CreateDeleteBuilder[];
-    destroy?(criteria: any[]): CreateDeleteBuilder[];
+    update?(criteria: any, changes: any): CRUDBuilder;
+    update?(criteria: any, changes: any[]): CRUDBuilder;
+    destroy?(criteria: any): CRUDBuilder;
+    destroy?(criteria: any[]): CRUDBuilder;
+    destroyOne?(criteria: any[]): CRUDBuilder;
     count?(criteria?: any): number;
     count?(criteria: any[]): number;
     query(sqlQuery: string, cb: Callback<any>): void;
