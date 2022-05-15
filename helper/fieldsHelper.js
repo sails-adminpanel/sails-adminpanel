@@ -109,7 +109,7 @@ class FieldsHelper {
                 title: config
             };
         }
-        //check for object natation
+        //check for object notation
         if (typeof config === "object") {
             // make required checks
             if (!config.key) {

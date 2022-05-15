@@ -53,8 +53,9 @@ async function edit(req, res) {
             }
         }
         // callback before save instance
-        if (typeof instance.config.edit.instanceModifier === "function") {
-            reqData = instance.config.edit.instanceModifier(reqData);
+        let instanceEdit = instance.config.edit;
+        if (typeof instanceEdit.instanceModifier === "function") {
+            reqData = instanceEdit.instanceModifier(reqData);
         }
         try {
             let newRecord = await instance.model.update(params, reqData).fetch();

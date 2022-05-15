@@ -1,6 +1,7 @@
 import { AdminUtil } from "../lib/adminUtil";
 import { RequestProcessor } from "../lib/requestProcessor";
 import { FieldsHelper } from "../helper/fieldsHelper";
+import {CreateUpdateConfig} from "../interfaces/types";
 
 export default async function add(req, res) {
     let instance = AdminUtil.findInstanceObject(req);
@@ -46,8 +47,9 @@ export default async function add(req, res) {
         }
 
         // callback before save instance
-        if (typeof instance.config.add.instanceModifier === "function") {
-            reqData = instance.config.edit.instanceModifier(reqData);
+        let instanceAdd = instance.config.add as CreateUpdateConfig;
+        if (typeof instanceAdd.instanceModifier === "function") {
+            reqData = instanceAdd.instanceModifier(reqData);
         }
 
         try {

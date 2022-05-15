@@ -10,11 +10,6 @@ export const content = {
         routePrefix: '\/admin',
 
         /**
-         * Will set method how assets will be placed into project
-         */
-        assets: 'copy',
-
-        /**
          * Default path to views
          *
          * @type {?string}
@@ -47,11 +42,6 @@ export const content = {
          * List of admin pages
          */
         instances: {},
-
-        /**
-         * List of custom actions
-         */
-        actions: [],
 
         /**
          * List of sections in head

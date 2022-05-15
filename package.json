@@ -16,6 +16,7 @@
   "description": "Basic adminpanel for Sails 1x",
   "devDependencies": {
     "@42pub/typed-sails": "^1.0.0",
+    "@types/waterline": "^0.13.4",
     "@types/chai": "^4.3.0",
     "@types/express": "^4.17.7",
     "@types/mocha": "^9.0.0",

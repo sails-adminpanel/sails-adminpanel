@@ -5,9 +5,9 @@ export default function ToConfigure() {
         if (!sails.config.adminpanel) {
             return;
         }
-        // Add hooks here
-        sails.config.adminpanel.hooks=[];
+        // !TODO add styles render in ejs
         sails.config.adminpanel.styles=[];
+        // !TODO add scripts
         sails.config.adminpanel.script={};
         sails.config.adminpanel.script.header=[];
         sails.config.adminpanel.script.footer=[];

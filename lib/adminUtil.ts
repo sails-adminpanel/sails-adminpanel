@@ -1,4 +1,5 @@
-import {Instance} from "../interfaces/types";
+import {Instance, InstanceConfig} from "../interfaces/types";
+import ORMModel from "../interfaces/ORMModel";
 
 export class AdminUtil {
 
@@ -91,7 +92,7 @@ export class AdminUtil {
      * @param {string} name
      * @returns {?Model}
      */
-    public static getModel(name: string) {
+    public static getModel(name: string): ORMModel {
         //Getting model
         // console.log('admin > model > ', sails.models);
         let Model = sails.models[name.toLowerCase()];
@@ -112,7 +113,7 @@ export class AdminUtil {
      * @param {Request} req
      * @returns {?string}
      */
-    public static findInstanceName(req) {
+    public static findInstanceName(req): string {
       if (!req.param('instance')) {
         return null;
       }
@@ -126,7 +127,7 @@ export class AdminUtil {
      * @param {String} instanceName
      * @returns {?Object}
      */
-    public static findInstanceConfig(req, instanceName) {
+    public static findInstanceConfig(req, instanceName): InstanceConfig {
         if (!this.config().instances || !this.config().instances[instanceName]) {
             req._sails.log.error('No such route exists');
             return null;
@@ -183,7 +184,7 @@ export class AdminUtil {
      * @param {Object} instanceConfig
      * @returns {?Model}
      */
-    public static findModel(req, instanceConfig) {
+    public static findModel(req, instanceConfig): ORMModel {
         if (!this._isValidInstanceConfig(instanceConfig)) {
             return null;
         }
@@ -208,12 +209,16 @@ export class AdminUtil {
      * @param req
      * @returns {Object}
      */
-    public static findInstanceObject(req) {
-        let instance: Instance = {};
-        instance.name = this.findInstanceName(req);
-        instance.config = this.findInstanceConfig(req, instance.name);
-        instance.model = this.findModel(req, instance.config);
-        instance.uri = this.config().routePrefix + '/' + instance.name;
-        return instance;
+    public static findInstanceObject(req): Instance {
+        let instanceName = this.findInstanceName(req);
+        let instanceConfig = this.findInstanceConfig(req, instanceName);
+        let instanceModel = this.findModel(req, instanceConfig);
+        let instanceUri = this.config().routePrefix + '/' + instanceName;
+        return {
+            name: instanceName,
+            config: instanceConfig,
+            model: instanceModel,
+            uri: instanceUri
+        };
     }
 }

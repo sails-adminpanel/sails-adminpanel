@@ -1,7 +1,9 @@
+import { AdminpanelConfig } from "../interfaces/types";
+
 export class ConfigHelper {
 
-    public static getConfig() {
-        return sails.config.adminpanel
+    public static getConfig(): AdminpanelConfig {
+        return sails.config.adminpanel;
     }
 
     /**
@@ -11,7 +13,7 @@ export class ConfigHelper {
      * @param {Object|string=} modelOrName
      * @returns {boolean}
      */
-    public static isId(field, modelOrName) {
+    public static isId(field, modelOrName): boolean {
         return (field.config.key == this.getIdentifierField(modelOrName));
     }
 

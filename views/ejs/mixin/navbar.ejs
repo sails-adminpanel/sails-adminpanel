@@ -2,22 +2,6 @@
   <section class="sidenav-content">
     <section class="nav-group">
       <% include sections %>
-
-      <!--     TODO: Нужно проверить что это  -->
-      <% adminpanel.menuHelper.getGroups().forEach(function(group) { %>
-      <menu-collapse>
-        <div class="header"><%= group.title || "Dropdown" %></div>
-        <div>
-          <% group.menues.forEach(function(menuItem) { %>
-          <admin-menu-item href="<%= menuItem.link %>">
-            <%= menuItem.title %> <% if(menuItem.icon) { %>
-            <clr-icon shape="<%= menuItem.icon %>"></clr-icon>
-            <% }%>
-          </admin-menu-item>
-          <% })%>
-        </div>
-      </menu-collapse>
-      <% }) %> 
       <% adminpanel.menuHelper.getMenuItems().forEach(function(menuItem) { %> <% var active = ""; if (menuItem && menuItem.instanceName && instance && instance.name) { active = menuItem.instanceName === instance.name ? 'active' : '' } %>
       <section class="nav-group collapsible">
         <input id="tab-<%=menuItem.id%>" type="checkbox" />

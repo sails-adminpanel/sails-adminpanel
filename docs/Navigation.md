@@ -13,7 +13,7 @@ navigation: {
         menu: {
                 title: "Редактор меню", 
                 type: "menu",
-                opts: {
+                options: {
                     maxNestedItems: number,
                     displacementControl: boolean,
                     propertyList: {},

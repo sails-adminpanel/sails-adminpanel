@@ -53,29 +53,11 @@ module.exports.adminpanel = {
 };
 ```
 
-## Menu groups
-
-To group your menues you can use `groups` key in `menu` configuration.
-Key `groups` - is an array of `objects`. Every object represent one menu group. Is will be a droupdown menu item.
+## Menu
 
 ```javascript
 module.exports.adminpanel = {
-    menu: {
-        // List of menu groups
-        groups: [
-            {
-                key: 'users',
-                title: 'Users'
-            },
-            {
-                key: 'content',
-                title: 'Content items'
-            }
-        ]
-    },
-
-    // ...
-
+    
     instances: {
         users: {
             menuGroup: 'users',
@@ -98,29 +80,15 @@ module.exports.adminpanel = {
 };
 ```
 
-This configuratio will create a 2 dropdown menu items.
+This configuration will create a 2 dropdown menu items.
 
 ## Menu icons
 Right now icons for menu are available.
 
-For now only [Glyphicons](http://getbootstrap.com/components/#glyphicons) icons are supported.
+For now only [Line awesome](https://icons8.com/line-awesome) icons are supported.
 
 You can set icon to menu item/group using `icon` key in config file.
-But you should use icon class without `glyphicon-` prefix. **It will be added automatically !**
-
-```javascript
-module.exports.adminpanel = {
-    menu: {
-        groups: [
-            {
-                key: 'content',
-                title: 'Content',
-                icon: 'inbox' // glyphicon-ibox will be set to menu item.
-            }
-        ]
-    }
-};
-```
+But you should use icon class without `la-` prefix. **It will be added automatically !**
 
 ```javascript
 module.exports.adminpanel = {
@@ -143,12 +111,6 @@ To add custom menu to your header menues you have to use `actions` (**Array**) k
 ```javascript
 module.exports.adminpanel = {
     menu: {
-        groups: [
-            {
-                key: 'customers',
-                title: 'Customer actions'
-            }
-        ],
         actions: [
             {
                 link: '/', // Menu link
@@ -157,8 +119,7 @@ module.exports.adminpanel = {
             },
             {
                 link: '/some/action',
-                title: 'Some new action',
-                menuGroup: 'customers' // add to customer menu dropdown
+                title: 'Some new action'
             }
         ]
     }

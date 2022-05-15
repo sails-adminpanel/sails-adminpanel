@@ -137,42 +137,6 @@ class MenuHelper {
         return;
     }
     /**
-     * Will create a list of groups to show
-     *
-     * @returns {Array}
-     */
-    getGroups() {
-        let groups = MenuHelper.config.menu.groups || [];
-        groups.forEach(function (group, idx) {
-            if (!group.key)
-                return;
-            // Clear menus to avoid data duplication
-            groups[idx].menues = [];
-            MenuHelper.config.instances.forEach(function (val, key) {
-                if (val.menuGroup && val.menuGroup == group.key) {
-                    groups[idx].menues.push({
-                        link: MenuHelper.config.routePrefix + '/' + key,
-                        title: val.title,
-                        icon: val.icon || null
-                    });
-                }
-            });
-            if (MenuHelper.config.menu.actions && MenuHelper.config.menu.actions.length > 0) {
-                MenuHelper.config.menu.actions.forEach(function (menu) {
-                    if (!menu.link || !menu.title || !menu.menuGroup || menu.menuGroup != group.key) {
-                        return;
-                    }
-                    groups[idx].menues.push({
-                        link: menu.link,
-                        title: menu.title,
-                        icon: menu.icon || null
-                    });
-                });
-            }
-        });
-        return groups;
-    }
-    /**
      * Get list of instance menus that was not bound to groups
      *
      * @returns {Array}
@@ -180,9 +144,6 @@ class MenuHelper {
     getMenuItems() {
         let menus = [];
         Object.entries(MenuHelper.config.instances).forEach(function ([key, val]) {
-            if (val.menuGroup) {
-                return;
-            }
             if (val.actions && val.actions.length > 0 && val.actions[0].title !== "Overview") {
                 val.actions.unshift({
                     link: MenuHelper.config.routePrefix + '/' + key,
@@ -201,7 +162,7 @@ class MenuHelper {
         });
         if (MenuHelper.config.menu.actions && MenuHelper.config.menu.actions.length > 0) {
             MenuHelper.config.menu.actions.forEach(function (menu) {
-                if (!menu.link || !menu.title || menu.menuGroup || menu.disabled) {
+                if (!menu.link || !menu.title || menu.disabled) {
                     return;
                 }
                 menus.push({

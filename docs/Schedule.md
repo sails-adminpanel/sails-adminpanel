@@ -10,7 +10,8 @@ module.exports.adminpanel = {
         schedule: {
             title: "Редактор распорядка",
             type: "worktime",
-            opts: {
+            options: {
+                supportOldVersion: true | false,
                 propertyList: {},
                 permutations: {}
             }
@@ -60,5 +61,10 @@ permutations = {
       options: true,
     };
 ```
+####Support old version
+Old version does not have dateStart or dateStop, timeStart or timeStop.
+It only has start and stop fields, which means that tou can only set
+timeStart and timeStop
+
 
 

@@ -38,8 +38,9 @@ async function add(req, res) {
             }
         }
         // callback before save instance
-        if (typeof instance.config.add.instanceModifier === "function") {
-            reqData = instance.config.edit.instanceModifier(reqData);
+        let instanceAdd = instance.config.add;
+        if (typeof instanceAdd.instanceModifier === "function") {
+            reqData = instanceAdd.instanceModifier(reqData);
         }
         try {
             let record = await instance.model.create(reqData).fetch();

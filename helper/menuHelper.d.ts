@@ -63,12 +63,6 @@ export declare class MenuHelper {
      */
     static replaceModelFields(url: any, model: any): void;
     /**
-     * Will create a list of groups to show
-     *
-     * @returns {Array}
-     */
-    getGroups(): any;
-    /**
      * Get list of instance menus that was not bound to groups
      *
      * @returns {Array}

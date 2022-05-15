@@ -1,4 +1,5 @@
-import { Instance } from "../interfaces/types";
+import { Instance, InstanceConfig } from "../interfaces/types";
+import ORMModel from "../interfaces/ORMModel";
 export declare class AdminUtil {
     /**
      * Default configuration for instance
@@ -50,14 +51,14 @@ export declare class AdminUtil {
      * @param {string} name
      * @returns {?Model}
      */
-    static getModel(name: string): any;
+    static getModel(name: string): ORMModel;
     /**
      * Get instance name
      *
      * @param {Request} req
      * @returns {?string}
      */
-    static findInstanceName(req: any): any;
+    static findInstanceName(req: any): string;
     /**
      * Searches for config from admin panel
      *
@@ -65,7 +66,7 @@ export declare class AdminUtil {
      * @param {String} instanceName
      * @returns {?Object}
      */
-    static findInstanceConfig(req: any, instanceName: any): any;
+    static findInstanceConfig(req: any, instanceName: any): InstanceConfig;
     /**
      * Will get action config from configuration file depending to given action
      *
@@ -98,7 +99,7 @@ export declare class AdminUtil {
      * @param {Object} instanceConfig
      * @returns {?Model}
      */
-    static findModel(req: any, instanceConfig: any): any;
+    static findModel(req: any, instanceConfig: any): ORMModel;
     /**
      * Will create instance object from request.
      *

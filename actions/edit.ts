@@ -1,6 +1,7 @@
 import { AdminUtil } from "../lib/adminUtil";
 import { RequestProcessor } from "../lib/requestProcessor";
 import { FieldsHelper } from "../helper/fieldsHelper";
+import {CreateUpdateConfig} from "../interfaces/types";
 
 export default async function edit(req, res) {
     //Check id
@@ -61,8 +62,9 @@ export default async function edit(req, res) {
         }
 
         // callback before save instance
-        if (typeof instance.config.edit.instanceModifier === "function") {
-            reqData = instance.config.edit.instanceModifier(reqData);
+        let instanceEdit = instance.config.edit as CreateUpdateConfig;
+        if (typeof instanceEdit.instanceModifier === "function") {
+            reqData = instanceEdit.instanceModifier(reqData);
         }
 
         try {

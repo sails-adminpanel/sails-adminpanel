@@ -8,10 +8,6 @@ export declare const content: {
          */
         routePrefix: string;
         /**
-         * Will set method how assets will be placed into project
-         */
-        assets: string;
-        /**
          * Default path to views
          *
          * @type {?string}
@@ -37,10 +33,6 @@ export declare const content: {
          * List of admin pages
          */
         instances: {};
-        /**
-         * List of custom actions
-         */
-        actions: any[];
         /**
          * List of sections in head
          */
