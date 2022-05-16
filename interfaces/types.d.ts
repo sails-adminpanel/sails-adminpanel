@@ -24,6 +24,11 @@ export interface AdminpanelConfig {
         title?: string
         text?: string
     }
+    translation?: {
+        locales: string[],
+        path: string
+        defaultLocale: string
+    }
 }
 
 export interface Instance {
