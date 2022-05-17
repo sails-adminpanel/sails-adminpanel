@@ -4,6 +4,9 @@ import * as fs from "fs";
 export class TranslationHelper {
     public static loadTranslations(translationsPath: string): void {
         let translationsConfig = sails.config.adminpanel.translation;
+        if (!translationsConfig) {
+            return
+        }
 
         try {
             let translationsDirectoryPath = path.resolve(translationsPath);
@@ -18,10 +21,8 @@ export class TranslationHelper {
                 if (translations.includes(`${locale}.json`)) {
                     try {
                         let jsonData = require(`${translationsDirectoryPath}/${locale}.json`);
-                        //console.log(jsonData);
                         sails.hooks.i18n.appendLocale(locale, jsonData);
                         sails.hooks.i18n.defaultLocale = defaultLocale;
-                        console.log(sails.hooks.i18n.getLocales())
                     } catch (error) {
                         sails.log.error(`Adminpanel > Error when reading ${locale}.json: ${error}`);
                     }

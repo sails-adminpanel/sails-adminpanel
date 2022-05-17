@@ -1,0 +1,19 @@
+diff --git a/node_modules/i18n-2/i18n.js b/node_modules/i18n-2/i18n.js
+index dda2fab..68b8d46 100644
+--- a/node_modules/i18n-2/i18n.js
++++ b/node_modules/i18n-2/i18n.js
+@@ -456,6 +456,14 @@ i18n.prototype = {
+ 		return path.normalize(this.directory + '/' + locale + this.extension);
+ 	},
+ 
++	appendLocale: function (locale, data) {
++		this.locales[locale] = {...this.locales[locale], ...data}
++	},
++
++	getLocales: function () {
++		return this.locales
++	},
++
+ 	initLocale: function (locale, data) {
+ 		if (!this.locales[locale]) {
+ 			this.locales[locale] = data;
