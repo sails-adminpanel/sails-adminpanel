@@ -6,7 +6,7 @@
     <div class="clr-select-wrapper">
       <select class="clr-select"
               onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
-        <option value="<%=routePrefix%>">Adminpanel</option>
+        <option value="<%=routePrefix%>"><%= __("Adminpanel") %></option>
         <% sections.forEach(function(itemSection) { %>
           <% if (itemSection.link && itemSection.title) { %>
             <option value="<%=itemSection.link%>"><%=itemSection.title%></option>

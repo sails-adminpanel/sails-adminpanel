@@ -15,14 +15,14 @@
         <a href="<%= instance.uri %>/">
             <button raised class="btn">
                 <clr-icon shape="undo"></clr-icon>
-                Back to list
+                <%= __("Back to list") %>
             </button>
         </a>
         <% if (instance.config.edit) { %>
             <a href="<%= instance.uri %>/edit/<%= record[idField] %>">
                 <button raised class="button-green">
                     <clr-icon shape="create"></clr-icon>
-                    Edit record
+                    <%= __("Edit record") %>
                 </button>
             </a>
         <% } %>
@@ -30,7 +30,7 @@
             <a href="<%= instance.uri %>/remove/<%= record[idField] %>" onclick="return confirm('Are you sure ?');">
                 <button raised class="button-red">
                     <clr-icon shape="delete"></clr-icon>
-                    Remove record
+                    <%= __("Remove record") %>
                 </button>
             </a>
         <% } %>

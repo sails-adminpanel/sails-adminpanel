@@ -25,12 +25,12 @@
     <form class="login" method="post" action="/admin/userap/login">
         <% include mixin/alerts %>
         <section class="title">
-            <h3 class="welcome">Welcome!</h3>Please log in
+            <h3 class="welcome"><%= __("Welcome") %>!</h3><%= __("Please log in") %>
         </section>
         <div class="login-group">
             <input type="text" placeholder="Username" name="username"/>
             <input type="password" placeholder="Password" name="password"/>
-            <button class="btn btn-primary" type="submit">Log in</button>
+            <button class="btn btn-primary" type="submit"><%= __("Log in") %></button>
         </div>
     </form>
 </div>

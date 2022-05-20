@@ -16,7 +16,7 @@
                     <a href="<%= instance.uri %>/">
                         <button raised class="btn">
                 <i class="las la-long-arrow-alt-left"></i>
-                Вернуться
+                <%= __("Back") %>
             </button>
                     </a>
                     <div class="nav-header-wrap">
@@ -26,7 +26,7 @@
             </button> -->
             <a href="<%= instance.uri %>/remove/<%= record[idField] %>">
                 <button class="btn-nav">
-                Удалить
+                <%= __("Delete") %>
                 <i class="las la-trash-alt"></i>
             </button></a>
                     </div>
@@ -65,7 +65,7 @@
                                     <% } %>
                                     <p>
                                         <button raised class="btn-save" id="submit" onclick="submitForm()">
-                сохранить
+                    <%= __("Save") %>
             </button>
                                     </p>
                 </form>
