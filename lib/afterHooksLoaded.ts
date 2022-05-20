@@ -1,3 +1,5 @@
+import bindTranslations from "./bindTranslations";
+
 let flash = require('connect-flash');
 import * as bindAuthorization from './bindAuthorization';
 
@@ -15,5 +17,11 @@ export default function ToAfterHooksLoaded() {
 
         //binding authorization
         bindAuthorization();
+
+        if (sails.hooks.i18n && sails.hooks.i18n.appendLocale) {
+            sails.after(["hook:i18n:loaded"], async () => {
+                await bindTranslations();
+            })
+        }
     };
 };

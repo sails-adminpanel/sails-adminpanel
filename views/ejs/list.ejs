@@ -29,7 +29,7 @@ $(document).ready(function() {
                 {
                     if (type === 'display')
                     {
-                        data = '<a href="<%=instance.uri%>/view/'+row[0]+'">View</a><br><br><a href="<%=instance.uri%>/edit/'+row[0]+'">Edit</a>';
+                        data = '<a href="<%=instance.uri%>/view/'+row[0]+'"><%= __('View') %></a><br><br><a href="<%=instance.uri%>/edit/'+row[0]+'"><%= __('Edit') %></a>';
                     }
                     return data;
                 }

@@ -21,13 +21,7 @@ import * as path from "path";
 import _login from "../actions/login";
 
 let superAdmin = 'isAdminpanelSuperAdmin';
-
-import {TranslationHelper} from "../helper/translationHelper";
 module.exports = async function bindAuthorization() {
-    let adminpanelTranslations = `${sails.config.adminpanel.rootPath}/translations`
-    let projectTranslations = `${process.cwd()}/${sails.config.adminpanel.translation.path}`;
-    TranslationHelper.loadTranslations(adminpanelTranslations);
-    TranslationHelper.loadTranslations(projectTranslations);
     /**
      * Router
      */
