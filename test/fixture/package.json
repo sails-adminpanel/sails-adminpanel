@@ -5,19 +5,15 @@
   "description": "Sails test application",
   "keywords": [],
   "dependencies": {
-    "@webresto/core": "^1.0.0",
     "dark-sails": "^1.0.0",
     "include-all": "^1.0.8",
-    "module-manager": "file:../..",
+    "sails-adminpanel": "file:../..",
     "patch-package": "^6.4.7",
     "rc": "^1.0.1",
     "request": "^2.88.2",
     "sails": "^1.5.0",
-    "sails-adminpanel": "git+https://github.com/sails-adminpanel/sails-adminpanel.git#new_design",
-    "sails-hook-orm": "^3.0.2",
-    "sails-hook-stateflow": "^1.0.6",
-    "sails-memory": "^0.10.7",
-    "test-app": "file:"
+    "sails-hook-orm": "^4.0.1",
+    "sails-memory": "^0.10.7"
   },
   "scripts": {
     "debug": "node debug app.js",
@@ -25,10 +21,6 @@
     "postinstall": "patch-package --patch-dir=node_modules/dark-sails"
   },
   "main": "app.js",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/webresto/app.git"
-  },
-  "author": "webresto",
+  "author": "42pub",
   "license": "MIT"
 }

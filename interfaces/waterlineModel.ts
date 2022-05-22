@@ -1,5 +1,10 @@
 import { QueryBuilder, WaterlinePromise, CRUDBuilder, Model, UpdateBuilder, Callback } from "waterline";
 
+
+type AddToCollectionMember<T> = WaterlinePromise<T> & {
+    members(childIds: string[] | number[]): WaterlinePromise<T>;
+}
+
 /**
  *  Custom types for Waterline Model
  */
@@ -15,6 +20,8 @@ export default interface WaterlineModel<T> {
     update?(criteria: any, changes: any): UpdateBuilder<T[]>;
     update?(criteria: any, changes: any[]): UpdateBuilder<T[]>;
     updateOne?(criteria: any, changes: any[]): UpdateBuilder<T[]>;
+
+    addToCollection?(id: string | number, association: string): AddToCollectionMember<T[]>
 
     destroy?(criteria: any): CRUDBuilder<T[]>;
     destroy?(criteria: any[]): CRUDBuilder<T[]>;

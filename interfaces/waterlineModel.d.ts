@@ -1,5 +1,8 @@
 /// <reference types="node" />
 import { QueryBuilder, WaterlinePromise, CRUDBuilder, UpdateBuilder, Callback } from "waterline";
+declare type AddToCollectionMember<T> = WaterlinePromise<T> & {
+    members(childIds: string[] | number[]): WaterlinePromise<T>;
+};
 /**
  *  Custom types for Waterline Model
  */
@@ -13,6 +16,7 @@ export default interface WaterlineModel<T> {
     update?(criteria: any, changes: any): UpdateBuilder<T[]>;
     update?(criteria: any, changes: any[]): UpdateBuilder<T[]>;
     updateOne?(criteria: any, changes: any[]): UpdateBuilder<T[]>;
+    addToCollection?(id: string | number, association: string): AddToCollectionMember<T[]>;
     destroy?(criteria: any): CRUDBuilder<T[]>;
     destroy?(criteria: any[]): CRUDBuilder<T[]>;
     destroyOne?(criteria: any[]): CRUDBuilder<T[]>;
@@ -23,3 +27,4 @@ export default interface WaterlineModel<T> {
     native(cb: (err: Error, collection: any) => void): void;
     stream?(criteria: any, writeEnd: any): NodeJS.WritableStream | Error;
 }
+export {};

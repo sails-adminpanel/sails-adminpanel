@@ -6,19 +6,24 @@
  */
 import WaterlineModel from "../interfaces/waterlineModel";
 import WaterlineInstance from "../interfaces/waterlineInstance";
+import GroupAP from "./GroupAP";
 declare let attributes: {
-    username: {
+    id: {
         type: string;
+        autoIncrement: boolean;
     };
-    password: {
-        type: string;
-    };
+    login: string;
+    fullName: string;
+    email: string;
     passwordHashed: {
         type: string;
     };
-    permission: {
-        type: string;
-    };
+    timezone: string;
+    expires: number;
+    locale: string;
+    isDeleted: boolean;
+    isActive: boolean;
+    groups: GroupAP[];
 };
 declare type attributes = typeof attributes & WaterlineInstance;
 interface UserAP extends attributes {

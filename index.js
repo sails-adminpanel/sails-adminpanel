@@ -3,6 +3,8 @@ let { MenuHelper } = require('./helper/menuHelper');
 
 module.exports = function (sails) {
 
+    let libInitialize =  require("./lib/initialize");
+
     return {
 
         /**
@@ -12,7 +14,9 @@ module.exports = function (sails) {
 
         configure: require('./lib/configure').default(),
 
-        initialize: require('./lib/initialize').default(),
+        initialize: async function initialize(cb) {
+            await libInitialize.default(sails, cb);
+        },
 
         addMenuItem: function (link, label, icon, group) {
             if (!link)

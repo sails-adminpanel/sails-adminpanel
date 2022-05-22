@@ -6,28 +6,38 @@
  */
 import WaterlineModel from "../interfaces/waterlineModel";
 import WaterlineInstance from "../interfaces/waterlineInstance";
+import GroupAP from "./GroupAP";
 
 let passwordHash = require('password-hash');
 
 let attributes = {
 
-    // id: {
-    //     type:'integer',
-    //     primaryKey: true,
-    //     autoIncrement: true
-    // },
-    username: {
+    id: {
+        type: 'number',
+        autoIncrement: true
+    },
+    login: {
         type: 'string',
-    },
-    password: {
-        type: 'string'
-    },
+        required: true,
+        unique: true
+    } as unknown as string,
+    fullName: {
+        type: 'string',
+        required: true
+    } as unknown as string,
+    email: "string",
     passwordHashed: {
         type: 'string'
     },
-    permission: {
-        type: 'json'
-    }
+    timezone: "string",
+    expires: "number" as unknown as number,
+    locale: "string",
+    isDeleted: "boolean" as unknown as boolean,
+    isActive: "boolean" as unknown as boolean,
+    groups: {
+        collection: "groupap",
+        via: "users"
+    } as unknown as GroupAP[]
 
 };
 
@@ -37,8 +47,7 @@ export default UserAP;
 
 let model = {
     beforeCreate: (values, next) => {
-        values.passwordHashed = passwordHash.generate(values.username + values.password);
-        values.password = '';
+        values.passwordHashed = passwordHash.generate(values.fullName + values.password);
         return next();
     }
 

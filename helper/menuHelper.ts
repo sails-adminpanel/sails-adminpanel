@@ -158,7 +158,7 @@ export class MenuHelper {
             if (val.actions && val.actions.length > 0 && val.actions[0].title !== "Overview") {
                 val.actions.unshift({
                     link: MenuHelper.config.routePrefix + '/' + key,
-                    title: "Overview",
+                    title: 'Overview',
                     icon: ""
                 })
             }
