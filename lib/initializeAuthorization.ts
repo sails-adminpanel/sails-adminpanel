@@ -7,7 +7,7 @@ export default function initializeAuthorization(cb) {
      * Model
      */
     buildDictionary.optional({
-        dirname: path.resolve(__dirname, '../api/models'),
+        dirname: path.resolve(__dirname, '../models'),
         filter: /^([^.]+)\.(js|coffee|litcoffee)$/,
         replaceExpr: /^.*\//,
         flattenDirectories: true
@@ -17,7 +17,7 @@ export default function initializeAuthorization(cb) {
         }
         // Get any supplemental files
         buildDictionary.optional({
-            dirname: path.resolve(__dirname, '../api/models'),
+            dirname: path.resolve(__dirname, '../models'),
             filter: /(.+)\.attributes.json$/,
             replaceExpr: /^.*\//,
             flattenDirectories: true

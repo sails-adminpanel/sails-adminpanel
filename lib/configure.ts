@@ -6,11 +6,13 @@ export default function ToConfigure() {
             return;
         }
         // !TODO add styles render in ejs
-        sails.config.adminpanel.styles=[];
+        sails.config.adminpanel.styles = [];
         // !TODO add scripts
-        sails.config.adminpanel.script={};
-        sails.config.adminpanel.script.header=[];
-        sails.config.adminpanel.script.footer=[];
+        sails.config.adminpanel.script = {};
+        sails.config.adminpanel.script.header = [];
+        sails.config.adminpanel.script.footer = [];
+
+        sails.config.adminpanel.policies = [];
 
         //recheck route prefix
         sails.config.adminpanel.routePrefix = sails.config.adminpanel.routePrefix || '/admin';

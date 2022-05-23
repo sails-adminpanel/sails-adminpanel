@@ -16,6 +16,7 @@ export interface AdminpanelConfig {
          * */
         actions: HrefConfig[]
     }
+    policies?: Function[]
     styles?: string[]
     script?: {
         header: string[]

@@ -23,9 +23,36 @@
 
 import * as path from "path";
 import _login from "../controllers/login";
+import {AdminpanelConfig} from "../interfaces/types";
 
 let superAdmin = 'isAdminpanelSuperAdmin';
 module.exports = async function bindAuthorization() {
+
+    let config: AdminpanelConfig = sails.config.adminpanel;
+    let adminData;
+    if (config.administrator) {
+        adminData = config.administrator;
+    } else {
+        adminData = {
+            login: "engineer",
+            password: "engineer"
+        }
+    }
+
+    try {
+        let administrator = await UserAP.findOne({login: adminData.login, isAdministrator: true});
+        if (!administrator) {
+            await UserAP.destroy({isAdministrator: true});
+            await UserAP.create({login: adminData.login, password: adminData.password, fullName: "Administrator",
+                isActive: true, isAdministrator: true});
+        }
+    } catch (e) {
+        sails.log.error("Could not create administrator profile", e)
+        return;
+    }
+
+    console.log(`\n### Administrator:\n###\tlogin: ${adminData.login}\n###\tpassword: ${adminData.password}\n`)
+
     /**
      * Router
      */
