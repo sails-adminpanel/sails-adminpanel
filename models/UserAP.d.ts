@@ -23,6 +23,7 @@ declare let attributes: {
     locale: string;
     isDeleted: boolean;
     isActive: boolean;
+    isAdministrator: boolean;
     groups: GroupAP[];
 };
 declare type attributes = typeof attributes & WaterlineInstance;

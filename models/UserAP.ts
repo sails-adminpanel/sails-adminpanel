@@ -34,6 +34,7 @@ let attributes = {
     locale: "string",
     isDeleted: "boolean" as unknown as boolean,
     isActive: "boolean" as unknown as boolean,
+    isAdministrator: "boolean" as unknown as boolean,
     groups: {
         collection: "groupap",
         via: "users"

@@ -31,6 +31,7 @@ export default function bindResView() {
         /**
          * Show admin panel view.
          */
+        // !TODO rewrite arguments to strong queue, without universal redefined arguments
         res.viewAdmin = function (/* specifiedPath, locals, cb_view */) {
             let specifiedPath = arguments[0];
             let locals = arguments[1];

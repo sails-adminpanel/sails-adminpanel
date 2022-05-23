@@ -4,19 +4,20 @@ export interface AdminpanelConfig {
     instances: {
         [key:string]: InstanceConfig
     }
-    sections: HrefConfig[]
-    routePrefix: string
-    pathToViews: string
-    identifierField: string
-    menu: {
+    sections?: HrefConfig[]
+    routePrefix?: string
+    policy?: string
+    pathToViews?: string
+    identifierField?: string
+    menu?: {
         brand: boolean | string | HrefConfig
         /**
          * will be created at the bottom of the sidenav panel
          * */
         actions: HrefConfig[]
     }
-    styles: string[]
-    script: {
+    styles?: string[]
+    script?: {
         header: string[]
         footer: string[]
     }
@@ -28,6 +29,10 @@ export interface AdminpanelConfig {
         locales: string[],
         path: string
         defaultLocale: string
+    }
+    administrator?: {
+        login: string
+        password: string
     }
 }
 
@@ -41,7 +46,7 @@ export interface Instance {
 export interface InstanceConfig {
     title: string
     model: string
-    fields: Fields
+    fields?: Fields
     list?: { fields: Fields } | boolean
     add?: CreateUpdateConfig | boolean
     edit?: CreateUpdateConfig | boolean
@@ -119,13 +124,17 @@ declare enum FieldsTypes {
 }
 
 export interface CreateUpdateConfig {
-    fields: Fields,
-        /**
-         * callback for data modification before saving record
-         *
-         * function(reqData) {return reqData}
-         * */
-        instanceModifier?: Function
+    fields?: Fields,
+    /**
+     * callback for data modification before saving record
+     *
+     * function(reqData) {return reqData}
+     * */
+    instanceModifier?: Function
+    /**
+     * You can change standard controller for any instance by this property
+     * */
+    controller?: string
 }
 
 export interface HrefConfig {

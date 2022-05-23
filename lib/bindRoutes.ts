@@ -1,12 +1,12 @@
-import _dashboard from "../actions/dashboard";
-import _welcome from "../actions/welcome";
-import _list from "../actions/list";
-import _listJson from "../actions/listJson";
-import _edit from "../actions/edit";
-import _add from "../actions/add";
-import _view from "../actions/view";
-import _remove from "../actions/remove";
-import _upload from "../actions/upload";
+import _dashboard from "../controllers/dashboard";
+import _welcome from "../controllers/welcome";
+import _list from "../controllers/list";
+import _listJson from "../controllers/listJson";
+import _edit from "../controllers/edit";
+import _add from "../controllers/add";
+import _view from "../controllers/view";
+import _remove from "../controllers/remove";
+import _upload from "../controllers/upload";
 
 export default function bindRoutes() {
 
@@ -16,28 +16,45 @@ export default function bindRoutes() {
      * List or one policy that should be bound to actions
      * @type {string|Array}
      */
-    let policies = sails.config.adminpanel.policies || '';
+    let config = sails.config.adminpanel;
+    let policies = config.policies || '';
 
     //Create a base instance route
-    let baseRoute = sails.config.adminpanel.routePrefix + '/:instance';
+    let baseRoute = config.routePrefix + '/:instance';
 
     /**
      * List of records
      */
     sails.router.bind(baseRoute, _bindPolicies(policies, _list));
-    sails.router.bind(baseRoute+"/json", _bindPolicies(policies, _listJson));
-    /**
-     * Create new record
-     */
-    sails.router.bind(baseRoute + '/add', _bindPolicies(policies, _add));
+
+    for (let instance of Object.keys(config.instances)) {
+        /**
+         * Create new record
+         */
+        if (config.instances[instance].add && config.instances[instance].add.controller) {
+            let controller = require(config.instances[instance].add.controller);
+            sails.router.bind(`${config.routePrefix}/${instance}/add`, _bindPolicies(policies, controller));
+        } else {
+            sails.router.bind(`${config.routePrefix}/${instance}/add`, _bindPolicies(policies, _add));
+        }
+
+        /**
+         * Edit existing record
+         */
+        if (config.instances[instance].edit && config.instances[instance].edit.controller) {
+            let controller = require(config.instances[instance].edit.controller);
+            sails.router.bind(`${config.routePrefix}/${instance}/edit`, _bindPolicies(policies, controller));
+        } else {
+            sails.router.bind(`${config.routePrefix}/${instance}/edit`, _bindPolicies(policies, _edit));
+        }
+    }
+
     /**
      * View record details
      */
     sails.router.bind(baseRoute + '/view/:id', _bindPolicies(policies, _view));
-    /**
-     * Edit existing record
-     */
-    sails.router.bind(baseRoute + '/edit/:id', _bindPolicies(policies, _edit));
+    sails.router.bind(baseRoute+"/json", _bindPolicies(policies, _listJson));
+
     /**
      * Remove record
      */
@@ -51,10 +68,10 @@ export default function bindRoutes() {
      * @todo define information that should be shown here
      */
 
-    if (Boolean(sails.config.adminpanel.dashboard)) {
-        sails.router.bind(sails.config.adminpanel.routePrefix, _bindPolicies(policies, _dashboard));
+    if (Boolean(config.dashboard)) {
+        sails.router.bind(config.routePrefix, _bindPolicies(policies, _dashboard));
     } else {
-        sails.router.bind(sails.config.adminpanel.routePrefix, _bindPolicies(policies, _welcome));
+        sails.router.bind(config.routePrefix, _bindPolicies(policies, _welcome));
     }
 
 };

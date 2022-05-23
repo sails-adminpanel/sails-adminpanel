@@ -17,8 +17,12 @@
 // 10. In i18n-2/i18n.js should be appendLocale function
 // 11. Проверять активность i18n и наличие метода appendLocale
 
+
+// По умолчанию создается "administrator"
+// Заменить вью группы и пользователя на создание и редактирование через конфиг
+
 import * as path from "path";
-import _login from "../actions/login";
+import _login from "../controllers/login";
 
 let superAdmin = 'isAdminpanelSuperAdmin';
 module.exports = async function bindAuthorization() {
@@ -72,59 +76,7 @@ module.exports = async function bindAuthorization() {
  */
 sails.adminpanel = {};
 sails.adminpanel.havePermission = (req, obj, action) => {
-    action = path.basename(action).split('.')[0];
-    if (!sails.config.adminpanel.auth)
-        return true;
-    if (action === '') {
-        if (req.session.UserAP) {
-            if (req.session.UserAP.permission) {
-                if (!obj.permission) {
-                    return true;
-                }
-            }
-        }
-    }
-    if (req.session.UserAP) {
-        if (req.session.UserAP.permission) {
-            if (!Array.isArray(req.session.UserAP.permission)) {
-                req.session.UserAP.permission = [req.session.UserAP.permission];
-            }
-            if (req.session.UserAP.permission.indexOf(superAdmin) >= 0) {
-                return true;
-            } else if (obj[action]) {
-                if (typeof obj[action] === 'boolean')
-                    return true;
-                if (obj[action].permission) {
-                    if (!Array.isArray(obj[action].permission)) {
-                        obj[action].permission = [obj[action].permission];
-                    }
-                    for (var i in req.session.UserAP.permission) {
-                        for (var j in obj[action].permission) {
-                            if (req.session.UserAP.permission[i] === obj[action].permission[j]) {
-                                return true;
-                            }
-                        }
-                    }
-                } else {
-                    return true;
-                }
-            } else if (action === '') {
-                if (obj.permission) {
-                    if (!Array.isArray(obj.permission)) {
-                        obj.permission = [obj.permission];
-                    }
-                    for (var i in req.session.UserAP.permission) {
-                        for (var j in obj.permission) {
-                            if (req.session.UserAP.permission[i] === obj.permission[j]) {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return false;
+    return true;
 }
 sails.on('lifted', async function () {
     /**
