@@ -18,14 +18,6 @@ export default async function edit(req, res) {
         return res.redirect(instance.uri);
     }
 
-    if (!sails.adminpanel.havePermission(req, instance.config, __filename)) {
-        return res.redirect('/admin/userap/login');
-    }
-
-    if (sails.config.adminpanel.auth) {
-        req.locals.user = req.session.UserAP;
-    }
-
     let record;
     try {
         record = await instance.model.findOne(req.param('id')).populateAll();

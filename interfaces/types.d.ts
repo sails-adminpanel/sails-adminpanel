@@ -6,7 +6,6 @@ export interface AdminpanelConfig {
     }
     sections?: HrefConfig[]
     routePrefix?: string
-    policy?: string
     pathToViews?: string
     identifierField?: string
     menu?: {
@@ -16,7 +15,7 @@ export interface AdminpanelConfig {
          * */
         actions: HrefConfig[]
     }
-    policies?: Function[]
+    policies?: string | string[] | Function | Function[]
     styles?: string[]
     script?: {
         header: string[]

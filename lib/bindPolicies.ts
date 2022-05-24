@@ -1,4 +1,24 @@
+import * as fs from "fs";
+import * as path from "path";
+
 export default function bindPolicies() {
+
+    //write out policies to config
+    try {
+        let policiesDir = fs.readdirSync(__dirname + "./../policies");
+        for (let policy of policiesDir) {
+            if (path.extname(policy).toLowerCase() === ".js") {
+                let policyFile = require(__dirname + "./../policies/" + policy);
+                if (typeof policyFile === "function") {
+                    sails.config.adminpanel.policies.push(policyFile);
+                } else {
+                    sails.log.error(`Adminpanel > Policy ${policyFile} is not a function`)
+                }
+            }
+        }
+    } catch (e) {
+        sails.log.error("Adminpanel > Could not load policies", e)
+    }
 
     return function (policies, action) {
         if (typeof policies === "function" && !action) {

@@ -8,13 +8,6 @@ export default function upload(req, res) {
 //     console.log('admin > upload');
 //     let instance = AdminUtil.findInstanceObject(req);
 //
-//     if (!sails.adminpanel.havePermission(req, instance.config, __filename)) {
-//         return res.redirect('/admin/userap/login');
-//     }
-//
-//     if (sails.config.adminpanel.auth) {
-//         req.locals.user = req.session.UserAP;
-//     }
 //
 //     if (req.method.toUpperCase() === 'POST') {
 //         // if this file must not be loaded

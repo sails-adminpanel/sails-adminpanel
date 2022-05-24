@@ -11,12 +11,6 @@ async function add(req, res) {
     if (!instance.config.add) {
         return res.redirect(instance.uri);
     }
-    if (!sails.adminpanel.havePermission(req, instance.config, __filename)) {
-        return res.redirect('/admin/userap/login');
-    }
-    if (sails.config.adminpanel.auth) {
-        req.locals.user = req.session.UserAP;
-    }
     let fields = await fieldsHelper_1.FieldsHelper.getFields(req, instance, 'add');
     let data = {}; //list of field values
     fields = await fieldsHelper_1.FieldsHelper.loadAssociations(fields);

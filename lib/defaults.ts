@@ -23,9 +23,9 @@ const adminpanelConfig: AdminpanelConfig = {
     identifierField: 'id',
 
     /**
-     * Default policy that will be used to check access
+     * Policies
      */
-    policy: '',
+    policies: null,
 
     /**
      * Base menu configuration

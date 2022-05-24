@@ -37,23 +37,6 @@ export default async function(sails: any, cb) {
     HookTools.waitForHooks("adminpanel", requiredHooks, afterHook);
     await HookTools.bindModels(resolve(__dirname, "../models"));
 
-    //write out policies to config
-    try {
-        let policiesDir = fs.readdirSync(__dirname + "./../policies");
-        for (let policy of policiesDir) {
-            if (path.extname(policy).toLowerCase() === ".js") {
-                let policyFile = require(__dirname + "./../policies/" + policy);
-                if (typeof policyFile === "function") {
-                    sails.config.adminpanel.policies.push(policyFile);
-                } else {
-                    sails.log.error(`Adminpanel > Policy ${policyFile} is not a function`)
-                }
-            }
-        }
-    } catch (e) {
-        sails.log.error("Adminpanel > Could not load policies", e)
-    }
-
     // Bind assets
     await bindAssets();
     cb();

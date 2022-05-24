@@ -8,12 +8,6 @@ async function listJson(req, res) {
     if (!instance.model) {
         return res.notFound();
     }
-    if (!sails.adminpanel.havePermission(req, instance.config, __filename)) {
-        return res.redirect("/admin/userap/login");
-    }
-    if (sails.config.adminpanel.auth) {
-        req.locals.user = req.session.UserAP;
-    }
     let records = [];
     let fields = fieldsHelper_1.FieldsHelper.getFields(req, instance, 'list');
     let query;

@@ -53,6 +53,8 @@ module.exports = async function bindAuthorization() {
 
     console.log(`\n### Administrator:\n###\tlogin: ${adminData.login}\n###\tpassword: ${adminData.password}\n`)
 
+    // ------------------------------------------------------------------------------------------------
+
     /**
      * Router
      */
@@ -102,7 +104,7 @@ module.exports = async function bindAuthorization() {
  * Add method to check permission from controller
  */
 sails.adminpanel = {};
-sails.adminpanel.havePermission = (req, obj, action) => {
+sails.adminpanel.havePermission = () => {
     return true;
 }
 sails.on('lifted', async function () {

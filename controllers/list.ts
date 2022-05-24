@@ -7,14 +7,6 @@ export default async function list(req, res) {
         return res.notFound();
     }
 
-    if (!sails.adminpanel.havePermission(req, instance.config, __filename)) {
-        return res.redirect('/admin/userap/login');
-    }
-
-    if (sails.config.adminpanel.auth) {
-        req.locals.user = req.session.UserAP;
-    }
-
     let fields = FieldsHelper.getFields(req, instance, 'list');
 
     res.viewAdmin({
