@@ -65,18 +65,21 @@
 
 <body cds-text="body" cds-theme="dark" cds-layout="vertical gap:lg p:lg">
     <div class="main-container">
-        <header class="header header-6">
-            
+        <header class="header-6">
+            <div class="branding">
+                <a href="">
+                    <i class="las la-rocket logo"></i>
+                    <span class="brand-title"><%= adminpanel.menuHelper.getBrandTitle() %></span>  
+                </a>
+            </div>
             <div class="header__inner">
                 <div class="header__menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                    <span>1</span>
+                    <span>3</span>
+                    <span>2</span>
                 </div>
                 
-                    <div class="flex flex-name">
-                        <%= adminpanel.menuHelper.getBrandTitle() %>
-                    </div>
+
                     <div class="header__login">
                     <% if (req.session.UserAP) { %> 
                       <a class="header__name" href="#">
