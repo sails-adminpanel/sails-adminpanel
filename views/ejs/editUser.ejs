@@ -1,1 +1,80 @@
-<h1>Edit user</h1>
+<% include head %>
+<% include headContent %>
+
+<form action="<%= instance.uri %>/edit/<%= user.id %>" method="POST">
+    <div class="layout">
+        <h2><%= __("User settings") %></h2>
+        <div class="row">
+            <div class="col">
+                <input type="text" id="userLogin" name="login" placeholder="<%= __("Login") %>" value="<%= user.login %>">
+            </div>
+            <div class="col">
+                <input type="text" id="fullName" name="fullName" placeholder="<%= __("Full name") %>" value="<%= user.fullName %>">
+            </div>
+            <div class="col">
+                <input type="email" id="email" name="email" placeholder="<%= __("E-mail") %>" value="<%= user.email %>">
+            </div>
+            <div class="col">
+                <input type="password" id="userPassword" name="password" placeholder="<%= __("Password") %>">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label><%= __("Timezone") %>: </label>
+                <select id="timezone" name="timezone">
+                    <option>UTC</option>
+                    <option>GMT+1</option>
+                    <option>GMT+2</option>
+                    <option>GMT+3</option>
+                    <option>GMT+4</option>
+                    <option>GMT+5</option>
+                    <option>GMT+6</option>
+                    <option>GMT+7</option>
+                </select>
+            </div>
+            <div class="col">
+                <label><%= __("Profile expires") %>: </label>
+                <input type="date" id="date" name="date" value="<%= user.expires %>">
+            </div>
+            <div class="col">
+                <label><%= __("Locale") %>: </label>
+                <select id="locale" name="locale">
+                    <option selected><%= __("EN") %></option>
+                    <option><%= __("UA") %></option>
+                    <option><%= __("RU") %></option>
+                    <option><%= __("DE") %></option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="layout">
+        <h2><%= __("User's groups") %></h2>
+        <% var userGroupsIds = user.groups.map((group) => {return group.id}) %>
+        <% for (let group of groups) { %>
+            <label for="checkbox-<%= group.id %>"><%= group.name %></label>
+            <% if (userGroupsIds.includes(group.id)) { %>
+                <input type="checkbox" id="checkbox-<%= group.id %>" name="checkbox-<%= group.id %>" checked>
+            <% } else { %>
+                <input type="checkbox" id="checkbox-<%= group.id %>" name="checkbox-<%= group.id %>">
+            <% } %>
+        <% } %>
+    </div>
+    <div class="layout">
+        <input raised class="btn-save" type="submit" value="<%= __("Save") %>">
+    </div>
+</form>
+
+<script>
+    $("#timezone > option").each(function(index, element) {
+        if ($(element).text() === "<%- user.timezone %>") {
+            $(element).prop('selected', true);
+        }
+    })
+
+    $("#locale > option").each(function(index, element) {
+        if ($(element).text() === "<%- user.locale %>") {
+            $(element).prop('selected', true);
+        }
+    })
+</script>
+

@@ -1,4 +1,4 @@
-import { AdminpanelConfig } from "../interfaces/types";
+import { AdminpanelConfig } from "../interfaces/adminpanelConfig";
 export declare class ConfigHelper {
     static getConfig(): AdminpanelConfig;
     /**

@@ -33,7 +33,7 @@ export default function bindRoutes() {
          */
         if (config.instances[instance].add && config.instances[instance].add.controller) {
             let controller = require(config.instances[instance].add.controller);
-            sails.router.bind(`${config.routePrefix}/${instance}/add`, _bindPolicies(policies, controller));
+            sails.router.bind(`${config.routePrefix}/${instance}/add`, _bindPolicies(policies, controller.default));
         } else {
             sails.router.bind(`${config.routePrefix}/${instance}/add`, _bindPolicies(policies, _add));
         }
@@ -43,9 +43,9 @@ export default function bindRoutes() {
          */
         if (config.instances[instance].edit && config.instances[instance].edit.controller) {
             let controller = require(config.instances[instance].edit.controller);
-            sails.router.bind(`${config.routePrefix}/${instance}/edit`, _bindPolicies(policies, controller));
+            sails.router.bind(`${config.routePrefix}/${instance}/edit/:id`, _bindPolicies(policies, controller.default));
         } else {
-            sails.router.bind(`${config.routePrefix}/${instance}/edit`, _bindPolicies(policies, _edit));
+            sails.router.bind(`${config.routePrefix}/${instance}/edit/:id`, _bindPolicies(policies, _edit));
         }
     }
 
@@ -53,7 +53,7 @@ export default function bindRoutes() {
      * View record details
      */
     sails.router.bind(baseRoute + '/view/:id', _bindPolicies(policies, _view));
-    sails.router.bind(baseRoute+"/json", _bindPolicies(policies, _listJson));
+    sails.router.bind(baseRoute + "/json", _bindPolicies(policies, _listJson));
 
     /**
      * Remove record

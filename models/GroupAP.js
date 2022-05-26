@@ -7,7 +7,8 @@ let attributes = {
     },
     name: {
         type: "string",
-        required: true
+        required: true,
+        unique: true
     },
     description: "string",
     users: {

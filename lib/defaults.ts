@@ -51,6 +51,17 @@ const adminpanelConfig: AdminpanelConfig = {
             edit: {
                 controller: "../controllers/editUser"
             }
+        },
+        groups: {
+            title: "Groups",
+            model: "groupap",
+            icon: "group",
+            add: {
+                controller: "../controllers/addGroup"
+            },
+            edit: {
+                controller: "../controllers/editGroup"
+            }
         }
     },
 

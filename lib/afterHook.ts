@@ -2,6 +2,7 @@ import bindTranslations from "./bindTranslations";
 
 let flash = require('connect-flash');
 import * as bindAuthorization from './bindAuthorization';
+import bindAccessRights from "./bindAccessRights";
 
 export default async function () {
     sails.hooks.http.app.use(flash());
@@ -16,6 +17,10 @@ export default async function () {
 
     //binding authorization
     bindAuthorization();
+
+    //bind access rights
+    bindAccessRights();
+    // проверить тестом что создались 4 токена стандартных для админа
 
     if (sails.hooks.i18n && sails.hooks.i18n.appendLocale) {
         sails.after(["hook:i18n:loaded"], async () => {

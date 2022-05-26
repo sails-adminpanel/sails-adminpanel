@@ -115,7 +115,12 @@ export class AdminUtil {
      */
     public static findInstanceName(req): string {
       if (!req.param('instance')) {
-        return null;
+          let instanceName = req.originalUrl.split('/')[2];
+          if (!this.config().instances || !this.config().instances[instanceName]) {
+              return null;
+          } else {
+              return instanceName
+          }
       }
       return req.param('instance');
     };

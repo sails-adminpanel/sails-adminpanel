@@ -1,5 +1,6 @@
 'use strict';
 let { MenuHelper } = require('./helper/menuHelper');
+let { AccessRightsHelper } = require('./helper/accessRightsHelper');
 
 module.exports = function (sails) {
 
@@ -44,7 +45,11 @@ module.exports = function (sails) {
                 key: key,
                 title: label || key,
             });
-        }
+        },
+
+        registerAccessToken: AccessRightsHelper.registerToken,
+
+        getAllAccessTokens: AccessRightsHelper.getTokens
     };
 };
 

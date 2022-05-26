@@ -30,7 +30,7 @@ let attributes = {
         type: 'string'
     },
     timezone: "string",
-    expires: "number" as unknown as number,
+    expires: "string",
     locale: "string",
     isDeleted: "boolean" as unknown as boolean,
     isActive: "boolean" as unknown as boolean,

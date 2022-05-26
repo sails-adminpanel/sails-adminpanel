@@ -19,7 +19,7 @@ declare let attributes: {
         type: string;
     };
     timezone: string;
-    expires: number;
+    expires: string;
     locale: string;
     isDeleted: boolean;
     isActive: boolean;

@@ -10,7 +10,8 @@ let attributes = {
     },
     name: {
         type: "string",
-        required: true
+        required: true,
+        unique: true
     } as unknown as string,
     description: "string",
     users: {
