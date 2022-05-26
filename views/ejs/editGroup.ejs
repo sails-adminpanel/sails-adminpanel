@@ -4,7 +4,7 @@
 <form action="<%= instance.uri %>/add" method="POST">
     <div class="layout">
         <h1><%= __("Group settings") %></h1>
-        <input type="text" id="name" name="name" placeholder="<%= __("Group name") %>" value="<%= group.name %>">
+        <input class="clr-input" type="text" id="name" name="name" placeholder="<%= __("Group name") %>" value="<%= group.name %>">
         <textarea id="description" name="description" placeholder="<%= __("Group description") %>"><%= group.description %></textarea>
     </div>
     <div class="layout">
@@ -15,15 +15,15 @@
                 <li id="user-<%= user.id %>">
                     <label for="checkbox-<%= user.id %>"><%= user.fullName %></label>
                     <% if (userGroupsIds.includes(group.id)) { %>
-                        <input type="checkbox" id="checkbox-<%= user.id %>" name="checkbox-<%= user.id %>" checked>
+                        <input class="clr-input" type="checkbox" id="checkbox-<%= user.id %>" name="checkbox-<%= user.id %>" checked>
                     <% } else { %>
-                        <input type="checkbox" id="checkbox-<%= user.id %>" name="checkbox-<%= user.id %>">
+                        <input class="clr-input" type="checkbox" id="checkbox-<%= user.id %>" name="checkbox-<%= user.id %>">
                     <% } %>
                 </li>
             <% } %>
         </ul>
     </div>
     <div class="layout">
-        <input raised class="btn-save" type="submit" value="<%= __("Save") %>">
+        <input class="clr-input" raised class="btn-save" type="submit" value="<%= __("Save") %>">
     </div>
 </form>

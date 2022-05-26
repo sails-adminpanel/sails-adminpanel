@@ -10,21 +10,21 @@
                 <div class="admin-panel__widget">
                     <label class="admin-panel__title" for="userLogin"><%= __("Login") %></label>
                     <div class="widget_narrow" >
-                        <input type="text" id="userLogin" name="login">
+                        <input class="clr-input" type="text" id="userLogin" name="login">
                     </div>
                 </div>
 
                 <div class="admin-panel__widget">
                     <label class="admin-panel__title" for="fullName"><%= __("Full name") %></label>
                     <div class="widget_narrow" >
-                        <input type="text" id="fullName" name="fullName">
+                        <input class="clr-input" type="text" id="fullName" name="fullName">
                     </div>
                 </div>
 
                 <div class="admin-panel__widget">
                     <label class="admin-panel__title" for="email"><%= __("E-mail") %></label>
                     <div class="widget_narrow" >
-                        <input type="text" id="email" name="email">
+                        <input class="clr-input" type="text" id="email" name="email">
                     </div>
                 </div>
             </div>
@@ -55,7 +55,7 @@
                     <label class="admin-panel__title" for="date"><%= __("Profile expires") %></label>
                     <span class="badge badge-danger">Разредрить из настроек</span>
                     <div class="widget_narrow" >
-                        <input type="date" id="date" name="date">
+                        <input class="clr-input" type="date" id="date" name="date">
 
                     </div>
                 </div>
@@ -92,14 +92,14 @@
                 <div class="admin-panel__widget">
                     <label class="admin-panel__title" for="email"><%= __("Password") %></label>
                     <div class="widget_narrow" >
-                        <input type="password" id="userPassword" name="userPassword">
+                        <input class="clr-input" type="password" id="userPassword" name="userPassword">
                     </div>
                 </div>
 
                 <div class="admin-panel__widget">
                     <label class="admin-panel__title" for="email"><%= __("Password repeat") %></label>
                     <div class="widget_narrow" >
-                        <input type="password" id="repeatUserPassword" name="repeatUserPassword">
+                        <input class="clr-input" type="password" id="repeatUserPassword" name="repeatUserPassword">
                     </div>
                 </div>
             </div>
@@ -114,7 +114,7 @@
                         <% for (let group of groups) { %>
                             <div class="widget_narrow" >
                                 <label for="checkbox-<%= group.id %>"><%= group.name %></label>
-                                <input type="checkbox" id="checkbox-<%= group.id %>" name="checkbox-<%= group.id %>">
+                                <input class="clr-input" type="checkbox" id="checkbox-<%= group.id %>" name="checkbox-<%= group.id %>">
                             </div>
                         <% } %>
                     </div>
@@ -123,7 +123,7 @@
         <% } %>
 
     <div>
-        <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+        <input class="clr-input" type="hidden" name="_csrf" value="<%= _csrf %>" />
     </div>
 
     <button raised="" class="btn-save" id="submit" onclick="submitForm()">

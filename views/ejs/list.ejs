@@ -6,7 +6,7 @@ $(document).ready(function() {
     $('#list thead tr').clone(true).insertBefore( '#list thead tr' );
     $('#list thead tr:eq(0) th').each( function (i) {
         if (i === 0) return;
-        $(this).html( '<input type="text" placeholder="" />' );
+        $(this).html( '<input class="clr-input" type="text" placeholder="" />' );
 
         $( 'input', this ).on( 'keyup change', function () {
             if ( table.column(i).search() !== this.value ) {

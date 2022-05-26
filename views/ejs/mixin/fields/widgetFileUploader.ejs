@@ -1,9 +1,9 @@
 <div id="<%=key%>-container"> </div>
 <% var v = typeof value === 'object' ? JSON.stringify(value) : value; %>
 <% if (v === null || !v)  { %>
-   <input type="hidden" id="form-<%=key%>" name="<%=key%>">
+   <input class="clr-input" type="hidden" id="form-<%=key%>" name="<%=key%>">
 <% } else  {%>
-  <input type="hidden" id="form-<%=key%>" name="<%=key%>" value='<%=v%>'>
+  <input class="clr-input" type="hidden" id="form-<%=key%>" name="<%=key%>" value='<%=v%>'>
 <% } %>
 
 
