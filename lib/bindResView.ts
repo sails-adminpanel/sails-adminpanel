@@ -37,6 +37,8 @@ export default function bindResView() {
             let locals = arguments[1];
             let cb_view = arguments[2];
 
+            
+
             if (typeof arguments[0] === "object") {
                 locals = arguments[0];
             }
@@ -60,6 +62,8 @@ export default function bindResView() {
             }
             locals.theme = sails.config.adminpanel.theme || 'light';
             locals.button = sails.config.adminpanel.button || 'solid';
+
+            if (locals.section === undefined) locals.section = 'adminpanel';
 
             return res.view(ViewsHelper.getViewPath(specifiedPath), locals, cb_view);
         };

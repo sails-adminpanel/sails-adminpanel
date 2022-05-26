@@ -1,7 +1,7 @@
+<% var config = adminpanel.configHelper.getConfig() %>
 <nav class="sidenav sidenav-panel">
   <section class="sidenav-content">
     <section class="nav-group">
-      <% include sections %>
       <% adminpanel.menuHelper.getMenuItems().forEach(function(menuItem) { %> <% var active = ""; if (menuItem && menuItem.instanceName && instance && instance.name) { active = menuItem.instanceName === instance.name ? 'active' : '' } %>
       <section class="nav-group collapsible">
         <input class="clr-input" id="tab-<%=menuItem.id%>" type="checkbox" />
@@ -26,11 +26,17 @@
             >
           </li>
         </ul>
-        <% }) %> <% } %> <% }) %>
-      </section>
+        <% }) %> <% } %> 
+        </section>
+        <% }) %>
+      
       <a class="sidenav-panel__link" href="#">
         <span class="navbar-icon"> <i class="las la-list"></i></span> Без стрелки</a
       >
     </section>
+    
   </section>
+  <% if (config.showVersion) { %>
+    <section style="text-align: center;font-size: 10px;">v<%=config.package.version%></section>
+  <% } %>
 </nav>
