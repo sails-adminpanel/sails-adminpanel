@@ -130,6 +130,7 @@ export interface CreateUpdateConfig {
 }
 
 export interface HrefConfig {
+    id: string
     title: string
     link: string
     icon?: string
