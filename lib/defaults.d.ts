@@ -1,3 +1,3 @@
 export declare const content: {
-    adminpanel: AdminpanelConfig;
+    adminpanel: any;
 };

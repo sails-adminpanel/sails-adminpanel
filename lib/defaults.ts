@@ -1,5 +1,5 @@
 import {AdminpanelConfig} from "../interfaces/types";
-
+const packageJson = require('../package.json')
 /**
  * Default admin config
  */
@@ -68,9 +68,13 @@ const adminpanelConfig: AdminpanelConfig = {
     /**
      * List of sections in head
      */
-    sections: []
+    sections: [],
+    package: packageJson,
+    showVersion: true
 }
 
 export const content = {
     adminpanel: adminpanelConfig
 };
+
+console.log(adminpanelConfig)
