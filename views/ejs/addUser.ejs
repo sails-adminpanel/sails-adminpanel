@@ -29,7 +29,7 @@
                 </div>
             </div>
 
-            
+
             <div class="clr-col-sm-12 clr-col-md-6">
 
 
@@ -47,7 +47,7 @@
                             <option>GMT+5</option>
                             <option>GMT+6</option>
                             <option>GMT+7</option>
-                        </select>                        
+                        </select>
                     </div>
                 </div>
 
@@ -78,7 +78,7 @@
 
                 <div class="admin-panel__widget">
                     <div class="widget_narrow" >
-                        <a href=""><i class="las la-mask"></i> <%= __("Pretend to be a user") %></a> 
+                        <a href=""><i class="las la-mask"></i> <%= __("Pretend to be a user") %></a>
                     </div>
                 </div>
 
@@ -106,7 +106,7 @@
         </div>
 
 
-        <% if (groups.length) { %> 
+        <% if (groups.length) { %>
             <h2><%= __("User groups") %></h2>
             <div class="clr-row">
                 <div class="clr-col-sm-12 clr-col-md-6">
@@ -122,11 +122,12 @@
             </div>
         <% } %>
 
-    <div>
-        <input class="clr-input" type="hidden" name="_csrf" value="<%= _csrf %>" />
-    </div>
+        <div>
+            <input class="clr-input" type="hidden" name="_csrf" value="<%= _csrf %>" />
+        </div>
 
-    <button raised="" class="btn-save" id="submit" onclick="submitForm()">
-        <%= __("Save") %>
-    </button>
+        <button raised="" class="btn-save" id="submit" onclick="submitForm()">
+            <%= __("Save") %>
+        </button>
+    </div>
 </form>

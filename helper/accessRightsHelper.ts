@@ -2,23 +2,36 @@ import {AccessRightsToken} from "../interfaces/types";
 
 export class AccessRightsHelper {
 
-    private _tokens = [];
+    private static _tokens: AccessRightsToken[] = [];
 
     public static registerToken(accessRightsToken: AccessRightsToken): void {
-        // положить все в массив _tokens
-        // проверить что айди уникальное, пересмотреть список
-        // проверка что все поля есть
-        return
+        if (!accessRightsToken.id || !accessRightsToken.name || !accessRightsToken.description || !accessRightsToken.department) {
+            throw new Error("Adminpanel > Can not register token: Missed one or more required parameters");
+        }
+
+        for (let token of this._tokens) {
+            if (token.id === accessRightsToken.id) {
+                throw new Error("Adminpanel > Can not register token: Token with this id already registered")
+            }
+        }
+
+        this._tokens.push(accessRightsToken);
     }
 
     public static getTokens(): AccessRightsToken[] {
-        return
+        return this._tokens
     }
 
-    public static getTokensByDepartment() {
+    public static getTokensByDepartment(department: string): AccessRightsToken[] {
+        return this._tokens.map((token) => {
+            if (token.department === department) {
+                return token
+            }
+        })
     }
 
-    public static getAllDepartments() {
+    public static getAllDepartments(): string[] {
+        return this._tokens.map((token) => {return token.department})
         // на фигме заголовок это department
         // параметр доступа это name токена
         // description сделать на hint (обычный hint html)

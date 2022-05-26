@@ -20,7 +20,6 @@ export default async function () {
 
     //bind access rights
     bindAccessRights();
-    // проверить тестом что создались 4 токена стандартных для админа
 
     if (sails.hooks.i18n && sails.hooks.i18n.appendLocale) {
         sails.after(["hook:i18n:loaded"], async () => {

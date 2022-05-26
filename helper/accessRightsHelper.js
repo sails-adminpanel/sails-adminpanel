@@ -2,24 +2,33 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AccessRightsHelper = void 0;
 class AccessRightsHelper {
-    constructor() {
-        this._tokens = [];
-    }
     static registerToken(accessRightsToken) {
-        // положить все в массив _tokens
-        // проверить что айди уникальное, пересмотреть список
-        // проверка что все поля есть
-        return;
+        if (!accessRightsToken.id || !accessRightsToken.name || !accessRightsToken.description || !accessRightsToken.department) {
+            throw new Error("Adminpanel > Can not register token: Missed one or more required parameters");
+        }
+        for (let token of this._tokens) {
+            if (token.id === accessRightsToken.id) {
+                throw new Error("Adminpanel > Can not register token: Token with this id already registered");
+            }
+        }
+        this._tokens.push(accessRightsToken);
     }
     static getTokens() {
-        return;
+        return this._tokens;
     }
-    static getTokensByDepartment() {
+    static getTokensByDepartment(department) {
+        return this._tokens.map((token) => {
+            if (token.department === department) {
+                return token;
+            }
+        });
     }
     static getAllDepartments() {
+        return this._tokens.map((token) => { return token.department; });
         // на фигме заголовок это department
         // параметр доступа это name токена
         // description сделать на hint (обычный hint html)
     }
 }
 exports.AccessRightsHelper = AccessRightsHelper;
+AccessRightsHelper._tokens = [];

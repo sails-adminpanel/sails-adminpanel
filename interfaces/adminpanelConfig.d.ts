@@ -32,6 +32,7 @@ export interface AdminpanelConfig {
         login: string
         password: string
     }
+    showORMtime?: boolean
 }
 
 export interface InstanceConfig {
