@@ -26,9 +26,7 @@ let attributes = {
         required: true
     } as unknown as string,
     email: "string",
-    passwordHashed: {
-        type: 'string'
-    },
+    passwordHashed: 'string',
     timezone: "string",
     expires: "string",
     locale: "string",

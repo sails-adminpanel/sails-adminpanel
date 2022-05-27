@@ -14,9 +14,9 @@ async function default_1(req, res) {
         console.log(req.body);
         let userGroups = [];
         for (let key in req.body) {
-            if (key.startsWith("checkbox-") && req.body[key] === "on") {
+            if (key.startsWith("group-checkbox-") && req.body[key] === "on") {
                 for (let group of groups) {
-                    if (group.id === key.slice(9)) {
+                    if (group.id == key.slice(15)) {
                         userGroups.push(group.id);
                     }
                 }
@@ -25,7 +25,7 @@ async function default_1(req, res) {
         let user;
         try {
             user = await UserAP.create({ login: req.body.login, fullName: req.body.fullName, email: req.body.email,
-                password: req.body.password, timezone: req.body.timezone, expires: req.body.data,
+                password: req.body.password, timezone: req.body.timezone, expires: req.body.date,
                 locale: req.body.locale, groups: userGroups }).fetch();
         }
         catch (e) {

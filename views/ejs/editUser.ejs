@@ -106,11 +106,11 @@
                         <% var userGroupsIds = user.groups.map((group) => {return group.id}) %>
                         <% for (let group of groups) { %>
                             <div class="clr-checkbox-inline">
-                                <label for="checkbox-<%= group.id %>"><%= group.name %></label>
+                                <label for="group-checkbox-<%= group.id %>"><%= group.name %></label>
                                 <% if (userGroupsIds.includes(group.id)) { %>
-                                    <input type="checkbox" id="checkbox-<%= group.id %>" name="checkbox-<%= group.id %>" checked>
+                                    <input type="checkbox" id="group-checkbox-<%= group.id %>" name="group-checkbox-<%= group.id %>" checked>
                                 <% } else { %>
-                                    <input type="checkbox" id="checkbox-<%= group.id %>" name="checkbox-<%= group.id %>">
+                                    <input type="checkbox" id="group-checkbox-<%= group.id %>" name="group-checkbox-<%= group.id %>">
                                 <% } %>
                             </div>
                         <% } %>

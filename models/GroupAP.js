@@ -11,10 +11,11 @@ let attributes = {
         unique: true
     },
     description: "string",
+    tokens: [],
     users: {
         collection: "userap",
         via: "groups"
-    },
+    }
 };
 let model = {
     beforeCreate: (item, next) => {

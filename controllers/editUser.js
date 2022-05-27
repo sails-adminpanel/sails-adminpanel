@@ -28,9 +28,9 @@ async function default_1(req, res) {
         console.log(req.body);
         let userGroups = [];
         for (let key in req.body) {
-            if (key.startsWith("checkbox-") && req.body[key] === "on") {
+            if (key.startsWith("group-checkbox-") && req.body[key] === "on") {
                 for (let group of groups) {
-                    if (group.id === key.slice(9)) {
+                    if (group.id == key.slice(15)) {
                         userGroups.push(group.id);
                     }
                 }
@@ -39,14 +39,14 @@ async function default_1(req, res) {
         let updatedUser;
         try {
             updatedUser = await UserAP.update({ id: user.id }, { login: req.body.login, fullName: req.body.fullName,
-                email: req.body.email, password: req.body.password, timezone: req.body.timezone, expires: req.body.data,
+                email: req.body.email, password: req.body.password, timezone: req.body.timezone, expires: req.body.date,
                 locale: req.body.locale, groups: userGroups }).fetch();
         }
         catch (e) {
             sails.log.error(e);
         }
         reloadNeeded = true;
-        console.log(updatedUser);
+        console.log("UPDATED USER", updatedUser);
     }
     if (reloadNeeded) {
         try {
@@ -57,9 +57,13 @@ async function default_1(req, res) {
             req._sails.log.error(e);
             return res.serverError();
         }
+        try {
+            groups = await GroupAP.find();
+        }
+        catch (e) {
+            sails.log.error(e);
+        }
     }
-    console.log(user);
-    console.log(groups);
     return res.viewAdmin("editUser", { instance: instance, user: user, groups: groups });
 }
 exports.default = default_1;

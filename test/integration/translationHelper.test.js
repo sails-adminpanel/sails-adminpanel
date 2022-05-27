@@ -9,6 +9,6 @@ describe('Translation helper', function () {
         let expectedLocales = require("../datamocks/testLocales.json");
         translationHelper_1.TranslationHelper.loadTranslations(projectTranslations);
         //console.log("Locales: ", sails.hooks.i18n.getLocales())
-        chai_1.expect(sails.hooks.i18n.getLocales()).to.deep.equal(expectedLocales);
+        (0, chai_1.expect)(sails.hooks.i18n.getLocales()).to.deep.equal(expectedLocales);
     });
 });

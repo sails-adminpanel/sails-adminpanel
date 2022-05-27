@@ -1,6 +1,7 @@
 import WaterlineModel from "../interfaces/waterlineModel";
 import WaterlineInstance from "../interfaces/waterlineInstance";
 import UserAP from "./UserAP";
+import {AccessRightsToken} from "../interfaces/types";
 
 let attributes = {
 
@@ -14,10 +15,11 @@ let attributes = {
         unique: true
     } as unknown as string,
     description: "string",
+    tokens: [] as unknown as AccessRightsToken[], // Надо правильно задать tokens
     users: {
         collection: "userap",
         via: "groups"
-    } as unknown as UserAP[],
+    } as unknown as UserAP[]
 
 };
 

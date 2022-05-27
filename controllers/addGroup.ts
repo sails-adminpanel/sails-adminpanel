@@ -22,12 +22,23 @@ export default async function addGroup(req, res) {
     if (req.method.toUpperCase() === 'POST') {
         console.log(req.body);
 
+        let allTokens = AccessRightsHelper.getTokens();
+
         let usersInThisGroup = [];
+        let tokensOfThisGroup = [];
         for (let key in req.body) {
-            if (key.startsWith("checkbox-") && req.body[key] === "on") {
+            if (key.startsWith("user-checkbox-") && req.body[key] === "on") {
                 for (let user of users) {
-                    if (user.id === key.slice(9)) {
+                    if (user.id == key.slice(14)) {
                         usersInThisGroup.push(user.id)
+                    }
+                }
+            }
+
+            if (key.startsWith("token-checkbox-") && req.body[key] === "on") {
+                for (let token of allTokens) {
+                    if (token.id == key.slice(15)) {
+                        tokensOfThisGroup.push(token)
                     }
                 }
             }
@@ -35,7 +46,8 @@ export default async function addGroup(req, res) {
 
         let group;
         try {
-            group = await GroupAP.create({name: req.body.name, description: req.body.description, users: usersInThisGroup}).fetch()
+            group = await GroupAP.create({name: req.body.name, description: req.body.description,
+                users: usersInThisGroup, tokens: tokensOfThisGroup}).fetch()
         } catch (e) {
             sails.log.error(e)
         }

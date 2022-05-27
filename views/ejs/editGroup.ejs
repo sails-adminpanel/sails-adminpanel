@@ -1,7 +1,7 @@
 <% include head %>
 <% include headContent %>
 
-<form id="editGroupForm" action="<%= instance.uri %>/add" method="POST">
+<form id="editGroupForm" action="<%= instance.uri %>/edit/<%= group.id %>" method="POST">
     <div class="layout">
         <h2><%= __("Group settings") %></h2>
 
@@ -27,17 +27,16 @@
                     <% userGroupsIds = user.groups.map((group) => {return group.id}) %>
                 <% } %>
                 <div class="clr-checkbox-inline">
-                    <label for="checkbox-<%= user.id %>"><%= user.fullName %></label>
+                    <label for="user-checkbox-<%= user.id %>"><%= user.fullName %></label>
                     <% if (userGroupsIds.includes(group.id)) { %>
-                        <input type="checkbox" id="checkbox-<%= user.id %>" name="checkbox-<%= user.id %>" checked>
+                        <input type="checkbox" id="user-checkbox-<%= user.id %>" name="user-checkbox-<%= user.id %>" checked>
                     <% } else { %>
-                        <input type="checkbox" id="checkbox-<%= user.id %>" name="checkbox-<%= user.id %>">
+                        <input type="checkbox" id="user-checkbox-<%= user.id %>" name="user-checkbox-<%= user.id %>">
                     <% } %>
                 </div>
             <% } %>
         <% } %>
 
-        СДЕЛАТЬ ПРОВЕРКУ НА CHECKED
         <% if (Object.keys(groupedTokens).length) { %>
             <% for (let [department, tokens] of Object.entries(groupedTokens)) { %>
                 <h2><%= department %></h2>
@@ -46,12 +45,16 @@
                         <div class="admin-panel__widget">
                             <% for (let token of tokens) { %>
                                 <div class="clr-checkbox-inline">
-                                    <label for="checkbox-<%= token.id %>"><%= token.name %></label>
+                                    <label for="token-checkbox-<%= token.id %>"><%= token.name %></label>
                                     <a href="..." role="tooltip" aria-haspopup="true" class="tooltip tooltip-right">
                                         <clr-icon shape="info-circle" size="24"></clr-icon>
                                         <span class="tooltip-content">SOMETHING<%= token.description %></span>
                                     </a>
-                                    <input type="checkbox" id="checkbox-<%= token.id %>" name="checkbox-<%= token.id %>">
+                                    <% if (group.tokens.includes(token)) { %>
+                                        <input type="checkbox" id="token-checkbox-<%= token.id %>" name="token-checkbox-<%= token.id %>" checked>
+                                    <% } else { %>
+                                        <input type="checkbox" id="token-checkbox-<%= token.id %>" name="token-checkbox-<%= token.id %>">
+                                    <% } %>
                                 </div>
                             <% } %>
                         </div>

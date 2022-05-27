@@ -16,9 +16,7 @@ let attributes = {
         required: true
     },
     email: "string",
-    passwordHashed: {
-        type: 'string'
-    },
+    passwordHashed: 'string',
     timezone: "string",
     expires: "string",
     locale: "string",
