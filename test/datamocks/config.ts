@@ -1,4 +1,4 @@
-import {AdminpanelConfig, FieldsTypes, InstanceConfig} from "../../interfaces/types";
+import {AdminpanelConfig, FieldsTypes, InstanceConfig} from "../../interfaces/adminpanelConfig";
 
 /**
  * This configuration loads all sail models as they are
@@ -66,6 +66,7 @@ let instances: {[key: string]: InstanceConfig} = {
         model: "ExampleTestDataModel",
         actions: [
             {
+                id: "action1",
                 link: "/",
                 title: "Some new action",
                 icon: "ok",
@@ -235,7 +236,6 @@ setTimeout(() => {
             instances[modelName] = {
                 title: modelName + " dev",
                 model: modelName,
-                icon: randomFaIcon(),
                 fields: {
                     createdAt: false,
                     updatedAt: false,
@@ -250,6 +250,7 @@ let adminpanel: AdminpanelConfig = {
     // dashboard: true,
     sections: [
         {
+            id: "section1",
             title: 'Website',
             link: 'https://webresto.org'
         },

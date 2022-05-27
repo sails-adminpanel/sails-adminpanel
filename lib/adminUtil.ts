@@ -1,4 +1,5 @@
-import {Instance, InstanceConfig} from "../interfaces/types";
+import {Instance} from "../interfaces/types";
+import {InstanceConfig} from "../interfaces/adminpanelConfig";
 import ORMModel from "../interfaces/ORMModel";
 
 export class AdminUtil {

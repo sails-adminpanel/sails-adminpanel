@@ -1,7 +1,7 @@
 import { AdminUtil } from "../lib/adminUtil";
 import { RequestProcessor } from "../lib/requestProcessor";
 import { FieldsHelper } from "../helper/fieldsHelper";
-import {CreateUpdateConfig} from "../interfaces/types";
+import {CreateUpdateConfig} from "../interfaces/adminpanelConfig";
 
 export default async function edit(req, res) {
     //Check id

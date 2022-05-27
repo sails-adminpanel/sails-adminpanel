@@ -1,24 +1,69 @@
 <% include head %>
 <% include headContent %>
 
-<form action="<%= instance.uri %>/add" method="POST">
+<form id="addGroupForm" action="<%= instance.uri %>/add" method="POST">
     <div class="layout">
-        <h1><%= __("Group settings") %></h1>
-        <input class="clr-input" type="text" id="name" name="name" placeholder="<%= __("Group name") %>">
-        <textarea id="description" name="description" placeholder="<%= __("Group description") %>"></textarea>
-    </div>
-    <div class="layout">
-        <label for="members"><%= __("Members") %></label>
-        <ul id="members">
+        <h2><%= __("Group settings") %></h2>
+
+        <div class="admin-panel__widget">
+            <label class="admin-panel__title" for="name"><%= __("Group name") %></label>
+            <div class="widget_narrow" >
+                <input class="clr-input" type="text" id="name" name="name">
+            </div>
+        </div>
+
+        <div class="admin-panel__widget">
+            <label class="admin-panel__title" for="description"><%= __("Group description") %></label>
+            <div class="widget_narrow" >
+                <textarea class="clr-textarea" id="description" name="description"></textarea>
+            </div>
+        </div>
+
+        <% if (users.length) { %>
+            <label class="admin-panel__title" for="members"><%= __("Members") %></label>
             <% for (let user of users) { %>
-                <li id="user-<%= user.id %>">
+                <div class="clr-checkbox-inline">
                     <label for="checkbox-<%= user.id %>"><%= user.fullName %></label>
-                    <input class="clr-input" type="checkbox" id="checkbox-<%= user.id %>" name="checkbox-<%= user.id %>">
-                </li>
+                    <input type="checkbox" id="checkbox-<%= user.id %>" name="checkbox-<%= user.id %>">
+                </div>
             <% } %>
-        </ul>
-    </div>
-    <div class="layout">
-        <input class="clr-input" raised class="btn-save" type="submit" value="<%= __("Save") %>">
+        <% } %>
+
+        <% if (Object.keys(groupedTokens).length) { %>
+            <% for (let [department, tokens] of Object.entries(groupedTokens)) { %>
+                <h2><%= department %></h2>
+                <div class="clr-row">
+                    <div class="clr-col-sm-12 clr-col-md-6">
+                        <div class="admin-panel__widget">
+                            <% for (let token of tokens) { %>
+                                <div class="clr-checkbox-inline">
+                                    <label for="checkbox-<%= token.id %>"><%= token.name %></label>
+                                    <a href="..." role="tooltip" aria-haspopup="true" class="tooltip tooltip-right">
+                                        <clr-icon shape="info-circle" size="24"></clr-icon>
+                                        <span class="tooltip-content">SOMETHING<%= token.description %></span>
+                                    </a>
+                                    <input type="checkbox" id="checkbox-<%= token.id %>" name="checkbox-<%= token.id %>">
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        <% } %>
+
+        <div>
+            <input class="clr-input" type="hidden" name="_csrf" value="<%= _csrf %>" />
+        </div>
+
+        <button raised="" class="btn-save" id="submit" onclick="submitForm()">
+            <%= __("Save") %>
+        </button>
     </div>
 </form>
+
+<script>
+    function submitForm() {
+        // check all fields
+        $("#addGroupForm").submit();
+    }
+</script>

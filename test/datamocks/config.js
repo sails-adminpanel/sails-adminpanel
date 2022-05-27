@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const types_1 = require("../../interfaces/types");
+const adminpanelConfig_1 = require("../../interfaces/adminpanelConfig");
 /**
  * This configuration loads all sail models as they are
  */
@@ -28,7 +28,7 @@ let instances = {
         fields: {
             menu: {
                 title: "Редактор меню",
-                type: types_1.FieldsTypes.menu,
+                type: adminpanelConfig_1.FieldsTypes.menu,
                 options: {
                     maxNestedItems: 2,
                     visibleElement: 'visible',
@@ -64,6 +64,7 @@ let instances = {
         model: "ExampleTestDataModel",
         actions: [
             {
+                id: "action1",
                 link: "/",
                 title: "Some new action",
                 icon: "ok",
@@ -73,68 +74,68 @@ let instances = {
             label: "Заголовок",
             teaser: {
                 title: "Тизер",
-                type: types_1.FieldsTypes.text,
+                type: adminpanelConfig_1.FieldsTypes.text,
                 tooltip: "Just any description here"
             },
             description: {
                 title: "Описание",
-                type: types_1.FieldsTypes.wysiwyg,
+                type: adminpanelConfig_1.FieldsTypes.wysiwyg,
             },
             date: {
                 title: "Дата",
-                type: types_1.FieldsTypes.date,
+                type: adminpanelConfig_1.FieldsTypes.date,
             },
             datetime: {
                 title: "Дата и время",
-                type: types_1.FieldsTypes.datetime,
+                type: adminpanelConfig_1.FieldsTypes.datetime,
             },
             time: {
                 title: "время",
-                type: types_1.FieldsTypes.time,
+                type: adminpanelConfig_1.FieldsTypes.time,
             },
             number: {
                 title: "Число",
-                type: types_1.FieldsTypes.number,
+                type: adminpanelConfig_1.FieldsTypes.number,
             },
             color: {
                 title: "цвет",
-                type: types_1.FieldsTypes.color,
+                type: adminpanelConfig_1.FieldsTypes.color,
             },
             email: {
-                type: types_1.FieldsTypes.email,
+                type: adminpanelConfig_1.FieldsTypes.email,
             },
             month: {
-                type: types_1.FieldsTypes.month,
+                type: adminpanelConfig_1.FieldsTypes.month,
             },
             range: {
-                type: types_1.FieldsTypes.range,
+                type: adminpanelConfig_1.FieldsTypes.range,
             },
             week: {
-                type: types_1.FieldsTypes.week,
+                type: adminpanelConfig_1.FieldsTypes.week,
             },
             ace: {
                 title: "HTML",
-                type: types_1.FieldsTypes.ace,
+                type: adminpanelConfig_1.FieldsTypes.ace,
             },
             fileUploader: {
                 title: "FileUploader",
-                type: types_1.FieldsTypes.file,
+                type: adminpanelConfig_1.FieldsTypes.file,
             },
             filesUploader: {
                 title: "FilesUploader",
-                type: types_1.FieldsTypes.files,
+                type: adminpanelConfig_1.FieldsTypes.files,
             },
             galleryUploader: {
                 title: "GalleryUploader",
-                type: types_1.FieldsTypes.images,
+                type: adminpanelConfig_1.FieldsTypes.images,
             },
             imageUploader: {
                 title: "ImageUploader",
-                type: types_1.FieldsTypes.image,
+                type: adminpanelConfig_1.FieldsTypes.image,
             },
             schedule: {
                 title: "Редактор распорядка",
-                type: types_1.FieldsTypes.worktime,
+                type: adminpanelConfig_1.FieldsTypes.worktime,
                 options: {
                     propertyList: {
                         title: {
@@ -179,10 +180,10 @@ let instances = {
             fields: {
                 json: {
                     title: "Содержимое",
-                    type: types_1.FieldsTypes.json,
+                    type: adminpanelConfig_1.FieldsTypes.json,
                 },
                 gallery: {
-                    type: types_1.FieldsTypes.images,
+                    type: adminpanelConfig_1.FieldsTypes.images,
                     options: {
                         filesize: 10,
                         accepted: ["png", "jpeg", "jpg", "gif"],
@@ -196,10 +197,10 @@ let instances = {
             fields: {
                 json: {
                     title: "JSON",
-                    type: types_1.FieldsTypes.json,
+                    type: adminpanelConfig_1.FieldsTypes.json,
                 },
                 gallery: {
-                    type: types_1.FieldsTypes.images,
+                    type: adminpanelConfig_1.FieldsTypes.images,
                     options: {
                         filesize: 10,
                         accepted: ["png", "jpeg", "jpg", "gif"],
@@ -218,7 +219,6 @@ setTimeout(() => {
             instances[modelName] = {
                 title: modelName + " dev",
                 model: modelName,
-                icon: randomFaIcon(),
                 fields: {
                     createdAt: false,
                     updatedAt: false,
@@ -232,6 +232,7 @@ let adminpanel = {
     // dashboard: true,
     sections: [
         {
+            id: "section1",
             title: 'Website',
             link: 'https://webresto.org'
         },

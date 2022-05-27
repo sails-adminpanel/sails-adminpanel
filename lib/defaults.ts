@@ -1,4 +1,4 @@
-import {AdminpanelConfig} from "../interfaces/types";
+import {AdminpanelConfig} from "../interfaces/adminpanelConfig";
 const packageJson = require('../package.json')
 /**
  * Default admin config

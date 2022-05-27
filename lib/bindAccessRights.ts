@@ -3,7 +3,7 @@ import {AccessRightsHelper} from "../helper/accessRightsHelper";
 export default function bindAccessRights() {
     let instances = sails.config.adminpanel.instances;
     for (let key of Object.keys(instances)) {
-        let department = `Section ${instances[key].name}`;
+        let department = `Section ${key}`;
 
         // create
         AccessRightsHelper.registerToken({id: `create-${key}`, name: "Create",

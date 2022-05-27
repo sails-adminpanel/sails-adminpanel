@@ -1,66 +1,131 @@
 <% include head %>
 <% include headContent %>
 
-<form action="<%= instance.uri %>/edit/<%= user.id %>" method="POST">
+<form id="editUserForm" action="<%= instance.uri %>/edit/<%= user.id %>" method="POST">
     <div class="layout">
         <h2><%= __("User settings") %></h2>
-        <div class="row">
-            <div class="col">
-                <input class="clr-input" type="text" id="userLogin" name="login" placeholder="<%= __("Login") %>" value="<%= user.login %>">
+        <div class="clr-row">
+            <div class="clr-col-sm-12 clr-col-md-6">
+
+                <div class="admin-panel__widget">
+                    <label class="admin-panel__title" for="userLogin"><%= __("Login") %></label>
+                    <div class="widget_narrow" >
+                        <input class="clr-input" type="text" id="userLogin" name="login" value="<%= user.login %>">
+                    </div>
+                </div>
+
+                <div class="admin-panel__widget">
+                    <label class="admin-panel__title" for="fullName"><%= __("Full name") %></label>
+                    <div class="widget_narrow" >
+                        <input class="clr-input" type="text" id="fullName" name="fullName" value="<%= user.fullName %>">
+                    </div>
+                </div>
+
+                <div class="admin-panel__widget">
+                    <label class="admin-panel__title" for="email"><%= __("E-mail") %></label>
+                    <div class="widget_narrow" >
+                        <input class="clr-input" type="text" id="email" name="email" value="<%= user.email %>">
+                    </div>
+                </div>
+
             </div>
-            <div class="col">
-                <input class="clr-input" type="text" id="fullName" name="fullName" placeholder="<%= __("Full name") %>" value="<%= user.fullName %>">
-            </div>
-            <div class="col">
-                <input class="clr-input" type="email" id="email" name="email" placeholder="<%= __("E-mail") %>" value="<%= user.email %>">
-            </div>
-            <div class="col">
-                <input class="clr-input" type="password" id="userPassword" name="password" placeholder="<%= __("Password") %>">
+
+            <div class="clr-col-sm-12 clr-col-md-6">
+                <div class="admin-panel__widget">
+                    <label class="admin-panel__title" for="timezone"><%= __("Timezone") %></label>
+                    <div class="widget_narrow" >
+                        <span class="badge badge-danger">Разредрить из настроек</span>
+                        <select id="timezone" name="timezone">
+                            <option selected>разрендрить из sails.admin.config.timezones</option>
+                            <option>GMT+1</option>
+                            <option>GMT+2</option>
+                            <option>GMT+3</option>
+                            <option>GMT+4</option>
+                            <option>GMT+5</option>
+                            <option>GMT+6</option>
+                            <option>GMT+7</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="admin-panel__widget">
+                    <label class="admin-panel__title" for="date"><%= __("Profile expires") %></label>
+                    <span class="badge badge-danger">Разредрить из настроек</span>
+                    <div class="widget_narrow" >
+                        <input class="clr-input" type="date" id="date" name="date" value="<%= user.expires %>">
+
+                    </div>
+                </div>
+
+                <div class="admin-panel__widget">
+                    <label class="admin-panel__title" for="locale"><%= __("Locale") %></label>
+                    <span class="badge badge-danger">Разредрить из настроек</span>
+                    <div class="widget_narrow" >
+                        <select id="locale" name="locale">
+                            <option selected><%= __("EN") %></option>
+                            <option><%= __("UA") %></option>
+                            <option><%= __("RU") %></option>
+                            <option><%= __("DE") %></option>
+                        </select>
+
+                    </div>
+                </div>
+
+                <div class="admin-panel__widget">
+                    <div class="widget_narrow" >
+                        <a href=""><i class="las la-mask"></i> <%= __("Pretend to be a user") %></a>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col">
-                <label><%= __("Timezone") %>: </label>
-                <select id="timezone" name="timezone">
-                    <option>UTC</option>
-                    <option>GMT+1</option>
-                    <option>GMT+2</option>
-                    <option>GMT+3</option>
-                    <option>GMT+4</option>
-                    <option>GMT+5</option>
-                    <option>GMT+6</option>
-                    <option>GMT+7</option>
-                </select>
-            </div>
-            <div class="col">
-                <label><%= __("Profile expires") %>: </label>
-                <input class="clr-input" type="date" id="date" name="date" value="<%= user.expires %>">
-            </div>
-            <div class="col">
-                <label><%= __("Locale") %>: </label>
-                <select id="locale" name="locale">
-                    <option selected><%= __("EN") %></option>
-                    <option><%= __("UA") %></option>
-                    <option><%= __("RU") %></option>
-                    <option><%= __("DE") %></option>
-                </select>
+
+        <h2><%= __("Password") %></h2>
+        <div class="clr-row">
+            <div class="clr-col-sm-12 clr-col-md-6">
+                <div class="admin-panel__widget">
+                    <label class="admin-panel__title" for="email"><%= __("Password") %></label>
+                    <div class="widget_narrow" >
+                        <input class="clr-input" type="password" id="userPassword" name="userPassword">
+                    </div>
+                </div>
+
+                <div class="admin-panel__widget">
+                    <label class="admin-panel__title" for="email"><%= __("Repeat password") %></label>
+                    <div class="widget_narrow" >
+                        <input class="clr-input" type="password" id="repeatUserPassword" name="repeatUserPassword">
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="layout">
-        <h2><%= __("User's groups") %></h2>
-        <% var userGroupsIds = user.groups.map((group) => {return group.id}) %>
-        <% for (let group of groups) { %>
-            <label for="checkbox-<%= group.id %>"><%= group.name %></label>
-            <% if (userGroupsIds.includes(group.id)) { %>
-                <input class="clr-input" type="checkbox" id="checkbox-<%= group.id %>" name="checkbox-<%= group.id %>" checked>
-            <% } else { %>
-                <input class="clr-input" type="checkbox" id="checkbox-<%= group.id %>" name="checkbox-<%= group.id %>">
-            <% } %>
+
+        <% if (groups.length) { %>
+            <h2><%= __("User groups") %></h2>
+            <div class="clr-row">
+                <div class="clr-col-sm-12 clr-col-md-6">
+                    <div class="admin-panel__widget">
+                        <% var userGroupsIds = user.groups.map((group) => {return group.id}) %>
+                        <% for (let group of groups) { %>
+                            <div class="clr-checkbox-inline">
+                                <label for="checkbox-<%= group.id %>"><%= group.name %></label>
+                                <% if (userGroupsIds.includes(group.id)) { %>
+                                    <input type="checkbox" id="checkbox-<%= group.id %>" name="checkbox-<%= group.id %>" checked>
+                                <% } else { %>
+                                    <input type="checkbox" id="checkbox-<%= group.id %>" name="checkbox-<%= group.id %>">
+                                <% } %>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
         <% } %>
-    </div>
-    <div class="layout">
-        <input class="clr-input" raised class="btn-save" type="submit" value="<%= __("Save") %>">
+
+        <div>
+            <input class="clr-input" type="hidden" name="_csrf" value="<%= _csrf %>" />
+        </div>
+
+        <button raised="" class="btn-save" id="submit" onclick="submitForm()">
+            <%= __("Save") %>
+        </button>
     </div>
 </form>
 
@@ -76,5 +141,10 @@
             $(element).prop('selected', true);
         }
     })
+
+    function subminForm() {
+        // check all fields
+        $("#editUserForm").submit();
+    }
 </script>
 

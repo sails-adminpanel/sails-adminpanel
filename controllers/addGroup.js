@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const adminUtil_1 = require("../lib/adminUtil");
-async function default_1(req, res) {
+const accessRightsHelper_1 = require("../helper/accessRightsHelper");
+async function addGroup(req, res) {
     let instance = adminUtil_1.AdminUtil.findInstanceObject(req);
     let users;
     try {
@@ -9,6 +10,11 @@ async function default_1(req, res) {
     }
     catch (e) {
         sails.log.error(e);
+    }
+    let departments = accessRightsHelper_1.AccessRightsHelper.getAllDepartments();
+    let groupedTokens = {};
+    for (let department of departments) {
+        groupedTokens[department] = accessRightsHelper_1.AccessRightsHelper.getTokensByDepartment(department);
     }
     if (req.method.toUpperCase() === 'POST') {
         console.log(req.body);
@@ -31,7 +37,7 @@ async function default_1(req, res) {
         }
         console.log(group);
     }
-    return res.viewAdmin("addGroup", { instance: instance, users: users });
+    return res.viewAdmin("addGroup", { instance: instance, users: users, groupedTokens: groupedTokens });
 }
-exports.default = default_1;
+exports.default = addGroup;
 ;

@@ -23,7 +23,7 @@
 
 import * as path from "path";
 import _login from "../controllers/login";
-import {AdminpanelConfig} from "../interfaces/types";
+import {AdminpanelConfig} from "../interfaces/adminpanelConfig";
 
 let superAdmin = 'isAdminpanelSuperAdmin';
 module.exports = async function bindAuthorization() {
@@ -33,9 +33,10 @@ module.exports = async function bindAuthorization() {
     if (config.administrator) {
         adminData = config.administrator;
     } else {
+        let password = getRandomInt(1000000000000, 9999999999999)
         adminData = {
-            login: "engineer",
-            password: "engineer"
+            login: "admin",
+            password: password
         }
     }
 
@@ -141,3 +142,9 @@ sails.on('lifted', async function () {
     }
 
 });
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min; //Максимум не включается, минимум включается
+}

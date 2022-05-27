@@ -1,6 +1,7 @@
 import {AdminUtil} from "../lib/adminUtil";
+import {AccessRightsHelper} from "../helper/accessRightsHelper";
 
-export default async function(req, res) {
+export default async function addGroup(req, res) {
 
     let instance = AdminUtil.findInstanceObject(req);
 
@@ -9,6 +10,13 @@ export default async function(req, res) {
         users = await UserAP.find({isAdministrator: false});
     } catch (e) {
         sails.log.error(e)
+    }
+
+    let departments = AccessRightsHelper.getAllDepartments();
+    let groupedTokens = {}
+
+    for (let department of departments) {
+        groupedTokens[department] = AccessRightsHelper.getTokensByDepartment(department)
     }
 
     if (req.method.toUpperCase() === 'POST') {
@@ -35,5 +43,5 @@ export default async function(req, res) {
         console.log(group)
     }
 
-    return res.viewAdmin("addGroup", { instance: instance, users: users });
+    return res.viewAdmin("addGroup", { instance: instance, users: users, groupedTokens: groupedTokens });
 };

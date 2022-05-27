@@ -1,12 +1,11 @@
 <% include head %>
 <% include headContent %>
 
-<form action="<%= instance.uri %>/add" method="POST">
+<form id="addUserForm" action="<%= instance.uri %>/add" method="POST">
     <div class="layout">
         <h2><%= __("User settings") %></h2>
         <div class="clr-row">
             <div class="clr-col-sm-12 clr-col-md-6">
-
                 <div class="admin-panel__widget">
                     <label class="admin-panel__title" for="userLogin"><%= __("Login") %></label>
                     <div class="widget_narrow" >
@@ -29,11 +28,7 @@
                 </div>
             </div>
 
-
             <div class="clr-col-sm-12 clr-col-md-6">
-
-
-
                 <div class="admin-panel__widget">
                     <label class="admin-panel__title" for="timezone"><%= __("Timezone") %></label>
                     <div class="widget_narrow" >
@@ -59,7 +54,6 @@
 
                     </div>
                 </div>
-
 
                 <div class="admin-panel__widget">
                     <label class="admin-panel__title" for="locale"><%= __("Locale") %></label>
@@ -105,16 +99,15 @@
             </div>
         </div>
 
-
         <% if (groups.length) { %>
             <h2><%= __("User groups") %></h2>
             <div class="clr-row">
                 <div class="clr-col-sm-12 clr-col-md-6">
                     <div class="admin-panel__widget">
                         <% for (let group of groups) { %>
-                            <div class="widget_narrow" >
+                            <div class="clr-checkbox-inline">
                                 <label for="checkbox-<%= group.id %>"><%= group.name %></label>
-                                <input class="clr-input" type="checkbox" id="checkbox-<%= group.id %>" name="checkbox-<%= group.id %>">
+                                <input type="checkbox" id="checkbox-<%= group.id %>" name="checkbox-<%= group.id %>">
                             </div>
                         <% } %>
                     </div>
@@ -131,3 +124,10 @@
         </button>
     </div>
 </form>
+
+<script>
+    function subminForm() {
+        // check all fields
+        $("#addUserForm").submit();
+    }
+</script>

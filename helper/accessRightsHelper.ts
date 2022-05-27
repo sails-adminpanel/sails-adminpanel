@@ -23,15 +23,13 @@ export class AccessRightsHelper {
     }
 
     public static getTokensByDepartment(department: string): AccessRightsToken[] {
-        return this._tokens.map((token) => {
-            if (token.department === department) {
-                return token
-            }
-        })
+        return this._tokens.filter((token) => {return token.department === department})
     }
 
     public static getAllDepartments(): string[] {
-        return this._tokens.map((token) => {return token.department})
+        return this._tokens
+            .map((token) => {return token.department})
+            .filter(function(item, pos, self) {return self.indexOf(item) == pos})
         // на фигме заголовок это department
         // параметр доступа это name токена
         // description сделать на hint (обычный hint html)
