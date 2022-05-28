@@ -37,39 +37,26 @@ module.exports = function(sails) {
         getConfig: function() {
             return sails.config.adminpanel
         },
-        getIdentifierField: function(modelOrName) {
-            let instanceConfig
-            Object.keys(config.instances).forEach((instanceName)=>{ 
-                if (config.instances[instanceName].model === modelOrName) {
-                    instanceConfig = config.instances[instanceName]
-                }
-                
-            })
-
-            console.log(`111`,instanceConfig, modelOrName, config)
-            if (instanceConfig) {
-                if (instanceConfig.identifierField != 'id' || !modelOrName) {
-                    return instanceConfig.identifierField;
-                }
+        getIdentifierField: function(modelName) {
+            if (!modelName) {
+                throw new Error("Model name is not defined");
             }
-
-            var model;
-            if (_.isString(modelOrName)) {
-                model = sails.models[modelOrName.toLowerCase()];
-            } else if (_.isObject(modelOrName) && _.isObject(modelOrName.definition)) {
-                model = modelOrName;
-            } else {
+            let config = sails.config.adminpanel;
+            let instanceConfig;
+            Object.keys(config.instances).forEach((instanceName) => {
+                if (config.instances[instanceName].model === modelName.toLowerCase()) {
+                    instanceConfig = config.instances[instanceName];
+                }
+            });
+            if (instanceConfig && instanceConfig.identifierField) {
                 return instanceConfig.identifierField;
             }
-            if (!model.definition) {
-                return sails.models[instanceConfig.model].primaryKey;
+            else if (sails.models[modelName.toLowerCase()].primaryKey) {
+                return sails.models[modelName.toLowerCase()].primaryKey;
             }
-            var identifier = _.findKey(model.definition, _.find(model.definition, function(val, key) {
-                if (val.primaryKey) {
-                    return key;
-                }
-            }));
-            return identifier || instanceConfig.identifierField;
+            else {
+                throw new Error("ConfigHelper > Identifier field was not found");
+            }
         },
 
         /**
