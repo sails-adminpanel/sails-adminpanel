@@ -11560,10 +11560,6 @@ body {
   overflow-x: hidden;
 }
 
-html {
-  overflow: hidden;
-}
-
 a {
   text-decoration: none;
   -webkit-transition: 0.2s;
