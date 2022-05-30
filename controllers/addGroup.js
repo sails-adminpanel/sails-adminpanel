@@ -32,7 +32,7 @@ async function addGroup(req, res) {
             if (key.startsWith("token-checkbox-") && req.body[key] === "on") {
                 for (let token of allTokens) {
                     if (token.id == key.slice(15)) {
-                        tokensOfThisGroup.push(token);
+                        tokensOfThisGroup.push(token.id);
                     }
                 }
             }

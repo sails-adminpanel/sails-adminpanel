@@ -11,7 +11,9 @@ let attributes = {
         unique: true
     },
     description: "string",
-    tokens: [],
+    tokens: {
+        type: "json"
+    },
     users: {
         collection: "userap",
         via: "groups"

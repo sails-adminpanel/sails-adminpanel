@@ -15,7 +15,9 @@ let attributes = {
         unique: true
     } as unknown as string,
     description: "string",
-    tokens: [] as unknown as AccessRightsToken[], // Надо правильно задать tokens
+    tokens: {
+        type: "json"
+    } as unknown as string[],
     users: {
         collection: "userap",
         via: "groups"

@@ -1,7 +1,6 @@
 import WaterlineModel from "../interfaces/waterlineModel";
 import WaterlineInstance from "../interfaces/waterlineInstance";
 import UserAP from "./UserAP";
-import { AccessRightsToken } from "../interfaces/types";
 declare let attributes: {
     id: {
         type: string;
@@ -9,7 +8,7 @@ declare let attributes: {
     };
     name: string;
     description: string;
-    tokens: AccessRightsToken[];
+    tokens: string[];
     users: UserAP[];
 };
 declare type attributes = typeof attributes & WaterlineInstance;

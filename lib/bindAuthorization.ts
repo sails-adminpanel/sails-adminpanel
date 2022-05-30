@@ -36,17 +36,15 @@ module.exports = async function bindAuthorization() {
         let password = getRandomInt(1000000000000, 9999999999999)
         adminData = {
             login: "admin",
-            password: password
+            password: `${password}`
         }
     }
 
+    // This code is only for single administrator, should be rewritten for multiple
     try {
-        let administrator = await UserAP.findOne({login: adminData.login, isAdministrator: true});
-        if (!administrator) {
-            await UserAP.destroy({isAdministrator: true});
-            await UserAP.create({login: adminData.login, password: adminData.password, fullName: "Administrator",
-                isActive: true, isAdministrator: true});
-        }
+        await UserAP.destroy({isAdministrator: true});
+        await UserAP.create({login: adminData.login, password: adminData.password, fullName: "Administrator",
+            isActive: true, isAdministrator: true});
     } catch (e) {
         sails.log.error("Could not create administrator profile", e)
         return;

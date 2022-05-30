@@ -3,12 +3,13 @@ let passwordHash = require("password-hash");
 export default async function login(req, res) {
   if (req.url.indexOf("login") >= 0) {
     if (req.method.toUpperCase() === "POST") {
-      let username = req.param("username");
+      let login = req.param("login");
       let password = req.param("password");
 
       let user;
       try {
-        user = await UserAP.findOne({ username: username });
+        user = await UserAP.findOne({ login: login });
+        console.log(user)
       } catch (e) {
         return res.serverError(e);
       }
@@ -17,7 +18,9 @@ export default async function login(req, res) {
         req.flash("adminError", "Wrong username or password");
         return res.viewAdmin("login");
       } else {
-        if (passwordHash.verify(username + password, user.passwordHashed)) {
+        console.log(typeof login, typeof password)
+        console.log(passwordHash.generate(login + password))
+        if (passwordHash.verify(login + password, user.passwordHashed)) {
           req.session.UserAP = user;
           return res.redirect("/admin/");
         } else {

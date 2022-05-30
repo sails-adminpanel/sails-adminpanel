@@ -50,7 +50,7 @@
                                         <clr-icon shape="info-circle" size="24"></clr-icon>
                                         <span class="tooltip-content">SOMETHING<%= token.description %></span>
                                     </a>
-                                    <% if (group.tokens.includes(token)) { %>
+                                    <% if (group.tokens && group.tokens.includes(token.id)) { %>
                                         <input type="checkbox" id="token-checkbox-<%= token.id %>" name="token-checkbox-<%= token.id %>" checked>
                                     <% } else { %>
                                         <input type="checkbox" id="token-checkbox-<%= token.id %>" name="token-checkbox-<%= token.id %>">

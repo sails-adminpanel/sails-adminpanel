@@ -46,7 +46,7 @@ export default UserAP;
 
 let model = {
     beforeCreate: (values, next) => {
-        values.passwordHashed = passwordHash.generate(values.fullName + values.password);
+        values.passwordHashed = passwordHash.generate(values.login + values.password);
         return next();
     }
 
