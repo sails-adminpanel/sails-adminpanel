@@ -2,6 +2,7 @@ import { AdminUtil } from "../lib/adminUtil";
 import { RequestProcessor } from "../lib/requestProcessor";
 import { FieldsHelper } from "../helper/fieldsHelper";
 import {CreateUpdateConfig} from "../interfaces/adminpanelConfig";
+import { havePermission } from "../lib/bindAuthorization";
 
 export default async function add(req, res) {
     let instance = AdminUtil.findInstanceObject(req);
@@ -14,7 +15,15 @@ export default async function add(req, res) {
         return res.redirect(instance.uri);
     }
 
-    let fields = await FieldsHelper.getFields(req, instance, 'add');
+    if (sails.config.adminpanel.auth) {
+        if (!req.session.UserAP) {
+            return res.redirect("/admin/userap/login");
+        } else if (!havePermission(`create-${instance.name}-instance`, req.session.UserAP)) {
+            return res.sendStatus(403);
+        }
+    }
+
+    let fields = FieldsHelper.getFields(req, instance, 'add');
     let data = {}; //list of field values
 
     fields = await FieldsHelper.loadAssociations(fields);

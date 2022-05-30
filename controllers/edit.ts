@@ -1,7 +1,8 @@
 import { AdminUtil } from "../lib/adminUtil";
 import { RequestProcessor } from "../lib/requestProcessor";
 import { FieldsHelper } from "../helper/fieldsHelper";
-import {CreateUpdateConfig} from "../interfaces/adminpanelConfig";
+import { CreateUpdateConfig } from "../interfaces/adminpanelConfig";
+import { havePermission } from "../lib/bindAuthorization";
 
 export default async function edit(req, res) {
     //Check id
@@ -16,6 +17,14 @@ export default async function edit(req, res) {
 
     if (!instance.config.edit) {
         return res.redirect(instance.uri);
+    }
+
+    if (sails.config.adminpanel.auth) {
+        if (!req.session.UserAP) {
+            return res.redirect("/admin/userap/login");
+        } else if (!havePermission(`update-${instance.name}-instance`, req.session.UserAP)) {
+            return res.sendStatus(403);
+        }
     }
 
     let record;

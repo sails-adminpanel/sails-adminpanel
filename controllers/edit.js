@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const adminUtil_1 = require("../lib/adminUtil");
 const requestProcessor_1 = require("../lib/requestProcessor");
 const fieldsHelper_1 = require("../helper/fieldsHelper");
+const bindAuthorization_1 = require("../lib/bindAuthorization");
 async function edit(req, res) {
     //Check id
     if (!req.param('id')) {
@@ -14,6 +15,14 @@ async function edit(req, res) {
     }
     if (!instance.config.edit) {
         return res.redirect(instance.uri);
+    }
+    if (sails.config.adminpanel.auth) {
+        if (!req.session.UserAP) {
+            return res.redirect("/admin/userap/login");
+        }
+        else if (!(0, bindAuthorization_1.havePermission)(`update-${instance.name}-instance`, req.session.UserAP)) {
+            return res.sendStatus(403);
+        }
     }
     let record;
     try {

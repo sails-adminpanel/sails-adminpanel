@@ -1,5 +1,6 @@
 import { AdminUtil } from "../lib/adminUtil";
 import { FieldsHelper } from "../helper/fieldsHelper";
+import {havePermission} from "../lib/bindAuthorization";
 
 export default async function view(req, res) {
     //Check id
@@ -14,6 +15,14 @@ export default async function view(req, res) {
 
     if (!instance.model) {
         return res.notFound();
+    }
+
+    if (sails.config.adminpanel.auth) {
+        if (!req.session.UserAP) {
+            return res.redirect("/admin/userap/login");
+        } else if (!havePermission(`read-${instance.name}-instance`, req.session.UserAP)) {
+            return res.sendStatus(403);
+        }
     }
 
     let fields = FieldsHelper.getFields(req, instance, 'view');

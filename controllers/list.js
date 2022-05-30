@@ -7,6 +7,8 @@ async function list(req, res) {
     if (!instance.model) {
         return res.notFound();
     }
+    // add here check permission
+    // what permission? read all instances?
     let fields = fieldsHelper_1.FieldsHelper.getFields(req, instance, 'list');
     res.viewAdmin({
         instance: instance,

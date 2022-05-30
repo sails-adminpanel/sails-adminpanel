@@ -1,9 +1,18 @@
 import {AdminUtil} from "../lib/adminUtil";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
+import {havePermission} from "../lib/bindAuthorization";
 
 export default async function editGroup(req, res) {
 
     let instance = AdminUtil.findInstanceObject(req);
+
+    if (sails.config.adminpanel.auth) {
+        if (!req.session.UserAP) {
+            return res.redirect("/admin/userap/login");
+        } else if (!havePermission(`update-${instance.name}-instance`, req.session.UserAP)) {
+            return res.sendStatus(403);
+        }
+    }
 
     //Check id
     if (!req.param('id')) {

@@ -30,6 +30,7 @@ interface UserAP extends attributes {
 export default UserAP;
 declare let model: {
     beforeCreate: (values: any, next: any) => any;
+    beforeUpdate: (values: any, next: any) => any;
 };
 declare global {
     const UserAP: typeof model & WaterlineModel<UserAP>;

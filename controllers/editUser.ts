@@ -1,8 +1,17 @@
 import {AdminUtil} from "../lib/adminUtil";
+import {havePermission} from "../lib/bindAuthorization";
 
 export default async function(req, res) {
 
     let instance = AdminUtil.findInstanceObject(req);
+
+    if (sails.config.adminpanel.auth) {
+        if (!req.session.UserAP) {
+            return res.redirect("/admin/userap/login");
+        } else if (!havePermission(`update-${instance.name}-instance`, req.session.UserAP)) {
+            return res.sendStatus(403);
+        }
+    }
 
     //Check id
     if (!req.param('id')) {
@@ -43,7 +52,7 @@ export default async function(req, res) {
         let updatedUser;
         try {
             updatedUser = await UserAP.update({id: user.id}, {login: req.body.login, fullName: req.body.fullName,
-                email: req.body.email, password: req.body.password, timezone: req.body.timezone, expires: req.body.date,
+                email: req.body.email, password: req.body.userPassword, timezone: req.body.timezone, expires: req.body.date,
                 locale: req.body.locale, groups: userGroups}).fetch()
         } catch (e) {
             sails.log.error(e)

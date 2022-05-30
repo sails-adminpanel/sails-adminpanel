@@ -8,8 +8,7 @@ async function login(req, res) {
             let password = req.param("password");
             let user;
             try {
-                user = await UserAP.findOne({ login: login });
-                console.log(user);
+                user = await UserAP.findOne({ login: login }).populate("groups");
             }
             catch (e) {
                 return res.serverError(e);
@@ -19,7 +18,9 @@ async function login(req, res) {
                 return res.viewAdmin("login");
             }
             else {
-                console.log(typeof login, typeof password);
+                console.log(login, password);
+                console.log(passwordHash.generate(login + password));
+                console.log(passwordHash.generate(login + password));
                 console.log(passwordHash.generate(login + password));
                 if (passwordHash.verify(login + password, user.passwordHashed)) {
                     req.session.UserAP = user;

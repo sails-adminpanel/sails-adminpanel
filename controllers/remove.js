@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const adminUtil_1 = require("../lib/adminUtil");
+const bindAuthorization_1 = require("../lib/bindAuthorization");
 async function remove(req, res) {
     //Checking id of the record
     if (!req.param('id')) {
@@ -14,6 +15,14 @@ async function remove(req, res) {
     }
     if (!instance.config.remove) {
         return res.redirect(instance.uri);
+    }
+    if (sails.config.adminpanel.auth) {
+        if (!req.session.UserAP) {
+            return res.redirect("/admin/userap/login");
+        }
+        else if (!(0, bindAuthorization_1.havePermission)(`delete-${instance.name}-instance`, req.session.UserAP)) {
+            return res.sendStatus(403);
+        }
     }
     /**
      * Searching for record by model

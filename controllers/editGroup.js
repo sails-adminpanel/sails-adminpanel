@@ -2,8 +2,17 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const adminUtil_1 = require("../lib/adminUtil");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
+const bindAuthorization_1 = require("../lib/bindAuthorization");
 async function editGroup(req, res) {
     let instance = adminUtil_1.AdminUtil.findInstanceObject(req);
+    if (sails.config.adminpanel.auth) {
+        if (!req.session.UserAP) {
+            return res.redirect("/admin/userap/login");
+        }
+        else if (!(0, bindAuthorization_1.havePermission)(`update-${instance.name}-instance`, req.session.UserAP)) {
+            return res.sendStatus(403);
+        }
+    }
     //Check id
     if (!req.param('id')) {
         return res.notFound();

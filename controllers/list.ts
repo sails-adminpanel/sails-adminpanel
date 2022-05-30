@@ -7,6 +7,9 @@ export default async function list(req, res) {
         return res.notFound();
     }
 
+    // add here check permission
+    // what permission? read all instances?
+
     let fields = FieldsHelper.getFields(req, instance, 'list');
 
     res.viewAdmin({

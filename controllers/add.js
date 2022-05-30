@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const adminUtil_1 = require("../lib/adminUtil");
 const requestProcessor_1 = require("../lib/requestProcessor");
 const fieldsHelper_1 = require("../helper/fieldsHelper");
+const bindAuthorization_1 = require("../lib/bindAuthorization");
 async function add(req, res) {
     let instance = adminUtil_1.AdminUtil.findInstanceObject(req);
     if (!instance.model) {
@@ -11,7 +12,15 @@ async function add(req, res) {
     if (!instance.config.add) {
         return res.redirect(instance.uri);
     }
-    let fields = await fieldsHelper_1.FieldsHelper.getFields(req, instance, 'add');
+    if (sails.config.adminpanel.auth) {
+        if (!req.session.UserAP) {
+            return res.redirect("/admin/userap/login");
+        }
+        else if (!(0, bindAuthorization_1.havePermission)(`create-${instance.name}-instance`, req.session.UserAP)) {
+            return res.sendStatus(403);
+        }
+    }
+    let fields = fieldsHelper_1.FieldsHelper.getFields(req, instance, 'add');
     let data = {}; //list of field values
     fields = await fieldsHelper_1.FieldsHelper.loadAssociations(fields);
     if (req.method.toUpperCase() === 'POST') {

@@ -1,8 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const adminUtil_1 = require("../lib/adminUtil");
+const bindAuthorization_1 = require("../lib/bindAuthorization");
 async function default_1(req, res) {
     let instance = adminUtil_1.AdminUtil.findInstanceObject(req);
+    if (sails.config.adminpanel.auth) {
+        if (!req.session.UserAP) {
+            return res.redirect("/admin/userap/login");
+        }
+        else if (!(0, bindAuthorization_1.havePermission)(`create-${instance.name}-instance`, req.session.UserAP)) {
+            return res.sendStatus(403);
+        }
+    }
     let groups;
     try {
         groups = await GroupAP.find();
@@ -25,7 +34,7 @@ async function default_1(req, res) {
         let user;
         try {
             user = await UserAP.create({ login: req.body.login, fullName: req.body.fullName, email: req.body.email,
-                password: req.body.password, timezone: req.body.timezone, expires: req.body.date,
+                password: req.body.userPassword, timezone: req.body.timezone, expires: req.body.date,
                 locale: req.body.locale, groups: userGroups }).fetch();
         }
         catch (e) {

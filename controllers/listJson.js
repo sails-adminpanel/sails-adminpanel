@@ -8,6 +8,8 @@ async function listJson(req, res) {
     if (!instance.model) {
         return res.notFound();
     }
+    // add here check permission
+    // what permission? read all instances?
     let records = [];
     let fields = fieldsHelper_1.FieldsHelper.getFields(req, instance, 'list');
     let query;

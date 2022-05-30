@@ -24,9 +24,11 @@
 import * as path from "path";
 import _login from "../controllers/login";
 import {AdminpanelConfig} from "../interfaces/adminpanelConfig";
+import {AccessRightsHelper} from "../helper/accessRightsHelper";
+import UserAP from "../models/UserAP";
 
 let superAdmin = 'isAdminpanelSuperAdmin';
-module.exports = async function bindAuthorization() {
+export default async function bindAuthorization() {
 
     let config: AdminpanelConfig = sails.config.adminpanel;
     let adminData;
@@ -102,10 +104,41 @@ module.exports = async function bindAuthorization() {
 /**
  * Add method to check permission from controller
  */
-sails.adminpanel = {};
-sails.adminpanel.havePermission = () => {
+export function havePermission(tokenId: string, user: UserAP): boolean {
+    if (user.isAdministrator) {
+        return true;
+    }
+
+    let tokenIsValid = false;
+    let allTokens = AccessRightsHelper.getTokens();
+    for (let token of allTokens) {
+        if (token.id === tokenId) {
+            tokenIsValid = true;
+            break;
+        }
+    }
+
+    if (!tokenIsValid) {
+        sails.log.error("Adminpanel > Token is not valid");
+        return false;
+    }
+
+    let allow = false;
+    for (let group of user.groups) {
+        if (group.tokens.includes(tokenId)) {
+            allow = true;
+            break;
+        }
+    }
+
+    if (!allow) {
+        sails.log.error("Adminpanel > Access is not allowed");
+        return false;
+    }
+
     return true;
 }
+
 sails.on('lifted', async function () {
     /**
      * Model

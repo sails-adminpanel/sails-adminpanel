@@ -1,7 +1,7 @@
 import bindTranslations from "./bindTranslations";
 
 let flash = require('connect-flash');
-import * as bindAuthorization from './bindAuthorization';
+import bindAuthorization from './bindAuthorization';
 import bindAccessRights from "./bindAccessRights";
 
 export default async function () {
@@ -16,7 +16,7 @@ export default async function () {
     require('./bindRoutes').default();
 
     //binding authorization
-    bindAuthorization();
+    await bindAuthorization();
 
     //bind access rights
     bindAccessRights();

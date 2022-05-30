@@ -8,6 +8,9 @@ export default async function listJson(req, res) {
         return res.notFound();
     }
 
+    // add here check permission
+    // what permission? read all instances?
+
     let records: any = [];
     let fields = FieldsHelper.getFields(req, instance, 'list');
 

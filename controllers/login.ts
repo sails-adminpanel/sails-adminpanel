@@ -8,8 +8,7 @@ export default async function login(req, res) {
 
       let user;
       try {
-        user = await UserAP.findOne({ login: login });
-        console.log(user)
+        user = await UserAP.findOne({ login: login }).populate("groups");
       } catch (e) {
         return res.serverError(e);
       }
@@ -18,7 +17,9 @@ export default async function login(req, res) {
         req.flash("adminError", "Wrong username or password");
         return res.viewAdmin("login");
       } else {
-        console.log(typeof login, typeof password)
+        console.log(login, password)
+        console.log(passwordHash.generate(login + password))
+        console.log(passwordHash.generate(login + password))
         console.log(passwordHash.generate(login + password))
         if (passwordHash.verify(login + password, user.passwordHashed)) {
           req.session.UserAP = user;

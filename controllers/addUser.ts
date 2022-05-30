@@ -1,8 +1,17 @@
 import {AdminUtil} from "../lib/adminUtil";
+import {havePermission} from "../lib/bindAuthorization";
 
 export default async function(req, res) {
 
     let instance = AdminUtil.findInstanceObject(req);
+
+    if (sails.config.adminpanel.auth) {
+        if (!req.session.UserAP) {
+            return res.redirect("/admin/userap/login");
+        } else if (!havePermission(`create-${instance.name}-instance`, req.session.UserAP)) {
+            return res.sendStatus(403);
+        }
+    }
 
     let groups;
     try {
@@ -28,7 +37,7 @@ export default async function(req, res) {
         let user;
         try {
             user = await UserAP.create({login: req.body.login, fullName: req.body.fullName, email: req.body.email,
-                password: req.body.password, timezone: req.body.timezone, expires: req.body.date,
+                password: req.body.userPassword, timezone: req.body.timezone, expires: req.body.date,
                 locale: req.body.locale, groups: userGroups}).fetch()
         } catch (e) {
             sails.log.error(e)

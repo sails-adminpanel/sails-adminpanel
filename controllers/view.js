@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const adminUtil_1 = require("../lib/adminUtil");
 const fieldsHelper_1 = require("../helper/fieldsHelper");
+const bindAuthorization_1 = require("../lib/bindAuthorization");
 async function view(req, res) {
     //Check id
     if (!req.param('id')) {
@@ -13,6 +14,14 @@ async function view(req, res) {
     }
     if (!instance.model) {
         return res.notFound();
+    }
+    if (sails.config.adminpanel.auth) {
+        if (!req.session.UserAP) {
+            return res.redirect("/admin/userap/login");
+        }
+        else if (!(0, bindAuthorization_1.havePermission)(`read-${instance.name}-instance`, req.session.UserAP)) {
+            return res.sendStatus(403);
+        }
     }
     let fields = fieldsHelper_1.FieldsHelper.getFields(req, instance, 'view');
     let record;
