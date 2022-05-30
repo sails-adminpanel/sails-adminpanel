@@ -45,3 +45,10 @@ table.dataTable {
     font-size: 0.7rem;
     font-weight: 700;
   }
+
+/* TODO: add to sass */
+  .sidenav a.nav-link {
+    margin: 0 !important;
+    padding: 0.5rem;
+    background: #eee;
+  }
