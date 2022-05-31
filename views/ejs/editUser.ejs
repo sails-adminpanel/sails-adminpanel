@@ -34,16 +34,10 @@
                 <div class="admin-panel__widget">
                     <label class="admin-panel__title" for="timezone"><%= __("Timezone") %></label>
                     <div class="widget_narrow" >
-                        <span class="badge badge-danger">Разредрить из настроек</span>
                         <select id="timezone" name="timezone">
-                            <option selected>разрендрить из sails.admin.config.timezones</option>
-                            <option>GMT+1</option>
-                            <option>GMT+2</option>
-                            <option>GMT+3</option>
-                            <option>GMT+4</option>
-                            <option>GMT+5</option>
-                            <option>GMT+6</option>
-                            <option>GMT+7</option>
+                            <% for (let timezone of sails.config.adminpanel.timezones) { %>
+                                <option id="<%= timezone.id %>"><%= timezone.name %></option>
+                            <% } %>
                         </select>
                     </div>
                 </div>
@@ -59,13 +53,11 @@
 
                 <div class="admin-panel__widget">
                     <label class="admin-panel__title" for="locale"><%= __("Locale") %></label>
-                    <span class="badge badge-danger">Разредрить из настроек</span>
                     <div class="widget_narrow" >
                         <select id="locale" name="locale">
-                            <option selected><%= __("EN") %></option>
-                            <option><%= __("UA") %></option>
-                            <option><%= __("RU") %></option>
-                            <option><%= __("DE") %></option>
+                            <% for (let locale of sails.config.adminpanel.translation.locales) { %>
+                                <option><%= locale %></option>
+                            <% } %>
                         </select>
 
                     </div>
@@ -131,7 +123,7 @@
 
 <script>
     $("#timezone > option").each(function(index, element) {
-        if ($(element).text() === "<%- user.timezone %>") {
+        if ($(element).id === "<%- user.timezone %>") {
             $(element).prop('selected', true);
         }
     })
@@ -142,8 +134,9 @@
         }
     })
 
-    function subminForm() {
+    function submitForm() {
         // check all fields
+        // send timezone id instead of text
         $("#editUserForm").submit();
     }
 </script>

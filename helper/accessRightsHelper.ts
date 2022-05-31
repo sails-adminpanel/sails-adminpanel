@@ -1,4 +1,5 @@
 import {AccessRightsToken} from "../interfaces/types";
+import UserAP from "../models/UserAP";
 
 export class AccessRightsHelper {
 
@@ -30,8 +31,40 @@ export class AccessRightsHelper {
         return this._tokens
             .map((token) => {return token.department})
             .filter(function(item, pos, self) {return self.indexOf(item) == pos})
-        // на фигме заголовок это department
-        // параметр доступа это name токена
-        // description сделать на hint (обычный hint html)
+    }
+
+    public static havePermission(tokenId: string, user: UserAP): boolean {
+        if (user.isAdministrator) {
+            return true;
+        }
+
+        let tokenIsValid = false;
+        let allTokens = AccessRightsHelper.getTokens();
+        for (let token of allTokens) {
+            if (token.id === tokenId) {
+                tokenIsValid = true;
+                break;
+            }
+        }
+
+        if (!tokenIsValid) {
+            sails.log.error("Adminpanel > Token is not valid");
+            return false;
+        }
+
+        let allow = false;
+        for (let group of user.groups) {
+            if (group.tokens.includes(tokenId)) {
+                allow = true;
+                break;
+            }
+        }
+
+        if (!allow) {
+            sails.log.error("Adminpanel > Access is not allowed");
+            return false;
+        }
+
+        return true;
     }
 }

@@ -21,4 +21,6 @@ export default function bindAccessRights() {
         AccessRightsHelper.registerToken({id: `delete-${key}-instance`, name: "Delete",
             description: "Access to deleting records in database", department: department});
     }
+
+    // !TODO забрать из конфига все токены и тоже их зарегистировать
 }

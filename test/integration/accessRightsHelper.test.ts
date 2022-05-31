@@ -6,6 +6,7 @@ describe('Access rights helper test', function () {
     it("Access rights methods exists", async function() {
         expect(sails.hooks.adminpanel.registerAccessToken).to.exist;
         expect(sails.hooks.adminpanel.getAllAccessTokens).to.exist;
+        expect(sails.hooks.adminpanel.havePermission).to.exist;
     })
 
     it("Default (CRUD) tokens created for every instance test", function () {

@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const adminUtil_1 = require("../lib/adminUtil");
-const bindAuthorization_1 = require("../lib/bindAuthorization");
+const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 async function default_1(req, res) {
     let instance = adminUtil_1.AdminUtil.findInstanceObject(req);
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
-            return res.redirect("/admin/userap/login");
+            return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
         }
-        else if (!(0, bindAuthorization_1.havePermission)(`update-${instance.name}-instance`, req.session.UserAP)) {
+        else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`update-${instance.name}-instance`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
     }

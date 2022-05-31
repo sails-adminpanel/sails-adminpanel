@@ -71,7 +71,7 @@
             <div class="branding">
                 <a href="">
                     <i class="las la-rocket logo"></i>
-                    <span class="brand-title"><%= adminpanel.menuHelper.getBrandTitle() %></span>  
+                    <span class="brand-title"><%= adminpanel.menuHelper.getBrandTitle() %></span>
                 </a>
             </div>
             <div class="header__inner">
@@ -81,18 +81,18 @@
                     <span></span>
                     <span></span>
                 </div>
-                
+
 
                     <div class="header__login">
-                    <% if (req.session.UserAP) { %> 
+                    <% if (req.session.UserAP) { %>
                       <a class="header__name" href="#">
-                          <span><%= req.session.UserAP.username %></span>
+                          <span><%= req.session.UserAP.fullName %></span>
                           <i class="las la-user"></i>
                       </a>
                       <a class="header__out nav-link" href="/admin/userap/logout">
                           <i class="las la-door-open"></i>
                       </a>
-                    <% } %> 
+                    <% } %>
                     </div>
             </div>
         </header>

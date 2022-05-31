@@ -38,9 +38,9 @@
                             <% for (let token of tokens) { %>
                                 <div class="clr-checkbox-inline">
                                     <label for="token-checkbox-<%= token.id %>"><%= token.name %></label>
-                                    <a href="..." role="tooltip" aria-haspopup="true" class="tooltip tooltip-right">
-                                        <clr-icon shape="info-circle" size="24"></clr-icon>
-                                        <span class="tooltip-content">SOMETHING<%= token.description %></span>
+                                    <a href="javascript:void(0)" role="tooltip" aria-haspopup="true" class="tooltip tooltip-md tooltip-top-right">
+                                        <i class="las la-info-circle"></i>
+                                        <span class="tooltip-content"><%= token.description %></span>
                                     </a>
                                     <input type="checkbox" id="token-checkbox-<%= token.id %>" name="token-checkbox-<%= token.id %>">
                                 </div>

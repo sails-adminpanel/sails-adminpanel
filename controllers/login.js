@@ -18,10 +18,6 @@ async function login(req, res) {
                 return res.viewAdmin("login");
             }
             else {
-                console.log(login, password);
-                console.log(passwordHash.generate(login + password));
-                console.log(passwordHash.generate(login + password));
-                console.log(passwordHash.generate(login + password));
                 if (passwordHash.verify(login + password, user.passwordHashed)) {
                     req.session.UserAP = user;
                     return res.redirect("/admin/");

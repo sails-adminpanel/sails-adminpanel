@@ -1,5 +1,5 @@
 import {AdminUtil} from "../lib/adminUtil";
-import {havePermission} from "../lib/bindAuthorization";
+import {AccessRightsHelper} from "../helper/accessRightsHelper";
 
 export default async function(req, res) {
 
@@ -7,8 +7,8 @@ export default async function(req, res) {
 
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
-            return res.redirect("/admin/userap/login");
-        } else if (!havePermission(`update-${instance.name}-instance`, req.session.UserAP)) {
+            return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
+        } else if (!AccessRightsHelper.havePermission(`update-${instance.name}-instance`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
     }

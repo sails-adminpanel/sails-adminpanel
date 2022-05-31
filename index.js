@@ -49,7 +49,9 @@ module.exports = function (sails) {
 
         registerAccessToken: AccessRightsHelper.registerToken,
 
-        getAllAccessTokens: AccessRightsHelper.getTokens
+        getAllAccessTokens: AccessRightsHelper.getTokens,
+
+        havePermission: AccessRightsHelper.havePermission
     };
 };
 

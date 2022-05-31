@@ -1,6 +1,5 @@
 import {AdminUtil} from "../lib/adminUtil";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
-import {havePermission} from "../lib/bindAuthorization";
 
 export default async function editGroup(req, res) {
 
@@ -8,8 +7,8 @@ export default async function editGroup(req, res) {
 
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
-            return res.redirect("/admin/userap/login");
-        } else if (!havePermission(`update-${instance.name}-instance`, req.session.UserAP)) {
+            return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
+        } else if (!AccessRightsHelper.havePermission(`update-${instance.name}-instance`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
     }

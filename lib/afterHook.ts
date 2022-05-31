@@ -15,11 +15,11 @@ export default async function () {
     //binding all routes.
     require('./bindRoutes').default();
 
-    //binding authorization
-    await bindAuthorization();
-
     //bind access rights
     bindAccessRights();
+
+    //binding authorization
+    await bindAuthorization();
 
     if (sails.hooks.i18n && sails.hooks.i18n.appendLocale) {
         sails.after(["hook:i18n:loaded"], async () => {

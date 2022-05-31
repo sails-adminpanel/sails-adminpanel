@@ -1,6 +1,6 @@
 import { AdminUtil } from "../lib/adminUtil";
 import { FieldsHelper } from "../helper/fieldsHelper";
-import {havePermission} from "../lib/bindAuthorization";
+import {AccessRightsHelper} from "../helper/accessRightsHelper";
 
 export default async function view(req, res) {
     //Check id
@@ -19,8 +19,8 @@ export default async function view(req, res) {
 
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
-            return res.redirect("/admin/userap/login");
-        } else if (!havePermission(`read-${instance.name}-instance`, req.session.UserAP)) {
+            return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
+        } else if (!AccessRightsHelper.havePermission(`read-${instance.name}-instance`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
     }

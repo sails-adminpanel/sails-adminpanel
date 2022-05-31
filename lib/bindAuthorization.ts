@@ -64,80 +64,7 @@ export default async function bindAuthorization() {
     let baseRoute = sails.config.adminpanel.routePrefix + '/:instance';
     sails.router.bind(baseRoute + '/login', _bindPolicies(policies, _login));
     sails.router.bind(baseRoute + '/logout', _bindPolicies(policies, _login));
-
-    let apConfName = ['list', 'add', 'edit', 'remove', 'view'];
-    var apConf = {
-        title: 'Users',
-        model: 'UserAP',
-        icon: 'user',
-        permission: superAdmin
-    };
-    for (var i in apConfName) {
-        var conf = {
-            permission: superAdmin
-        };
-        if (apConfName[i] !== 'remove') {
-            conf.fields = {
-                id: true,
-                passwordHashed: false,
-                createdAt: false,
-                updatedAt: false,
-                permission: {
-                    widget: 'JsonEditor',
-                    JsonEditor: {
-                        height: 100,
-                        mode: 'tree',
-                        modes: ['code', 'form', 'text', 'tree', 'view']
-                    }
-                },
-                password: false
-            }
-        }
-        if (apConfName[i] === 'add') {
-            conf.fields.password = true;
-        }
-        apConf[apConfName[i]] = conf;
-    }
-    sails.config.adminpanel.instances['userap'] = apConf;
 };
-
-/**
- * Add method to check permission from controller
- */
-export function havePermission(tokenId: string, user: UserAP): boolean {
-    if (user.isAdministrator) {
-        return true;
-    }
-
-    let tokenIsValid = false;
-    let allTokens = AccessRightsHelper.getTokens();
-    for (let token of allTokens) {
-        if (token.id === tokenId) {
-            tokenIsValid = true;
-            break;
-        }
-    }
-
-    if (!tokenIsValid) {
-        sails.log.error("Adminpanel > Token is not valid");
-        return false;
-    }
-
-    let allow = false;
-    for (let group of user.groups) {
-        if (group.tokens.includes(tokenId)) {
-            allow = true;
-            break;
-        }
-    }
-
-    if (!allow) {
-        sails.log.error("Adminpanel > Access is not allowed");
-        return false;
-    }
-
-    return true;
-}
 
 sails.on('lifted', async function () {
     /**
@@ -147,30 +74,6 @@ sails.on('lifted', async function () {
 
     // Only in dev mode after drop
     if (sails.config.models.migrate !== 'drop') return;
-
-
-    if (sails.config.adminpanel.admin) {
-        conf = sails.config.adminpanel.admin;
-    } else {
-        var conf = {
-            username: 'engineer',
-            password: 'engineer'
-        }
-    }
-
-    try {
-        let user = await UserAP.findOne({username: conf.username})
-        if (!user) {
-            user = await UserAP.create({
-                username: conf.username,
-                password: conf.password,
-                permission: [superAdmin]
-            }).fetch()
-            if (!user) sails.log.error("Can't create user!");
-        }
-    } catch (e) {
-        sails.log.error(e);
-    }
 
 });
 

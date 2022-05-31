@@ -1,3 +1,5 @@
+import {AccessRightsToken} from "./types";
+
 export interface AdminpanelConfig {
     instances: {
         [key:string]: InstanceConfig
@@ -33,6 +35,12 @@ export interface AdminpanelConfig {
         password: string
     }
     showORMtime?: boolean
+    package?: any
+    timezones?: {
+        id: string
+        name: string
+    }[]
+    showVersion?: boolean
 }
 
 export interface InstanceConfig {
@@ -134,4 +142,8 @@ export interface HrefConfig {
     title: string
     link: string
     icon?: string
+    /**
+     * Only for visual view, controller still uses his own access rights token
+     * */
+    accessRightsToken?: AccessRightsToken
 }

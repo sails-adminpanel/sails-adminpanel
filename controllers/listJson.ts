@@ -1,6 +1,7 @@
 import { AdminUtil } from "../lib/adminUtil";
 import { FieldsHelper } from "../helper/fieldsHelper";
 import { ConfigHelper } from "../helper/configHelper";
+import {AccessRightsHelper} from "../helper/accessRightsHelper";
 
 export default async function listJson(req, res) {
     let instance = AdminUtil.findInstanceObject(req);
@@ -8,8 +9,13 @@ export default async function listJson(req, res) {
         return res.notFound();
     }
 
-    // add here check permission
-    // what permission? read all instances?
+    if (sails.config.adminpanel.auth) {
+        if (!req.session.UserAP) {
+            return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
+        } else if (!AccessRightsHelper.havePermission(`read-${instance.name}-instance`, req.session.UserAP)) {
+            return res.sendStatus(403);
+        }
+    }
 
     let records: any = [];
     let fields = FieldsHelper.getFields(req, instance, 'list');

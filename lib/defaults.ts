@@ -1,5 +1,6 @@
 import {AdminpanelConfig} from "../interfaces/adminpanelConfig";
-const packageJson = require('../package.json')
+const packageJson = require('../package.json');
+const timezones = require('./timezones.json')
 /**
  * Default admin config
  */
@@ -70,7 +71,8 @@ const adminpanelConfig: AdminpanelConfig = {
      */
     sections: [],
     package: packageJson,
-    showVersion: true
+    showVersion: true,
+    timezones: timezones
 }
 
 export const content = {
