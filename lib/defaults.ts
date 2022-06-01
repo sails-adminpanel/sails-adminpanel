@@ -66,6 +66,12 @@ const adminpanelConfig: AdminpanelConfig = {
         }
     },
 
+    translation: {
+        locales: ['en', 'ru'],
+        path: `${process.cwd()}/config/locales/adminpanel`,
+        defaultLocale: 'en'
+    },
+
     /**
      * List of sections in head
      */
