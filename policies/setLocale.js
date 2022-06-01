@@ -3,7 +3,7 @@ module.exports = async function (req, res, proceed) {
         req.setLocale(req.session.UserAP.locale);
     }
     else {
-        req.setLocale(sails.hooks.i18n.defaultLocale);
+        req.setLocale(sails.hooks.i18n.defaultLocale || "en");
     }
     return proceed();
 };

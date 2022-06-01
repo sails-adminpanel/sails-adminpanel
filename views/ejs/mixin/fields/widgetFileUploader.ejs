@@ -11,6 +11,7 @@
 <% var filesize = 1; if(checkConfig && field.config.options.filesize) { filesize =  field.config.options.filesize } %>
 <% var acceptedFiles = "[]"; if (checkConfig && field.config.options.accepted){ acceptedFiles = JSON.stringify(field.config.options.accepted) } %>
 
+<%= type %>
 <%
 switch (type) {
 
