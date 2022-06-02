@@ -36,7 +36,8 @@ async function view(req, res) {
     res.viewAdmin({
         instance: instance,
         record: record,
-        fields: fields
+        fields: fields,
+        currentUser: req.session.UserAP
     });
 }
 exports.default = view;

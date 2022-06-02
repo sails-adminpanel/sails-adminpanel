@@ -40,14 +40,15 @@
                     </div>
                 </div>
 
-                <div class="admin-panel__widget">
-                    <label class="admin-panel__title" for="date"><%= __("Profile expires") %></label>
-                    <span class="badge badge-danger">Разредрить из настроек</span>
-                    <div class="widget_narrow" >
-                        <input class="clr-input" type="date" id="date" name="date">
-
+                <% if (currentUser.isAdministrator) { %>
+                    <div class="admin-panel__widget">
+                        <label class="admin-panel__title" for="date"><%= __("Profile expires") %></label>
+                        <span class="badge badge-danger">Разредрить из настроек</span>
+                        <div class="widget_narrow" >
+                            <input class="clr-input" type="date" id="date" name="date">
+                        </div>
                     </div>
-                </div>
+                <% } %>
 
                 <div class="admin-panel__widget">
                     <label class="admin-panel__title" for="locale"><%= __("Locale") %></label>
@@ -62,11 +63,13 @@
                 </div>
 
 
-                <div class="admin-panel__widget">
-                    <div class="widget_narrow" >
-                        <a href=""><i class="las la-mask"></i> <%= __("Pretend to be a user") %></a>
+                <% if (currentUser.isAdministrator) { %>
+                    <div class="admin-panel__widget">
+                        <div class="widget_narrow" >
+                            <a href=""><i class="las la-mask"></i> <%= __("Pretend to be a user") %></a>
+                        </div>
                     </div>
-                </div>
+                <% } %>
 
             </div>
         </div>

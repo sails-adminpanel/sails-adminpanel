@@ -46,5 +46,5 @@ export default async function(req, res) {
         console.log(user)
     }
 
-    return res.viewAdmin("addUser", { instance: instance, groups: groups });
+    return res.viewAdmin("addUser", { instance: instance, groups: groups, currentUser: req.session.UserAP });
 };

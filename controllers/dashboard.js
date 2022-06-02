@@ -8,7 +8,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * @returns {dashboardController}
  */
 function default_1(req, res) {
-    return res.viewAdmin('dashboard', { instance: "instance" });
+    return res.viewAdmin('dashboard', { instance: "instance", currentUser: req.session.UserAP });
 }
 exports.default = default_1;
 ;

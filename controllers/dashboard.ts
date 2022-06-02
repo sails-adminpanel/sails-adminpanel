@@ -7,5 +7,5 @@
  */
 export default function(req, res) {
 
-    return res.viewAdmin('dashboard', { instance: "instance"});
+    return res.viewAdmin('dashboard', { instance: "instance", currentUser: req.session.UserAP });
 };

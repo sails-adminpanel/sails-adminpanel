@@ -87,7 +87,7 @@ async function editGroup(req, res) {
         }
     }
     console.log("GROUP", group);
-    return res.viewAdmin("editGroup", { instance: instance, group: group, users: users, groupedTokens: groupedTokens });
+    return res.viewAdmin("editGroup", { instance: instance, group: group, users: users, groupedTokens: groupedTokens, currentUser: req.session.UserAP });
 }
 exports.default = editGroup;
 ;

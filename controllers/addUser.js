@@ -42,7 +42,7 @@ async function default_1(req, res) {
         }
         console.log(user);
     }
-    return res.viewAdmin("addUser", { instance: instance, groups: groups });
+    return res.viewAdmin("addUser", { instance: instance, groups: groups, currentUser: req.session.UserAP });
 }
 exports.default = default_1;
 ;

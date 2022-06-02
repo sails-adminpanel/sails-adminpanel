@@ -73,7 +73,7 @@ async function default_1(req, res) {
             sails.log.error(e);
         }
     }
-    return res.viewAdmin("editUser", { instance: instance, user: user, groups: groups });
+    return res.viewAdmin("editUser", { instance: instance, user: user, groups: groups, currentUser: req.session.UserAP });
 }
 exports.default = default_1;
 ;
