@@ -55,7 +55,7 @@ async function addGroup(req, res) {
         }
         console.log(group);
     }
-    return res.viewAdmin("addGroup", { instance: instance, users: users, groupedTokens: groupedTokens, currentUser: req.session.UserAP });
+    return res.viewAdmin("addGroup", { instance: instance, users: users, groupedTokens: groupedTokens });
 }
 exports.default = addGroup;
 ;

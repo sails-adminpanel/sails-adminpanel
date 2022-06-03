@@ -78,5 +78,5 @@ export default async function(req, res) {
         }
     }
 
-    return res.viewAdmin("editUser", { instance: instance, user: user, groups: groups, currentUser: req.session.UserAP });
+    return res.viewAdmin("editUser", { instance: instance, user: user, groups: groups });
 };

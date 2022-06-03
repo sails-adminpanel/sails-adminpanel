@@ -85,8 +85,7 @@ async function edit(req, res) {
     res.viewAdmin({
         instance: instance,
         record: record,
-        fields: fields,
-        currentUser: req.session.UserAP
+        fields: fields
     });
 }
 exports.default = edit;

@@ -21,8 +21,7 @@ export default async function list(req, res) {
     res.viewAdmin({
         instance: instance,
         fields: fields,
-        config: sails.adminpanel,
-        currentUser: req.session.UserAP
+        config: sails.adminpanel
     });
 
 };

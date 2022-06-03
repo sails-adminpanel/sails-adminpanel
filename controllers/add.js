@@ -59,8 +59,7 @@ async function add(req, res) {
     return res.viewAdmin({
         instance: instance,
         fields: fields,
-        data: data,
-        currentUser: req.session.UserAP
+        data: data
     });
 }
 exports.default = add;

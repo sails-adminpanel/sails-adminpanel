@@ -4,7 +4,7 @@
     <section class="nav-group">
       <% adminpanel.menuHelper.getMenuItems().forEach(function(menuItem) { %>
         <% var active = ""; if (menuItem && menuItem.instanceName && instance && instance.name) { active = menuItem.instanceName === instance.name ? 'active' : '' } %>
-        <% if (sails.hooks["sails-adminpanel"].havePermission(`read-${menuItem.instanceName}-instance`, currentUser)) { %>
+        <% if (sails.hooks["sails-adminpanel"].havePermission(`read-${menuItem.instanceName}-instance`, req.session.UserAP)) { %>
           <section class="nav-group collapsible <% if(active) {%>active<% } %>">
             <input class="clr-input" id="tab-<%=menuItem.id%>" type="checkbox" />
             <div class="nav-label">

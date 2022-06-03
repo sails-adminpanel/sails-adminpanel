@@ -18,7 +18,7 @@
                 <%= __("Back to list") %>
             </button>
         </a>
-        <% if (instance.config.edit && sails.hooks["sails-adminpanel"].havePermission(`update-${instance.name}-instance`, currentUser)) { %>
+        <% if (instance.config.edit && sails.hooks["sails-adminpanel"].havePermission(`update-${instance.name}-instance`, req.session.UserAP)) { %>
             <a href="<%= instance.uri %>/edit/<%= record[idField] %>">
                 <button raised class="button-green">
                     <clr-icon shape="create"></clr-icon>
@@ -26,7 +26,7 @@
                 </button>
             </a>
         <% } %>
-        <% if (instance.config.remove && sails.hooks["sails-adminpanel"].havePermission(`delete-${instance.name}-instance`, currentUser)) { %>
+        <% if (instance.config.remove && sails.hooks["sails-adminpanel"].havePermission(`delete-${instance.name}-instance`, req.session.UserAP)) { %>
             <a href="<%= instance.uri %>/remove/<%= record[idField] %>" onclick="return confirm('Are you sure ?');">
                 <button raised class="button-red">
                     <clr-icon shape="delete"></clr-icon>
