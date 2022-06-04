@@ -145,5 +145,5 @@ export interface HrefConfig {
     /**
      * Only for view, controller still uses his own access rights token
      * */
-    accessRightsToken?: AccessRightsToken
+    accessRightsToken?: string
 }

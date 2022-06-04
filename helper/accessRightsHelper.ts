@@ -19,6 +19,12 @@ export class AccessRightsHelper {
         this._tokens.push(accessRightsToken);
     }
 
+    public static registerTokens(accessRightsTokens: AccessRightsToken[]): void {
+        for (let token of accessRightsTokens) {
+            AccessRightsHelper.registerToken(token)
+        }
+    }
+
     public static getTokens(): AccessRightsToken[] {
         return this._tokens
     }

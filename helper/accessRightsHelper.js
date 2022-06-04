@@ -13,6 +13,11 @@ class AccessRightsHelper {
         }
         this._tokens.push(accessRightsToken);
     }
+    static registerTokens(accessRightsTokens) {
+        for (let token of accessRightsTokens) {
+            AccessRightsHelper.registerToken(token);
+        }
+    }
     static getTokens() {
         return this._tokens;
     }

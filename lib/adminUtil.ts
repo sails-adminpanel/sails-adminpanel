@@ -51,7 +51,7 @@ export class AdminUtil {
             sails.log.error('Wrong instance configuration, using default');
             config = {};
         }
-        config = Object.assign(config, this._defaultInstanceConfig);
+        config = Object.assign(this._defaultInstanceConfig, config);
 
         //Check limits
         if (typeof config.list === "boolean") {
