@@ -22,7 +22,7 @@ export class TranslationHelper {
                     try {
                         let jsonData = require(`${translationsDirectoryPath}/${locale}.json`);
                         sails.hooks.i18n.appendLocale(locale, jsonData);
-                        sails.hooks.i18n.defaultLocale = defaultLocale;
+                        // sails.hooks.i18n.defaultLocale = defaultLocale;
                     } catch (error) {
                         sails.log.error(`Adminpanel > Error when reading ${locale}.json: ${error}`);
                     }

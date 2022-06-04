@@ -37,6 +37,10 @@ export default async function(sails: any, cb) {
     HookTools.waitForHooks("adminpanel", requiredHooks, afterHook);
     await HookTools.bindModels(resolve(__dirname, "../models"));
 
+    // if (!sails.hooks.i18n.locales) sails.hooks.i18n.locales = []
+    // sails.hooks.i18n.locales = [...sails.hooks.i18n.locales, ...sails.config.adminpanel.translation.locales]
+    //     .filter(function(item, pos, self) { return self.indexOf(item) == pos })
+
     // Bind assets
     await bindAssets();
     cb();

@@ -14,7 +14,6 @@ export default async function login(req, res) {
       }
 
       if (req.body.pretend) {
-        console.log("In pretend")
         if (!user) {
           return res.sendStatus(404);
         }

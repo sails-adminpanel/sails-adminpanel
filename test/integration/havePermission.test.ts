@@ -11,26 +11,20 @@ describe('Have permission test', function () {
         await GroupAP.destroy({name: "Test Group"});
         await UserAP.destroy({login: "test"});
 
-        let group = await GroupAP.create({name: "Test Group", description: "Group for test",
+        let group = await GroupAP.create({name: "Test Group", description: "Group for test", isAdministrator: false,
             tokens: [`read-users-instance`, `update-users-instance`]}).fetch();
         let user = await UserAP.create({login: "test", fullName: "Test user", password: "test", groups: group.id}).fetch();
 
-        // chai.request('http://localhost:1337')
-        //     .post('/admin/userap/login')
-        //     .type('form')
-        //     .send({login: "test", password: "test"})
-        //     .end(function (err, res) {
-        //         expect(err).to.be.null;
-        //         expect(res).to.have.status(200);
-        //     })
-
-        chai.request('http://localhost:1337')
-            .get('/admin/users/add')
-            .end(function (err, res) {
-                expect(err).to.be.null;
-                console.log(res)
-                expect(res).to.have.status(403);
-            })
+        let agent = chai.request.agent(sails.hooks.http.app);
+        agent.post('/admin/userap/login')
+            .type('form')
+            .send({login: "test", password: "test"})
+            .then(function(res){
+                agent.get('/admin/users/add')
+                    .then(function(res2){
+                        res2.should.have.status(403);
+                    });
+            });
     })
 
 

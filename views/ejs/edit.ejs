@@ -24,7 +24,7 @@
                 Скрыть
                 <i class="las la-eye-slash"></i>
             </button> -->
-            <% if (sails.hooks["sails-adminpanel"].havePermission(`delete-${instance.name}-instance`, req.session.UserAP)) { %>
+            <% if (havePermission(`delete-${instance.name}-instance`, req.session.UserAP)) { %>
                 <a href="<%= instance.uri %>/remove/<%= record[idField] %>">
                     <button class="btn-nav">
                     <%= __("Delete") %>

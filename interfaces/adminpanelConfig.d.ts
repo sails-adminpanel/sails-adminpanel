@@ -143,7 +143,7 @@ export interface HrefConfig {
     link: string
     icon?: string
     /**
-     * Only for visual view, controller still uses his own access rights token
+     * Only for view, controller still uses his own access rights token
      * */
     accessRightsToken?: AccessRightsToken
 }

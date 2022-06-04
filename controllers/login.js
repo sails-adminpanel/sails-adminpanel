@@ -14,7 +14,6 @@ async function login(req, res) {
                 return res.serverError(e);
             }
             if (req.body.pretend) {
-                console.log("In pretend");
                 if (!user) {
                     return res.sendStatus(404);
                 }

@@ -8,7 +8,13 @@ describe('Translation helper', function () {
         let expectedLocales = require("../datamocks/testLocales.json");
         TranslationHelper.loadTranslations(projectTranslations);
         //console.log("Locales: ", sails.hooks.i18n.getLocales())
-        expect(sails.hooks.i18n.getLocales()).to.deep.equal(expectedLocales)
+        expect(sails.hooks.i18n.getLocales().en).to.include(expectedLocales.en);
     });
+
+    // 1. Локали не установлены и берутся из sails.config.adminpanel.translation.locales
+    // 2. Есть локали внутри админки и локали в проекте и они должны смерджиться в sails.hooks.i18n.locales
+    it("Check locales", function () {
+
+    })
 });
 
