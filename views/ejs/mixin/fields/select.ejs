@@ -11,7 +11,7 @@
                         <%= (optKey == value) && 'selected' %>> <%= opt %> </option>
             <% }) %>
         <% } else { %>
-            <% field.model.enum.forEach(function(opt) { %>
+            <% field.model.isIn.forEach(function(opt) { %>
                 <option value="<%= opt %>"
                     <%= (opt == value) && 'selected' %>><%= opt %></option>
             <% }) %>
