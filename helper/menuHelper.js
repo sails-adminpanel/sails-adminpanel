@@ -1,11 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MenuHelper = void 0;
-/**
- * Menu helper
- *
- * @constructor
- */
 let _ = require("lodash"); // заменить lodash реджексом
 class MenuHelper {
     constructor(config) {
@@ -17,7 +12,7 @@ class MenuHelper {
      * @returns {boolean}
      */
     static hasBrand() {
-        return Boolean(this.config.menu && this.config.menu.brand);
+        return Boolean(this.config.brand && this.config.brand.link);
     }
     /**
      * Get menu brand link
@@ -25,11 +20,11 @@ class MenuHelper {
      * @returns {string}
      */
     static getBrandLink() {
-        if (!this.config.menu || !this.config.menu.brand || typeof this.config.menu.brand !== "object" ||
-            !this.config.menu.brand.link) {
+        if (!this.config.brand || !this.config.brand.link || typeof this.config.brand.link !== "object" ||
+            !this.config.brand.link.link) {
             return '/admin';
         }
-        return this.config.menu.brand.link;
+        return this.config.brand.link.link;
     }
     /**
      * Get menu brand title
@@ -37,14 +32,14 @@ class MenuHelper {
      * @returns {string}
      */
     getBrandTitle() {
-        if (!MenuHelper.config.menu || !MenuHelper.config.menu.brand) {
+        if (!MenuHelper.config.brand || !MenuHelper.config.brand.link) {
             return 'Sails-adminpanel';
         }
-        if (typeof MenuHelper.config.menu.brand === "string") {
-            return MenuHelper.config.menu.brand;
+        if (typeof MenuHelper.config.brand.link === "string") {
+            return MenuHelper.config.brand.link;
         }
-        if (typeof MenuHelper.config.menu.brand === "object" && typeof MenuHelper.config.menu.brand.title === "string") {
-            return MenuHelper.config.menu.brand.title;
+        if (typeof MenuHelper.config.brand.link === "object" && typeof MenuHelper.config.brand.link.title === "string") {
+            return MenuHelper.config.brand.link.title;
         }
         return 'Sails-adminpanel';
     }
@@ -85,14 +80,12 @@ class MenuHelper {
      * @param {string=} [action]
      * @returns {Array}
      */
-    static getGlobalActions(instanceConfig, action) {
-        // TODO: fix this
-        // action = action || 'list';
-        // if (!this.hasGlobalActions(instanceConfig, action)) {
-        //     return [];
-        // }
-        // return instanceConfig[action].actions.global;
-        return;
+    getGlobalActions(instanceConfig, action) {
+        action = action || 'list';
+        if (!this.hasGlobalActions(instanceConfig, action)) {
+            return [];
+        }
+        return instanceConfig[action].actions.global;
     }
     /**
      * Get list of custom inline buttons for action
@@ -119,22 +112,24 @@ class MenuHelper {
      * @returns {string}
      */
     static replaceModelFields(url, model) {
-        // TODO: fix this
-        // // Check for model existence
-        // if (!model) {
-        //     return url;
-        // }
-        // let words = _.words(url, /\:+[a-z\-_]*/gi);
-        // // Replacing props
-        // words.forEach(function(word) {
-        //     let variable = word.replace(':', '');
-        //     if (model && model[variable]) {
-        //         url = url.replace(word, model[variable]);
-        //     }
-        // });
-        //
-        // return url;
-        return;
+        let words = (str, pat) => {
+            pat = pat || /\w+/g;
+            str = str.toLowerCase();
+            return str.match(pat);
+        };
+        // Check for model existence
+        if (!model) {
+            return url;
+        }
+        let split = words(url, /\:+[a-z\-_]*/gi);
+        // Replacing props
+        split.forEach(function (word) {
+            let variable = word.replace(':', '');
+            if (model && model[variable]) {
+                url = url.replace(word, model[variable]);
+            }
+        });
+        return url;
     }
     /**
      * Get list of instance menus that was not bound to groups
@@ -144,8 +139,9 @@ class MenuHelper {
     getMenuItems() {
         let menus = [];
         Object.entries(MenuHelper.config.instances).forEach(function ([key, val]) {
-            if (val.actions && val.actions.length > 0 && val.actions[0].title !== "Overview") {
-                val.actions.unshift({
+            if (val.tools && val.tools.length > 0 && val.tools[0].id !== "overview") {
+                val.tools.unshift({
+                    id: "overview",
                     link: MenuHelper.config.routePrefix + '/' + key,
                     title: 'Overview',
                     icon: ""
@@ -155,21 +151,21 @@ class MenuHelper {
                 link: MenuHelper.config.routePrefix + '/' + key,
                 title: val.title,
                 icon: val.icon || null,
-                actions: val.actions || null,
-                id: val.id || val.title.replace(" ", "_"),
+                actions: val.tools || null,
+                id: val.title.replace(" ", "_"),
                 instanceName: key
             });
         });
-        if (MenuHelper.config.menu.actions && MenuHelper.config.menu.actions.length > 0) {
-            MenuHelper.config.menu.actions.forEach(function (menu) {
-                if (!menu.link || !menu.title || menu.disabled) {
+        if (MenuHelper.config.navbar.additionalLinks && MenuHelper.config.navbar.additionalLinks.length > 0) {
+            MenuHelper.config.navbar.additionalLinks.forEach(function (additionalLink) {
+                if (!additionalLink.link || !additionalLink.title || additionalLink.disabled) {
                     return;
                 }
                 menus.push({
-                    link: menu.link,
-                    title: menu.title,
-                    id: menu.id || menu.title.replace(" ", "_"),
-                    icon: menu.icon || null
+                    link: additionalLink.link,
+                    title: additionalLink.title,
+                    id: additionalLink.id || additionalLink.title.replace(" ", "_"),
+                    icon: additionalLink.icon || null
                 });
             });
         }

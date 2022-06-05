@@ -51,7 +51,7 @@ $(document).ready(function() {
         <% var actionType = 'list' %>
         <% if (instance.config.add && havePermission(`create-${instance.name}-instance`, req.session.UserAP)) { %>
             <a href="<%=instance.uri%>/add" id="add">
-                <button class="btn-add"><%= __('create') %></button>
+                <button class="btn-add"><i class="las la-plus"></i><%= __('create') %></button>
             </a>
         <% } %>
         <% include mixin/globalActions %>
