@@ -1,5 +1,5 @@
 <!-- prettier-ignore -->
-<% if (field.model.enum) { %>
+<% if (field.config.enum) { %>
     <% include select %>
 <% } else if(field.model.email) { %>
     <input class="clr-input" label="<%= field.config.title %>"
