@@ -42,14 +42,15 @@
                     </div>
                 </div>
 
-                <div class="admin-panel__widget">
-                    <label class="admin-panel__title" for="date"><%= __("Profile expires") %></label>
-                    <span class="badge badge-danger">Разредрить из настроек</span>
-                    <div class="widget_narrow" >
-                        <input class="clr-input" type="date" id="date" name="date" value="<%= user.expires %>">
-
+                <% if (req.session.UserAP.isAdministrator) { %>
+                    <div class="admin-panel__widget">
+                        <label class="admin-panel__title" for="date"><%= __("Profile expires") %></label>
+                        <span class="badge badge-danger">Разредрить из настроек</span>
+                        <div class="widget_narrow" >
+                            <input class="clr-input" type="date" id="date" name="date" value="<%= user.expires %>">
+                        </div>
                     </div>
-                </div>
+                <% } %>
 
                 <div class="admin-panel__widget">
                     <label class="admin-panel__title" for="locale"><%= __("Locale") %></label>
@@ -63,11 +64,14 @@
                     </div>
                 </div>
 
-                <div class="admin-panel__widget">
-                    <div class="widget_narrow" >
-                        <a href=""><i class="las la-mask"></i> <%= __("Pretend to be a user") %></a>
+                <% if (req.session.UserAP.isAdministrator) { %>
+                    <div class="admin-panel__widget">
+                        <div class="widget_narrow" >
+                            <a href="#" onclick="pretendByUser()"><i class="las la-mask"></i> <%= __("Pretend to be a user") %></a>
+                        </div>
                     </div>
-                </div>
+                <% } %>
+
             </div>
         </div>
 
@@ -138,6 +142,23 @@
         // check all fields
         // send timezone id instead of text
         $("#editUserForm").submit();
+    }
+
+    function pretendByUser() {
+        let fd = new FormData();
+        fd.append("login", $('#userLogin').val());
+        fd.append("pretend", true)
+        $.ajax({
+            url: "/admin/userap/login",
+            data: fd,
+            cache: false,
+            processData: false,
+            contentType: false,
+            type: 'POST',
+            success: function (response) {
+                window.location.href = `<%- sails.config.adminpanel.routePrefix %>/`
+            }
+        });
     }
 </script>
 

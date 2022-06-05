@@ -24,11 +24,13 @@
                 Скрыть
                 <i class="las la-eye-slash"></i>
             </button> -->
-            <a href="<%= instance.uri %>/remove/<%= record[idField] %>">
-                <button class="btn-nav">
-                <%= __("Delete") %>
-                <i class="las la-trash-alt"></i>
-            </button></a>
+            <% if (havePermission(`delete-${instance.name}-instance`, req.session.UserAP)) { %>
+                <a href="<%= instance.uri %>/remove/<%= record[idField] %>">
+                    <button class="btn-nav">
+                    <%= __("Delete") %>
+                    <i class="las la-trash-alt"></i>
+                </button></a>
+            <% } %>
                     </div>
                 </div>
                 <form id="form" action="<%= instance.uri %>/edit/<%= record[idField] %>" method="POST" enctype="multipart/form-data">

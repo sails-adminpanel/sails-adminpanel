@@ -2,37 +2,43 @@
 <nav class="sidenav sidenav-panel">
   <section class="sidenav-content">
     <section class="nav-group">
-      <% adminpanel.menuHelper.getMenuItems().forEach(function(menuItem) { %> <% var active = ""; if (menuItem && menuItem.instanceName && instance && instance.name) { active = menuItem.instanceName === instance.name ? 'active' : '' } %>
-      <section class="nav-group collapsible <% if(active) {%>active<% } %>">
-        <input class="clr-input" id="tab-<%=menuItem.id%>" type="checkbox" />
-        <div class="nav-label">
-          <label for="tab-<%=menuItem.id%>" title="<%= menuItem.title %>">
-            <% if (menuItem.icon) { %>
-            <span class="navbar-icon">
-              <i class="las la-<%=menuItem.icon%>"></i>
-            </span>
-            <% } %> <% if (menuItem.actions && menuItem.actions.length > 0) { %> <%= menuItem.title %>
-            <i class="las la-chevron-right"></i>
-            <% } else { %>
-            <a href="<%= menuItem.link %>"><%= menuItem.title %></a>
+      <% adminpanel.menuHelper.getMenuItems().forEach(function(menuItem) { %>
+        <% var active = ""; if (menuItem && menuItem.instanceName && instance && instance.name) { active = menuItem.instanceName === instance.name ? 'active' : '' } %>
+        <% if (havePermission(`read-${menuItem.instanceName}-instance`, req.session.UserAP)) { %>
+          <section class="nav-group collapsible <% if(active) {%>active<% } %>">
+            <input class="clr-input" id="tab-<%=menuItem.id%>" type="checkbox" />
+            <div class="nav-label">
+              <label for="tab-<%=menuItem.id%>" title="<%= menuItem.title %>">
+                <% if (menuItem.icon) { %>
+                  <span class="navbar-icon">
+                    <i class="las la-<%=menuItem.icon%>"></i>
+                  </span>
+                <% } %>
+                <% if (menuItem.actions && menuItem.actions.length > 0) { %> <%= menuItem.title %>
+                  <i class="las la-chevron-right"></i>
+                <% } else { %>
+                  <a href="<%= menuItem.link %>"><%= menuItem.title %></a>
+                <% } %>
+              </label>
+            </div>
+            <% if (menuItem.actions && menuItem.actions.length > 0) { %>
+              <% menuItem.actions.forEach(function(action) { %>
+                <ul class="nav-list">
+                  <li>
+                    <a class="nav-link" href="<%= action.link %>"
+                      ><span class="navbar-icon"> <i class="las la-list"></i></span><%= __(action.title) %></a
+                    >
+                  </li>
+                </ul>
+              <% }) %>
             <% } %>
-          </label>
-        </div>
-        <% if (menuItem.actions && menuItem.actions.length > 0) { %> <% menuItem.actions.forEach(function(action) { %>
-        <ul class="nav-list">
-          <li>
-            <a class="nav-link" href="<%= action.link %>"
-              ><span class="navbar-icon"> <i class="las la-list"></i></span><%= action.title %></a
-            >
-          </li>
-        </ul>
-        <% }) %> <% } %> 
-        </section>
-        <% }) %>
-      
+          </section>
+        <% } %>
+      <% }) %>
+
       <a class="sidenav-panel__link" href="#">
-        <span class="navbar-icon"> <i class="las la-list"></i></span> Без стрелки</a
-      >
+        <span class="navbar-icon"> <i class="las la-list"></i></span> Без стрелки
+      </a>
     </section>
     
   </section>

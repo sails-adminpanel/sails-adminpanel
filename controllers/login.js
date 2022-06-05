@@ -13,6 +13,16 @@ async function login(req, res) {
             catch (e) {
                 return res.serverError(e);
             }
+            if (req.body.pretend) {
+                if (!user) {
+                    return res.sendStatus(404);
+                }
+                if (req.session.UserAP.isAdministrator) {
+                    req.session.adminPretender = req.session.UserAP;
+                    req.session.UserAP = user;
+                    return res.sendStatus(200);
+                }
+            }
             if (!user) {
                 req.flash("adminError", "Wrong username or password");
                 return res.viewAdmin("login");
@@ -20,7 +30,7 @@ async function login(req, res) {
             else {
                 if (passwordHash.verify(login + password, user.passwordHashed)) {
                     req.session.UserAP = user;
-                    return res.redirect("/admin/");
+                    return res.redirect(`${sails.config.adminpanel.routePrefix}/`);
                 }
                 else {
                     req.flash("adminError", "Wrong username or password");
@@ -33,8 +43,13 @@ async function login(req, res) {
         }
     }
     else if (req.url.indexOf("logout") >= 0) {
+        if (req.session.adminPretender && req.session.adminPretender.id && req.session.UserAP && req.session.UserAP.id) {
+            req.session.UserAP = req.session.adminPretender;
+            req.session.adminPretender = {};
+            return res.redirect(`${sails.config.adminpanel.routePrefix}/`);
+        }
         req.session.UserAP = undefined;
-        res.redirect("/admin/userap/login");
+        res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
     }
 }
 exports.default = login;

@@ -7,5 +7,9 @@
  */
 export default function(req, res) {
 
-    return res.viewAdmin('dashboard', { instance: "instance"});
+    if (sails.config.adminpanel.auth && !req.session.UserAP) {
+        return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
+    }
+
+    return res.viewAdmin('dashboard', { instance: "instance" });
 };

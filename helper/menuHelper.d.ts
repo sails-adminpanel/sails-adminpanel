@@ -42,7 +42,7 @@ export declare class MenuHelper {
      * @param {string=} [action]
      * @returns {Array}
      */
-    static getGlobalActions(instanceConfig: any, action: any): void;
+    getGlobalActions(instanceConfig: any, action: any): any;
     /**
      * Get list of custom inline buttons for action
      *
@@ -61,7 +61,7 @@ export declare class MenuHelper {
      * @param {Object} model
      * @returns {string}
      */
-    static replaceModelFields(url: any, model: any): void;
+    static replaceModelFields(url: any, model: any): any;
     /**
      * Get list of instance menus that was not bound to groups
      *

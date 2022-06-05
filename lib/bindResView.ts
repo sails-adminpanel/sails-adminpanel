@@ -1,4 +1,5 @@
 import { ViewsHelper } from "../helper/viewsHelper";
+import {AccessRightsHelper} from "../helper/accessRightsHelper";
 
 export default function bindResView() {
 
@@ -62,6 +63,7 @@ export default function bindResView() {
             }
             locals.theme = sails.config.adminpanel.theme || 'light';
             locals.button = sails.config.adminpanel.button || 'solid';
+            locals.havePermission = AccessRightsHelper.havePermission;
 
             if (locals.section === undefined) locals.section = 'adminpanel';
 

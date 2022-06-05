@@ -29,13 +29,15 @@ const adminpanelConfig: AdminpanelConfig = {
     policies: null,
 
     /**
-     * Base menu configuration
+     * Base navbar configuration
      */
-    menu: {
-        // Should admin panel brand be visible ?
-        brand: true,
+    navbar: {
         // List of additional actions
-        actions: []
+        additionalLinks: []
+    },
+
+    brand: {
+        link: null
     },
 
     /**

@@ -25,14 +25,19 @@ $(document).ready(function() {
             fixedColumns: true,
             scrollX:        true,
             responsive: true,
-            "columnDefs": [
-            {
+            "columnDefs": [{
                 targets: 0,
-                render: function (data, type, row, meta)
-                {
-                    if (type === 'display')
-                    {
-                        data = '<a href="<%=instance.uri%>/view/'+row[0]+'"><%= __('View') %></a><br><br><a href="<%=instance.uri%>/edit/'+row[0]+'"><%= __('Edit') %></a>';
+                render: function (data, type, row, meta) {
+                    if (type === 'display') {
+                        if (<%- havePermission(`read-${instance.name}-instance`, req.session.UserAP) %>) {
+                            data = '<a href="<%=instance.uri%>/view/'+row[0]+'"><%= __('View') %></a>';
+                        }
+                        if (<%- havePermission(`update-${instance.name}-instance`, req.session.UserAP) %>) {
+                            data = '<a href="<%=instance.uri%>/edit/'+row[0]+'"><%= __('Edit') %></a>';
+                        }
+                        if (<%- havePermission(`read-${instance.name}-instance`, req.session.UserAP) %> && <%- havePermission(`update-${instance.name}-instance`, req.session.UserAP) %>) {
+                            data = '<a href="<%=instance.uri%>/view/'+row[0]+'"><%= __('View') %></a><br><br><a href="<%=instance.uri%>/edit/'+row[0]+'"><%= __('Edit') %></a>';
+                        }
                     }
                     return data;
                 }
@@ -44,9 +49,9 @@ $(document).ready(function() {
 <div class="horizontal layout">
     <div class="flex">
         <% var actionType = 'list' %>
-        <% if (instance.config.add) { %>
+        <% if (instance.config.add && havePermission(`create-${instance.name}-instance`, req.session.UserAP)) { %>
             <a href="<%=instance.uri%>/add" id="add">
-                <button class="btn-add">создать</button>
+                <button class="btn-add"><i class="las la-plus"></i><%= __('create') %></button>
             </a>
         <% } %>
         <% include mixin/globalActions %>
@@ -57,7 +62,7 @@ $(document).ready(function() {
         <thead>
             <tr>
                 <th>
-                    Actions
+                    <%= __('Actions') %>
                 </th>
                 <% Object.keys(fields).forEach(function(key) { %>
                     <% var field = fields[key] %>

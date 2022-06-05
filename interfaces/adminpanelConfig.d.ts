@@ -1,19 +1,22 @@
-import {AccessRightsToken} from "./types";
-
 export interface AdminpanelConfig {
     instances: {
         [key:string]: InstanceConfig
     }
+    /**
+     * For custom adminpanel sections, displays inside header
+     * */
     sections?: HrefConfig[]
     routePrefix?: string
     pathToViews?: string
     identifierField?: string
-    menu?: {
-        brand: boolean | string | HrefConfig
+    brand?: {
+        link: boolean | string | HrefConfig
+    }
+    navbar?: {
         /**
          * will be created at the bottom of the sidenav panel
          * */
-        actions: HrefConfig[]
+        additionalLinks: HrefConfig[]
     }
     policies?: string | string[] | Function | Function[]
     styles?: string[]
@@ -47,12 +50,21 @@ export interface InstanceConfig {
     title: string
     model: string
     fields?: Fields
-    list?: { fields: Fields } | boolean
+    list?: {
+        fields: Fields,
+        actions?: {
+            global?: HrefConfig[],
+            inline?: HrefConfig[]
+        }
+    } | boolean
     add?: CreateUpdateConfig | boolean
     edit?: CreateUpdateConfig | boolean
     remove?: boolean
     view?: boolean
-    actions?: HrefConfig[]
+    /**
+     * Instance action, displays in left navbar for specific instance
+     * */
+    tools?: HrefConfig[]
     icon?: string,
     /**
      * force set primary key
@@ -143,7 +155,7 @@ export interface HrefConfig {
     link: string
     icon?: string
     /**
-     * Only for visual view, controller still uses his own access rights token
+     * Only for view, controller still uses his own access rights token
      * */
-    accessRightsToken?: AccessRightsToken
+    accessRightsToken?: string
 }
