@@ -75,7 +75,7 @@ export class AdminUtil {
     private static _normalizeActionConfig(config) {
         //Adding fields
         config.fields = config.fields || {};
-        return Object.assign(config, this._defaultActionConfig);
+        return Object.assign(this._defaultActionConfig, config);
     };
 
     /**
