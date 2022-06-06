@@ -45,7 +45,7 @@ async function default_1(req, res) {
                 }
             }
         }
-        let locale = req.body.locale === 'default' ? req.getLocale() : req.body.locale;
+        let locale = req.body.locale === 'default' ? sails.config.adminpanel.translation.defaultLocale : req.body.locale;
         let updatedUser;
         try {
             updatedUser = await UserAP.update({ id: user.id }, { login: req.body.login, fullName: req.body.fullName,

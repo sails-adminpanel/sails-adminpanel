@@ -34,7 +34,7 @@ export default async function(req, res) {
             }
         }
 
-        let locale = req.body.locale === 'default' ? req.getLocale() : req.body.locale;
+        let locale = req.body.locale === 'default' ? sails.config.adminpanel.translation.defaultLocale : req.body.locale;
 
         let user;
         try {
