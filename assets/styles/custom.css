@@ -52,3 +52,7 @@ table.dataTable {
     padding: 0.5rem;
     background: #eee;
   }
+
+  .checkbox-row {
+    float: left;
+  }
