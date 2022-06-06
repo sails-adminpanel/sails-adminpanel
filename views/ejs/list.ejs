@@ -25,6 +25,9 @@ $(document).ready(function() {
             fixedColumns: true,
             scrollX:        true,
             responsive: true,
+            language: {
+                url: '/admin/assets/datatables/i18n/<% req.session.UserAP.locale !== undefined ? req.session.UserAP.locale : "en" %>.json'
+            },
             "columnDefs": [{
                 targets: 0,
                 render: function (data, type, row, meta) {
