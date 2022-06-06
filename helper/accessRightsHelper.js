@@ -30,9 +30,6 @@ class AccessRightsHelper {
             .filter(function (item, pos, self) { return self.indexOf(item) == pos; });
     }
     static havePermission(tokenId, user) {
-        if (!sails.config.adminpanel.auth) {
-            return true;
-        }
         if (user.isAdministrator) {
             return true;
         }

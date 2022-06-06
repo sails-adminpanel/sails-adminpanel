@@ -3,7 +3,7 @@ module.exports = async function (req, res, proceed) {
         req.session.UserAP = {
             id: "auth-false",
             isAdministrator: true
-        }
+        };
     }
-    return proceed()
-}
+    return proceed();
+};

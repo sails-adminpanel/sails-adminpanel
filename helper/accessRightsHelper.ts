@@ -40,10 +40,6 @@ export class AccessRightsHelper {
     }
 
     public static havePermission(tokenId: string, user: UserAP): boolean {
-        if (!sails.config.adminpanel.auth) {
-            return true;
-        }
-
         if (user.isAdministrator) {
             return true;
         }
