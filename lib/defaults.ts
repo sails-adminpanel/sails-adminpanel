@@ -53,6 +53,20 @@ const adminpanelConfig: AdminpanelConfig = {
             },
             edit: {
                 controller: "../controllers/editUser"
+            },
+            list: {
+                fields: {
+                    createdAt: false,
+                    updatedAt: false,
+                    id: false,
+                    email: false,
+                    passwordHashed: false,
+                    timezone: false,
+                    locale: false,
+                    isDeleted: false,
+                    isActive: false,
+                    groups: false
+                }
             }
         },
         groups: {

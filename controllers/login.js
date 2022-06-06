@@ -29,7 +29,7 @@ async function login(req, res) {
             }
             else {
                 if (passwordHash.verify(login + password, user.passwordHashed)) {
-                    if (Date.now() > Date.parse(user.expires)) {
+                    if (user.expires && Date.now() > Date.parse(user.expires)) {
                         req.flash("adminError", "Profile expired, contact the administrator");
                         return res.viewAdmin("login");
                     }
