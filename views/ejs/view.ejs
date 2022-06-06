@@ -41,7 +41,7 @@
         <% Object.keys(fields).forEach(function(key) { %>
         <% var field = fields[key] %>
             <div class="layout horizontal field-row">
-                <div class="field-name"><%= field.config.title %></div>
+                <div class="field-name"><%= __(field.config.title) %></div>
                 <div flex>
                     <% include mixin/fieldValue %>
                 </div>

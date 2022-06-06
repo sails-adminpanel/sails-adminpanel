@@ -56,6 +56,7 @@
                     <label class="admin-panel__title" for="locale"><%= __("Locale") %></label>
                     <div class="widget_narrow" >
                         <select id="locale" name="locale">
+                            <option><%= __('default') %></option>
                             <% for (let locale of sails.config.adminpanel.translation.locales) { %>
                                 <option><%= locale %></option>
                             <% } %>
@@ -64,7 +65,7 @@
                     </div>
                 </div>
 
-                <% if (req.session.UserAP.isAdministrator) { %>
+                <% if (req.session.UserAP.isAdministrator && !user.isAdministrator) { %>
                     <div class="admin-panel__widget">
                         <div class="widget_narrow" >
                             <a href="#" onclick="pretendByUser()"><i class="las la-mask"></i> <%= __("Pretend to be a user") %></a>
@@ -139,9 +140,11 @@
     })
 
     function submitForm() {
-        // check all fields
-        // send timezone id instead of text
-        $("#editUserForm").submit();
+        if ($('#userPassword').val() !== $('#repeatUserPassword').val()) {
+            alert('Values in "password" and "repeatPassword" fields should be the same')
+        } else {
+            $("#editUserForm").submit();
+        }
     }
 
     function pretendByUser() {

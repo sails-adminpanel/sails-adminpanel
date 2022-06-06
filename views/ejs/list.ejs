@@ -69,7 +69,7 @@ $(document).ready(function() {
                 <% Object.keys(fields).forEach(function(key) { %>
                     <% var field = fields[key] %>
                     <th>
-                        <%= field.config.title %>
+                        <%= __(field.config.title) %>
                     </th>
                 <% }) %>
             </tr>

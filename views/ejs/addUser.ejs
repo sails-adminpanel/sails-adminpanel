@@ -54,6 +54,7 @@
                     <label class="admin-panel__title" for="locale"><%= __("Locale") %></label>
                     <div class="widget_narrow" >
                         <select id="locale" name="locale">
+                            <option><%= __('default') %></option>
                             <% for (let locale of sails.config.adminpanel.translation.locales) { %>
                                 <option><%= locale %></option>
                             <% } %>
@@ -112,9 +113,11 @@
 </form>
 
 <script>
-    function subminForm() {
-        // check all fields
-        // send timezone id instead of text
-        $("#addUserForm").submit();
+    function submitForm() {
+        if ($('#userPassword').val() !== $('#repeatUserPassword').val()) {
+            alert('Values in "password" and "repeatPassword" fields should be the same')
+        } else {
+            $("#addUserForm").submit();
+        }
     }
 </script>

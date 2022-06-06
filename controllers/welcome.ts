@@ -1,5 +1,3 @@
-import {AccessRightsHelper} from "../helper/accessRightsHelper";
-
 /**
  * Welcome text
  *
