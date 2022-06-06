@@ -34,11 +34,13 @@ export default async function(req, res) {
             }
         }
 
+        let locale = req.body.locale === 'default' ? req.getLocale() : req.body.locale;
+
         let user;
         try {
             user = await UserAP.create({login: req.body.login, fullName: req.body.fullName, email: req.body.email,
                 password: req.body.userPassword, timezone: req.body.timezone, expires: req.body.date,
-                locale: req.body.locale, groups: userGroups}).fetch()
+                locale: locale, groups: userGroups}).fetch()
             sails.log(`A new user was created: `, user);
             req.flash('adminSuccess', 'A new user was created !');
             return res.redirect(`${sails.config.adminpanel.routePrefix}/users`);

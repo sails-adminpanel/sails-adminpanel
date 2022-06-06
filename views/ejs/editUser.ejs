@@ -56,6 +56,7 @@
                     <label class="admin-panel__title" for="locale"><%= __("Locale") %></label>
                     <div class="widget_narrow" >
                         <select id="locale" name="locale">
+                            <option><%= __('default') %></option>
                             <% for (let locale of sails.config.adminpanel.translation.locales) { %>
                                 <option><%= locale %></option>
                             <% } %>

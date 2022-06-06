@@ -45,11 +45,12 @@ async function default_1(req, res) {
                 }
             }
         }
+        let locale = req.body.locale === 'default' ? req.getLocale() : req.body.locale;
         let updatedUser;
         try {
             updatedUser = await UserAP.update({ id: user.id }, { login: req.body.login, fullName: req.body.fullName,
                 email: req.body.email, password: req.body.userPassword, timezone: req.body.timezone, expires: req.body.date,
-                locale: req.body.locale, groups: userGroups }).fetch();
+                locale: locale, groups: userGroups }).fetch();
             sails.log(`User was updated: `, updatedUser);
             req.flash('adminSuccess', 'User was updated !');
         }
