@@ -29,6 +29,10 @@ export default async function login(req, res) {
         return res.viewAdmin("login");
       } else {
         if (passwordHash.verify(login + password, user.passwordHashed)) {
+          if (Date.now() > Date.parse(user.expires)) {
+            req.flash("adminError", "Profile expired, contact the administrator");
+            return res.viewAdmin("login");
+          }
           req.session.UserAP = user;
           return res.redirect(`${sails.config.adminpanel.routePrefix}/`);
         } else {
