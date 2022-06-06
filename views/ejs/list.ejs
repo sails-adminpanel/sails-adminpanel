@@ -29,15 +29,14 @@ $(document).ready(function() {
                 targets: 0,
                 render: function (data, type, row, meta) {
                     if (type === 'display') {
+                        data = "";
                         if (<%- havePermission(`read-${instance.name}-instance`, req.session.UserAP) %>) {
-                            data = '<a href="<%=instance.uri%>/view/'+row[0]+'"><%= __('View') %></a>';
+                            data += '<a href="<%=instance.uri%>/view/'+row[0]+'"><i class="las la-eye"></i><%= __('View') %></a><br>';
                         }
                         if (<%- havePermission(`update-${instance.name}-instance`, req.session.UserAP) %>) {
-                            data = '<a href="<%=instance.uri%>/edit/'+row[0]+'"><%= __('Edit') %></a>';
+                            data += '<a href="<%=instance.uri%>/edit/'+row[0]+'"><i class="las la-edit"></i><%= __('Edit') %></a><br>';
                         }
-                        if (<%- havePermission(`read-${instance.name}-instance`, req.session.UserAP) %> && <%- havePermission(`update-${instance.name}-instance`, req.session.UserAP) %>) {
-                            data = '<a href="<%=instance.uri%>/view/'+row[0]+'"><%= __('View') %></a><br><br><a href="<%=instance.uri%>/edit/'+row[0]+'"><%= __('Edit') %></a>';
-                        }
+                        <% include mixin/list/inlineActions %>
                     }
                     return data;
                 }

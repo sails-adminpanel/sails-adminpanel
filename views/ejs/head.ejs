@@ -86,7 +86,7 @@
                     <div class="header__login">
                     <% if (req.session.UserAP) { %>
                         <% if (req.session.adminPretender && req.session.adminPretender.id) { %>
-                            МАСКА
+                                <i class="las la-mask"></i>&nbsp;
                         <% } %>
                       <a class="header__name" href="#">
                           <span><%= req.session.UserAP.fullName %></span>
