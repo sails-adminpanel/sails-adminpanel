@@ -64,7 +64,7 @@
                     </div>
                 </div>
 
-                <% if (req.session.UserAP.isAdministrator) { %>
+                <% if (req.session.UserAP.isAdministrator && !user.isAdministrator) { %>
                     <div class="admin-panel__widget">
                         <div class="widget_narrow" >
                             <a href="#" onclick="pretendByUser()"><i class="las la-mask"></i> <%= __("Pretend to be a user") %></a>
