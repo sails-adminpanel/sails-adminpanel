@@ -2,8 +2,10 @@
     <% var actions = adminpanel.menuHelper.getInlineActions(instance.config, 'list') %>
     <% if (actions && actions.length > 0) { %>
         <% actions.forEach(function(action) { %>
-            <%# print data into list.ejs inline action %>
-            data += '<a href="<%= action.link %>/'+row[0]+'?id='+row[0]+'&instance=<%= instance.name %>" id="<%= action.id %>"><i class="las la-<%= action.icon %>"></i><%= __(action.title) %></a><br>';
+            <% if (havePermission(action.accessRightsToken, req.session.UserAP)) { %>
+                <%# print data into list.ejs inline action %>
+                data += '<a href="<%= action.link %>/'+row[0]+'?id='+row[0]+'&instance=<%= instance.name %>" id="<%= action.id %>"><i class="las la-<%= action.icon %>"></i><%= __(action.title) %></a><br>';
+            <% } %>
         <% }) %>
     <% } %>
 <% } %>

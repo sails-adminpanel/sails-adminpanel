@@ -17,18 +17,20 @@
                 <% if (menuItem.actions && menuItem.actions.length > 0) { %> <%= menuItem.title %>
                   <i class="las la-chevron-right"></i>
                 <% } else { %>
-                  <a href="<%= menuItem.link %>"><%= menuItem.title %></a>
+                  <a href="<%= menuItem.link %>"><%= __(menuItem.title) %></a>
                 <% } %>
               </label>
             </div>
             <% if (menuItem.actions && menuItem.actions.length > 0) { %>
               <% menuItem.actions.forEach(function(action) { %>
                 <ul class="nav-list">
-                  <li>
-                    <a class="nav-link" href="<%= action.link %>"
-                      ><span class="navbar-icon"> <i class="las la-list"></i></span><%= __(action.title) %></a
-                    >
-                  </li>
+                    <% if (havePermission(action.accessRightsToken, req.session.UserAP)) { %>
+                      <li>
+                        <a class="nav-link" href="<%= action.link %>"
+                          ><span class="navbar-icon"> <i class="las la-list"></i></span><%= __(action.title) %></a
+                        >
+                      </li>
+                    <% } %>
                 </ul>
               <% }) %>
             <% } %>
