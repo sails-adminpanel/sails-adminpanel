@@ -19,10 +19,10 @@ export declare class ViewsHelper {
     static getViewPath(view: any): string;
     /**
      *
-     * @param {IncommingMessage} req
-     * @param {string} type Types: adminError|adminSuccess
+     * @param {IncomingMessage} req
+     * @param {string} key Types: adminError|adminSuccess
      */
-    static hasFlash(req: any, type: any): any;
+    static hasMessages(req: any, key: any): any;
     /**
      * Get needed field value from dat provided.
      *

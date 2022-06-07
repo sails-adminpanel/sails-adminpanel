@@ -72,10 +72,10 @@ export default async function editGroup(req, res) {
             updatedGroup = await GroupAP.update({id: group.id}, {name: req.body.name, description: req.body.description,
                 users: usersInThisGroup, tokens: tokensOfThisGroup}).fetch();
             sails.log(`Group was updated: `, updatedGroup);
-            req.flash('adminSuccess', 'Group was updated !');
+            req.session.messages.adminSuccess.push('Group was updated !');
         } catch (e) {
             sails.log.error(e);
-            req.flash('adminError', e.message || 'Something went wrong...');
+            req.session.messages.adminError.push(e.message || 'Something went wrong...');
         }
 
         reloadNeeded = true;

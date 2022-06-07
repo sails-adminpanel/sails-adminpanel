@@ -48,11 +48,11 @@ async function add(req, res) {
         try {
             let record = await instance.model.create(reqData).fetch();
             sails.log(`A new record was created: `, record);
-            req.flash('adminSuccess', 'Your record was created !');
+            req.session.messages.adminSuccess.push('Your record was created !');
         }
         catch (e) {
             sails.log.error(e);
-            req.flash('adminError', e.message || 'Something went wrong...');
+            req.session.messages.adminError.push(e.message || 'Something went wrong...');
             data = reqData;
         }
     }

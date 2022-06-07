@@ -52,11 +52,11 @@ async function default_1(req, res) {
                 email: req.body.email, password: req.body.userPassword, timezone: req.body.timezone, expires: req.body.date,
                 locale: locale, groups: userGroups }).fetch();
             sails.log(`User was updated: `, updatedUser);
-            req.flash('adminSuccess', 'User was updated !');
+            req.session.messages.adminSuccess.push('User was updated !');
         }
         catch (e) {
             sails.log.error(e);
-            req.flash('adminError', e.message || 'Something went wrong...');
+            req.session.messages.adminError.push(e.message || 'Something went wrong...');
         }
         reloadNeeded = true;
     }

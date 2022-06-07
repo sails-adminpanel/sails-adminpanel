@@ -57,11 +57,11 @@ export default async function addGroup(req, res) {
             group = await GroupAP.create({name: req.body.name, description: req.body.description,
                 users: usersInThisGroup, tokens: tokensOfThisGroup}).fetch()
             sails.log(`A new group was created: `, group);
-            req.flash('adminSuccess', 'A new group was created !');
+            req.session.messages.adminSuccess.push('A new group was created !');
             return res.redirect(`${sails.config.adminpanel.routePrefix}/groups`);
         } catch (e) {
-            sails.log.error(e)
-            req.flash('adminError', e.message || 'Something went wrong...');
+            sails.log.error(e);
+            req.session.messages.adminError.push(e.message || 'Something went wrong...');
         }
 
         console.log(group)

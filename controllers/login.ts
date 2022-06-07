@@ -25,18 +25,18 @@ export default async function login(req, res) {
       }
 
       if (!user) {
-        req.flash("adminError", "Wrong username or password");
+        req.session.messages.adminError.push("Wrong username or password");
         return res.viewAdmin("login");
       } else {
         if (passwordHash.verify(login + password, user.passwordHashed)) {
           if (user.expires && Date.now() > Date.parse(user.expires)) {
-            req.flash("adminError", "Profile expired, contact the administrator");
+            req.session.messages.adminError.push("Profile expired, contact the administrator");
             return res.viewAdmin("login");
           }
           req.session.UserAP = user;
           return res.redirect(`${sails.config.adminpanel.routePrefix}/`);
         } else {
-          req.flash("adminError", "Wrong username or password");
+          req.session.messages.adminError.push("Wrong username or password");
           return res.viewAdmin("login");
         }
       }

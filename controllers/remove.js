@@ -59,10 +59,10 @@ async function remove(req, res) {
         sails.log.error('adminpanel > error', e);
     }
     if (destroyedRecord) {
-        req.flash('adminSuccess', 'Record was removed successfully');
+        req.session.messages.adminSuccess.push('Record was removed successfully');
     }
     else {
-        req.flash('adminError', 'Record was not removed');
+        req.session.messages.adminError.push('Record was not removed');
     }
     res.redirect(instance.uri);
 }

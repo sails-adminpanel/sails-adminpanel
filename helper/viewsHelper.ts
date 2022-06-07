@@ -30,11 +30,11 @@ export class ViewsHelper {
 
     /**
      *
-     * @param {IncommingMessage} req
-     * @param {string} type Types: adminError|adminSuccess
+     * @param {IncomingMessage} req
+     * @param {string} key Types: adminError|adminSuccess
      */
-    public static hasFlash(req, type) {
-        return (req.session.flash && req.session.flash[type]);
+    public static hasMessages(req, key) {
+        return (req.session.messages && req.session.messages[key]);
     }
 
     /**

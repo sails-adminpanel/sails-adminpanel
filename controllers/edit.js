@@ -63,12 +63,12 @@ async function edit(req, res) {
         try {
             let newRecord = await instance.model.update(params, reqData).fetch();
             sails.log(`Record was updated: `, newRecord);
-            req.flash('adminSuccess', 'Your record was updated !');
+            req.session.messages.adminSuccess.push('Your record was updated !');
             reloadNeeded = true;
         }
         catch (e) {
             req._sails.log.error(e);
-            req.flash('adminError', e.message || 'Something went wrong...');
+            req.session.messages.adminError.push(e.message || 'Something went wrong...');
             return e;
         }
     }
