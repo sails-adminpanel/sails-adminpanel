@@ -3,6 +3,17 @@
 
 <form id="editGroupForm" action="<%= instance.uri %>/edit/<%= group.id %>" method="POST">
     <div class="layout">
+        <div class="nav-header">
+            <a href="<%= instance.uri %>/">
+                <i class="las la-long-arrow-alt-left"></i>
+                <%= __("Back") %>
+            </a>
+            <a href="<%= instance.uri %>/remove/<%= group.id %>" onclick="return confirm('<%= __('Are you sure?') %>')">
+                <%= __("Delete") %>
+                <i class="las la-trash-alt"></i>
+            </a>
+        </div>
+
         <h2><%= __("Group settings") %></h2>
 
         <div class="admin-panel__widget">
