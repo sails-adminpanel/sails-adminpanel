@@ -43,8 +43,7 @@
                 <% if (req.session.UserAP.isAdministrator) { %>
                     <div class="admin-panel__widget">
                         <label class="admin-panel__title" for="date"><%= __("Profile expires") %></label>
-                        <span class="badge badge-danger">Разредрить из настроек</span>
-                        <div class="widget_narrow" >
+                        <div class="widget_narrow">
                             <input class="clr-input" type="date" id="date" name="date">
                         </div>
                     </div>

@@ -47,7 +47,7 @@ const adminpanelConfig: AdminpanelConfig = {
         users: {
             title: "Users",
             model: "userap",
-            icon: "user",
+            icon: "users",
             add: {
                 controller: "../controllers/addUser"
             },
@@ -72,7 +72,7 @@ const adminpanelConfig: AdminpanelConfig = {
         groups: {
             title: "Groups",
             model: "groupap",
-            icon: "group",
+            icon: "users-cog",
             add: {
                 controller: "../controllers/addGroup"
             },

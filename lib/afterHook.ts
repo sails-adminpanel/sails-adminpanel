@@ -1,6 +1,7 @@
 import bindTranslations from "./bindTranslations";
 import bindAuthorization from './bindAuthorization';
 import bindAccessRights from "./bindAccessRights";
+import bindDev from "./bindDev";
 
 export default async function () {
     // Binding list of function for rendering
@@ -11,6 +12,10 @@ export default async function () {
 
     //binding all routes.
     require('./bindRoutes').default();
+
+    if (process.env.DEV && process.env.NODE_ENV !== 'production') {
+        bindDev(sails.config.adminpanel)
+    }
 
     //bind access rights
     bindAccessRights();
