@@ -62,12 +62,12 @@ let instances = {
     examplefromfigma: {
         title: "Пример из Figma",
         model: "ExampleTestDataModel",
-        actions: [
+        tools: [
             {
                 id: "action1",
                 link: "/",
                 title: "Some new action",
-                icon: "ok",
+                icon: "ok"
             },
         ],
         fields: {

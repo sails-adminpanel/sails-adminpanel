@@ -6,6 +6,8 @@ require("dotenv").config();
 process.env.BASE_ROUTE = "/admin";
 process.env.HTTP_TEST_LOCALHOST = "http://127.0.0.1:42772";
 
+let sails: any
+
 before(function (done) {
 
   this.timeout(50000);
@@ -13,15 +15,15 @@ before(function (done) {
   Sails().lift({},
       function (err: any, _sails: any) {
         if (err) return done(err);
-        global.sails = _sails;
+        sails = _sails;
         return done();
       }
   );
 });
 
 after(function (done) {
-  if (global.sails) {
-    return global.sails.lower(function (err) {
+  if (sails) {
+    return sails.lower(function (err) {
       if (err) {
         done();
       }
@@ -30,11 +32,3 @@ after(function (done) {
   }
   done();
 });
-
-declare global {
-  namespace NodeJS {
-    interface Global {
-      sails: any;
-    }
-  }
-}
