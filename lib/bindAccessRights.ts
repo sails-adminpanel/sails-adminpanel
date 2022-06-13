@@ -2,7 +2,6 @@ import {AccessRightsHelper} from "../helper/accessRightsHelper";
 
 export default function bindAccessRights() {
     let instances = sails.config.adminpanel.instances;
-    console.log(instances)
     for (let key of Object.keys(instances)) {
         let department = `Section ${key}`;
 
