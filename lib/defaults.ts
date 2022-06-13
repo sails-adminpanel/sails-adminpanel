@@ -44,8 +44,8 @@ const adminpanelConfig: AdminpanelConfig = {
      * List of admin pages
      */
     instances: {
-        users: {
-            title: "Users",
+        usersap: {
+            title: "Users AP",
             model: "userap",
             icon: "users",
             add: {
@@ -69,8 +69,8 @@ const adminpanelConfig: AdminpanelConfig = {
                 }
             }
         },
-        groups: {
-            title: "Groups",
+        groupsap: {
+            title: "Groups AP",
             model: "groupap",
             icon: "users-cog",
             add: {
