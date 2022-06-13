@@ -10,12 +10,12 @@ export default async function () {
     // bind config for views
     require('./bindConfig').default();
 
-    //binding all routes.
-    require('./bindRoutes').default();
-
     if (process.env.DEV && process.env.NODE_ENV !== 'production') {
         bindDev(sails.config.adminpanel)
     }
+
+    //binding all routes.
+    require('./bindRoutes').default();
 
     //bind access rights
     bindAccessRights();
