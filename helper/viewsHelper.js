@@ -38,10 +38,10 @@ class ViewsHelper {
      */
     static getFieldValue(key, field, data) {
         let value = data[key];
-        if (typeof value === "object" && field.config.type == 'association') {
+        if (typeof value === "object" && value !== null && field.config.type == 'association') {
             value = value[field.config.identifierField];
         }
-        if (Array.isArray(value) && field.config.type == 'association-many') {
+        if (value !== null && Array.isArray(value) && field.config.type == 'association-many') {
             let result = [];
             value.forEach(function (val) {
                 result.push(val[field.config.identifierField]);

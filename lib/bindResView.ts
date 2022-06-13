@@ -40,7 +40,7 @@ export default function bindResView() {
 
             
 
-            if (typeof arguments[0] === "object") {
+            if (typeof arguments[0] === "object" && arguments[0] !== null) {
                 locals = arguments[0];
             }
             if (typeof arguments[1] === "function") {

@@ -108,7 +108,7 @@ export class FieldsHelper {
             };
         }
         //check for object notation
-        if (typeof config === "object") {
+        if (typeof config === "object" && config !== null) {
             // make required checks
             if (!config.key) {
                 config.key = key;
@@ -286,11 +286,11 @@ export class FieldsHelper {
                 };
             }
 
-            if (typeof modelField === "object" && modelField.model) {
+            if (typeof modelField === "object" && modelField !== null && modelField.model) {
                 modelField.type = 'association';
             }
 
-            if (typeof modelField === "object" && modelField.collection) {
+            if (typeof modelField === "object" && modelField !== null && modelField.collection) {
                 modelField.type = 'association-many';
             }
 
