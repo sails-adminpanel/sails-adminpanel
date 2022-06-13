@@ -14,8 +14,10 @@ export default async function () {
         bindDev(sails.config.adminpanel)
     }
 
-    //binding all routes.
-    require('./bindRoutes').default();
+    sails.on('lifted', async function() {
+        //binding all routes.
+        require('./bindRoutes').default();
+    })
 
     //bind access rights
     bindAccessRights();
