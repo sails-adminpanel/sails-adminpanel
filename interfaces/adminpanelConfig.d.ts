@@ -59,7 +59,7 @@ export interface AdminpanelConfig {
          * */
         path: string
         defaultLocale: string
-    }
+    } | boolean
     /**
      * Prime administrator login credentials
      * */
@@ -163,6 +163,14 @@ interface BaseFieldConfig {
      * Function that makes data modification on list view
      * */
     displayModifier?: Function
+    /**
+     * Force set primary key
+     * */
+    identifierField?: string
+    /**
+     * Label for associations
+     * */
+    displayField?: string
 }
 
 interface NavigationOptionsField {

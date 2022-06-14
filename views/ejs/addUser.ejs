@@ -39,11 +39,7 @@
                 <div class="admin-panel__widget">
                     <label class="admin-panel__title" for="timezone"><%= __("Timezone") %></label>
                     <div class="widget_narrow" >
-                        <select id="timezone" name="timezone">
-                            <% for (let timezone of sails.config.adminpanel.timezones) { %>
-                                <option id="<%= timezone.id %>"><%= timezone.name %></option>
-                            <% } %>
-                        </select>
+                        <span class="timezone"></span>
                     </div>
                 </div>
 
@@ -56,18 +52,21 @@
                     </div>
                 <% } %>
 
-                <div class="admin-panel__widget">
-                    <label class="admin-panel__title" for="locale"><%= __("Locale") %></label>
-                    <div class="widget_narrow" >
-                        <select id="locale" name="locale">
-                            <option><%= __('default') %></option>
-                            <% for (let locale of sails.config.adminpanel.translation.locales) { %>
-                                <option><%= locale %></option>
-                            <% } %>
-                        </select>
+                <% if (sails.config.adminpanel.translation) { %>
+                    <div class="admin-panel__widget">
+                        <label class="admin-panel__title" for="locale"><%= __("Locale") %></label>
+                        <div class="widget_narrow" >
+                            <select id="locale" name="locale">
+                                <option><%= __('default') %></option>
+                                <% for (let locale of sails.config.adminpanel.translation.locales) { %>
+                                    <option><%= locale %></option>
+                                <% } %>
+                            </select>
 
+                        </div>
                     </div>
-                </div>
+                <% } %>
+
 
             </div>
         </div>
@@ -119,6 +118,13 @@
 </form>
 
 <script>
+    let options = [{label: "-------", value: "undefined"}];
+    for (let timezone of <%- JSON.stringify(sails.config.adminpanel.timezones) %>) {
+        options.push({label: timezone.name, value: timezone.id})
+    }
+    let timezone = new SelectPure(".timezone", {
+        options: options
+    });
     function submitForm() {
         if ($('#userPassword').val() !== $('#repeatUserPassword').val()) {
             alert('Values in "password" and "repeatPassword" fields should be the same')

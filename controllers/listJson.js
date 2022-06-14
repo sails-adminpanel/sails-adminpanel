@@ -68,7 +68,8 @@ async function listJson(req, res) {
                 fieldData = instance[key];
             }
             if (typeof fields[key].config.displayModifier === "function") {
-                a.push(fields[key].config.displayModifier(fieldData));
+                console.log("key", instance[key]);
+                a.push(fields[key].config.displayModifier(instance[key]));
             }
             else {
                 a.push(fieldData);

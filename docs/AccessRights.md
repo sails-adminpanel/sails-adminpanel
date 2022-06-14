@@ -9,6 +9,20 @@ You can also create custom access rights tokens using function `registerToken` o
 
 These tokens can be used to give users rights to see information of specific instance, to create new models or edit it.
 Also, you can use tokens to create access rights to global and inline actions, or to instance tools.
+In controllers you should check access rights through `havePermission` method.
+
+Example:
+
+```javascript
+if (sails.config.adminpanel.auth) {
+        if (!req.session.UserAP) { // check that user is authorized
+            return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
+        } else if (!AccessRightsHelper.havePermission(`tokenName`, req.session.UserAP)) { // check permission
+            return res.sendStatus(403);
+        }
+    }
+```
+
 
 ## Users and Groups
 In instance `Users` admin can create user profiles and give them specific access rights by adding them to `Groups`.

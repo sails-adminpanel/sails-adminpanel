@@ -1,6 +1,7 @@
 # Edit callback
 
 instanceModifier - function in adminpanel config edit sections for modification instance data
+before save in database.
 
 ```
 module.exports.adminpanel = {
@@ -24,25 +25,18 @@ module.exports.adminpanel = {
 ```
 
 
-# List callback
+# Display modifier
 
-displayModifier - modificate data do show in datatables (only list)
+It uses to manage fields' views
 
-```
-module.exports.adminpanel = {
-    instances: {
-        users: {
-            title: 'Users',
-            model: 'User',
-
-            list: {
-                avatar: {
-                    // Data to be modificated before send to frontend 
-                    displayModifier: function (data) {
-                        return `<img src="${data[0].url}" width="50px">`;
-                    },
-                }
-            }
-        }
+```javascript
+displayModifier: function (data) {
+    // for list view
+    if (Array.isArray(data)) {
+        data = data.map((item) => {return item.label + item.date})
+        return data.join(',')
     }
+    // for edit view    
+    return data.label + data.date
 }
+```

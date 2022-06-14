@@ -11,7 +11,11 @@
             <% field.config.records.forEach(function(opt) { %>
             <option value="<%= opt[field.config.identifierField] %>"
                 <%= (opt[field.config.identifierField] == value) && 'selected' %>>
-                <%= opt[field.config.displayField] %>
+                <% if (field.config.displayModifier && typeof field.config.displayModifier === 'function') { %>
+                    <%= field.config.displayModifier(opt) %>
+                <% } else { %>
+                    <%= opt[field.config.displayField] %>
+                <% } %>
             </option>
             <% }) %>
         <% } else { %>

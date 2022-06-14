@@ -11,3 +11,5 @@ module.exports.adminpanel = {
 }
 ~~~
 
+You can add styles link to config??
+

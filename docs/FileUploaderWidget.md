@@ -1,4 +1,4 @@
-# File uploader
+# File uploader widget
 
 File uploader is one of widgets admin panel. It allow upload files and images or single file and image
 

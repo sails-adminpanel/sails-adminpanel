@@ -1,21 +1,22 @@
-# Sections Dropdown
+# Sections navigation
 
-Is a dropdown in top-left screen side, for fast switching between sections
+Is a menu in the bottom of header screen side, for fast switching between sections
 
 
 ```javascript
 module.exports.adminpanel = {
     sections: [
         {
-            key: 'users',
-            title: 'Users'
-            link: '/users'
+            id: 'users',
+            title: 'Users',
+            link: '/users',
+            icon: 'users',
+            accessRightsToken: 'userToken'
         },
         {
-            key: 'content',
+            id: 'content',
             title: 'Content items'
         }
     ]
 ```
 
-> Dashboard by default added to this dropdown 

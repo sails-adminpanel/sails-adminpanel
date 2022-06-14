@@ -29,6 +29,8 @@ export default async function () {
         sails.after(["hook:i18n:loaded"], async () => {
             await bindTranslations();
         })
+    } else {
+        sails.config.adminpanel.translation = false
     }
     return
 };

@@ -1,4 +1,4 @@
-# Navigation editor
+# Navigation widget
 
 Navigation editor is a widget, that allows you to create and edit menu lists.
 You can move elements wherever you want using sortable or arrow buttons,

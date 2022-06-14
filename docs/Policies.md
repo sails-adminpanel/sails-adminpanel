@@ -1,4 +1,4 @@
-# Security for AdminPanel
+# Policies for AdminPanel
 
 ## Policy setup
 You can set up policy that will be checked before open any AdminPanel route.
@@ -17,27 +17,27 @@ Option could be setuped into 4 ways:
 ```javascript
 module.exports.adminpanel = {
 
-    policies: 'isAdmin',
+    policies: 'logging',
 
     //...
 };
 ```
 
-It will load policy from your `api/policy/isAdmin.js` file and apply it to all admin panel routes.
+It will load policy from your `api/policy/logging.js` file and apply it to all admin panel routes.
 
 **array** notation
 
 ```javascript
 module.exports.adminpanel = {
 
-    policies: ['isAuthorized', 'isAdmin'],
+    policies: ['logging', 'policyCallback'],
 
     //...
 };
 ```
 
 It will load 2 policies from your `api/policy/` folder and apply it into order you defined.
-In this example `isAuthorized.js` policy will be applied first and `isAdmin.js` second.
+In this example `logging.js` policy will be applied first and `policyCallback.js` second.
 
 **function** notation
 
@@ -45,9 +45,7 @@ In this example `isAuthorized.js` policy will be applied first and `isAdmin.js` 
 module.exports.adminpanel = {
 
     policies: function(req, res, next) {
-        if (!req.user || !req.user.isAdmin) {
-            return res.forbidden('You have no rights !');
-        }
+        console.log(req.session.UserAP.name)
         return next();
     },
 
@@ -64,16 +62,12 @@ module.exports.adminpanel = {
 
     policies: [
         function(req, res, next) {
-            if (!req.user) {
-                return res.forbidden('You have no rights !');
-            }
+            console.log(req.session.UserAP.name)
             return next();
         },
 
         function(req, res, next) {
-            if (!req.user.isAdmin) {
-                return res.forbidden('You have no rights !');
-            }
+            userCallback(req.session.UserAP)
             return next();
         }
     ],
@@ -81,6 +75,3 @@ module.exports.adminpanel = {
     //...
 };
 ```
-
-For now this is only one way to protect AdminPanel.
-Later there will be added more flexible options...

@@ -6,7 +6,8 @@ module.exports = async function (req, res, proceed) {
         else {
             req.session.UserAP = {
                 id: "auth-false",
-                isAdministrator: true
+                isAdministrator: true,
+                locale: sails.config.adminpanel.translation.defaultLocale
             };
         }
     }

@@ -1,4 +1,4 @@
-# Schedule editor
+# Schedule widget
 
 Schedule editor is a widget, that allows you to create and edit schedules.
 You can choose day of week, time, date, break and add some other options in 
@@ -61,7 +61,7 @@ permutations = {
       options: true,
     };
 ```
-####Support old version
+#### Support old version
 Old version does not have dateStart or dateStop, timeStart or timeStop.
 It only has start and stop fields, which means that tou can only set
 timeStart and timeStop

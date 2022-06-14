@@ -185,7 +185,7 @@ Now Admin panel supports several field types and add proper editor for every typ
 
 Types included into admin panel:
 + `string` - textfield into add/edit actions
-+ `string` with `enum` - selectbox
++ `string` with `isIn` - selectbox
 + `password` - password field
 + `date` - input type date
 + `datetime` - input type datetime
@@ -199,8 +199,8 @@ Types included into admin panel:
 
 Sails.js Hook adminpanel supports selectboxes.
 
-If you have `enum` field in your model it will be displayed into adminpanel as a select box.
-You can overwrite `enum` title using fields configurations:
+If you have `isIn` field in your model it will be displayed into adminpanel as a select box.
+You can overwrite `isIn` title using fields configurations:
 
 Example:
 
@@ -210,7 +210,7 @@ module.exports = {
     attributes: {
         gender: {
             type: 'string',
-            enum: ['male', 'female'],
+            isIn: ['male', 'female'],
             required: true
         }
     }
@@ -227,7 +227,7 @@ module.exports.adminpanel = {
 
             fields: {
                 'gender': {
-                    enum: {
+                    isIn: {
                         male: 'Male',
                         female: 'Female'
                     }
