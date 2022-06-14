@@ -1,4 +1,8 @@
 # NodeJS AdminPanel
+Autogeniration adminpanel |  internationalization | User & Group access rights | Policies | Modern UI
+
+In nearest future: Customization dashboard | Custom widgets | Wizards
+
 ### ***sails-adminpanel readme for sails v1.x***
 
 ___sails v0.x is not supported___
