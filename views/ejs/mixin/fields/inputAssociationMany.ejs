@@ -1,24 +1,40 @@
-<div class="widget">
-
-    <%= field.config.title %>
-    <select name="<%= key %>" id="form-<%= key %>" multiple class="multi"
+<textarea
         <%= field.config.required && 'required' %>
-        <%= field.config.disabled && 'disabled'%>>
+        <%= field.config.disabled && 'disabled'%>
+        name="<%= key %>"
+        id="form-<%= key %>" hidden>
+    <%=value%>
+</textarea>
+<span class="selectPure-<%= key %>"></span>
 
-        <% if (field.config.records) { %>
-            <% field.config.records.forEach(function(opt) { %>
-            <option value="<%= opt[field.config.identifierField] %>"
-                <%= adminpanel.viewHelper.isOptionSelected(opt[field.config.identifierField], value) && 'selected' %>>
-                <% if (field.config.displayModifier && typeof field.config.displayModifier === 'function') { %>
-                    <%= field.config.displayModifier(opt) %>
-                <% } else { %>
-                    <%= opt[field.config.displayField] %>
-                <% } %>
-            </option>
-            <% }) %>
-        <% } else { %>
-        <option value="">--- No records found ---</option>
+<script>
+    let options<%=key%> = [];
+    let selectedOptions = [];
+    let label;
+
+    if (<%- JSON.stringify(field.config.records) %>) {
+        <% for (let opt of field.config.records) { %>
+            if (<%= adminpanel.viewHelper.isOptionSelected(opt[field.config.identifierField], value) %>) {
+                selectedOptions.push("<%= opt[field.config.identifierField] %>"); // в inputAssoc selectedOptions будет не массив
+            }
+            if (<%= field.config.displayModifier && typeof field.config.displayModifier === 'function' %>) {
+                label = "<%= field.config.displayModifier(opt) %>"
+            } else {
+                label = "<%= opt[field.config.displayField] %>"
+            }
+            options<%=key%>.push({label: label, value: "<%= opt[field.config.identifierField] %>"})
         <% } %>
-    </select>
-    <hr/>
-</div>
+    } else {
+        options<%=key%>.push({label: "--- No records found ---", value: ""})
+    }
+
+    let <%=key%> = new SelectPure(".selectPure-<%= key %>", {
+        options: options<%=key%>,
+        autocomplete: true,
+        value: selectedOptions,
+        multiple: true,
+        onChange: function(value) {
+            $('#form-<%= key %>').val(value)
+        }
+    });
+</script>

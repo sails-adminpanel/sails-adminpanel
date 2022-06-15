@@ -54,6 +54,9 @@ async function edit(req, res) {
                     }
                 }
             }
+            if (fields[prop] && fields[prop].model && fields[prop].model.type === 'association-many' && reqData[prop] !== '') {
+                reqData[prop] = reqData[prop].split(",");
+            }
         }
         // callback before save instance
         let instanceEdit = instance.config.edit;
