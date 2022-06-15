@@ -15,7 +15,7 @@
     if (<%- JSON.stringify(field.config.records) %>) {
         <% for (let opt of field.config.records) { %>
             if (<%= adminpanel.viewHelper.isOptionSelected(opt[field.config.identifierField], value) %>) {
-                selectedOptions.push("<%= opt[field.config.identifierField] %>"); // в inputAssoc selectedOptions будет не массив
+                selectedOptions.push("<%= opt[field.config.identifierField] %>");
             }
             if (<%= field.config.displayModifier && typeof field.config.displayModifier === 'function' %>) {
                 label = "<%= field.config.displayModifier(opt) %>"
@@ -32,6 +32,7 @@
         options: options<%=key%>,
         autocomplete: true,
         value: selectedOptions,
+        icon: "la la-times",
         multiple: true,
         onChange: function(value) {
             $('#form-<%= key %>').val(value)
