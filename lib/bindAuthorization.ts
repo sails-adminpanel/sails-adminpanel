@@ -26,7 +26,22 @@ export default async function bindAuthorization() {
         return;
     }
 
-    console.log(`\n### Administrator:\n###\tlogin: ${adminData.login}\n###\tpassword: ${adminData.password}\n`)
+    console.log("------------------------------------------------------------")
+    console.group("Administrator credentials")
+
+    let peoples = [
+        {
+            fullName: "Administrator",
+            login: adminData.login,
+            password: adminData.password
+        }
+    ];
+
+    console.table(peoples);
+
+    console.groupEnd()
+
+    console.log('-------------------------------------------------------------')
 
     // ------------------------------------------------------------------------------------------------
 
