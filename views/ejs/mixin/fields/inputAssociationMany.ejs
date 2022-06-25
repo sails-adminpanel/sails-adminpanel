@@ -9,29 +9,29 @@
 
 <script>
     let options<%=key%> = [];
-    let selectedOptions = [];
-    let label;
+    let selectedOptions<%=key%> = [];
+    let label<%=key%>;
 
-    if (<%- JSON.stringify(field.config.records) %>) {
+    <% if (field.config.records && field.config.records.length) { %>
         <% for (let opt of field.config.records) { %>
-            if (<%= adminpanel.viewHelper.isOptionSelected(opt[field.config.identifierField], value) %>) {
-                selectedOptions.push("<%= opt[field.config.identifierField] %>");
-            }
-            if (<%= field.config.displayModifier && typeof field.config.displayModifier === 'function' %>) {
-                label = "<%= field.config.displayModifier(opt) %>"
-            } else {
-                label = "<%= opt[field.config.displayField] %>"
-            }
-            options<%=key%>.push({label: label, value: "<%= opt[field.config.identifierField] %>"})
+            <% if (adminpanel.viewHelper.isOptionSelected(opt[field.config.identifierField], value)) { %>
+                selectedOptions<%=key%>.push("<%= opt[field.config.identifierField] %>");
+            <% } %>
+            <% if (field.config.displayModifier && typeof field.config.displayModifier === 'function') { %>
+                label<%=key%> = "<%= field.config.displayModifier(opt) %>"
+            <% } else { %>
+                label<%=key%> = "<%= opt[field.config.displayField] %>"
+            <% } %>
+            options<%=key%>.push({label: label<%=key%>, value: "<%= opt[field.config.identifierField] %>"})
         <% } %>
-    } else {
+    <% } else { %>
         options<%=key%>.push({label: "--- No records found ---", value: ""})
-    }
+    <% } %>
 
     let <%=key%> = new SelectPure(".selectPure-<%= key %>", {
         options: options<%=key%>,
         autocomplete: true,
-        value: selectedOptions,
+        value: selectedOptions<%=key%>,
         icon: "la la-times",
         multiple: true,
         onChange: function(value) {
