@@ -1,3 +1,1 @@
-declare var path: any;
-declare var _login: any;
-declare var superAdmin: string;
+export default function bindAuthorization(): Promise<void>;

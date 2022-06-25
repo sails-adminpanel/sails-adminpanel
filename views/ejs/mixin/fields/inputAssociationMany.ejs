@@ -1,20 +1,41 @@
-<div class="widget">
-
-    <%= field.config.title %>
-    <select name="<%= key %>" id="form-<%= key %>" multiple class="multi"
+<textarea
         <%= field.config.required && 'required' %>
-        <%= field.config.disabled && 'disabled'%>>
+        <%= field.config.disabled && 'disabled'%>
+        name="<%= key %>"
+        id="form-<%= key %>" hidden>
+    <%=value%>
+</textarea>
+<span class="selectPure-<%= key %>"></span>
 
-        <% if (field.config.records) { %>
-            <% field.config.records.forEach(function(opt) { %>
-            <option value="<%= opt[field.config.identifierField] %>"
-                <%= adminpanel.viewHelper.isOptionSelected(opt[field.config.identifierField], value) && 'selected' %>>
-                <%= opt[field.config.displayField] %>
-            </option>
-            <% }) %>
-        <% } else { %>
-        <option value="">--- No records found ---</option>
+<script>
+    let options<%=key%> = [];
+    let selectedOptions<%=key%> = [];
+    let label<%=key%>;
+
+    <% if (field.config.records && field.config.records.length) { %>
+        <% for (let opt of field.config.records) { %>
+            <% if (adminpanel.viewHelper.isOptionSelected(opt[field.config.identifierField], value)) { %>
+                selectedOptions<%=key%>.push("<%= opt[field.config.identifierField] %>");
+            <% } %>
+            <% if (field.config.displayModifier && typeof field.config.displayModifier === 'function') { %>
+                label<%=key%> = "<%= field.config.displayModifier(opt) %>"
+            <% } else { %>
+                label<%=key%> = "<%= opt[field.config.displayField] %>"
+            <% } %>
+            options<%=key%>.push({label: label<%=key%>, value: "<%= opt[field.config.identifierField] %>"})
         <% } %>
-    </select>
-    <hr/>
-</div>
+    <% } else { %>
+        options<%=key%>.push({label: "--- No records found ---", value: ""})
+    <% } %>
+
+    let <%=key%> = new SelectPure(".selectPure-<%= key %>", {
+        options: options<%=key%>,
+        autocomplete: true,
+        value: selectedOptions<%=key%>,
+        icon: "la la-times",
+        multiple: true,
+        onChange: function(value) {
+            $('#form-<%= key %>').val(value)
+        }
+    });
+</script>

@@ -19,6 +19,8 @@
 
     <!-- dataTable-->
     <script src="/admin/assets/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/fc-4.1.0/fh-3.2.3/sc-2.0.6/sb-1.3.3/datatables.min.css"/>
+
 
     <!-- clr -->
     <link rel="stylesheet" href="/admin/assets/styles/main.css" />
@@ -59,33 +61,45 @@
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css"/>
 
+    <!-- select-pure -->
+    <script src="/admin/assets/select-pure/dist/bundle.min.js"></script>
+
 
 
 </head>
 
 <body cds-text="body" cds-theme="dark" cds-layout="vertical gap:lg p:lg">
     <div class="main-container">
-        <header class="header">
+        <header class="header-6">
+            <div class="branding">
+                <a href="">
+                    <i class="las la-rocket logo"></i>
+                    <span class="brand-title"><%= adminpanel.menuHelper.getBrandTitle() %></span>
+                </a>
+            </div>
             <div class="header__inner">
+                <!-- Burger -->
                 <div class="header__menu">
                     <span></span>
                     <span></span>
                     <span></span>
                 </div>
-                <% include mixin/sections %>
-                    <div class="flex flex-name">
-                        <%= adminpanel.menuHelper.getBrandTitle() %>
-                    </div>
+
+
                     <div class="header__login">
-                    <% if (req.session.UserAP) { %> 
+                    <% if (req.session.UserAP) { %>
+                        <% if (req.session.adminPretender && req.session.adminPretender.id) { %>
+                                <i class="las la-mask"></i>&nbsp;
+                        <% } %>
                       <a class="header__name" href="#">
-                          <span><%= req.session.UserAP.username %></span>
+                          <span><%= req.session.UserAP.fullName %></span>
                           <i class="las la-user"></i>
                       </a>
                       <a class="header__out nav-link" href="/admin/userap/logout">
                           <i class="las la-door-open"></i>
                       </a>
-                    <% } %> 
+                    <% } %>
                     </div>
             </div>
         </header>
+        <% include mixin/sections %>

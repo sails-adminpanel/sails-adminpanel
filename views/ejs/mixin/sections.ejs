@@ -2,49 +2,18 @@
 <% var routePrefix = (adminpanel.configHelper.getConfig()).routePrefix %>
 
 <% if (Array.isArray(sections)) { %>
-  <div class="top-left">
-    <div class="clr-select-wrapper">
-      <select class="clr-select"
-              onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
-        <option value="<%=routePrefix%>">Adminpanel</option>
+  <nav class="subnav">
+    <ul class="nav">
+        <li class="nav-item">
+          <a class="nav-link" <% if (section && section === "adminpanel") { %> active <% } %> href="<%=routePrefix%>"><i class="las la-sliders-h"></i>  <%= __("Adminpanel") %></a>
+        </li>
         <% sections.forEach(function(itemSection) { %>
           <% if (itemSection.link && itemSection.title) { %>
-            <option value="<%=itemSection.link%>"><%=itemSection.title%></option>
+          <li class="nav-item">
+            <a class="nav-link" <% if ( itemSection.id && section == itemSection.id) { %>active<% } %> href="<%=itemSection.link%>"><% if (itemSection.icon) { %> <i class="las la-<%=itemSection.icon%>"></i><% } %> <%=itemSection.title%></a>
+          </li>
           <% } %>
         <% }) %>
-      </select>
-    </div>
-<!--    <div class="clr-select-wrapper clr-select-wrapper&#45;&#45;modules">-->
-<!--      <select class="clr-select clr-select&#45;&#45;small">-->
-<!--        <option value="1">RU</option>-->
-<!--        <option value="2">EN</option>-->
-<!--      </select>-->
-<!--    </div>-->
-  </div>
-
+      </ul>
+  </nav>
 <% } %>
-
-<script>
-
-  let selectedOption = {element: `<option value=""></option>`, counter: 0};
-  $('.clr-select > option').each(function(index, element) {
-    let splittedVal = $(element).val().split('/');
-    splittedVal = splittedVal.filter(function(v){return v!==''})
-    let counter = 0;
-    for (let part of splittedVal) {
-      if (window.location.pathname.includes(part)) {
-        counter++;
-      }
-    }
-    if (counter > selectedOption.counter) {
-      selectedOption.element = $(element);
-      selectedOption.counter = counter;
-    } else if (counter === selectedOption.counter) {
-      if ($(element).val().length < $(selectedOption.element).val().length) {
-        selectedOption.element = $(element);
-        selectedOption.counter = counter;
-      }
-    }
-  })
-  $(selectedOption.element).attr('selected', 'selected');
-</script>

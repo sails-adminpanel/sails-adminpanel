@@ -14,7 +14,7 @@
             <a href="<%= instance.uri %>/">
                 <button raised class="btn">
                 <i class="las la-long-arrow-alt-left"></i>
-                Вернуться
+                <%= __("Back") %>
             </button>
             </a>
         </div>
@@ -31,11 +31,11 @@
 
             <% Object.keys(fields).forEach(function(key) { %>
                 <% if ((!config.showORMtime) && (key === 'createdAt' || key === 'updatedAt')) return %>
-                <label class="admin-panel__title" for="form-<%=key%>"><%=fields[key].config.title %></label>
+                <label class="admin-panel__title" for="form-<%=key%>"><%= __(fields[key].config.title) %></label>
                 <% if(fields[key].config.tooltip) {%>
                     <a href="javascript:void(0)" role="tooltip" aria-haspopup="true" class="tooltip tooltip-md tooltip-top-right">
                         <i class="las la-info-circle"></i>
-                        <span class="tooltip-content"><%=fields[key].config.tooltip%></span>
+                        <span class="tooltip-content"><%= __(fields[key].config.tooltip) %></span>
                     </a>
                     <% } %>
                         <% var field = fields[key] %>
@@ -46,12 +46,12 @@
                                 <% }) %>
                                     <% if (adminpanel.configHelper.isCsrfEnabled()) { %>
                                         <div>
-                                            <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+                                            <input class="clr-input" type="hidden" name="_csrf" value="<%= _csrf %>" />
                                         </div>
                                     <% } %>
                                     <p>
                                         <button raised class="btn-save" id="submit" onclick="submitForm()">
-                Сохранить
+                <%= __("Save") %>
             </button>
                                     </p>
         </form>

@@ -1,0 +1,21 @@
+{
+  "en": {
+    "Welcome": "Test Welcome",
+    "A brand new app.": "Test A brand new app.",
+    "Actions": "Test Actions",
+    "No records found !": "Test No records found !",
+    "Are you sure ?": "Test Are you sure ?"
+  },
+  "de": {
+    "Welcome": "Test Willkommen",
+    "A brand new app.": "Test Eine neue App."
+  },
+  "ru": {
+    "Welcome": "Test Добро пожаловать",
+    "A brand new app.": "Test Совершенно новое приложение"
+  },
+  "ua": {
+    "Welcome": "Test Ласкаво просимо",
+    "A brand new app.": "Test Абсолютно новий додаток"
+  }
+}

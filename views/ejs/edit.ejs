@@ -16,7 +16,7 @@
                     <a href="<%= instance.uri %>/">
                         <button raised class="btn">
                 <i class="las la-long-arrow-alt-left"></i>
-                Вернуться
+                <%= __("Back") %>
             </button>
                     </a>
                     <div class="nav-header-wrap">
@@ -24,11 +24,13 @@
                 Скрыть
                 <i class="las la-eye-slash"></i>
             </button> -->
-            <a href="<%= instance.uri %>/remove/<%= record[idField] %>">
-                <button class="btn-nav">
-                Удалить
-                <i class="las la-trash-alt"></i>
-            </button></a>
+            <% if (havePermission(`delete-${instance.name}-instance`, req.session.UserAP)) { %>
+                <a href="<%= instance.uri %>/remove/<%= record[idField] %>" onclick="return confirm('<%= __('Are you sure?') %>')">
+                    <button class="btn-nav">
+                    <%= __("Delete") %>
+                    <i class="las la-trash-alt"></i>
+                </button></a>
+            <% } %>
                     </div>
                 </div>
                 <form id="form" action="<%= instance.uri %>/edit/<%= record[idField] %>" method="POST" enctype="multipart/form-data">
@@ -46,11 +48,11 @@
                         <% var field = fields[key] %>
                             <% var value = adminpanel.viewHelper.getFieldValue(key, field, data) %>
                                 <div class="admin-panel__title">
-                                    <%= field.config.title %>
+                                    <%= __(field.config.title) %>
                                         <% if(fields[key].config.tooltip) {%>
                                             <a href="javascript:void(0)" role="tooltip" aria-haspopup="true" class="tooltip tooltip-md tooltip-top-right">
                                                 <i class="las la-info-circle"></i>
-                                                <span class="tooltip-content"><%=fields[key].config.tooltip%></span>
+                                                <span class="tooltip-content"><%= __(fields[key].config.tooltip) %></span>
                                             </a>
                                             <% } %>
                                 </div>
@@ -60,12 +62,12 @@
                                 <% }) %>
                                     <% if (adminpanel.configHelper.isCsrfEnabled()) { %>
                                         <div>
-                                            <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+                                            <input class="clr-input" type="hidden" name="_csrf" value="<%= _csrf %>" />
                                         </div>
                                     <% } %>
                                     <p>
                                         <button raised class="btn-save" id="submit" onclick="submitForm()">
-                сохранить
+                    <%= __("Save") %>
             </button>
                                     </p>
                 </form>

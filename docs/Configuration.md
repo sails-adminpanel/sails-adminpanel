@@ -1,5 +1,7 @@
 # Admin Panel configuration
 
+[Full adminpanel configuration schema](#configuration-schema)
+
 ## Global configs
 
 Admin panel configuration consist of this options:
@@ -183,7 +185,7 @@ Now Admin panel supports several field types and add proper editor for every typ
 
 Types included into admin panel:
 + `string` - textfield into add/edit actions
-+ `string` with `enum` - selectbox
++ `string` with `isIn` - selectbox
 + `password` - password field
 + `date` - input type date
 + `datetime` - input type datetime
@@ -197,8 +199,8 @@ Types included into admin panel:
 
 Sails.js Hook adminpanel supports selectboxes.
 
-If you have `enum` field in your model it will be displayed into adminpanel as a select box.
-You can overwrite `enum` title using fields configurations:
+If you have `isIn` field in your model it will be displayed into adminpanel as a select box.
+You can overwrite `isIn` title using fields configurations:
 
 Example:
 
@@ -208,7 +210,7 @@ module.exports = {
     attributes: {
         gender: {
             type: 'string',
-            enum: ['male', 'female'],
+            isIn: ['male', 'female'],
             required: true
         }
     }
@@ -225,7 +227,7 @@ module.exports.adminpanel = {
 
             fields: {
                 'gender': {
-                    enum: {
+                    isIn: {
                         male: 'Male',
                         female: 'Female'
                     }
@@ -295,3 +297,167 @@ This configuration loads all sail models as they are. Just place  in `config\adm
 + No template engine support except of `jade`. I primary working with this template engine and didn't create a another templates
 + No custom assets support. You couldn't edit css/js for admin panel for now.
 
+## Configuration schema
+
+```javascript
+{
+    instances: {
+        [key:string]: {
+            title: string
+            model: string // Model name
+            fields: {
+                [key: string]: {
+                    title: string
+                    type: FieldsTypes // all fields types are below this config
+                    tooltip: string // Field description
+                    // Options for widgets like 'Navigation', 'Schedule' and 'FileUploader'. For more
+                    // information open Navigation.md or Schedule.md
+                    options: NavigationOptionsField | ScheduleOptionsField | FileUploaderOptionsField
+                    displayModifier: Function // Function that makes data modification on list view
+                }[] | boolean | string
+            }
+            list: { // List display configuration
+                fields: {
+                    [key: string]: {
+                        title: string
+                        type: FieldsTypes // all fields types are below this config
+                        tooltip: string // Field description
+                        // Options for widgets like 'Navigation', 'Schedule' and 'FileUploader'. For more
+                        // information open Navigation.md or Schedule.md
+                        options: NavigationOptionsField | ScheduleOptionsField | FileUploaderOptionsField
+                        displayModifier: Function // Function that makes data modification on list view
+                    }[] | boolean | string
+                }
+                actions: { // Actions configuration that will be displayed
+                    global: {
+                        id: string
+                        title: string
+                        link: string
+                        icon: string
+                        // Only for view, controller still uses his own access rights token
+                        accessRightsToken: string
+                    }[]
+                    inline: {
+                        id: string
+                        title: string
+                        link: string
+                        icon: string
+                        // Only for view, controller still uses his own access rights token
+                        accessRightsToken: string
+                    }[]
+                }
+            } | boolean
+            // Configuration for 'create model' action or disabling/enabling it
+            add: {
+                fields: {
+                    [key: string]: {
+                        title: string
+                        type: FieldsTypes // all fields types are below this config
+                        tooltip: string // Field description
+                        // Options for widgets like 'Navigation', 'Schedule' and 'FileUploader'. For more
+                        // information open Navigation.md or Schedule.md
+                        options: NavigationOptionsField | ScheduleOptionsField | FileUploaderOptionsField
+                        displayModifier: Function // Function that makes data modification on list view
+                    }[] | boolean | string
+                }
+                instanceModifier: Function // callback for data modification before saving record
+                controller: string // path to custom controller
+            } | boolean
+            // Configuration for 'update model' action or disabling/enabling it
+            edit: {
+                fields: {
+                    [key: string]: {
+                        title: string
+                        type: FieldsTypes // all fields types are below this config
+                        tooltip: string // Field description
+                        // Options for widgets like 'Navigation', 'Schedule' and 'FileUploader'. For more
+                        // information open Navigation.md or Schedule.md
+                        options: NavigationOptionsField | ScheduleOptionsField | FileUploaderOptionsField
+                        displayModifier: Function // Function that makes data modification on list view
+                    }[] | boolean | string
+                }
+                instanceModifier: Function // callback for data modification before saving record
+                controller: string // // path to custom controller
+            } | boolean
+            remove: boolean // Disabling/enabling 'delete model' action
+            view: boolean // Disabling/enabling 'read model' action
+            tools: { // Instance actions displayed in left navbar for specific instance
+                id: string
+                title: string
+                link: string
+                icon: string
+                // Only for view, controller still uses his own access rights token
+                accessRightsToken: string
+            }[]
+            icon: string // Instance icon
+            identifierField: string // Force set primary key
+        }[]
+    }
+    sections: { // For custom adminpanel sections, displays inside header
+        id: string
+        title: string
+        link: string
+        icon: string
+        // Only for view, controller still uses his own access rights token
+        accessRightsToken: string
+    }[]
+    routePrefix: string // Route prefix for adminpanel, admin by default
+    pathToViews: string // Relative path from project root to views folder
+    identifierField: string // Force set primary key
+    brand: {
+        link: boolean | string | {
+            id: string
+            title: string
+            link: string
+            icon: string
+            // Only for view, controller still uses his own access rights token
+            accessRightsToken: string
+        }
+    }
+    navbar: { // Left-side navigation bar
+        additionalLinks: { // will be created at the bottom of the sidenav panel
+            id: string
+            title: string
+            link: string
+            icon: string
+            // Only for view, controller still uses his own access rights token
+            accessRightsToken: string
+        }[]
+    }
+    // Policies that will be executed before going to every page
+    policies: string | string[] | Function | Function[]
+    styles: string[] // custom adminpanel styles
+    script: { // custom adminpanel scripts
+        header: string[]
+        footer: string[]
+    }
+    welcome: { // Text for welcome page
+        title: string
+        text: string
+    }
+    translation: { // Text translation using sails built-in internationalization
+        locales: string[] // Locales list
+        path: string // Relative path from project root to translations folder
+        defaultLocale: string // Default locale
+    }
+    administrator: { // Prime administrator login credentials
+        login: string
+        password: string
+    }
+    // Enable/disable displaying createdAt and updatedAt fields in `edit` and `add` sections
+    showORMtime: boolean
+    package: any // Adminpanel package.json config
+    timezones: { // Available timezones list
+        id: string
+        name: string
+    }[]
+    showVersion: boolean // Show adminpanel version on the bottom of navbar
+}
+```
+
+### FieldsTypes
+
+string, password, date, datetime, time, integer, number, float, color, email, month, week,
+range, boolean, binary, text, longtext, mediumtext, ckeditor, wysiwyg, texteditor, word,
+jsoneditor, json, array, object, ace, html, xml, aceeditor, image, images, file, files,
+menu, navigation, schedule, worktime, association, "association-many"

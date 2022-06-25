@@ -6,7 +6,7 @@ $(document).ready(function() {
     $('#list thead tr').clone(true).insertBefore( '#list thead tr' );
     $('#list thead tr:eq(0) th').each( function (i) {
         if (i === 0) return;
-        $(this).html( '<input type="text" placeholder="" />' );
+        $(this).html( '<input class="clr-input" type="text" placeholder="" />' );
 
         $( 'input', this ).on( 'keyup change', function () {
             if ( table.column(i).search() !== this.value ) {
@@ -22,14 +22,24 @@ $(document).ready(function() {
             "ajax": '<%=instance.uri%>/json',
             "sDom": 'Rfrtlip',
             fixedHeader: true,
-            "columnDefs": [
-            {
+            fixedColumns: true,
+            scrollX:        true,
+            responsive: true,
+            language: {
+                url: '/admin/assets/datatables/i18n/<%= req.session.UserAP.locale !== undefined ? req.session.UserAP.locale : "en" %>.json'
+            },
+            "columnDefs": [{
                 targets: 0,
-                render: function (data, type, row, meta)
-                {
-                    if (type === 'display')
-                    {
-                        data = '<a href="<%=instance.uri%>/view/'+row[0]+'">View</a><br><br><a href="<%=instance.uri%>/edit/'+row[0]+'">Edit</a>';
+                render: function (data, type, row, meta) {
+                    if (type === 'display') {
+                        data = "";
+                        if (<%- havePermission(`read-${instance.name}-instance`, req.session.UserAP) %>) {
+                            data += '<a href="<%=instance.uri%>/view/'+row[0]+'"><i class="las la-eye"></i><%= __('View') %></a><br>';
+                        }
+                        if (<%- havePermission(`update-${instance.name}-instance`, req.session.UserAP) %>) {
+                            data += '<a href="<%=instance.uri%>/edit/'+row[0]+'"><i class="las la-edit"></i><%= __('Edit') %></a><br>';
+                        }
+                        <% include mixin/list/inlineActions %>
                     }
                     return data;
                 }
@@ -41,9 +51,9 @@ $(document).ready(function() {
 <div class="horizontal layout">
     <div class="flex">
         <% var actionType = 'list' %>
-        <% if (instance.config.add) { %>
+        <% if (instance.config.add && havePermission(`create-${instance.name}-instance`, req.session.UserAP)) { %>
             <a href="<%=instance.uri%>/add" id="add">
-                <button class="btn-add">создать</button>
+                <button class="btn-add"><i class="las la-plus"></i><%= __('create') %></button>
             </a>
         <% } %>
         <% include mixin/globalActions %>
@@ -54,12 +64,12 @@ $(document).ready(function() {
         <thead>
             <tr>
                 <th>
-                    Actions
+                    <%= __('Actions') %>
                 </th>
                 <% Object.keys(fields).forEach(function(key) { %>
                     <% var field = fields[key] %>
                     <th>
-                        <%= field.config.title %>
+                        <%= __(field.config.title) %>
                     </th>
                 <% }) %>
             </tr>

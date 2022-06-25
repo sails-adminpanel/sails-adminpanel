@@ -1,13 +1,11 @@
-<% var record = obj || {} %>
 <% if (adminpanel.menuHelper.hasInlineActions(instance.config, 'list')) { %>
-    <% var actions = locals.adminpanel.menuHelper.getInlineActions(instance.config, 'list') %>
+    <% var actions = adminpanel.menuHelper.getInlineActions(instance.config, 'list') %>
     <% if (actions && actions.length > 0) { %>
         <% actions.forEach(function(action) { %>
-            &nbsp;
-            <% var link = adminpanel.menuHelper.replaceModelFields(action.link, record) %>
-            <a href="<%= link %>">
-                <clr-icon shape="<%= action.icon || 'add' %>"></clr-icon>
-            </a>
+            <% if (havePermission(action.accessRightsToken, req.session.UserAP)) { %>
+                <%# print data into list.ejs inline action %>
+                data += '<a href="<%= action.link %>/'+row[0]+'?id='+row[0]+'&instance=<%= instance.name %>" id="<%= action.id %>"><i class="las la-<%= action.icon %>"></i><%= __(action.title) %></a><br>';
+            <% } %>
         <% }) %>
     <% } %>
 <% } %>

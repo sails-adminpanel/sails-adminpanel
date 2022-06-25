@@ -1,13 +1,15 @@
 <% if (adminpanel.menuHelper.hasGlobalActions(instance.config, actionType)) { %>
-    <% var actions = adminpanel.menuHelper.getGlobalactions(instance.config, actionType) %>
+    <% var actions = adminpanel.menuHelper.getGlobalActions(instance.config, actionType) %>
     <% if (actions && actions.length > 0) { %>
         <% actions.forEach(function(action) { %>
-            <a href="<%= adminpanel.menuHelper.replaceModelFields(action.link, record) %>" id="add">
-                <button class="btn btn-success">
-                    <clr-icon shape="<%= action.icon %>" role="none"></clr-icon>
-                    &nbsp;<%= action.title %>
-                </button>
-            </a>
+            <% if (havePermission(action.accessRightsToken, req.session.UserAP)) { %>
+                <a href="<%= action.link %>" id="<%= action.id %>">
+                    <button class="btn btn-success">
+                        <i class="las la-<%= action.icon %>"></i>
+                        &nbsp;<%= action.title %>
+                    </button>
+                </a>
+            <% } %>
         <% }) %>
     <% } %>
 <% }%>

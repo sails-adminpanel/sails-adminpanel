@@ -1,0 +1,184 @@
+<% include head %>
+<% include headContent %>
+
+<form id="editUserForm" action="<%= instance.uri %>/edit/<%= user.id %>" method="POST">
+    <div class="layout">
+        <div class="nav-header">
+            <a href="<%= instance.uri %>/">
+                <i class="las la-long-arrow-alt-left"></i>
+                <%= __("Back") %>
+            </a>
+            <a href="<%= instance.uri %>/remove/<%= user.id %>" onclick="return confirm('<%= __('Are you sure?') %>')">
+                <%= __("Delete") %>
+                <i class="las la-trash-alt"></i>
+            </a>
+        </div>
+
+        <h2><%= __("User settings") %></h2>
+        <div class="clr-row">
+            <div class="clr-col-sm-12 clr-col-md-6">
+
+                <div class="admin-panel__widget">
+                    <label class="admin-panel__title" for="userLogin"><%= __("Login") %></label>
+                    <div class="widget_narrow" >
+                        <input class="clr-input" type="text" id="userLogin" name="login" value="<%= user.login %>">
+                    </div>
+                </div>
+
+                <div class="admin-panel__widget">
+                    <label class="admin-panel__title" for="fullName"><%= __("Full name") %></label>
+                    <div class="widget_narrow" >
+                        <input class="clr-input" type="text" id="fullName" name="fullName" value="<%= user.fullName %>">
+                    </div>
+                </div>
+
+                <div class="admin-panel__widget">
+                    <label class="admin-panel__title" for="email"><%= __("E-mail") %></label>
+                    <div class="widget_narrow" >
+                        <input class="clr-input" type="text" id="email" name="email" value="<%= user.email %>">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="clr-col-sm-12 clr-col-md-6">
+                <div class="admin-panel__widget">
+                    <label class="admin-panel__title" for="timezone"><%= __("Timezone") %></label>
+                    <div class="widget_narrow" >
+                        <span class="timezone"></span>
+                        <input class="clr-input" type="text" id="timezone" name="timezone" hidden>
+                    </div>
+                </div>
+
+                <% if (req.session.UserAP.isAdministrator) { %>
+                    <div class="admin-panel__widget">
+                        <label class="admin-panel__title" for="date"><%= __("Profile expires") %></label>
+                        <div class="widget_narrow">
+                            <input class="clr-input" type="date" id="date" name="date" value="<%= user.expires %>">
+                        </div>
+                    </div>
+                <% } %>
+
+                <% if (sails.config.adminpanel.translation) { %>
+                    <div class="admin-panel__widget">
+                        <label class="admin-panel__title" for="locale"><%= __("Locale") %></label>
+                        <div class="widget_narrow" >
+                            <span class="locale"></span>
+                            <input class="clr-input" type="text" id="locale" name="locale" hidden>
+                        </div>
+                    </div>
+                <% } %>
+
+                <% if (req.session.UserAP.isAdministrator && !user.isAdministrator) { %>
+                    <div class="admin-panel__widget">
+                        <div class="widget_narrow" >
+                            <a href="#" onclick="pretendByUser()"><i class="las la-mask"></i> <%= __("Pretend to be a user") %></a>
+                        </div>
+                    </div>
+                <% } %>
+
+            </div>
+        </div>
+
+        <h2><%= __("Password") %></h2>
+        <div class="clr-row">
+            <div class="clr-col-sm-12 clr-col-md-6">
+                <div class="admin-panel__widget">
+                    <label class="admin-panel__title" for="email"><%= __("Password") %></label>
+                    <div class="widget_narrow" >
+                        <input class="clr-input" type="password" id="userPassword" name="userPassword">
+                    </div>
+                </div>
+
+                <div class="admin-panel__widget">
+                    <label class="admin-panel__title" for="email"><%= __("Repeat password") %></label>
+                    <div class="widget_narrow" >
+                        <input class="clr-input" type="password" id="repeatUserPassword" name="repeatUserPassword">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <% if (groups.length) { %>
+            <h2><%= __("User groups") %></h2>
+            <div class="clr-row">
+                <div class="clr-col-sm-12 clr-col-md-6">
+                    <div class="admin-panel__widget">
+                        <% var userGroupsIds = user.groups.map((group) => {return group.id}) %>
+                        <% for (let group of groups) { %>
+                            <div class="clr-checkbox-inline">
+                                <label for="group-checkbox-<%= group.id %>"><%= group.name %></label>
+                                <% if (userGroupsIds.includes(group.id)) { %>
+                                    <input type="checkbox" id="group-checkbox-<%= group.id %>" name="group-checkbox-<%= group.id %>" checked>
+                                <% } else { %>
+                                    <input type="checkbox" id="group-checkbox-<%= group.id %>" name="group-checkbox-<%= group.id %>">
+                                <% } %>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+
+        <div>
+            <input class="clr-input" type="hidden" name="_csrf" value="<%= _csrf %>" />
+        </div>
+
+        <button raised="" class="btn-save" id="submit" onclick="submitForm()">
+            <%= __("Save") %>
+        </button>
+    </div>
+</form>
+
+<script>
+    let timezoneOptions = [{label: "-------", value: "undefined"}];
+    for (let timezone of <%- JSON.stringify(sails.config.adminpanel.timezones) %>) {
+        timezoneOptions.push({label: timezone.name, value: timezone.id})
+    }
+    let timezone = new SelectPure(".timezone", {
+        options: timezoneOptions,
+        value: '<%- user.timezone %>',
+        onChange: function(value) {
+            $('#timezone').val(value)
+        }
+    });
+
+    let localeOptions = [{label: "default", value: "default"}];
+    for (let locale of <%- JSON.stringify(sails.config.adminpanel.translation.locales) %>) {
+        localeOptions.push({label: locale, value: locale})
+    }
+    let locale = new SelectPure(".locale", {
+        options: localeOptions,
+        value: '<%- user.locale %>',
+        autocomplete: true,
+        onChange: function(value) {
+            $('#locale').val(value)
+        }
+    });
+
+    function submitForm() {
+        if ($('#userPassword').val() !== $('#repeatUserPassword').val()) {
+            alert('Values in "password" and "repeatPassword" fields should be the same')
+        } else {
+            $("#editUserForm").submit();
+        }
+    }
+
+    function pretendByUser() {
+        let fd = new FormData();
+        fd.append("login", $('#userLogin').val());
+        fd.append("pretend", true)
+        $.ajax({
+            url: "/admin/userap/login",
+            data: fd,
+            cache: false,
+            processData: false,
+            contentType: false,
+            type: 'POST',
+            success: function (response) {
+                window.location.href = `<%- sails.config.adminpanel.routePrefix %>/`
+            }
+        });
+    }
+</script>
+

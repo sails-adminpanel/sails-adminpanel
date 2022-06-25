@@ -1,228 +1,175 @@
-'use strict';
-
-var _ = require('lodash');
-
-/**
- * Menu helper
- *
- * @param {Object} config
- * @constructor
- */
-module.exports = function menuHelper(config) {
-
-    var module = {
-        /**
-         * Checks if brand exists
-         *
-         * @returns {boolean}
-         */
-        hasBrand: function () {
-            return Boolean(config.menu && config.menu.brand);
-        },
-
-        /**
-         * Get menu brand link
-         *
-         * @returns {string}
-         */
-        getBrandLink: function() {
-            if (!config.menu || !config.menu.brand || !_.isObject(config.menu.brand) || !config.menu.brand.link) {
-                return '/admin';
-            }
-            return config.menu.brand.link;
-        },
-
-        /**
-         * Get menu brand title
-         *
-         * @returns {string}
-         */
-        getBrandTitle: function() {
-            if (!config.menu || !config.menu.brand) {
-                return 'Sails-adminpanel';
-            }
-            if (_.isString(config.menu.brand)) {
-                return config.menu.brand;
-            }
-            if (_.isObject(config.menu.brand) && _.isString(config.menu.brand.title)) {
-                return config.menu.brand.title;
-            }
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MenuHelper = void 0;
+let _ = require("lodash"); // заменить lodash реджексом
+class MenuHelper {
+    constructor(config) {
+        MenuHelper.config = config;
+    }
+    /**
+     * Checks if brand exists
+     *
+     * @returns {boolean}
+     */
+    static hasBrand() {
+        return Boolean(this.config.brand && this.config.brand.link);
+    }
+    /**
+     * Get menu brand link
+     *
+     * @returns {string}
+     */
+    static getBrandLink() {
+        if (!this.config.brand || !this.config.brand.link || typeof this.config.brand.link !== "object" ||
+            !this.config.brand.link.link) {
+            return '/admin';
+        }
+        return this.config.brand.link.link;
+    }
+    /**
+     * Get menu brand title
+     *
+     * @returns {string}
+     */
+    getBrandTitle() {
+        if (!MenuHelper.config.brand || !MenuHelper.config.brand.link) {
             return 'Sails-adminpanel';
-        },
-
-        /**
-         * Check if global actions buttons added to action
-         *
-         * @param {Object} instanceConfig
-         * @param {string=} [action] Defaults to `list`
-         * @returns {boolean}
-         */
-        hasGlobalActions: function(instanceConfig, action) {
-            action = action || 'list';
-            if (!instanceConfig[action] || !instanceConfig[action].actions || !instanceConfig[action].actions.global) {
-                return false;
-            }
-            var actions = instanceConfig[action].actions.global;
-            if (actions.length > 0) {
-                return true;
-            }
+        }
+        if (typeof MenuHelper.config.brand.link === "string") {
+            return MenuHelper.config.brand.link;
+        }
+        if (typeof MenuHelper.config.brand.link === "object" && typeof MenuHelper.config.brand.link.title === "string") {
+            return MenuHelper.config.brand.link.title;
+        }
+        return 'Sails-adminpanel';
+    }
+    /**
+     * Check if global actions buttons added to action
+     *
+     * @param {Object} instanceConfig
+     * @param {string=} [action] Defaults to `list`
+     * @returns {boolean}
+     */
+    hasGlobalActions(instanceConfig, action) {
+        action = action || 'list';
+        if (!instanceConfig[action] || !instanceConfig[action].actions || !instanceConfig[action].actions.global) {
             return false;
-        },
-
-        /**
-         * Check if inline actions buttons added to action
-         *
-         * @param {Object} instanceConfig
-         * @param {string=} [action] Defaults to `list`
-         * @returns {boolean}
-         */
-        hasInlineActions: function(instanceConfig, action) {
-            action = action || 'list';
-            if (!instanceConfig[action] || !instanceConfig[action].actions || !instanceConfig[action].actions.inline) {
-                return false;
-            }
-            var actions = instanceConfig[action].actions.inline;
-            if (actions.length > 0) {
-                return true;
-            }
+        }
+        let actions = instanceConfig[action].actions.global;
+        return actions.length > 0;
+    }
+    /**
+     * Check if inline actions buttons added to action
+     *
+     * @param {Object} instanceConfig
+     * @param {string=} [action] Defaults to `list`
+     * @returns {boolean}
+     */
+    hasInlineActions(instanceConfig, action) {
+        action = action || 'list';
+        if (!instanceConfig[action] || !instanceConfig[action].actions || !instanceConfig[action].actions.inline) {
             return false;
-        },
-
-        /**
-         * Get list of custom global buttons for action
-         *
-         * @param {Object} instanceConfig
-         * @param {string=} [action]
-         * @returns {Array}
-         */
-        getGlobalActions: function(instanceConfig, action) {
-            action = action || 'list';
-            if (!this.hasGlobalActions(instanceConfig, action)) {
-                return [];
-            }
-            return instanceConfig[action].actions.global;
-        },
-
-        /**
-         * Get list of custom inline buttons for action
-         *
-         * @param {Object} instanceConfig
-         * @param {string=} [action]
-         * @returns {Array}
-         */
-        getInlineActions: function(instanceConfig, action) {
-            action = action || 'list';
-            if (!this.hasInlineActions(instanceConfig, action)) {
-                return [];
-            }
-            return instanceConfig[action].actions.inline;
-        },
-
-        /**
-         * Replace fields in given URL and binds to model fields.
-         *
-         * URL can contain different properties from given model in such notation `:propertyName`.
-         * If model wouldn't have such property it will be left as `:varName`
-         *
-         * @param {string} url URL with list of variables to replace '/admin/test/:id/:title/'
-         * @param {Object} model
-         * @returns {string}
-         */
-        replaceModelFields: function(url, model) {
-            // Check for model existance
-            if (!model) {
-                return url;
-            }
-            var words = _.words(url, /\:+[a-z\-_]*/gi);
-            // Replacing props
-            _.forEach(words, function(word) {
-                var variable = word.replace(':', '');
-                if (model && model[variable]) {
-                    url = url.replace(word, model[variable]);
-                }
-            });
+        }
+        let actions = instanceConfig[action].actions.inline;
+        return actions.length > 0;
+    }
+    /**
+     * Get list of custom global buttons for action
+     *
+     * @param {Object} instanceConfig
+     * @param {string=} [action]
+     * @returns {Array}
+     */
+    getGlobalActions(instanceConfig, action) {
+        action = action || 'list';
+        if (!this.hasGlobalActions(instanceConfig, action)) {
+            return [];
+        }
+        return instanceConfig[action].actions.global;
+    }
+    /**
+     * Get list of custom inline buttons for action
+     *
+     * @param {Object} instanceConfig
+     * @param {string=} [action]
+     * @returns {Array}
+     */
+    getInlineActions(instanceConfig, action) {
+        action = action || 'list';
+        if (!this.hasInlineActions(instanceConfig, action)) {
+            return [];
+        }
+        return instanceConfig[action].actions.inline;
+    }
+    /**
+     * Replace fields in given URL and binds to model fields.
+     *
+     * URL can contain different properties from given model in such notation `:propertyName`.
+     * If model wouldn't have such property it will be left as `:varName`
+     *
+     * @param {string} url URL with list of variables to replace '/admin/test/:id/:title/'
+     * @param {Object} model
+     * @returns {string}
+     */
+    static replaceModelFields(url, model) {
+        let words = (str, pat) => {
+            pat = pat || /\w+/g;
+            str = str.toLowerCase();
+            return str.match(pat);
+        };
+        // Check for model existence
+        if (!model) {
             return url;
-        },
-
-        /**
-         * Will create a list of groups to show
-         *
-         * @returns {Array}
-         */
-        getGroups: function () {
-            var groups = config.menu.groups || [];
-            _.forEach(groups, function(group, idx) {
-                if (!group.key) return;
-                // Clear menues to avoid data duplication
-                groups[idx].menues = [];
-                _.forEach(config.instances, function(val, key) {
-                    if (val.menuGroup && val.menuGroup == group.key) {
-                        groups[idx].menues.push({
-                            link: config.routePrefix + '/' + key,
-                            title: val.title,
-                            icon: val.icon || null
-                        });
-                    }
+        }
+        let split = words(url, /\:+[a-z\-_]*/gi);
+        // Replacing props
+        split.forEach(function (word) {
+            let variable = word.replace(':', '');
+            if (model && model[variable]) {
+                url = url.replace(word, model[variable]);
+            }
+        });
+        return url;
+    }
+    /**
+     * Get list of instance menus that was not bound to groups
+     *
+     * @returns {Array}
+     */
+    getMenuItems() {
+        let menus = [];
+        Object.entries(MenuHelper.config.instances).forEach(function ([key, val]) {
+            if (val.tools && val.tools.length > 0 && val.tools[0].id !== "overview") {
+                val.tools.unshift({
+                    id: "overview",
+                    link: MenuHelper.config.routePrefix + '/' + key,
+                    title: 'Overview',
+                    icon: ""
                 });
-                if (config.menu.actions && config.menu.actions.length > 0) {
-                    _.forEach(config.menu.actions, function(menu) {
-                        if (!menu.link || !menu.title || !menu.menuGroup || menu.menuGroup != group.key) {
-                            return;
-                        }
-                        groups[idx].menues.push({
-                            link: menu.link,
-                            title: menu.title,
-                            icon: menu.icon || null
-                        });
-                    });
-                }
+            }
+            menus.push({
+                link: MenuHelper.config.routePrefix + '/' + key,
+                title: val.title,
+                icon: val.icon || null,
+                actions: val.tools || null,
+                id: val.title.replace(" ", "_"),
+                instanceName: key
             });
-            return groups;
-        },
-
-        /**
-         * Get list of instance menues that was not binded to groups
-         *
-         * @returns {Array}
-         */
-        getMenuItems: function() {
-            var menues = [];
-            _.forEach(config.instances, function(val, key) {
-                if (val.menuGroup) {
+        });
+        if (MenuHelper.config.navbar.additionalLinks && MenuHelper.config.navbar.additionalLinks.length > 0) {
+            MenuHelper.config.navbar.additionalLinks.forEach(function (additionalLink) {
+                if (!additionalLink.link || !additionalLink.title || additionalLink.disabled) {
                     return;
                 }
-                if (val.actions && val.actions.length > 0 && val.actions[0].title !== "Overview") {
-                    val.actions.unshift({
-                        link: config.routePrefix + '/' + key,
-                        title: "Overview",
-                        icon: ""
-                    })
-                }
-                menues.push({
-                    link: config.routePrefix + '/' + key,
-                    title: val.title,
-                    icon: val.icon || null,
-                    actions: val.actions || null,
-                    id: val.id || val.title.replace(" ","_"),
-                    instanceName: key
+                menus.push({
+                    link: additionalLink.link,
+                    title: additionalLink.title,
+                    id: additionalLink.id || additionalLink.title.replace(" ", "_"),
+                    icon: additionalLink.icon || null
                 });
             });
-            if (config.menu.actions && config.menu.actions.length > 0) {
-                _.forEach(config.menu.actions, function(menu) {
-                    if (!menu.link || !menu.title || menu.menuGroup || menu.disabled) {
-                        return;
-                    }
-                    menues.push({
-                        link: menu.link,
-                        title: menu.title,
-                        id: menu.id || menu.title.replace(" ","_"),
-                        icon: menu.icon || null
-                    });
-                });
-            }
-            return menues;
         }
-    };
-
-    return module;
-};
+        return menus;
+    }
+}
+exports.MenuHelper = MenuHelper;

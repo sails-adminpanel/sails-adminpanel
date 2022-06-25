@@ -2,24 +2,29 @@
   "bugs": {
     "url": "https://github.com/sails-adminpanel/sails-adminpanel/issues"
   },
-  "bundleDependencies": false,
+  "bundleDependencies": [],
   "dependencies": {
-    "async": "^0.9.0",
-    "gulp-less": "^3.0.3",
     "jimp": "^0.2.28",
-    "lodash": "^3.0.0",
-    "ncp": "^2.0.0",
     "password-hash": "^1.2.2",
     "sails-build-dictionary": "^0.10.1"
   },
   "deprecated": false,
   "description": "Basic adminpanel for Sails 1x",
   "devDependencies": {
-    "chai": "^1.10.0",
+    "@42pub/typed-sails": "^1.0.0",
+    "@types/chai": "^4.3.0",
+    "@types/express": "^4.17.7",
+    "@types/mocha": "^9.0.0",
+    "@types/waterline": "^0.13.4",
+    "chai": "^4.1.0",
+    "chai-http": "^4.3.0",
     "chance": "^0.7.3",
-    "mocha": "^2.0.1",
+    "dotenv": "^16.0.0",
+    "mocha": "^8.1.1",
     "node-sass": "^7.0.1",
-    "sails": "^1.4.0"
+    "sails": "^1.4.0",
+    "ts-node": "^10.7.0",
+    "typescript": "^3.9.7"
   },
   "homepage": "https://github.com/sails-adminpanel/sails-adminpanel#readme",
   "keywords": [
@@ -43,8 +48,11 @@
     "hookName": "adminpanel"
   },
   "scripts": {
-    "test": "node ./node_modules/mocha/bin/mocha -b --timeout 5000",
+    "test": "mocha -r ts-node/register test/bootstrap.ts './test/{,!(fixture)/**}/*.test.ts' --exit",
+    "test:js": "mocha test/bootstrap.js './test/{,!(fixture)/**}/*.test.js' --exit",
+    "test:init": "npm i && cd ./test/fixture && npm i --no-package-lock --prefix ./ && cd -",
+    "test:init-win": "npm i && cd test\\fixture && rmdir /s/Q node_modules && npm i --no-package-lock",
     "build:css": "sass assets/styles:clarity/src"
   },
-  "version": "1.2.10"
+  "version": "2.0.0"
 }
