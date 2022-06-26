@@ -171,6 +171,10 @@ interface BaseFieldConfig {
      * Label for associations
      * */
     displayField?: string
+    /**
+     * Field that will be used only in select and select-pure widget
+     * */
+    isIn?: object
 }
 
 interface NavigationOptionsField {

@@ -19,8 +19,10 @@
             <% } %>
             <% if (field.config.displayModifier && typeof field.config.displayModifier === 'function') { %>
                 label<%=key%> = "<%= field.config.displayModifier(opt) %>"
-            <% } else { %>
+            <% } else if (field.config.displayField) { %>
                 label<%=key%> = "<%= opt[field.config.displayField] %>"
+            <% } else { %>
+                label<%=key%> = "<%= opt[field.config.identifierField] %>"
             <% } %>
             options<%=key%>.push({label: label<%=key%>, value: "<%= opt[field.config.identifierField] %>"})
         <% } %>

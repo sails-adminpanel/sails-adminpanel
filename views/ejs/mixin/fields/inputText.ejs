@@ -1,5 +1,5 @@
 <!-- prettier-ignore -->
-<% if (field.config.enum) { %>
+<% if (field.config.isIn) { %>
     <% include select %>
 <% } else if(field.model.email) { %>
     <input class="clr-input" label="<%= field.config.title %>"
@@ -10,39 +10,39 @@
 <% } else { %>
     <%
     var fieldType = 'text'
-    if (type == "password") {
+    if (type === "password") {
         fieldType = 'password'
     }
-    if (type == "date") {
+    if (type === "date") {
         fieldType = 'date'
     }
-    if (type == "datetime") {
+    if (type === "datetime") {
         fieldType = 'datetime-local'
     }
 
-    if (type == "time") {
+    if (type === "time") {
         fieldType = 'time'
     }
 
-    if (type == "color") {
+    if (type === "color") {
         fieldType = 'color'
     }
 
-    if (type == "email") {
+    if (type === "email") {
         fieldType = 'email'
     }
-    if (type == "month") {
+    if (type === "month") {
         fieldType = 'month'
     }
-    if (type == "week") {
+    if (type === "week") {
         fieldType = 'week'
     }
 
-    if (type == "range") {
+    if (type === "range") {
         fieldType = 'range'
     }
 
-    if (type == "integer" || type == 'float' || type == "number") {
+    if (type === "integer" || type === 'float' || type === "number") {
         fieldType = 'number'
     }
     %>

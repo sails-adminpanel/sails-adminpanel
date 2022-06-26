@@ -191,7 +191,8 @@ Types included into admin panel:
 + `datetime` - input type datetime
 + `integer` / `float` - input type number
 + `boolean` - checkbox
-+ `text` - textarea.
++ `text` - textarea
++ `select` - html select
 
 **If you will conbine `text` type with `editor` option for the field admin panel will create a WYSTYG editor for this field.**
 
@@ -460,4 +461,4 @@ This configuration loads all sail models as they are. Just place  in `config\adm
 string, password, date, datetime, time, integer, number, float, color, email, month, week,
 range, boolean, binary, text, longtext, mediumtext, ckeditor, wysiwyg, texteditor, word,
 jsoneditor, json, array, object, ace, html, xml, aceeditor, image, images, file, files,
-menu, navigation, schedule, worktime, association, "association-many"
+menu, navigation, schedule, worktime, association, "association-many", select, select-pure
