@@ -2,6 +2,7 @@ import bindTranslations from "./bindTranslations";
 import bindAuthorization from './bindAuthorization';
 import bindAccessRights from "./bindAccessRights";
 import bindDev from "./bindDev";
+import bindForms from "./bindForms";
 
 export default async function () {
     // Binding list of function for rendering
@@ -25,9 +26,12 @@ export default async function () {
     //binding authorization
     await bindAuthorization();
 
+    // binding forms from files
+    bindForms();
+
     if (sails.hooks.i18n && sails.hooks.i18n.appendLocale) {
         sails.after(["hook:i18n:loaded"], async () => {
-            await bindTranslations();
+            bindTranslations();
         })
     } else {
         sails.config.adminpanel.translation = false

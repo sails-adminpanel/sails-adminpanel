@@ -1,1 +1,1 @@
-export default function bindTranslations(): Promise<void>;
+export default function bindTranslations(): void;
