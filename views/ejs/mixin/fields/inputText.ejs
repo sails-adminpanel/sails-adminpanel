@@ -46,7 +46,7 @@
         fieldType = 'number'
     }
     %>
-    <% if (adminpanel.configHelper.isId(field, instance.config.model)) { %>
+    <% if (instance.config.model && adminpanel.configHelper.isId(field, instance.config.model)) { %>
         <% field.config.disabled = true %>
     <% } %>
     <div class="widget_narrow">
