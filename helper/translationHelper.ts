@@ -33,5 +33,5 @@ export class TranslationHelper {
         } catch (e) {
             sails.log.error("Adminpanel > Error when loading translations", e)
         }
-}
+    }
 }

@@ -7,6 +7,7 @@ import _add from "../controllers/add";
 import _view from "../controllers/view";
 import _remove from "../controllers/remove";
 import _upload from "../controllers/upload";
+import _form from "../controllers/form"
 
 export default function bindRoutes() {
 
@@ -67,6 +68,11 @@ export default function bindRoutes() {
      * Create a default dashboard
      * @todo define information that should be shown here
      */
+
+    /**
+     * Edit form
+     * */
+    sails.router.bind(`${config.routePrefix}/form/:slug`, _bindPolicies(policies, _form));
 
     if (Boolean(config.dashboard)) {
         sails.router.bind(config.routePrefix, _bindPolicies(policies, _dashboard));

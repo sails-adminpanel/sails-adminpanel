@@ -1,7 +1,7 @@
 import {TranslationHelper} from "../helper/translationHelper";
 import * as fs from "fs";
 
-export default async function bindTranslations() {
+export default function bindTranslations() {
     // load adminpanel translations
     TranslationHelper.loadTranslations(`${sails.config.adminpanel.rootPath}/translations`);
 
