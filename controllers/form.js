@@ -24,7 +24,6 @@ async function form(req, res) {
         if (!req.body) {
             return res.status(500).send("Data is empty");
         }
-        console.log("REQ BODY", req.body);
         await formHelper_1.FormHelper.update(slug, req.body);
     }
     console.log("FORM DATA", slug, formData);
