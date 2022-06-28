@@ -61,10 +61,16 @@ export interface AdminpanelConfig {
         defaultLocale: string
     } | boolean
     /**
-     * Forms
+     * Generator
      * */
-    forms?: {
-        [key:string]: Fields
+    generator?: {
+        path: string
+        forms?: {
+            [key:string]: Fields
+        }
+        wizards?: {
+            [key:string]: Fields
+        }
     }
     /**
      * Prime administrator login credentials

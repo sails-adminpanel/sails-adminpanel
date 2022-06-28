@@ -6,14 +6,20 @@ const fs = require("fs");
 class FormHelper {
     static async update(slug, data) {
         if (this._forms[slug].setter) {
-            this._forms[slug].setter(slug, data);
+            return this._forms[slug].setter(slug, data);
         }
+        /**
+         * Object values should not be stringified
+         * */
         for (let field in data) {
-            this._forms[slug][field].value = data[field];
+            try {
+                this._forms[slug][field].value = JSON.parse(data[field]);
+            }
+            catch (e) {
+                this._forms[slug][field].value = data[field];
+            }
         }
-        if (sails.config.adminpanel.forms.loadFromFiles) {
-            this.updateFormFile(`${process.cwd()}/${sails.config.adminpanel.forms.path}`, slug, this._forms[slug]);
-        }
+        this.updateFormFile(`${process.cwd()}/${sails.config.adminpanel.generator.path}`, slug, this._forms[slug]);
     }
     static get(slug) {
         if (!this._forms) {
@@ -40,7 +46,7 @@ class FormHelper {
             for (let form of forms) {
                 try {
                     let jsonData = require(`${formsDirectoryPath}/${form}`);
-                    sails.config.adminpanel.forms.data[path.basename(form, '.json')] = jsonData;
+                    sails.config.adminpanel.generator.forms[path.basename(form, '.json')] = jsonData;
                 }
                 catch (error) {
                     sails.log.error(`Adminpanel > Error when reading ${form}.json: ${error}`);
@@ -77,4 +83,4 @@ class FormHelper {
     }
 }
 exports.FormHelper = FormHelper;
-FormHelper._forms = sails.config.adminpanel.forms ? sails.config.adminpanel.forms.data : null;
+FormHelper._forms = sails.config.adminpanel.generator ? sails.config.adminpanel.generator.forms : null;

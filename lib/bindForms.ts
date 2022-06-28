@@ -2,11 +2,11 @@ import * as fs from "fs";
 import {FormHelper} from "../helper/formHelper";
 
 export default function bindForms() {
-    if (sails.config.adminpanel.forms.loadFromFiles && fs.existsSync(sails.config.adminpanel.forms.path)) {
-        let formsDir = fs.readdirSync(sails.config.adminpanel.forms.path);
+    if (fs.existsSync(sails.config.adminpanel.generator.path)) {
+        let formsDir = fs.readdirSync(sails.config.adminpanel.generator.path);
         if (formsDir.length) {
             // load project translations
-            FormHelper.loadForms(`${process.cwd()}/${sails.config.adminpanel.forms.path}`);
+            FormHelper.loadForms(`${process.cwd()}/${sails.config.adminpanel.generator.path}`);
         }
     }
 }

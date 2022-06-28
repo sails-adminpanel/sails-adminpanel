@@ -16,8 +16,8 @@ describe('Form test', function () {
     });
     it("Reading from file works", function () {
         let formFromFile = require("../datamocks/forms/exampleFromFile.json");
-        (0, chai_1.expect)("exampleFromFile" in sails.config.adminpanel.forms.data).to.be.true;
-        (0, chai_1.expect)(sails.config.adminpanel.forms.data.exampleFromFile).to.equal(formFromFile);
+        (0, chai_1.expect)("exampleFromFile" in sails.config.adminpanel.generator.forms).to.be.true;
+        (0, chai_1.expect)(sails.config.adminpanel.generator.forms.exampleFromFile).to.equal(formFromFile);
     });
     it("Writing to file works", function () {
         chai.request(process.env.HTTP_TEST_LOCALHOST)

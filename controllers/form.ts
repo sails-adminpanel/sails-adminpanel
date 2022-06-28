@@ -29,6 +29,8 @@ export default async function form(req, res) {
             return res.status(500).send("Data is empty")
         }
 
+        console.log("REQ BODY", req.body)
+
         await FormHelper.update(slug, req.body);
     }
 
