@@ -9,9 +9,6 @@ export class FormHelper {
             return this._forms[slug].setter(slug, data)
         }
 
-        /**
-         * Object values should not be stringified
-         * */
         for (let field in data) {
             try {
                 this._forms[slug][field].value = JSON.parse(data[field])
