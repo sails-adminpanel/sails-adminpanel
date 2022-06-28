@@ -8,5 +8,12 @@ export default function bindForms() {
             // load project translations
             FormHelper.loadForms(`${process.cwd()}/${sails.config.adminpanel.generator.path}`);
         }
+    } else {
+        sails.log.warn("Forms directory was not found, trying to create .tmp/forms...")
+        try {
+            fs.mkdirSync(`${process.cwd()}/${sails.config.adminpanel.generator.path}`);
+        } catch (e) {
+            sails.log.error("Adminpanel > Error when creating forms directory, you changes may not be saved", e)
+        }
     }
 }
