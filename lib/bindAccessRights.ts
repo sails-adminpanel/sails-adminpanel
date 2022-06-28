@@ -24,8 +24,8 @@ export default function bindAccessRights() {
         }
     }
 
-    if (sails.config.adminpanel.forms && sails.config.adminpanel.forms.data) {
-        let forms = sails.config.adminpanel.forms.data;
+    if (sails.config.adminpanel.generator && sails.config.adminpanel.generator.forms) {
+        let forms = sails.config.adminpanel.generator.forms;
         for (let key of Object.keys(forms)) {
             let department = `Form ${key}`;
 

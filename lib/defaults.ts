@@ -88,6 +88,11 @@ const adminpanelConfig: AdminpanelConfig = {
         defaultLocale: 'en'
     },
 
+    generator: {
+        path: `${process.cwd()}/config/locales/adminpanel`,
+        forms: {}
+    },
+
     /**
      * List of sections in head
      */
