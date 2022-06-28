@@ -4,6 +4,7 @@ You can add custom links into your admin panel pages.
 You could use:
 - `additionaLinks` in `navbar` property to create links at the bottom of the sidenav panel
 - `global` or `inline` actions in `actions` property of `list` view
+- `tools` property to create link like instance submenu
 
 ## Action buttons
 
@@ -13,6 +14,15 @@ module.exports.adminpanel = {
         pages: {
             title: 'Pages',
             model: 'Page',
+            tools: [
+                {
+                    id: "0",
+                    link: "/",
+                    title: "Some new action",
+                    icon: "ok",
+                    accessRightsToken: "someLinkToken"
+                }
+            ],
             navbar: {
                 additionalLinks: [
                     {
