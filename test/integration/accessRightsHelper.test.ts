@@ -11,8 +11,12 @@ describe('Access rights helper test', function () {
 
     it("Default (CRUD) tokens created for every instance test", function () {
         let instances = sails.config.adminpanel.instances;
+        let forms = sails.config.adminpanel.forms.data;
+
         let instancesAmount = Object.keys(instances).length;
+        let formsAmount = Object.keys(forms).length;
+
         let tokensAmount = AccessRightsHelper.getTokens().length;
-        expect(tokensAmount).to.equal(4 * instancesAmount)
+        expect(tokensAmount).to.equal(4 * (instancesAmount + formsAmount))
     })
 })

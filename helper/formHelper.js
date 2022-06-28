@@ -10,12 +10,15 @@ class FormHelper {
         }
         for (let field in data) {
             this._forms[slug][field].value = data[field];
-            if (sails.config.adminpanel.forms.loadFromFiles) {
-                this.updateFormFile(`${process.cwd()}/${sails.config.adminpanel.forms.path}`, slug, this._forms[slug][field]);
-            }
+        }
+        if (sails.config.adminpanel.forms.loadFromFiles) {
+            this.updateFormFile(`${process.cwd()}/${sails.config.adminpanel.forms.path}`, slug, this._forms[slug]);
         }
     }
     static get(slug) {
+        if (!this._forms) {
+            return;
+        }
         if (this._forms[slug].getter) {
             return this._forms[slug].getter(slug);
         }
@@ -60,11 +63,11 @@ class FormHelper {
                         fs.writeFileSync(`${formsDirectoryPath}/${form}`, JSON.stringify(data));
                     }
                     catch (error) {
-                        sails.log.error(`Adminpanel > Error when updating ${form}.json: ${error}`);
+                        sails.log.error(`Adminpanel > Error when updating ${form}: ${error}`);
                     }
                 }
                 else {
-                    sails.log.error(`Adminpanel > Could not find ${form}.json to update`);
+                    sails.log.error(`Adminpanel > Could not find ${form} to update`);
                 }
             }
         }
@@ -74,4 +77,4 @@ class FormHelper {
     }
 }
 exports.FormHelper = FormHelper;
-FormHelper._forms = sails.config.adminpanel.forms.data;
+FormHelper._forms = sails.config.adminpanel.forms ? sails.config.adminpanel.forms.data : null;
