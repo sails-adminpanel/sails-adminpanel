@@ -19,7 +19,7 @@ class FormHelper {
         this.updateFormFile(`${process.cwd()}/${sails.config.adminpanel.generator.path}`, slug, this._forms[slug]);
     }
     static get(slug) {
-        if (!this._forms) {
+        if (!this._forms[slug]) {
             return;
         }
         if (this._forms[slug].getter) {
@@ -57,21 +57,11 @@ class FormHelper {
     static updateFormFile(formsPath, slug, data) {
         try {
             let formsDirectoryPath = path.resolve(formsPath);
-            let forms = fs.readdirSync(formsDirectoryPath).filter(function (file) {
-                return path.extname(file).toLowerCase() === ".json";
-            });
-            for (let form of forms) {
-                if (path.basename(form, '.json') === slug) {
-                    try {
-                        fs.writeFileSync(`${formsDirectoryPath}/${form}`, JSON.stringify(data));
-                    }
-                    catch (error) {
-                        sails.log.error(`Adminpanel > Error when updating ${form}: ${error}`);
-                    }
-                }
-                else {
-                    sails.log.error(`Adminpanel > Could not find ${form} to update`);
-                }
+            try {
+                fs.writeFileSync(`${formsDirectoryPath}/${slug}.json`, JSON.stringify(data));
+            }
+            catch (error) {
+                sails.log.error(`Adminpanel > Error when updating ${slug}.json: ${error}`);
             }
         }
         catch (e) {

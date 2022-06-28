@@ -84,12 +84,12 @@ const adminpanelConfig: AdminpanelConfig = {
 
     translation: {
         locales: ['en', 'ru'],
-        path: `${process.cwd()}/config/locales/adminpanel`,
+        path: `config/locales/adminpanel`,
         defaultLocale: 'en'
     },
 
     generator: {
-        path: `${process.cwd()}/config/locales/adminpanel`,
+        path: `.tmp/forms`,
         forms: {}
     },
 
