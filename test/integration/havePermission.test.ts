@@ -1,7 +1,5 @@
 import "mocha";
-import {expect} from "chai";
 import * as chai from "chai";
-import {AccessRightsHelper} from "../../helper/accessRightsHelper";
 import chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 
