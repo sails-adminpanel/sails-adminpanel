@@ -23,7 +23,7 @@ before(function (done) {
 
 after(function (done) {
   if (sails) {
-    return sails.lower(function (err) {
+    return sails.lower(function (err: any) {
       if (err) {
         done();
       }
