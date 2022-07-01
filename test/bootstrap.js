@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path="../interfaces/global.ts" />
 require("mocha");
 var Sails = require("./fixture/node_modules/sails").Sails;
 require("dotenv").config();

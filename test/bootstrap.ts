@@ -1,5 +1,5 @@
+/// <reference path="../interfaces/global.ts" />
 import "mocha";
-import * as fs from "fs";
 var Sails = require("./fixture/node_modules/sails").Sails;
 require("dotenv").config();
 
