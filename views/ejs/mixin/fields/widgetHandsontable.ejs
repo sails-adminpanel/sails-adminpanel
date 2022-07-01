@@ -9,16 +9,12 @@
 
 <script>
 
-    const data =  JSON.parse(document.getElementById('form-<%= key %>').value);
-    const container = document.getElementById('handsontable-<%= key %>');
-    const hot = new Handsontable(container, {
-        data: data,
-        rowHeaders: true,
-        colHeaders: true,
-        height: 'auto',
-        contextMenu: true,
-        manualRowMove: true,
-        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+    let data<%=key%> =  JSON.parse(document.getElementById('form-<%= key %>').value);
+    let container<%=key%> = document.getElementById('handsontable-<%= key %>');
+    let options<%=key%> = <%- JSON.stringify(field.config.options) %>;
+    let <%=key%> = new Handsontable(container<%=key%>, {
+        data: data<%=key%>,
+        ...options<%=key%>,
         afterChange: function (change, source) {
             if (source === 'loadData') {
                 return; //don't save this change
