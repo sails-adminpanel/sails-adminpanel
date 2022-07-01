@@ -4,6 +4,7 @@
   },
   "bundleDependencies": [],
   "dependencies": {
+    "handsontable": "^12.1.0",
     "jimp": "^0.2.28",
     "password-hash": "^1.2.2",
     "sails-build-dictionary": "^0.10.1"

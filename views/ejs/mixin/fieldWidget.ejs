@@ -60,10 +60,17 @@
     <% include fields/widgetEditSchedule %>
 <% } %>
 
-<% if (type == 'association') { %>
+<%# Select-pure %>
+<% if (type === 'association') { %>
     <% include fields/inputAssociation %>
 <% } %>
 
-<% if (type == 'association-many') { %>
+<%# Select-pure with multiple choice %>
+<% if (type === 'association-many') { %>
     <% include fields/inputAssociationMany %>
+<% } %>
+
+<%# Handsontable %>
+<% if (type === 'table') { %>
+    <% include fields/widgetHandsontable %>
 <% } %>

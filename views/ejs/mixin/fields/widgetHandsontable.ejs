@@ -1,0 +1,33 @@
+<textarea
+        <%= field.config.required && 'required' %>
+        <%= field.config.disabled && 'disabled'%>
+        name="<%= key %>"
+        id="form-<%= key %>">
+    <%- JSON.stringify(value) %>
+</textarea>
+<div id="handsontable-<%= key %>"></div>
+
+<script>
+
+    const data =  JSON.parse(document.getElementById('form-<%= key %>').value);
+    const container = document.getElementById('handsontable-<%= key %>');
+    const hot = new Handsontable(container, {
+        data: data,
+        rowHeaders: true,
+        colHeaders: true,
+        height: 'auto',
+        contextMenu: true,
+        manualRowMove: true,
+        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+        afterChange: function (change, source) {
+            if (source === 'loadData') {
+                return; //don't save this change
+            }
+
+            console.log("Change", change[0]);
+            let table = JSON.parse(document.getElementById('form-<%= key %>').value);
+            table[change[0][0]][change[0][1]] = change[0][3];
+            $('#form-<%= key %>').val(JSON.stringify(table));
+        }
+    });
+</script>
