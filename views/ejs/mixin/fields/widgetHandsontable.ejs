@@ -20,8 +20,11 @@
                 return; //don't save this change
             }
 
-            console.log("Change", change[0]);
             let table = JSON.parse(document.getElementById('form-<%= key %>').value);
+            if (!table) {
+                table = Array(5).fill("").map(() => Array(5).fill(""))
+            }
+
             table[change[0][0]][change[0][1]] = change[0][3];
             $('#form-<%= key %>').val(JSON.stringify(table));
         }
