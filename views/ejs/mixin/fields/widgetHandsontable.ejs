@@ -7,6 +7,10 @@
 </textarea>
 <div id="handsontable-<%= key %>"></div>
 
+<% if (field.config.options.language) { %>
+    <script src="/admin/assets/handsontable/dist/languages/<%= field.config.options.language %>.js"></script>
+<% } %>
+
 <script>
 
     let data<%=key%> =  JSON.parse(document.getElementById('form-<%= key %>').value);
