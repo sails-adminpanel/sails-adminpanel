@@ -5,7 +5,9 @@ Before using this widget check out [Official documentation](https://handsontable
 Widget Handsontable allows you to create tables that you can easily customize
 in adminpanel. To use this widget just add `type:"table"` in target field.
 In options field you can add all handsontable options except `data` and `afterChange`
-function, they are already set.
+function, they are already set. In case of using `language` option just specify
+language code, locale import will be done automatically. List of language codes you
+can find [here](https://handsontable.com/docs/language/#list-of-available-languages)
 
 ```javascript
 module.exports.adminpanel = {
@@ -23,6 +25,7 @@ module.exports.adminpanel = {
                     height: 'auto',
                     contextMenu: true,
                     manualRowMove: true,
+                    language: 'pl-PL',
                     licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
                 }
             },
