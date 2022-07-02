@@ -9,12 +9,19 @@
 
 <% if (field.config.options.language) { %>
     <script src="/admin/assets/handsontable/dist/languages/<%= field.config.options.language %>.js"></script>
+<% } else if (sails.config.adminpanel.translation && sails.config.adminpanel.translation.defaultLocale) { %>
+    <script src="/admin/assets/handsontable/dist/languages/<%= sails.config.adminpanel.translation.defaultLocale.toLowerCase() %>-<%= sails.config.adminpanel.translation.defaultLocale.toUpperCase() %>.js"></script>
 <% } %>
 
 <script>
 
     let data<%=key%> =  JSON.parse(document.getElementById('form-<%= key %>').value);
     let container<%=key%> = document.getElementById('handsontable-<%= key %>');
+
+    <% if (!field.config.options.language && sails.config.adminpanel.translation && sails.config.adminpanel.translation.defaultLocale) { %>
+        <% field.config.options.language = `${ sails.config.adminpanel.translation.defaultLocale.toLowerCase()}-${sails.config.adminpanel.translation.defaultLocale.toUpperCase()}` %>
+    <% } %>
+
     let options<%=key%> = <%- JSON.stringify(field.config.options) %>;
     let <%=key%> = new Handsontable(container<%=key%>, {
         data: data<%=key%>,
