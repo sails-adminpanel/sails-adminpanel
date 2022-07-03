@@ -2,7 +2,7 @@
 You can add custom links into your admin panel pages.
 
 You could use:
-- `additionaLinks` in `navbar` property to create links at the bottom of the sidenav panel
+- `additionaLinks` in `navbar` property to create links at the top of the sidenav panel
 - `global` or `inline` actions in `actions` property of `list` view
 - `tools` property to create link like instance submenu
 
@@ -10,6 +10,18 @@ You could use:
 
 ```javascript
 module.exports.adminpanel = {
+    navbar: {
+        additionalLinks: [
+            {
+                id: '1',
+                title: "First action",
+                link: string,
+                icon: "",
+                subItems: HrefConfig[], // second level links like instance tools
+                accessRightsToken: "firstLinkToken"
+            }
+        ]
+    },
     instances: {
         pages: {
             title: 'Pages',
@@ -23,17 +35,6 @@ module.exports.adminpanel = {
                     accessRightsToken: "someLinkToken"
                 }
             ],
-            navbar: {
-                additionalLinks: [
-                    {
-                        id: '1',
-                        title: "First action",
-                        link: string,
-                        icon: "",
-                        accessRightsToken: "firstLinkToken"
-                    }
-                ]
-            },
 
             list: {
                 actions: {

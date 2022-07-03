@@ -138,6 +138,20 @@ class MenuHelper {
      */
     getMenuItems() {
         let menus = [];
+        if (MenuHelper.config.navbar.additionalLinks && MenuHelper.config.navbar.additionalLinks.length > 0) {
+            MenuHelper.config.navbar.additionalLinks.forEach(function (additionalLink) {
+                if (!additionalLink.link || !additionalLink.title || additionalLink.disabled) {
+                    return;
+                }
+                menus.push({
+                    link: additionalLink.link,
+                    title: additionalLink.title,
+                    id: additionalLink.id || additionalLink.title.replace(" ", "_"),
+                    actions: additionalLink.subItems || null,
+                    icon: additionalLink.icon || null
+                });
+            });
+        }
         if (MenuHelper.config.instances) {
             Object.entries(MenuHelper.config.instances).forEach(function ([key, val]) {
                 if (val.tools && val.tools.length > 0 && val.tools[0].id !== "overview") {
@@ -157,19 +171,6 @@ class MenuHelper {
                     instanceName: key
                 });
             });
-            if (MenuHelper.config.navbar.additionalLinks && MenuHelper.config.navbar.additionalLinks.length > 0) {
-                MenuHelper.config.navbar.additionalLinks.forEach(function (additionalLink) {
-                    if (!additionalLink.link || !additionalLink.title || additionalLink.disabled) {
-                        return;
-                    }
-                    menus.push({
-                        link: additionalLink.link,
-                        title: additionalLink.title,
-                        id: additionalLink.id || additionalLink.title.replace(" ", "_"),
-                        icon: additionalLink.icon || null
-                    });
-                });
-            }
         }
         return menus;
     }
