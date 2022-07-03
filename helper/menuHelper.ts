@@ -164,7 +164,7 @@ export class MenuHelper {
                         id: "overview",
                         link: MenuHelper.config.routePrefix + '/' + key,
                         title: 'Overview',
-                        icon: ""
+                        icon: "list"
                     })
                 }
                 menus.push({
