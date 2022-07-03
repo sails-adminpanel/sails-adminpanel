@@ -27,7 +27,7 @@
                     <% if (havePermission(action.accessRightsToken, req.session.UserAP) || action.id === 'overview') { %>
                       <li>
                         <a class="nav-link" href="<%= action.link %>"
-                          ><span class="navbar-icon"> <i class="las la-list"></i></span><%= __(action.title) %></a
+                          ><span class="navbar-icon"> <i class="las la-<%=action.icon%>"></i></span><%= __(action.title) %></a
                         >
                       </li>
                     <% } %>
@@ -38,7 +38,7 @@
         <% } %>
       <% }) %>
     </section>
-    
+
   </section>
   <% if (config.showVersion) { %>
     <section style="text-align: center;font-size: 10px;">v<%=config.package.version%></section>
