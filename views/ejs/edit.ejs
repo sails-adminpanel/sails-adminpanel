@@ -24,7 +24,7 @@
                 Скрыть
                 <i class="las la-eye-slash"></i>
             </button> -->
-            <% if (havePermission(`delete-${instance.name}-instance`, req.session.UserAP)) { %>
+            <% if (instance.config.remove && havePermission(`delete-${instance.name}-instance`, req.session.UserAP)) { %>
                 <a href="<%= instance.uri %>/remove/<%= record[idField] %>" onclick="return confirm('<%= __('Are you sure?') %>')">
                     <button class="btn-nav">
                     <%= __("Delete") %>
