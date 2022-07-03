@@ -105,5 +105,3 @@ const adminpanelConfig: AdminpanelConfig = {
 export const content = {
     adminpanel: adminpanelConfig
 };
-
-console.log("Adminpanel configuration: ", adminpanelConfig)
