@@ -1,7 +1,7 @@
 # Forms
 
 You can add forms when you have no need to create an instance. For example, for
-single block on page that will not be repeated.
+single block on page that will not be repeated. Or like a link with model settings.
 
 You can add forms directly to adminpanel configuration or put them in files with
 `.json` extension which should be named as form slug. Path to folder with this
@@ -32,3 +32,29 @@ module.exports.adminpanel = {
 
 You can use forms by adding adiminpanel special links like `tools`, `additionaLinks`
 in navbar, `global` or `inline` actions. To do that read [Links](Links.md)
+
+## How to create a form
+
+Forms is `.json` files that contains fields with `BaseFieldConfig` options.
+`title` and `type` are required.
+
+```json
+{
+  "label": {
+    "title": "Label",
+    "type": "string",
+    "value": "From example from file",
+    "required": true,
+    "tooltip": "tooltip for label",
+    "description": "some description"
+  },
+  "teaser": {
+    "title": "Тизер",
+    "type": "text",
+    "required": true,
+    "tooltip": "tooltip for teaser",
+    "description": "some description",
+    "value": ""
+  }
+}
+```

@@ -51,7 +51,7 @@ export class AdminUtil {
             sails.log.error('Wrong instance configuration, using default');
             config = {};
         }
-        config = Object.assign(this._defaultInstanceConfig, config);
+        config = {...this._defaultInstanceConfig, ...config};
 
         //Check limits
         if (typeof config.list === "boolean") {
@@ -75,7 +75,7 @@ export class AdminUtil {
     private static _normalizeActionConfig(config) {
         //Adding fields
         config.fields = config.fields || {};
-        return Object.assign(this._defaultActionConfig, config);
+        return {...this._defaultActionConfig, ...config};
     };
 
     /**
@@ -168,7 +168,7 @@ export class AdminUtil {
         if (!instance || !actionType) {
             throw new Error('No `instance` or `actionType` passed !');
         }
-        let result = Object.assign({}, this._defaultActionConfig);
+        let result = {...this._defaultActionConfig};
         if (!instance.config || !instance.config[actionType]) {
             return result;
         }
