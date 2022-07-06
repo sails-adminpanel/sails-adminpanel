@@ -69,6 +69,19 @@
                     </div>
                 <% } %>
 
+                <% if (req.session.UserAP.isAdministrator) { %>
+                    <div class="admin-panel__widget">
+                        <div class="clr-checkbox-inline">
+                            <label class="admin-panel__title" for="isAdmin"><%= __("Is Administrator") %></label>
+                            <% if (user.isAdministrator) { %>
+                                <input type="checkbox" id="isAdmin" name="isAdmin" checked>
+                            <% } else { %>
+                                <input type="checkbox" id="isAdmin" name="isAdmin">
+                            <% } %>
+                        </div>
+                    </div>
+                <% } %>
+
                 <% if (req.session.UserAP.isAdministrator && !user.isAdministrator) { %>
                     <div class="admin-panel__widget">
                         <div class="widget_narrow" >
@@ -80,13 +93,18 @@
             </div>
         </div>
 
-        <h2><%= __("Password") %></h2>
+        <h2><%= __("Password") %>
+            <a href="javascript:void(0)" role="tooltip" aria-haspopup="true" class="tooltip tooltip-md tooltip-top-right">
+                <i class="las la-info-circle"></i>
+                <span class="tooltip-content"><%= __("Leave this field empty if you don't want to change the password") %></span>
+            </a>
+        </h2>
         <div class="clr-row">
             <div class="clr-col-sm-12 clr-col-md-6">
                 <div class="admin-panel__widget">
                     <label class="admin-panel__title" for="email"><%= __("Password") %></label>
                     <div class="widget_narrow" >
-                        <input class="clr-input" type="password" id="userPassword" name="userPassword">
+                        <input class="clr-input" type="password" id="userPassword" name="userPassword" value="<%= user.pas %>">
                     </div>
                 </div>
 
@@ -99,7 +117,7 @@
             </div>
         </div>
 
-        <% if (groups.length) { %>
+        <% if (!req.session.UserAP.isAdministrator && groups.length) { %>
             <h2><%= __("User groups") %></h2>
             <div class="clr-row">
                 <div class="clr-col-sm-12 clr-col-md-6">

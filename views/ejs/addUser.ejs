@@ -63,6 +63,15 @@
                     </div>
                 <% } %>
 
+                <% if (req.session.UserAP.isAdministrator) { %>
+                    <div class="admin-panel__widget">
+                        <div class="clr-checkbox-inline">
+                            <label class="admin-panel__title" for="isAdmin"><%= __("Is Administrator") %></label>
+                            <input type="checkbox" id="isAdmin" name="isAdmin">
+                        </div>
+                    </div>
+                <% } %>
+
 
             </div>
         </div>
@@ -87,7 +96,7 @@
             </div>
         </div>
 
-        <% if (groups.length) { %>
+        <% if (!req.session.UserAP.isAdministrator && groups.length) { %>
             <h2><%= __("User groups") %></h2>
             <div class="clr-row">
                 <div class="clr-col-sm-12 clr-col-md-6">

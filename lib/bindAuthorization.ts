@@ -4,40 +4,53 @@ import UserAP from "../models/UserAP";
 
 export default async function bindAuthorization() {
 
-    let config: AdminpanelConfig = sails.config.adminpanel;
-    let adminData;
-    if (config.administrator) {
-        adminData = config.administrator;
-    } else {
-        let password = getRandomInt(1000000000000, 9999999999999)
-        adminData = {
-            login: "admin",
-            password: `${password}`
-        }
-    }
-
-    // This code is only for single administrator, should be rewritten for multiple
+    let admins;
     try {
-        await UserAP.destroy({isAdministrator: true});
-        await UserAP.create({login: adminData.login, password: adminData.password, fullName: "Administrator",
-            isActive: true, isAdministrator: true});
+        admins = await UserAP.find({isAdministrator: true});
     } catch (e) {
-        sails.log.error("Could not create administrator profile", e)
+        sails.log.error("Error trying to find administrator", e)
         return;
     }
 
-    console.log("------------------------------------------------------------")
-    console.group("Administrator credentials")
-
-    let peoples = [
-        {
-            fullName: "Administrator",
-            login: adminData.login,
-            password: adminData.password
+    let adminsCredentials = [];
+    // if we have administrator profiles
+    if (admins && admins.length) {
+        for (let admin of admins) {
+            adminsCredentials.push({
+                fullName: admin.fullName,
+                login: admin.login,
+                password: admin.password
+            })
         }
-    ];
+    } else { // try to create one if we don't
+        let config: AdminpanelConfig = sails.config.adminpanel;
+        let adminData;
 
-    console.table(peoples);
+        if (config.administrator && config.administrator.login && config.administrator.password) {
+            adminData = config.administrator;
+        } else {
+            let password = getRandomInt(1000000000000, 9999999999999)
+            adminData = {
+                login: "admin",
+                password: `${password}`
+            }
+        }
+
+        try {
+            await UserAP.create({login: adminData.login, password: adminData.password, fullName: "Administrator",
+                isActive: true, isAdministrator: true});
+        } catch (e) {
+            sails.log.error("Could not create administrator profile", e)
+            return;
+        }
+
+        adminsCredentials.push(adminData)
+    }
+
+    console.log("------------------------------------------------------------")
+    console.group("Administrators credentials")
+
+    console.table(adminsCredentials);
 
     console.groupEnd()
 

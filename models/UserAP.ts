@@ -7,6 +7,7 @@
 import WaterlineModel from "../interfaces/waterlineModel";
 import WaterlineInstance from "../interfaces/waterlineInstance";
 import GroupAP from "./GroupAP";
+import {password} from "../assets/handsontable";
 
 let passwordHash = require('password-hash');
 
