@@ -25,9 +25,25 @@ if (sails.config.adminpanel.auth) {
 
 
 ## Users and Groups
-In instance `Users` admin can create user profiles and give them specific access rights by adding them to `Groups`.
+In instance `Users` admin or someone who has access can create user profiles and give them specific access rights by adding them to `Groups`.
 `Groups` represent lists of rights tokens, and you can choose which ones you want to add to this group.
 After adding tokens to the groups you can add user to specific group and this user will have access rights that
 you set to this group.
 
 To do this, go to adminpanel app and in left navbar choose Users and Groups departments.
+
+## Administrator
+
+Add default administrator credentials in adminpanel config. If no admin profiles
+will be found, adminpanel will create admin profile with this credentials.
+If credentials in config will not be found, adminpanel will create admin with
+login `admin` and numeric password that will be displayed in console.
+
+```javascript
+module.exports.adminpanel = {
+    administrator: {
+        login: 'string',
+        password: 'string'
+    }
+}
+```

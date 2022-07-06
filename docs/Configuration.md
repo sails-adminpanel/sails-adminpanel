@@ -441,7 +441,8 @@ This configuration loads all sail models as they are. Just place  in `config\adm
         path: string // Relative path from project root to translations folder
         defaultLocale: string // Default locale
     }
-    administrator: { // Prime administrator login credentials
+    // default administrator login credentials, will be used if no admin profiles found
+    administrator: {
         login: string
         password: string
     }
