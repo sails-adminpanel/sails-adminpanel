@@ -17,7 +17,7 @@ module.exports.adminpanel = {
                 avatar: {
                     type: 'json',
                     widget: 'FilesUploader', // type of widget
-                    FilesUploader: { // widget configuration
+                    options: { // widget configuration
                         filesize: 2, 
                         accepted: ['pdf', 'avi']
                     }
@@ -35,7 +35,7 @@ File uploader widget save files in `.tmp/public/admin/uploads/modelName/fieldNam
 ### Files Uploader
 Provides widget for upload a many files. You can change order, add and remove files uses this widget. 
 ```metadata json
-FilesUploader: { 
+options: { 
     filesize: number,  // max size of file in Mb, by default 1
     accepted: string[] // accepted extensions for upload
 }
@@ -50,7 +50,7 @@ Config is like `Files Uploader `
 Provides widget for upload a many images. Save image and a few resize. Default resize is small and large. You can add your own resize.
 
 ```metadata json
-GalleryUploader: { 
+options: { 
     filesize: number,  // max size of file in Mb, by default 1
     accepted: string[], // accepted extensions for upload
     small: number, // size of thumbl version of image
@@ -129,7 +129,7 @@ module.exports.adminpanel = {
             add: {
                 photos: {
                     widget: 'GalleryUploader',
-                    GalleryUploader: {
+                    options: {
                         preview: 'photosPreview'
                     }
                 }
