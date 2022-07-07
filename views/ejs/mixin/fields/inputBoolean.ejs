@@ -1,6 +1,10 @@
 
 <div class="checkbox-row">
-    <input type="checkbox" id="form-<%= key %>" name="<%= key %>" value="<%= value && 1 || 0 %> <%= field.config.disabled && 'disabled' || ''%>  <%= field.config.required && 'required' || ''%> style="width: auto;">
+    <% if (value) { %>
+        <input type="checkbox" id="form-<%= key %>" name="<%= key %>" value="<%= value && 1 || 0 %> <%= field.config.disabled && 'disabled' || ''%>  <%= field.config.required && 'required' || ''%> style="width: auto;" checked>
+    <% } else { %>
+        <input type="checkbox" id="form-<%= key %>" name="<%= key %>" value="<%= value && 1 || 0 %> <%= field.config.disabled && 'disabled' || ''%>  <%= field.config.required && 'required' || ''%> style="width: auto;">
+    <% } %>
     <label for="form-<%= key %>"></label>
 </div>
 
