@@ -13,7 +13,7 @@
     let label<%=key%>;
 
     <% if (!field.config.required) { %>
-        options<%=key%>.push({label: "--- Select please ---", value: ""})
+        options<%=key%>.push({label: "--- Nothing selected ---", value: "null"})
     <% } %>
 
     <% if (field.config.records && field.config.records.length) { %>
@@ -34,11 +34,13 @@
         options<%=key%>.push({label: "--- No records found ---", value: ""})
     <% } %>
 
+    console.log(options<%=key%>[0])
+
     let <%=key%> = new SelectPure(".selectPure-<%= key %>", {
         options: options<%=key%>,
         autocomplete: true,
         value: selectedOption<%=key%>,
-        icon: "la la-times",
+        icon: "glyphicon glyphicon-remove",
         onChange: function(value) {
             $('#form-<%= key %>').val(value)
         }

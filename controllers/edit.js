@@ -9,6 +9,7 @@ async function edit(req, res) {
     if (!req.param('id')) {
         return res.notFound();
     }
+    console.log("REQ", req.body);
     let instance = adminUtil_1.AdminUtil.findInstanceObject(req);
     if (!instance.model) {
         return res.notFound();
@@ -54,7 +55,23 @@ async function edit(req, res) {
                     }
                 }
             }
-            if (fields[prop] && fields[prop].model && fields[prop].model.type === 'association-many' && reqData[prop] !== '') {
+            // delete whitespace characters from association-many and association
+            if (fields[prop] && fields[prop].model && (fields[prop].model.type === 'association-many' || fields[prop].model.type === 'association')) {
+                if (reqData[prop]) {
+                    // delete whitespace characters
+                    reqData[prop] = reqData[prop].replace(/(\r\n|\n|\r|\s{2,})/gm, "");
+                    // set 'null' if empty string after deleting whitespace characters, because we can't give empty string or null as value
+                    if (!reqData[prop]) {
+                        reqData[prop] = "null";
+                    }
+                }
+                else {
+                    // set null if empty string
+                    reqData[prop] = "null";
+                }
+            }
+            // split string for association-many
+            if (fields[prop] && fields[prop].model && fields[prop].model.type === 'association-many' && reqData[prop]) {
                 reqData[prop] = reqData[prop].split(",");
             }
         }
