@@ -15,20 +15,21 @@ module.exports.adminpanel = {
         pages: {
             title: 'Pages', 
             model: 'Page',
-
-            datatable: {
-                title: "Spreadsheet",
-                type: "table",
-                options: {
-                    rowHeaders: true,
-                    colHeaders: true,
-                    height: 'auto',
-                    contextMenu: true,
-                    manualRowMove: true,
-                    language: 'pl-PL',
-                    licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
-                }
-            },
+            fields: {
+                datatable: {
+                    title: "Spreadsheet",
+                    type: "table",
+                    options: {
+                        rowHeaders: true,
+                        colHeaders: true,
+                        height: 'auto',
+                        contextMenu: true,
+                        manualRowMove: true,
+                        language: 'pl-PL',
+                        licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
+                    }
+                },
+            }
         }
     }
 }
