@@ -32,8 +32,6 @@
         options<%=key%>.push({label: "--- No records found ---", value: ""})
     <% } %>
 
-    console.log(options<%=key%>[0])
-
     let <%=key%> = new SelectPure(".selectPure-<%= key %>", {
         options: options<%=key%>,
         autocomplete: true,
