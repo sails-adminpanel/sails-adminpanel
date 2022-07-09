@@ -27,6 +27,7 @@
                 var aceCounter = 0;
                 let editor = [];
                 let textarea = [];
+                var tables = {};
             </script>
 
             <% Object.keys(fields).forEach(function(key) { %>
@@ -71,6 +72,16 @@
                     return false;
                 }
             };
+
+            for (var id in tables) {
+                try {
+                    var table = tables[id].getData().map((item) => {return [null].concat(item)});
+                    $('#form-' + id).val(JSON.stringify(table));
+                } catch (e) {
+                    alert('Table is invalid!');
+                    return false;
+                }
+            }
             document.getElementById('form').submit();
         }
     </script>

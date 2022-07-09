@@ -27,17 +27,8 @@
     <% } %>
 
     let options<%=key%> = <%- JSON.stringify(field.config.options) %>;
-    let <%=key%> = new Handsontable(container<%=key%>, {
+    tables['<%= key %>'] = new Handsontable(container<%=key%>, {
         data: data<%=key%>,
-        ...options<%=key%>,
-        afterChange: function (change, source) {
-            if (source === 'loadData') {
-                return; //don't save this change
-            }
-
-            <%# for correct saving data%>
-            let table = <%=key%>.getData().map((item) => {return [null].concat(item)})
-            $('#form-<%= key %>').val(JSON.stringify(table));
-        }
+        ...options<%=key%>
     });
 </script>
