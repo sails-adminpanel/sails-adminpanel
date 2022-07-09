@@ -13,7 +13,13 @@
 
 <script>
 
-    let data<%=key%> =  JSON.parse(document.getElementById('form-<%= key %>').value);
+    let data<%=key%> = document.getElementById('form-<%= key %>').value;
+    if (data<%=key%>) {
+        data<%=key%> = JSON.parse(data<%=key%>)
+    } else {
+        data<%=key%> = []
+    }
+
     let container<%=key%> = document.getElementById('handsontable-<%= key %>');
 
     <% if (!field.config.options.language && sails.config.adminpanel.translation && sails.config.adminpanel.translation.defaultLocale) { %>
@@ -29,12 +35,8 @@
                 return; //don't save this change
             }
 
-            let table = JSON.parse(document.getElementById('form-<%= key %>').value);
-            if (!table) {
-                table = Array(5).fill("").map(() => Array(5).fill(""))
-            }
-
-            table[change[0][0]][change[0][1]] = change[0][3];
+            <%# for correct saving data%>
+            let table = <%=key%>.getData().map((item) => {return [null].concat(item)})
             $('#form-<%= key %>').val(JSON.stringify(table));
         }
     });
