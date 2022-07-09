@@ -6,7 +6,7 @@
             <%= field.config.required && 'required' %>
             <%= field.config.disabled && 'disabled'%>
             value="<%= value || '' %>"
-            name="<%= key %>"></input>
+            name="<%= key %>">
 <% } else { %>
     <%
     var fieldType = 'text'
@@ -55,7 +55,7 @@
                 <%= field.config.required && 'required' %>
                 <%= field.config.disabled && 'disabled'%>
                 value="<%= value || '' %>"
-                name="<%= key %>"></input>
+                name="<%= key %>">
         <br/>
     </div>
 <% } %>
