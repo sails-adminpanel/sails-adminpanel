@@ -3,9 +3,7 @@
         <%= field.config.required && 'required' %>
         <%= field.config.disabled && 'disabled'%>
         name="<%= key %>"
-        id="form-<%= key %>">
-    <%=value%>
-</textarea>
+        id="form-<%= key %>"><%=value%></textarea>
 <div id="ace-<%= key %>"><%=value%></div>
 <script>
     $(`#form-<%= key %>`).hide();

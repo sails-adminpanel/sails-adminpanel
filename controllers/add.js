@@ -39,6 +39,16 @@ async function add(req, res) {
                     }
                 }
             }
+            // delete whitespace characters from association-many and association
+            if (fields[prop] && fields[prop].model && (fields[prop].model.type === 'association-many' || fields[prop].model.type === 'association')) {
+                if (!reqData[prop]) {
+                    reqData[prop] = "null";
+                }
+            }
+            // split string for association-many
+            if (fields[prop] && fields[prop].model && fields[prop].model.type === 'association-many' && reqData[prop]) {
+                reqData[prop] = reqData[prop].split(",");
+            }
         }
         // callback before save instance
         let instanceAdd = instance.config.add;

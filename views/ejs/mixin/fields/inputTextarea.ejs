@@ -2,7 +2,5 @@
     <%= field.config.required && 'required' %>
         <%= field.config.disabled && 'disabled'%>
     name="<%= key %>"
-          id="form-<%= key %>">
-    <%= field.config.type == 'json' && typeof value === 'object' ? JSON.stringify(value) : (value || '') %>
-</textarea>
+          id="form-<%= key %>"><%= field.config.type == 'json' && typeof value === 'object' ? JSON.stringify(value) : (value || '') %></textarea>
 
