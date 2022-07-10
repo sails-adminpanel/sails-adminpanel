@@ -4,8 +4,10 @@ You can add forms when you have no need to create an instance. For example, for
 single block on page that will not be repeated. Or like a link with model settings.
 
 You can add forms directly to adminpanel configuration or put them in files with
-`.json` extension which should be named as form slug. Path to folder with this
-forms you should write down in `path` field
+`.json` extension which should be named as form slug. Put your forms in 
+`.tmp/forms` directory or write down your custom path in `path` field.
+Notice that if `.tmp/forms` folder exists, forms from custom path will not be used.
+After change forms will be saved in `.tmp/forms`.
 
 ```javascript
 module.exports.adminpanel = {
