@@ -7,7 +7,7 @@ export class FormHelper {
     public static async update(slug: string, data: object): Promise<void> {
         // custom setter
         if (sails.config.adminpanel.generator.set) {
-            return sails.config.adminpanel.generator.set(slug, data);
+            return await sails.config.adminpanel.generator.set(slug, data);
         }
 
         for (let field in data) {
@@ -21,12 +21,12 @@ export class FormHelper {
         this.updateFormFile(`${process.cwd()}/.tmp/forms`, slug, this._forms[slug])
     }
 
-    public static get(slug: string): object {
+    public static async get(slug: string): Promise<object> {
         let form = {};
 
         // custom getter
         if (sails.config.adminpanel.generator.get) {
-            form = sails.config.adminpanel.generator.get(slug)
+            form = await sails.config.adminpanel.generator.get(slug)
             return form;
         }
 
