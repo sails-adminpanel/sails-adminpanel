@@ -17,7 +17,7 @@ export default async function form(req, res) {
         }
     }
 
-    let formData = FormHelper.get(slug);
+    let formData = await FormHelper.get(slug);
 
     if (!formData) {
         return res.status(404).send("Adminpanel > Form not found")

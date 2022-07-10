@@ -16,7 +16,7 @@ async function form(req, res) {
             return res.sendStatus(403);
         }
     }
-    let formData = formHelper_1.FormHelper.get(slug);
+    let formData = await formHelper_1.FormHelper.get(slug);
     if (!formData) {
         return res.status(404).send("Adminpanel > Form not found");
     }
