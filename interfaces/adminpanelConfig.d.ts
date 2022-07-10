@@ -107,6 +107,10 @@ export interface InstanceConfig {
      * */
     model: string
     /**
+     * Hide instance in left navbar
+     * */
+    hide: boolean
+    /**
      * Instance fields configuration
      * */
     fields?: Fields

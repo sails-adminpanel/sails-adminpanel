@@ -156,10 +156,26 @@ module.exports.adminpanel = {
 }
 ```
 
+## Hide instance
+
+You can hide instance from left navbar using `hide` option.
+
+```javascript
+module.exports.adminpanel = {
+    instances: {
+        users: {
+            title: 'Users', // Menu title for instance
+            model: 'User', // Model definition for instance
+            hide: true
+        }
+    }
+}
+```
+
 ## Ignored fields
 You could add ignored fields to action using `fields` config option.
 
-```
+```javascript
 module.exports.adminpanel = {
     instances: {
         users: {
@@ -206,7 +222,7 @@ You can overwrite `isIn` title using fields configurations:
 Example:
 
 Your model:
-```
+```javascript
 module.exports = {
     attributes: {
         gender: {
@@ -218,8 +234,8 @@ module.exports = {
 };
 ```
 
-You admin panel configuration:
-```
+Your admin panel configuration:
+```javascript
 module.exports.adminpanel = {
     instances: {
         users: {
@@ -306,6 +322,7 @@ This configuration loads all sail models as they are. Just place  in `config\adm
         [key:string]: {
             title: string
             model: string // Model name
+            hide: boolean // Hide instance in left navbar
             fields: {
                 [key: string]: {
                     title: string
@@ -446,6 +463,11 @@ This configuration loads all sail models as they are. Just place  in `config\adm
         login: string
         password: string
     }
+    // generator
+    generator: {
+        path: string
+        forms: object
+    }
     // Enable/disable displaying createdAt and updatedAt fields in `edit` and `add` sections
     showORMtime: boolean
     package: any // Adminpanel package.json config
@@ -461,5 +483,5 @@ This configuration loads all sail models as they are. Just place  in `config\adm
 
 string, password, date, datetime, time, integer, number, float, color, email, month, week,
 range, boolean, binary, text, longtext, mediumtext, ckeditor, wysiwyg, texteditor, word,
-jsoneditor, json, array, object, ace, html, xml, aceeditor, image, images, file, files,
+jsoneditor, json, array, object, ace, html, xml, aceeditor, image, images, file, files, table
 menu, navigation, schedule, worktime, association, "association-many", select, select-pure

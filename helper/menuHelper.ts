@@ -173,22 +173,24 @@ export class MenuHelper {
         }
         if (MenuHelper.config.instances) {
             Object.entries<InstanceConfig>(MenuHelper.config.instances).forEach(function([key, val]) {
-                if (val.tools && val.tools.length > 0 && val.tools[0].id !== "overview") {
-                    val.tools.unshift({
-                        id: "overview",
+                if (!val.hide) {
+                    if (val.tools && val.tools.length > 0 && val.tools[0].id !== "overview") {
+                        val.tools.unshift({
+                            id: "overview",
+                            link: MenuHelper.config.routePrefix + '/' + key,
+                            title: 'Overview',
+                            icon: "list"
+                        })
+                    }
+                    menus.push({
                         link: MenuHelper.config.routePrefix + '/' + key,
-                        title: 'Overview',
-                        icon: "list"
-                    })
+                        title: val.title,
+                        icon: val.icon || null,
+                        actions: val.tools || null,
+                        id: val.title.replace(" ","_"),
+                        instanceName: key
+                    });
                 }
-                menus.push({
-                    link: MenuHelper.config.routePrefix + '/' + key,
-                    title: val.title,
-                    icon: val.icon || null,
-                    actions: val.tools || null,
-                    id: val.title.replace(" ","_"),
-                    instanceName: key
-                });
             });
         }
 
