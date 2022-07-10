@@ -467,6 +467,8 @@ This configuration loads all sail models as they are. Just place  in `config\adm
     generator: {
         path: string
         forms: object
+        get: Function
+        set: Function
     }
     // Enable/disable displaying createdAt and updatedAt fields in `edit` and `add` sections
     showORMtime: boolean

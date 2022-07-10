@@ -65,6 +65,8 @@ export interface AdminpanelConfig {
      * */
     generator?: {
         path: string
+        get: Function
+        set: Function
         forms?: {
             [key:string]: Fields
         }
