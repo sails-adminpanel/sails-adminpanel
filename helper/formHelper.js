@@ -5,6 +5,7 @@ const path = require("path");
 const fs = require("fs");
 class FormHelper {
     static async update(slug, data) {
+        // custom setter
         if (sails.config.adminpanel.generator.set) {
             return sails.config.adminpanel.generator.set(slug, data);
         }
@@ -19,13 +20,15 @@ class FormHelper {
         this.updateFormFile(`${process.cwd()}/.tmp/forms`, slug, this._forms[slug]);
     }
     static get(slug) {
+        let form = {};
+        // custom getter
+        if (sails.config.adminpanel.generator.get) {
+            form = sails.config.adminpanel.generator.get(slug);
+            return form;
+        }
         if (!this._forms[slug]) {
             return;
         }
-        if (sails.config.adminpanel.generator.get) {
-            return sails.config.adminpanel.generator.get(slug);
-        }
-        let form = {};
         for (let field in this._forms[slug]) {
             form[field] = this._forms[slug][field];
             if (process.env[`${slug}_${field}`]) {
