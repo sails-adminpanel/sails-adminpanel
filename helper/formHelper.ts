@@ -5,8 +5,8 @@ export class FormHelper {
     private static _forms = sails.config.adminpanel.generator ? sails.config.adminpanel.generator.forms : null;
 
     public static async update(slug: string, data: object): Promise<void> {
-        if (this._forms[slug].setter) {
-            return this._forms[slug].setter(slug, data)
+        if (sails.config.adminpanel.generator.set) {
+            return sails.config.adminpanel.generator.set(slug, data);
         }
 
         for (let field in data) {
@@ -25,8 +25,8 @@ export class FormHelper {
             return
         }
 
-        if (this._forms[slug].getter) {
-            return this._forms[slug].getter(slug)
+        if (sails.config.adminpanel.generator.get) {
+            return sails.config.adminpanel.generator.get(slug)
         }
 
         let form = {};
