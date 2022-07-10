@@ -17,7 +17,7 @@ export class FormHelper {
             }
         }
 
-        this.updateFormFile(`${process.cwd()}/${sails.config.adminpanel.generator.path}`, slug, this._forms[slug])
+        this.updateFormFile(`${process.cwd()}/.tmp/forms`, slug, this._forms[slug])
     }
 
     public static get(slug: string): object {
