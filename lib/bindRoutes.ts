@@ -75,6 +75,8 @@ export default function bindRoutes() {
      * Edit form
      * */
     sails.router.bind(`${config.routePrefix}/form/:slug`, _bindPolicies(policies, _form));
+    // upload files to form
+    sails.router.bind(`${config.routePrefix}/form/:slug/upload`, _bindPolicies(policies, _upload));
 
     if (Boolean(config.dashboard)) {
         sails.router.bind(config.routePrefix, _bindPolicies(policies, _dashboard));

@@ -224,7 +224,8 @@ export class AdminUtil {
             name: instanceName,
             config: instanceConfig,
             model: instanceModel,
-            uri: instanceUri
+            uri: instanceUri,
+            type: "model"
         };
     }
 }
