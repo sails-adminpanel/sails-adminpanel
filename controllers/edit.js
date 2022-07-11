@@ -9,7 +9,6 @@ async function edit(req, res) {
     if (!req.param('id')) {
         return res.notFound();
     }
-    console.log("REQ", req.body);
     let entity = adminUtil_1.AdminUtil.findEntityObject(req);
     if (!entity.model) {
         return res.notFound();

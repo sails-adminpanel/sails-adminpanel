@@ -21,7 +21,7 @@ export default async function(req, res) {
     }
 
     if (req.method.toUpperCase() === 'POST') {
-        console.log(req.body);
+        // console.log(req.body);
 
         let userGroups = [];
         for (let key in req.body) {
@@ -50,7 +50,7 @@ export default async function(req, res) {
             req.session.messages.adminError.push(e.message || 'Something went wrong...');
         }
 
-        console.log(user)
+        // console.log(user)
     }
 
     return res.viewAdmin("addUser", { entity: entity, groups: groups });

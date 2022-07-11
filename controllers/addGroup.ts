@@ -28,7 +28,7 @@ export default async function addGroup(req, res) {
     }
 
     if (req.method.toUpperCase() === 'POST') {
-        console.log(req.body);
+        // console.log(req.body);
 
         let allTokens = AccessRightsHelper.getTokens();
 
@@ -64,7 +64,7 @@ export default async function addGroup(req, res) {
             req.session.messages.adminError.push(e.message || 'Something went wrong...');
         }
 
-        console.log(group)
+        // console.log(group)
     }
 
     return res.viewAdmin("addGroup", { entity: entity, users: users, groupedTokens: groupedTokens });

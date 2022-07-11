@@ -34,7 +34,7 @@ async function default_1(req, res) {
     }
     let reloadNeeded = false;
     if (req.method.toUpperCase() === 'POST') {
-        console.log(req.body);
+        // console.log(req.body);
         let userGroups = [];
         for (let key in req.body) {
             if (key.startsWith("group-checkbox-") && req.body[key] === "on") {

@@ -134,8 +134,11 @@ export class AdminUtil {
      */
     public static findEntityName(req): string {
       if (!req.param('entityName')) {
+          let entityType = req.originalUrl.split('/')[2];
           let entityName = req.originalUrl.split('/')[3];
-          if (!this.config().models || !this.config().models[entityName]) {
+          if (entityType === "form" && (!this.config().forms || !this.config().forms.data || !this.config().forms.data[entityName])) {
+              return null
+          } else if (entityType === "model" && (!this.config().models || !this.config().models[entityName])) {
               return null;
           } else {
               return entityName

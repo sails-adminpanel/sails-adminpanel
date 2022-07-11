@@ -18,8 +18,8 @@ module.exports.adminpanel = {
         path: 'wont be used',
         defaultLocale: 'en'
     },
-    generator: {
+    forms: {
         path: '../datamocks/forms',
-        forms: forms
+        data: forms
     }
 }

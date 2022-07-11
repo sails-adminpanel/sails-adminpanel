@@ -50,7 +50,7 @@ async function remove(req, res) {
         }
         return res.notFound();
     }
-    console.log('admin > remove > record > ', record);
+    // console.log('admin > remove > record > ', record);
     let destroyedRecord;
     try {
         destroyedRecord = await entity.model.destroyOne(record[entity.config.identifierField || req._sails.config.adminpanel.identifierField]);

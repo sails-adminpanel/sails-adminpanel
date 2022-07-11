@@ -39,7 +39,7 @@ async function editGroup(req, res) {
     }
     let reloadNeeded = false;
     if (req.method.toUpperCase() === 'POST') {
-        console.log(req.body);
+        // console.log(req.body);
         let allTokens = accessRightsHelper_1.AccessRightsHelper.getTokens();
         let usersInThisGroup = [];
         let tokensOfThisGroup = [];
@@ -88,7 +88,7 @@ async function editGroup(req, res) {
             sails.log.error(e);
         }
     }
-    console.log("GROUP", group);
+    // console.log("GROUP", group)
     return res.viewAdmin("editGroup", { entity: entity, group: group, users: users, groupedTokens: groupedTokens });
 }
 exports.default = editGroup;

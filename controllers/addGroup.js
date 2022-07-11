@@ -25,7 +25,7 @@ async function addGroup(req, res) {
         groupedTokens[department] = accessRightsHelper_1.AccessRightsHelper.getTokensByDepartment(department);
     }
     if (req.method.toUpperCase() === 'POST') {
-        console.log(req.body);
+        // console.log(req.body);
         let allTokens = accessRightsHelper_1.AccessRightsHelper.getTokens();
         let usersInThisGroup = [];
         let tokensOfThisGroup = [];
@@ -57,7 +57,7 @@ async function addGroup(req, res) {
             sails.log.error(e);
             req.session.messages.adminError.push(e.message || 'Something went wrong...');
         }
-        console.log(group);
+        // console.log(group)
     }
     return res.viewAdmin("addGroup", { entity: entity, users: users, groupedTokens: groupedTokens });
 }

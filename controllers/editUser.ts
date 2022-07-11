@@ -36,7 +36,7 @@ export default async function(req, res) {
 
     let reloadNeeded = false;
     if (req.method.toUpperCase() === 'POST') {
-        console.log(req.body);
+        // console.log(req.body);
 
         let userGroups = [];
         for (let key in req.body) {

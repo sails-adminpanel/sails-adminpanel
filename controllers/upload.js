@@ -5,7 +5,7 @@ const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 const Jimp = require('jimp');
 // !TODO for images resizing need usage parameters to get request cat.jpg?150. It makes image inscribed in square 150*150px
 function upload(req, res) {
-    console.log('admin > upload');
+    // console.log('admin > upload');
     let entity = adminUtil_1.AdminUtil.findEntityObject(req);
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {

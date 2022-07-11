@@ -15,19 +15,19 @@ describe('Form test', function () {
     })
 
     it("Reading from file works", function () {
-        let formFromFile = require("../datamocks/forms/exampleFromFile.json");
-        expect("exampleFromFile" in sails.config.adminpanel.forms.data).to.be.true;
-        expect(sails.config.adminpanel.forms.data.exampleFromFile).to.equal(formFromFile);
+        let formFromFile = require("../datamocks/forms/testForm.json");
+        expect("testForm" in sails.config.adminpanel.forms.data).to.be.true;
+        expect(sails.config.adminpanel.forms.data.testForm).to.equal(formFromFile);
     })
 
     it("Writing to file works", function () {
         chai.request(process.env.HTTP_TEST_LOCALHOST)
-            .post(`${process.env.BASE_ROUTE}/form/exampleFromFile`)
+            .post(`${process.env.BASE_ROUTE}/form/testForm`)
             .send({label: "Label123"})
             .end(function (err, res) {
                 expect(err).to.be.null;
-                let formFromFile = require("../datamocks/forms/exampleFromFile.json");
-                expect(formFromFile.label.value).to.equal("Label123")
+                let formFromFile = require("../fixture/.tmp/adminpanel_file_storage.json");
+                expect(formFromFile['testForm-label']).to.equal("Label123")
             })
     })
 })

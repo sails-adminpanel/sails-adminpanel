@@ -10,8 +10,6 @@ export default async function edit(req, res) {
         return res.notFound();
     }
 
-    console.log("REQ", req.body)
-
     let entity = AdminUtil.findEntityObject(req);
     if (!entity.model) {
         return res.notFound();
