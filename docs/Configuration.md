@@ -463,10 +463,10 @@ This configuration loads all sail models as they are. Just place  in `config\adm
         login: string
         password: string
     }
-    // generator
-    generator: {
+    // forms
+    forms: {
         path: string
-        forms: object
+        data: object
         get: Function
         set: Function
     }
