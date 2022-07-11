@@ -3,7 +3,7 @@ import {ModelConfig} from "./adminpanelConfig";
 
 export interface Entity {
     name: string
-    config: ModelConfig
+    config?: ModelConfig
     model?: ORMModel
     uri: string
     type: string

@@ -19,7 +19,7 @@ export default function bindResView() {
             let routeSplit = req.route.path.split('/');
             let viewName = routeSplit.pop();
             // :entity = list
-            if (viewName === ':entity') {
+            if (viewName === ':entityName') {
                 viewName = 'list';
             }
             // for id we need not last name
@@ -38,7 +38,7 @@ export default function bindResView() {
             let locals = arguments[1];
             let cb_view = arguments[2];
 
-            
+
 
             if (typeof arguments[0] === "object" && arguments[0] !== null) {
                 locals = arguments[0];

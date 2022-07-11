@@ -20,8 +20,15 @@ export default function bindRoutes() {
     let config = sails.config.adminpanel;
     let policies = config.policies || '';
 
+    /**
+     * Edit form
+     * */
+    sails.router.bind(`${config.routePrefix}/form/:slug`, _bindPolicies(policies, _form));
+    // upload files to form
+    sails.router.bind(`${config.routePrefix}/form/:slug/upload`, _bindPolicies(policies, _upload));
+
     //Create a base entity route
-    let baseRoute = config.routePrefix + '/:entity';
+    let baseRoute = config.routePrefix + '/:entityType/:entityName';
 
     /**
      * List of records
@@ -29,25 +36,25 @@ export default function bindRoutes() {
     sails.router.bind(baseRoute, _bindPolicies(policies, _list));
 
     if (config.models) {
-        for (let entity of Object.keys(config.models)) {
+        for (let model of Object.keys(config.models)) {
             /**
              * Create new record
              */
-            if (config.models[entity].add && config.models[entity].add.controller) {
-                let controller = require(config.models[entity].add.controller);
-                sails.router.bind(`${config.routePrefix}/${entity}/add`, _bindPolicies(policies, controller.default));
+            if (config.models[model].add && config.models[model].add.controller) {
+                let controller = require(config.models[model].add.controller);
+                sails.router.bind(`${config.routePrefix}/model/${model}/add`, _bindPolicies(policies, controller.default));
             } else {
-                sails.router.bind(`${config.routePrefix}/${entity}/add`, _bindPolicies(policies, _add));
+                sails.router.bind(`${config.routePrefix}/model/${model}/add`, _bindPolicies(policies, _add));
             }
 
             /**
              * Edit existing record
              */
-            if (config.models[entity].edit && config.models[entity].edit.controller) {
-                let controller = require(config.models[entity].edit.controller);
-                sails.router.bind(`${config.routePrefix}/${entity}/edit/:id`, _bindPolicies(policies, controller.default));
+            if (config.models[model].edit && config.models[model].edit.controller) {
+                let controller = require(config.models[model].edit.controller);
+                sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, _bindPolicies(policies, controller.default));
             } else {
-                sails.router.bind(`${config.routePrefix}/${entity}/edit/:id`, _bindPolicies(policies, _edit));
+                sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, _bindPolicies(policies, _edit));
             }
         }
     }
@@ -70,13 +77,6 @@ export default function bindRoutes() {
      * Create a default dashboard
      * @todo define information that should be shown here
      */
-
-    /**
-     * Edit form
-     * */
-    sails.router.bind(`${config.routePrefix}/form/:slug`, _bindPolicies(policies, _form));
-    // upload files to form
-    sails.router.bind(`${config.routePrefix}/form/:slug/upload`, _bindPolicies(policies, _upload));
 
     if (Boolean(config.dashboard)) {
         sails.router.bind(config.routePrefix, _bindPolicies(policies, _dashboard));

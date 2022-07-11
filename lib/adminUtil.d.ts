@@ -54,6 +54,13 @@ export declare class AdminUtil {
      */
     static getModel(name: string): ORMModel;
     /**
+     * Get entity type
+     *
+     * @param {Request} req
+     * @returns {?string}
+     */
+    static findEntityType(req: any): string;
+    /**
      * Get entity name
      *
      * @param {Request} req

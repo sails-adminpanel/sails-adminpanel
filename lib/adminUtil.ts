@@ -109,21 +109,39 @@ export class AdminUtil {
     }
 
     /**
+     * Get entity type
+     *
+     * @param {Request} req
+     * @returns {?string}
+     */
+    public static findEntityType(req): string {
+        if (!req.param('entityType')) {
+            let entityType = req.originalUrl.split('/')[2];
+            if (!["form", "model", "wizard"].includes(entityType)) {
+                return null;
+            } else {
+                return entityType
+            }
+        }
+        return req.param('entityType');
+    };
+
+    /**
      * Get entity name
      *
      * @param {Request} req
      * @returns {?string}
      */
     public static findEntityName(req): string {
-      if (!req.param('entity')) {
-          let entityName = req.originalUrl.split('/')[2];
+      if (!req.param('entityName')) {
+          let entityName = req.originalUrl.split('/')[3];
           if (!this.config().models || !this.config().models[entityName]) {
               return null;
           } else {
               return entityName
           }
       }
-      return req.param('entity');
+      return req.param('entityName');
     };
 
     /**
@@ -217,15 +235,17 @@ export class AdminUtil {
      */
     public static findEntityObject(req): Entity {
         let entityName = this.findEntityName(req);
-        let ModelConfig = this.findModelConfig(req, entityName);
-        let entityModel = this.findModel(req, ModelConfig);
-        let entityUri = this.config().routePrefix + '/' + entityName;
-        return {
+        let entityType = this.findEntityType(req);
+        let entityUri = `${this.config().routePrefix}/${entityType}/${entityName}`;
+        let entity: Entity = {
             name: entityName,
-            config: ModelConfig,
-            model: entityModel,
             uri: entityUri,
-            type: "model"
+            type: entityType
         };
+        if (entityType === "model") {
+            entity.config = this.findModelConfig(req, entityName);
+            entity.model = this.findModel(req, entity.config);
+        }
+        return entity;
     }
 }

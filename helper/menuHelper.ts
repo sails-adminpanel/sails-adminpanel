@@ -177,13 +177,13 @@ export class MenuHelper {
                     if (val.tools && val.tools.length > 0 && val.tools[0].id !== "overview") {
                         val.tools.unshift({
                             id: "overview",
-                            link: MenuHelper.config.routePrefix + '/' + key,
+                            link: MenuHelper.config.routePrefix + '/model/' + key,
                             title: 'Overview',
                             icon: "list"
                         })
                     }
                     menus.push({
-                        link: MenuHelper.config.routePrefix + '/' + key,
+                        link: MenuHelper.config.routePrefix + '/model/' + key,
                         title: val.title,
                         icon: val.icon || null,
                         actions: val.tools || null,
