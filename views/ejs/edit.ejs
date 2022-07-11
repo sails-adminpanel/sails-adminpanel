@@ -24,7 +24,7 @@
                 Скрыть
                 <i class="las la-eye-slash"></i>
             </button> -->
-            <% if (entity.config.remove && havePermission(`delete-${entity.name}-entity`, req.session.UserAP)) { %>
+            <% if (entity.config.remove && havePermission(`delete-${entity.name}-model`, req.session.UserAP)) { %>
                 <a href="<%= entity.uri %>/remove/<%= record[idField] %>" onclick="return confirm('<%= __('Are you sure?') %>')">
                     <button class="btn-nav">
                     <%= __("Delete") %>

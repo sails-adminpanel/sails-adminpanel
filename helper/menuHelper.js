@@ -46,60 +46,60 @@ class MenuHelper {
     /**
      * Check if global actions buttons added to action
      *
-     * @param {Object} entityConfig
+     * @param {Object} ModelConfig
      * @param {string=} [action] Defaults to `list`
      * @returns {boolean}
      */
-    hasGlobalActions(entityConfig, action) {
+    hasGlobalActions(ModelConfig, action) {
         action = action || 'list';
-        if (!entityConfig[action] || !entityConfig[action].actions || !entityConfig[action].actions.global) {
+        if (!ModelConfig[action] || !ModelConfig[action].actions || !ModelConfig[action].actions.global) {
             return false;
         }
-        let actions = entityConfig[action].actions.global;
+        let actions = ModelConfig[action].actions.global;
         return actions.length > 0;
     }
     /**
      * Check if inline actions buttons added to action
      *
-     * @param {Object} entityConfig
+     * @param {Object} ModelConfig
      * @param {string=} [action] Defaults to `list`
      * @returns {boolean}
      */
-    hasInlineActions(entityConfig, action) {
+    hasInlineActions(ModelConfig, action) {
         action = action || 'list';
-        if (!entityConfig[action] || !entityConfig[action].actions || !entityConfig[action].actions.inline) {
+        if (!ModelConfig[action] || !ModelConfig[action].actions || !ModelConfig[action].actions.inline) {
             return false;
         }
-        let actions = entityConfig[action].actions.inline;
+        let actions = ModelConfig[action].actions.inline;
         return actions.length > 0;
     }
     /**
      * Get list of custom global buttons for action
      *
-     * @param {Object} entityConfig
+     * @param {Object} ModelConfig
      * @param {string=} [action]
      * @returns {Array}
      */
-    getGlobalActions(entityConfig, action) {
+    getGlobalActions(ModelConfig, action) {
         action = action || 'list';
-        if (!this.hasGlobalActions(entityConfig, action)) {
+        if (!this.hasGlobalActions(ModelConfig, action)) {
             return [];
         }
-        return entityConfig[action].actions.global;
+        return ModelConfig[action].actions.global;
     }
     /**
      * Get list of custom inline buttons for action
      *
-     * @param {Object} entityConfig
+     * @param {Object} ModelConfig
      * @param {string=} [action]
      * @returns {Array}
      */
-    getInlineActions(entityConfig, action) {
+    getInlineActions(ModelConfig, action) {
         action = action || 'list';
-        if (!this.hasInlineActions(entityConfig, action)) {
+        if (!this.hasInlineActions(ModelConfig, action)) {
             return [];
         }
-        return entityConfig[action].actions.inline;
+        return ModelConfig[action].actions.inline;
     }
     /**
      * Replace fields in given URL and binds to model fields.
@@ -152,8 +152,8 @@ class MenuHelper {
                 });
             });
         }
-        if (MenuHelper.config.entities) {
-            Object.entries(MenuHelper.config.entities).forEach(function ([key, val]) {
+        if (MenuHelper.config.models) {
+            Object.entries(MenuHelper.config.models).forEach(function ([key, val]) {
                 if (!val.hide) {
                     if (val.tools && val.tools.length > 0 && val.tools[0].id !== "overview") {
                         val.tools.unshift({

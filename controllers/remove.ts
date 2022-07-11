@@ -21,7 +21,7 @@ export default async function remove(req, res) {
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
             return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
-        } else if (!AccessRightsHelper.havePermission(`delete-${entity.name}-entity`, req.session.UserAP)) {
+        } else if (!AccessRightsHelper.havePermission(`delete-${entity.name}-model`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
     }

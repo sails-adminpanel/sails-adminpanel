@@ -17,11 +17,12 @@ export default async function form(req, res) {
         }
     }
 
-    let formData = await FormHelper.get(slug);
+    let form = await FormHelper.get(slug);
 
-    if (!formData) {
+    if (!form) {
         return res.status(404).send("Adminpanel > Form not found")
     }
+
 
     if (req.method.toUpperCase() === 'POST') {
 
@@ -29,10 +30,17 @@ export default async function form(req, res) {
             return res.status(500).send("Data is empty")
         }
 
-        await FormHelper.update(slug, req.body);
+        for (let field of Object.keys(req.body)) {
+            sails.config.adminpanel.forms.set(slug, field, req.body[field])
+        }
     }
 
-    console.log("FORM DATA", slug, formData)
+    for (let key of Object.keys(form)) {
+        let value = sails.config.adminpanel.forms.get(slug, key);
+        if (value) {
+            form[key].value = value;
+        }
+    }
 
-    res.viewAdmin("form", {formData: formData, slug: slug});
+    res.viewAdmin("form", {formData: form, slug: slug});
 };

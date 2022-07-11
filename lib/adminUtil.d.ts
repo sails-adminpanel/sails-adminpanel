@@ -1,5 +1,5 @@
 import { Entity } from "../interfaces/types";
-import { EntityConfig } from "../interfaces/adminpanelConfig";
+import { ModelConfig } from "../interfaces/adminpanelConfig";
 import ORMModel from "../interfaces/ORMModel";
 export declare class AdminUtil {
     /**
@@ -7,7 +7,7 @@ export declare class AdminUtil {
      *
      * @see AdminUtil.findConfig
      */
-    private static _defaultEntityConfig;
+    private static _defaultModelConfig;
     /**
      * Default configs that will be returned for action. If nothing exists in config file.
      *
@@ -21,17 +21,17 @@ export declare class AdminUtil {
      * @returns {boolean}
      * @private
      */
-    private static _isValidEntityConfig;
+    private static _isValidModelConfig;
     /**
      * Normalizing entity config.
      * Will return fulfilled configuration object.
      *
-     * @see AdminUtil._isValidEntityConfig
+     * @see AdminUtil._isValidModelConfig
      * @param {Object} config
      * @returns {Object}
      * @private
      */
-    private static _normalizeEntityConfig;
+    private static _normalizeModelConfig;
     /**
      * Normalize action config object
      *
@@ -67,7 +67,7 @@ export declare class AdminUtil {
      * @param {String} entityName
      * @returns {?Object}
      */
-    static findEntityConfig(req: any, entityName: any): EntityConfig;
+    static findModelConfig(req: any, entityName: any): ModelConfig;
     /**
      * Will get action config from configuration file depending to given action
      *
@@ -95,12 +95,12 @@ export declare class AdminUtil {
     /**
      * Trying to find model by request
      *
-     * @see AdminUtil._isValidEntityConfig
+     * @see AdminUtil._isValidModelConfig
      * @param {Request} req
-     * @param {Object} entityConfig
+     * @param {Object} ModelConfig
      * @returns {?Model}
      */
-    static findModel(req: any, entityConfig: any): ORMModel;
+    static findModel(req: any, ModelConfig: any): ORMModel;
     /**
      * Will create entity object from request.
      *

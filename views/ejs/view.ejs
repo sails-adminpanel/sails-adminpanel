@@ -19,7 +19,7 @@
             </button>
         </a>
         <!--  !TODO добавить экшен на view -->
-        <% if (entity.config.edit && havePermission(`update-${entity.name}-entity`, req.session.UserAP)) { %>
+        <% if (entity.config.edit && havePermission(`update-${entity.name}-model`, req.session.UserAP)) { %>
             <a href="<%= entity.uri %>/edit/<%= record[idField] %>">
                 <button raised class="button-green">
                     <i class="las la-plus"></i>
@@ -27,7 +27,7 @@
                 </button>
             </a>
         <% } %>
-        <% if (entity.config.remove && havePermission(`delete-${entity.name}-entity`, req.session.UserAP)) { %>
+        <% if (entity.config.remove && havePermission(`delete-${entity.name}-model`, req.session.UserAP)) { %>
             <a href="<%= entity.uri %>/remove/<%= record[idField] %>" onclick="return confirm('Are you sure ?');">
                 <button raised class="button-red">
                     <i class="las la-trash"></i>

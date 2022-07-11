@@ -1,5 +1,5 @@
 import {Entity} from "../interfaces/types";
-import {EntityConfig} from "../interfaces/adminpanelConfig";
+import {ModelConfig} from "../interfaces/adminpanelConfig";
 import ORMModel from "../interfaces/ORMModel";
 
 export class AdminUtil {
@@ -9,7 +9,7 @@ export class AdminUtil {
      *
      * @see AdminUtil.findConfig
      */
-    private static _defaultEntityConfig = {
+    private static _defaultModelConfig = {
         list: true,
         add: true,
         edit: true,
@@ -33,7 +33,7 @@ export class AdminUtil {
      * @returns {boolean}
      * @private
      */
-    private static _isValidEntityConfig(config) {
+    private static _isValidModelConfig(config) {
         return (typeof config === "object" && typeof config.model === "string");
     };
 
@@ -41,17 +41,17 @@ export class AdminUtil {
      * Normalizing entity config.
      * Will return fulfilled configuration object.
      *
-     * @see AdminUtil._isValidEntityConfig
+     * @see AdminUtil._isValidModelConfig
      * @param {Object} config
      * @returns {Object}
      * @private
      */
-    private static _normalizeEntityConfig(config) {
-        if (!this._isValidEntityConfig(config)) {
+    private static _normalizeModelConfig(config) {
+        if (!this._isValidModelConfig(config)) {
             sails.log.error('Wrong entity configuration, using default');
             config = {};
         }
-        config = {...this._defaultEntityConfig, ...config};
+        config = {...this._defaultModelConfig, ...config};
 
         //Check limits
         if (typeof config.list === "boolean") {
@@ -117,7 +117,7 @@ export class AdminUtil {
     public static findEntityName(req): string {
       if (!req.param('entity')) {
           let entityName = req.originalUrl.split('/')[2];
-          if (!this.config().entities || !this.config().entities[entityName]) {
+          if (!this.config().models || !this.config().models[entityName]) {
               return null;
           } else {
               return entityName
@@ -133,12 +133,12 @@ export class AdminUtil {
      * @param {String} entityName
      * @returns {?Object}
      */
-    public static findEntityConfig(req, entityName): EntityConfig {
-        if (!this.config().entities || !this.config().entities[entityName]) {
+    public static findModelConfig(req, entityName): ModelConfig {
+        if (!this.config().models || !this.config().models[entityName]) {
             req._sails.log.error('No such route exists');
             return null;
         }
-        return this._normalizeEntityConfig(this.config().entities[entityName] || {});
+        return this._normalizeModelConfig(this.config().models[entityName] || {});
     }
 
     /**
@@ -185,16 +185,16 @@ export class AdminUtil {
     /**
      * Trying to find model by request
      *
-     * @see AdminUtil._isValidEntityConfig
+     * @see AdminUtil._isValidModelConfig
      * @param {Request} req
-     * @param {Object} entityConfig
+     * @param {Object} ModelConfig
      * @returns {?Model}
      */
-    public static findModel(req, entityConfig): ORMModel {
-        if (!this._isValidEntityConfig(entityConfig)) {
+    public static findModel(req, ModelConfig): ORMModel {
+        if (!this._isValidModelConfig(ModelConfig)) {
             return null;
         }
-        return this.getModel(entityConfig.model);
+        return this.getModel(ModelConfig.model);
     }
 
     /**
@@ -217,12 +217,12 @@ export class AdminUtil {
      */
     public static findEntityObject(req): Entity {
         let entityName = this.findEntityName(req);
-        let entityConfig = this.findEntityConfig(req, entityName);
-        let entityModel = this.findModel(req, entityConfig);
+        let ModelConfig = this.findModelConfig(req, entityName);
+        let entityModel = this.findModel(req, ModelConfig);
         let entityUri = this.config().routePrefix + '/' + entityName;
         return {
             name: entityName,
-            config: entityConfig,
+            config: ModelConfig,
             model: entityModel,
             uri: entityUri,
             type: "model"

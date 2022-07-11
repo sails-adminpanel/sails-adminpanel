@@ -11,13 +11,13 @@ Admin panel configuration consist of this options:
 | `routePrefix`     | Route prefix for admin panel. Default: `/admin`
 | `linkAssets`      | Will create a symlink to Admin panel assets. Anyway AP will try to load all assets from /admin/**** and you could copy them manually
 | `identifierField` | Default identifier field into models. This field will be used as identifier. Default: `id`
-| `entities`       | Configuration for entities. Read below...
+| `models`       | Configuration for models. Read below...
 | `showORMtime`     | Set `true` for enable showing fields createdAt and updatedAt in edit and add sections
-## Entitys
+## Models
 
-Admin panel devided into `entities` and this is a main part of configuration.
+Admin panel divided into `models` and this is a main part of configuration.
 
-Entity will represent several actions for each model that you need to enable into Admin Panel.
+Model will represent several actions for each model that you need to enable into Admin Panel.
 It will consist of actions:
 
 + `list` - list of records with filters, pagination and sorting.
@@ -26,12 +26,12 @@ It will consist of actions:
 + `view` - view details of record
 + `remove` - ability to remove record
 
-Every entity configuration shuld be placed into `entities` block into `config/adminpanel.js` file.
+Every model configuration should be placed into `models` block into `config/adminpanel.js` file.
 And have a required property `model`.
 
 ```
 module.exports.adminpanel = {
-    entities: {
+    models: {
 
         users: { // key. No matter what you will write here. just follow JS rules for objects
             title: 'Users', // If not defined will be taken from key. Here will be `users`
@@ -43,12 +43,12 @@ module.exports.adminpanel = {
 
 ## Actions configuration
 
-Every action into entity could be configured separately.
-Actions configuration shuold be placed into `entity` block.
+Every action into model could be configured separately.
+Actions configuration shuold be placed into `model` block.
 
 ```
 module.exports.adminpanel = {
-    entities: {
+    models: {
 
         users: { // key. No matter what you will write here. just follow JS rules for objects
             title: 'Users', // If not defined will be taken from key. Here will be `users`
@@ -64,12 +64,12 @@ Every action could be configured in several ways, **but it should have action ke
 
 + `boolean` - Enable/disable functionality.
 ```
-entities: {
+models: {
     users: {
         // ...
 
         list: true, // will mean that list action should exist. Enabled by default.
-        edit: false // Will disable edit functionality for entity.
+        edit: false // Will disable edit functionality for model.
     }
 }
 ```
@@ -77,7 +77,7 @@ entities: {
 + `object` - detailed configuration of action.
 
 ```
-entities: {
+models: {
     users: {
         list: {
             limit: 15, // will set a limit of actions. This option supports only list action !
@@ -119,15 +119,15 @@ fieldName: {
 
 **There are several places for field config definition and an inheritance of field configs.**
 
-+ You could use a global `fields` property into `config/adminpanel.js` file into `entities` section.
-+ You could use `fields` property into `entities:action` confguration. This config will overwrite global one
++ You could use a global `fields` property into `config/adminpanel.js` file into `models` section.
++ You could use `fields` property into `models:action` confguration. This config will overwrite global one
 
 ```
 module.exports.adminpanel = {
-    entities: {
+    models: {
         users: {
-            title: 'Users', // Menu title for entity
-            model: 'User', // Model definition for entity
+            title: 'Users', // Menu title for model
+            model: 'User', // Model definition for model
 
             fields: {
                 email: 'User Email', // It will define title for this field in all actions (list/add/edit/view)
@@ -156,16 +156,16 @@ module.exports.adminpanel = {
 }
 ```
 
-## Hide entity
+## Hide model
 
-You can hide entity from left navbar using `hide` option.
+You can hide model from left navbar using `hide` option.
 
 ```javascript
 module.exports.adminpanel = {
-    entities: {
+    models: {
         users: {
-            title: 'Users', // Menu title for entity
-            model: 'User', // Model definition for entity
+            title: 'Users', // Menu title for model
+            model: 'User', // Model definition for model
             hide: true
         }
     }
@@ -177,10 +177,10 @@ You could add ignored fields to action using `fields` config option.
 
 ```javascript
 module.exports.adminpanel = {
-    entities: {
+    models: {
         users: {
-            title: 'Users', // Menu title for entity
-            model: 'User', // Model definition for entity
+            title: 'Users', // Menu title for model
+            model: 'User', // Model definition for model
 
             // this fields will be ignored into all actions
             fields: {
@@ -237,10 +237,10 @@ module.exports = {
 Your admin panel configuration:
 ```javascript
 module.exports.adminpanel = {
-    entities: {
+    models: {
         users: {
-            title: 'Users', // Menu title for entity
-            model: 'User', // Model definition for entity
+            title: 'Users', // Menu title for model
+            model: 'User', // Model definition for model
 
             fields: {
                 'gender': {
@@ -291,18 +291,18 @@ This configuration loads all sail models as they are. Just place  in `config\adm
 ```javascript
  const fs = require("fs");
  let modelPath = __dirname + "/../api/models";
- let entities = {};
+ let models = {};
  fs.readdir(modelPath, function (err, files) {
    files.forEach(function (file) {
      let modelName = file.split(".")[0];
-     entities[modelName] = {
+     models[modelName] = {
        title: modelName,
        model: modelName,
      };
    });
  });
  
- module.exports.adminpanel = { entities: entities } ;
+ module.exports.adminpanel = { models: models } ;
 ```
 
 
@@ -318,11 +318,11 @@ This configuration loads all sail models as they are. Just place  in `config\adm
 
 ```javascript
 {
-    entities: {
+    models: {
         [key:string]: {
             title: string
             model: string // Model name
-            hide: boolean // Hide entity in left navbar
+            hide: boolean // Hide model in left navbar
             fields: {
                 [key: string]: {
                     title: string
@@ -378,7 +378,7 @@ This configuration loads all sail models as they are. Just place  in `config\adm
                         displayModifier: Function // Function that makes data modification on list view
                     }[] | boolean | string
                 }
-                entityModifier: Function // callback for data modification before saving record
+                modelModifier: Function // callback for data modification before saving record
                 controller: string // path to custom controller
             } | boolean
             // Configuration for 'update model' action or disabling/enabling it
@@ -394,12 +394,12 @@ This configuration loads all sail models as they are. Just place  in `config\adm
                         displayModifier: Function // Function that makes data modification on list view
                     }[] | boolean | string
                 }
-                entityModifier: Function // callback for data modification before saving record
+                modelModifier: Function // callback for data modification before saving record
                 controller: string // // path to custom controller
             } | boolean
             remove: boolean // Disabling/enabling 'delete model' action
             view: boolean // Disabling/enabling 'read model' action
-            tools: { // Entity actions displayed in left navbar for specific entity
+            tools: { // Model actions displayed in left navbar for specific model
                 id: string
                 title: string
                 link: string
@@ -407,7 +407,7 @@ This configuration loads all sail models as they are. Just place  in `config\adm
                 // Only for view, controller still uses his own access rights token
                 accessRightsToken: string
             }[]
-            icon: string // Entity icon
+            icon: string // Model icon
             identifierField: string // Force set primary key
         }[]
     }

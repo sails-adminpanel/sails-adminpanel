@@ -1,5 +1,5 @@
 # Access Rights
-When sails-adminpanel starts, for every entity it creates 4 access rights tokens:
+When sails-adminpanel starts, for every Model it creates 4 access rights tokens:
 - create
 - read
 - update
@@ -7,8 +7,8 @@ When sails-adminpanel starts, for every entity it creates 4 access rights tokens
 
 You can also create custom access rights tokens using function `registerToken` of `AccessRightsHelper`.
 
-These tokens can be used to give users rights to see information of specific entity, to create new models or edit it.
-Also, you can use tokens to create access rights to global and inline actions, or to entity tools.
+These tokens can be used to give users rights to see information of specific Model, to create new models or edit it.
+Also, you can use tokens to create access rights to global and inline actions, or to Model tools.
 In controllers you should check access rights through `havePermission` method.
 
 Example:
@@ -25,7 +25,7 @@ if (sails.config.adminpanel.auth) {
 
 
 ## Users and Groups
-In entity `Users` admin or someone who has access can create user profiles and give them specific access rights by adding them to `Groups`.
+In Model `Users` admin or someone who has access can create user profiles and give them specific access rights by adding them to `Groups`.
 `Groups` represent lists of rights tokens, and you can choose which ones you want to add to this group.
 After adding tokens to the groups you can add user to specific group and this user will have access rights that
 you set to this group.

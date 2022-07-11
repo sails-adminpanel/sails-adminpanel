@@ -36,15 +36,15 @@ export class ConfigHelper {
         }
 
         let config = sails.config.adminpanel;
-        let entityConfig;
-        Object.keys(config.entities).forEach((entityName) => {
-            if (config.entities[entityName].model === modelName.toLowerCase()) {
-                entityConfig = config.entities[entityName]
+        let ModelConfig;
+        Object.keys(config.models).forEach((entityName) => {
+            if (config.models[entityName].model === modelName.toLowerCase()) {
+                ModelConfig = config.models[entityName]
             }
         })
 
-        if (entityConfig && entityConfig.identifierField) {
-            return entityConfig.identifierField;
+        if (ModelConfig && ModelConfig.identifierField) {
+            return ModelConfig.identifierField;
         } else if (sails.models[modelName.toLowerCase()].primaryKey) {
             return sails.models[modelName.toLowerCase()].primaryKey
         } else {

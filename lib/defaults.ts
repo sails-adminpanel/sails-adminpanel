@@ -1,6 +1,8 @@
+'use strict'
 import {AdminpanelConfig} from "../interfaces/adminpanelConfig";
+import {FileStorageHelper} from "../helper/fileStorageHelper";
 const packageJson = require('../package.json');
-const timezones = require('./timezones.json')
+const timezones = require('./timezones.json');
 /**
  * Default admin config
  */
@@ -43,7 +45,7 @@ const adminpanelConfig: AdminpanelConfig = {
     /**
      * List of admin pages
      */
-    entities: {
+    models: {
         usersap: {
             title: "Users AP",
             model: "userap",
@@ -88,9 +90,15 @@ const adminpanelConfig: AdminpanelConfig = {
         defaultLocale: 'en'
     },
 
-    generator: {
-        path: `.tmp/forms`,
-        forms: {}
+    forms: {
+        path: `api/adminpanel-forms`,
+        data: {},
+        get: function (slug, key) {
+            return FileStorageHelper.get(slug, key)
+        },
+        set: function (slug, key, value) {
+            FileStorageHelper.set(slug, key, value)
+        }
     },
 
     /**

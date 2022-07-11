@@ -16,8 +16,8 @@ describe('Form test', function () {
 
     it("Reading from file works", function () {
         let formFromFile = require("../datamocks/forms/exampleFromFile.json");
-        expect("exampleFromFile" in sails.config.adminpanel.generator.forms).to.be.true;
-        expect(sails.config.adminpanel.generator.forms.exampleFromFile).to.equal(formFromFile);
+        expect("exampleFromFile" in sails.config.adminpanel.forms.data).to.be.true;
+        expect(sails.config.adminpanel.forms.data.exampleFromFile).to.equal(formFromFile);
     })
 
     it("Writing to file works", function () {

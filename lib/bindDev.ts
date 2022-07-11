@@ -1,8 +1,8 @@
 export default function bindDev(adminpanelConfig) {
-    if (adminpanelConfig.entities) {
+    if (adminpanelConfig.models) {
         Object.keys(sails.models).forEach((modelname) => {
             let modelName = sails.models[modelname].globalId;
-            adminpanelConfig.entities[`dev-${modelName}`] = {
+            adminpanelConfig.models[`dev-${modelName}`] = {
                 title: `dev-${modelName}`,
                 model: modelName,
                 icon: "cube"

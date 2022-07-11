@@ -1,9 +1,9 @@
 export interface AdminpanelConfig {
     /**
-     * Entitys configuration
+     * Models configuration
      * */
-    entities: {
-        [key:string]: EntityConfig
+    models: {
+        [key:string]: ModelConfig
     }
     /**
      * For custom adminpanel sections, displays inside header
@@ -61,18 +61,38 @@ export interface AdminpanelConfig {
         defaultLocale: string
     } | boolean
     /**
-     * Generator
+     * Forms
      * */
-    generator?: {
+    forms?: {
         path: string
-        get: Function
-        set: Function
-        forms?: {
+        data: {
             [key:string]: Fields
         }
-        wizards?: {
+        /**
+         * Custom getter
+         * */
+        get?: Function
+        /**
+         * Custom setter
+         * */
+        set?: Function
+    }
+    /**
+     * Wizards
+     * */
+    wizards?: {
+        path: string
+        data: {
             [key:string]: Fields
         }
+        /**
+         * Custom getter
+         * */
+        get?: Function
+        /**
+         * Custom setter
+         * */
+        set?: Function
     }
     /**
      * Prime administrator login credentials
@@ -102,7 +122,7 @@ export interface AdminpanelConfig {
     showVersion?: boolean
 }
 
-export interface EntityConfig {
+export interface ModelConfig {
     title: string
     /**
      * Model name
@@ -111,7 +131,7 @@ export interface EntityConfig {
     /**
      * Hide entity in left navbar
      * */
-    hide: boolean
+    hide?: boolean
     /**
      * Entity fields configuration
      * */

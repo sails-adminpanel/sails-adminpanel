@@ -1,4 +1,4 @@
-import {AdminpanelConfig, FieldsTypes, EntityConfig} from "../../interfaces/adminpanelConfig";
+import {AdminpanelConfig, FieldsTypes, ModelConfig} from "../../interfaces/adminpanelConfig";
 
 /**
  * This configuration loads all sail models as they are
@@ -23,7 +23,7 @@ function randomFaIcon(params) {
     return faIcons[Math.floor(Math.random() * faIcons.length)];
 }
 
-let entities: {[key: string]: EntityConfig} = {
+let entities: {[key: string]: ModelConfig} = {
     navigation: {
         title: "Навигация",
         model: "navigation",

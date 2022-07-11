@@ -4,38 +4,8 @@ exports.FormHelper = void 0;
 const path = require("path");
 const fs = require("fs");
 class FormHelper {
-    static async update(slug, data) {
-        // custom setter
-        if (sails.config.adminpanel.generator.set) {
-            return await sails.config.adminpanel.generator.set(slug, data);
-        }
-        for (let field in data) {
-            try {
-                this._forms[slug][field].value = JSON.parse(data[field]);
-            }
-            catch (e) {
-                this._forms[slug][field].value = data[field];
-            }
-        }
-        this.updateFormFile(`${process.cwd()}/.tmp/forms`, slug, this._forms[slug]);
-    }
     static async get(slug) {
-        let form = {};
-        // custom getter
-        if (sails.config.adminpanel.generator.get) {
-            form = await sails.config.adminpanel.generator.get(slug);
-            return form;
-        }
-        if (!this._forms[slug]) {
-            return;
-        }
-        for (let field in this._forms[slug]) {
-            form[field] = this._forms[slug][field];
-            if (process.env[`${slug}_${field}`]) {
-                form[field].value = process.env[`${slug}_${field}`];
-            }
-        }
-        return form;
+        return this._forms[slug];
     }
     static loadForms(formsPath) {
         try {
@@ -46,7 +16,7 @@ class FormHelper {
             for (let form of forms) {
                 try {
                     let jsonData = require(`${formsDirectoryPath}/${form}`);
-                    sails.config.adminpanel.generator.forms[path.basename(form, '.json')] = jsonData;
+                    sails.config.adminpanel.forms.data[path.basename(form, '.json')] = jsonData;
                 }
                 catch (error) {
                     sails.log.error(`Adminpanel > Error when reading ${form}.json: ${error}`);
@@ -57,20 +27,6 @@ class FormHelper {
             sails.log.error("Adminpanel > Error when loading forms", e);
         }
     }
-    static updateFormFile(formsPath, slug, data) {
-        try {
-            let formsDirectoryPath = path.resolve(formsPath);
-            try {
-                fs.writeFileSync(`${formsDirectoryPath}/${slug}.json`, JSON.stringify(data));
-            }
-            catch (error) {
-                sails.log.error(`Adminpanel > Error when updating ${slug}.json: ${error}`);
-            }
-        }
-        catch (e) {
-            sails.log.error("Adminpanel > Error when loading forms", e);
-        }
-    }
 }
 exports.FormHelper = FormHelper;
-FormHelper._forms = sails.config.adminpanel.generator ? sails.config.adminpanel.generator.forms : null;
+FormHelper._forms = sails.config.adminpanel.forms ? sails.config.adminpanel.forms.data : null;

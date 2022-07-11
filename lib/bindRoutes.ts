@@ -28,13 +28,13 @@ export default function bindRoutes() {
      */
     sails.router.bind(baseRoute, _bindPolicies(policies, _list));
 
-    if (config.entities) {
-        for (let entity of Object.keys(config.entities)) {
+    if (config.models) {
+        for (let entity of Object.keys(config.models)) {
             /**
              * Create new record
              */
-            if (config.entities[entity].add && config.entities[entity].add.controller) {
-                let controller = require(config.entities[entity].add.controller);
+            if (config.models[entity].add && config.models[entity].add.controller) {
+                let controller = require(config.models[entity].add.controller);
                 sails.router.bind(`${config.routePrefix}/${entity}/add`, _bindPolicies(policies, controller.default));
             } else {
                 sails.router.bind(`${config.routePrefix}/${entity}/add`, _bindPolicies(policies, _add));
@@ -43,8 +43,8 @@ export default function bindRoutes() {
             /**
              * Edit existing record
              */
-            if (config.entities[entity].edit && config.entities[entity].edit.controller) {
-                let controller = require(config.entities[entity].edit.controller);
+            if (config.models[entity].edit && config.models[entity].edit.controller) {
+                let controller = require(config.models[entity].edit.controller);
                 sails.router.bind(`${config.routePrefix}/${entity}/edit/:id`, _bindPolicies(policies, controller.default));
             } else {
                 sails.router.bind(`${config.routePrefix}/${entity}/edit/:id`, _bindPolicies(policies, _edit));

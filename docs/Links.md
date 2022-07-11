@@ -4,7 +4,7 @@ You can add custom links into your admin panel pages.
 You could use:
 - `additionaLinks` in `navbar` property to create links at the top of the sidenav panel
 - `global` or `inline` actions in `actions` property of `list` view
-- `tools` property to create link like entity submenu
+- `tools` property to create link like Model submenu
 
 ## Action buttons
 
@@ -17,12 +17,12 @@ module.exports.adminpanel = {
                 title: "First action",
                 link: string,
                 icon: "",
-                subItems: HrefConfig[], // second level links like entity tools
+                subItems: HrefConfig[], // second level links like Model tools
                 accessRightsToken: "firstLinkToken"
             }
         ]
     },
-    entities: {
+    models: {
         pages: {
             title: 'Pages',
             model: 'Page',

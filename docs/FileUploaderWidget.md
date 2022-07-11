@@ -1,10 +1,10 @@
 # File uploader widget
 
-File uploader is one of widgets admin panel. It allow upload files and images or single file and image
+File uploader is one of widgets admin panel. It allows upload files and images or single file and image
 
 ```javascript
 module.exports.adminpanel = {
-    entities: {
+    models: {
         users: {
             title: 'Users', 
             model: 'User', 
@@ -117,7 +117,7 @@ module.exports = {
 
 ```javascript
 module.exports.adminpanel = {
-    entities: {
+    models: {
         users: {
             title: 'Users', 
             model: 'User', 

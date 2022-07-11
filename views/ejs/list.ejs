@@ -33,10 +33,10 @@ $(document).ready(function() {
                 render: function (data, type, row, meta) {
                     if (type === 'display') {
                         data = "";
-                        if (<%- havePermission(`read-${entity.name}-entity`, req.session.UserAP) %>) {
+                        if (<%- havePermission(`read-${entity.name}-model`, req.session.UserAP) %>) {
                             data += '<a href="<%=entity.uri%>/view/'+row[0]+'"><i class="las la-eye"></i><%= __('View') %></a><br>';
                         }
-                        if (<%- havePermission(`update-${entity.name}-entity`, req.session.UserAP) %>) {
+                        if (<%- havePermission(`update-${entity.name}-model`, req.session.UserAP) %>) {
                             data += '<a href="<%=entity.uri%>/edit/'+row[0]+'"><i class="las la-edit"></i><%= __('Edit') %></a><br>';
                         }
                         <% include mixin/list/inlineActions %>
@@ -51,7 +51,7 @@ $(document).ready(function() {
 <div class="horizontal layout">
     <div class="flex">
         <% var actionType = 'list' %>
-        <% if (entity.config.add && havePermission(`create-${entity.name}-entity`, req.session.UserAP)) { %>
+        <% if (entity.config.add && havePermission(`create-${entity.name}-model`, req.session.UserAP)) { %>
             <a href="<%=entity.uri%>/add" id="add">
                 <button class="btn-add"><i class="las la-plus"></i><%= __('create') %></button>
             </a>

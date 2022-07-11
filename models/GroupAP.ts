@@ -1,7 +1,6 @@
 import WaterlineModel from "../interfaces/waterlineModel";
-import WaterlineEntity from "../interfaces/waterlineEntity";
+import WaterlineEntity from "../interfaces/waterlineORM";
 import UserAP from "./UserAP";
-import {AccessRightsToken} from "../interfaces/types";
 
 let attributes = {
 

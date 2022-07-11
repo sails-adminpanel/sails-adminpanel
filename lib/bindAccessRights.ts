@@ -1,31 +1,31 @@
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 
 export default function bindAccessRights() {
-    if (sails.config.adminpanel.entities) {
-        let entities = sails.config.adminpanel.entities;
+    if (sails.config.adminpanel.models) {
+        let entities = sails.config.adminpanel.models;
         for (let key of Object.keys(entities)) {
             let department = `Section ${key}`;
 
             // create
-            AccessRightsHelper.registerToken({id: `create-${key}-entity`, name: "Create",
+            AccessRightsHelper.registerToken({id: `create-${key}-model`, name: "Create",
                 description: "Access to creating record in database", department: department});
 
             // read
-            AccessRightsHelper.registerToken({id: `read-${key}-entity`, name: "Read",
+            AccessRightsHelper.registerToken({id: `read-${key}-model`, name: "Read",
                 description: "Access to reading records in database", department: department});
 
             // update
-            AccessRightsHelper.registerToken({id: `update-${key}-entity`, name: "Update",
+            AccessRightsHelper.registerToken({id: `update-${key}-model`, name: "Update",
                 description: "Access to updating records in database", department: department});
 
             // delete
-            AccessRightsHelper.registerToken({id: `delete-${key}-entity`, name: "Delete",
+            AccessRightsHelper.registerToken({id: `delete-${key}-model`, name: "Delete",
                 description: "Access to deleting records in database", department: department});
         }
     }
 
-    if (sails.config.adminpanel.generator && sails.config.adminpanel.generator.forms) {
-        let forms = sails.config.adminpanel.generator.forms;
+    if (sails.config.adminpanel.forms && sails.config.adminpanel.forms.data) {
+        let forms = sails.config.adminpanel.forms.data;
         for (let key of Object.keys(forms)) {
             let department = `Form ${key}`;
 

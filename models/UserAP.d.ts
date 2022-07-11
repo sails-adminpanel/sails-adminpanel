@@ -5,7 +5,7 @@
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 import WaterlineModel from "../interfaces/waterlineModel";
-import WaterlineEntity from "../interfaces/waterlineEntity";
+import WaterlineEntity from "../interfaces/waterlineORM";
 import GroupAP from "./GroupAP";
 declare let attributes: {
     id: {

@@ -22,35 +22,35 @@ export declare class MenuHelper {
     /**
      * Check if global actions buttons added to action
      *
-     * @param {Object} entityConfig
+     * @param {Object} ModelConfig
      * @param {string=} [action] Defaults to `list`
      * @returns {boolean}
      */
-    hasGlobalActions(entityConfig: any, action: any): boolean;
+    hasGlobalActions(ModelConfig: any, action: any): boolean;
     /**
      * Check if inline actions buttons added to action
      *
-     * @param {Object} entityConfig
+     * @param {Object} ModelConfig
      * @param {string=} [action] Defaults to `list`
      * @returns {boolean}
      */
-    hasInlineActions(entityConfig: any, action: any): boolean;
+    hasInlineActions(ModelConfig: any, action: any): boolean;
     /**
      * Get list of custom global buttons for action
      *
-     * @param {Object} entityConfig
+     * @param {Object} ModelConfig
      * @param {string=} [action]
      * @returns {Array}
      */
-    getGlobalActions(entityConfig: any, action: any): any;
+    getGlobalActions(ModelConfig: any, action: any): any;
     /**
      * Get list of custom inline buttons for action
      *
-     * @param {Object} entityConfig
+     * @param {Object} ModelConfig
      * @param {string=} [action]
      * @returns {Array}
      */
-    getInlineActions(entityConfig: any, action: any): any;
+    getInlineActions(ModelConfig: any, action: any): any;
     /**
      * Replace fields in given URL and binds to model fields.
      *

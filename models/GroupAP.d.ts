@@ -1,5 +1,5 @@
 import WaterlineModel from "../interfaces/waterlineModel";
-import WaterlineEntity from "../interfaces/waterlineEntity";
+import WaterlineEntity from "../interfaces/waterlineORM";
 import UserAP from "./UserAP";
 declare let attributes: {
     id: {

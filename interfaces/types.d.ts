@@ -1,11 +1,12 @@
 import ORMModel from "./ORMModel";
-import {EntityConfig} from "./adminpanelConfig";
+import {ModelConfig} from "./adminpanelConfig";
 
 export interface Entity {
     name: string
-    config: EntityConfig
-    model: ORMModel
+    config: ModelConfig
+    model?: ORMModel
     uri: string
+    type: string
 }
 
 export interface AccessRightsToken {

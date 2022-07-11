@@ -3,6 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 let passwordHash = require("password-hash");
 async function login(req, res) {
     if (req.url.indexOf("login") >= 0) {
+        if (!sails.config.adminpanel.auth) {
+            return res.redirect(`${sails.config.adminpanel.routePrefix}/`);
+        }
         if (req.method.toUpperCase() === "POST") {
             let login = req.param("login");
             let password = req.param("password");

@@ -3,6 +3,7 @@ import bindAuthorization from './bindAuthorization';
 import bindAccessRights from "./bindAccessRights";
 import bindDev from "./bindDev";
 import bindForms from "./bindForms";
+import {FileStorageHelper} from "../helper/fileStorageHelper";
 
 export default async function () {
     // Binding list of function for rendering
