@@ -32,7 +32,7 @@ This is example of this file:
     'use strict';
 
     module.exports.adminpanel = {
-        entities: {
+        models: {
 
             pages: {
 
