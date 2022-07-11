@@ -1,15 +1,15 @@
-import {Instance} from "../interfaces/types";
-import {InstanceConfig} from "../interfaces/adminpanelConfig";
+import {Entity} from "../interfaces/types";
+import {EntityConfig} from "../interfaces/adminpanelConfig";
 import ORMModel from "../interfaces/ORMModel";
 
 export class AdminUtil {
 
     /**
-     * Default configuration for instance
+     * Default configuration for entity
      *
      * @see AdminUtil.findConfig
      */
-    private static _defaultInstanceConfig = {
+    private static _defaultEntityConfig = {
         list: true,
         add: true,
         edit: true,
@@ -27,31 +27,31 @@ export class AdminUtil {
     };
 
     /**
-     * Check if given instance config has all required properties
+     * Check if given entity config has all required properties
      *
      * @param {Object} config
      * @returns {boolean}
      * @private
      */
-    private static _isValidInstanceConfig(config) {
+    private static _isValidEntityConfig(config) {
         return (typeof config === "object" && typeof config.model === "string");
     };
 
     /**
-     * Normalizing instance config.
+     * Normalizing entity config.
      * Will return fulfilled configuration object.
      *
-     * @see AdminUtil._isValidInstanceConfig
+     * @see AdminUtil._isValidEntityConfig
      * @param {Object} config
      * @returns {Object}
      * @private
      */
-    private static _normalizeInstanceConfig(config) {
-        if (!this._isValidInstanceConfig(config)) {
-            sails.log.error('Wrong instance configuration, using default');
+    private static _normalizeEntityConfig(config) {
+        if (!this._isValidEntityConfig(config)) {
+            sails.log.error('Wrong entity configuration, using default');
             config = {};
         }
-        config = {...this._defaultInstanceConfig, ...config};
+        config = {...this._defaultEntityConfig, ...config};
 
         //Check limits
         if (typeof config.list === "boolean") {
@@ -109,36 +109,36 @@ export class AdminUtil {
     }
 
     /**
-     * Get instance name
+     * Get entity name
      *
      * @param {Request} req
      * @returns {?string}
      */
-    public static findInstanceName(req): string {
-      if (!req.param('instance')) {
-          let instanceName = req.originalUrl.split('/')[2];
-          if (!this.config().instances || !this.config().instances[instanceName]) {
+    public static findEntityName(req): string {
+      if (!req.param('entity')) {
+          let entityName = req.originalUrl.split('/')[2];
+          if (!this.config().entities || !this.config().entities[entityName]) {
               return null;
           } else {
-              return instanceName
+              return entityName
           }
       }
-      return req.param('instance');
+      return req.param('entity');
     };
 
     /**
      * Searches for config from admin panel
      *
      * @param {Request} req
-     * @param {String} instanceName
+     * @param {String} entityName
      * @returns {?Object}
      */
-    public static findInstanceConfig(req, instanceName): InstanceConfig {
-        if (!this.config().instances || !this.config().instances[instanceName]) {
+    public static findEntityConfig(req, entityName): EntityConfig {
+        if (!this.config().entities || !this.config().entities[entityName]) {
             req._sails.log.error('No such route exists');
             return null;
         }
-        return this._normalizeInstanceConfig(this.config().instances[instanceName] || {});
+        return this._normalizeEntityConfig(this.config().entities[entityName] || {});
     }
 
     /**
@@ -160,47 +160,47 @@ export class AdminUtil {
      *  }
      *
      * @throws {Error} if req or actionType not passed
-     * @param {Object} instance Instance object with `name`, `config`, `model` {@link AdminUtil.findInstanceObject}
+     * @param {Object} entity Entity object with `name`, `config`, `model` {@link AdminUtil.findEntityObject}
      * @param {string} actionType Type of action that config should be loaded for. Example: list, edit, add, remove, view.
      * @returns {Object} Will return object with configs or default configs.
      */
-    public static findActionConfig(instance, actionType) {
-        if (!instance || !actionType) {
-            throw new Error('No `instance` or `actionType` passed !');
+    public static findActionConfig(entity, actionType) {
+        if (!entity || !actionType) {
+            throw new Error('No `entity` or `actionType` passed !');
         }
         let result = {...this._defaultActionConfig};
-        if (!instance.config || !instance.config[actionType]) {
+        if (!entity.config || !entity.config[actionType]) {
             return result;
         }
         /**
          * Here we could get true/false so need to update it to Object for later manipulations
          * In this function
          */
-        if (typeof instance.config[actionType] === "boolean") {
+        if (typeof entity.config[actionType] === "boolean") {
             return result;
         }
-        return this._normalizeActionConfig(instance.config[actionType]);
+        return this._normalizeActionConfig(entity.config[actionType]);
     }
 
     /**
      * Trying to find model by request
      *
-     * @see AdminUtil._isValidInstanceConfig
+     * @see AdminUtil._isValidEntityConfig
      * @param {Request} req
-     * @param {Object} instanceConfig
+     * @param {Object} entityConfig
      * @returns {?Model}
      */
-    public static findModel(req, instanceConfig): ORMModel {
-        if (!this._isValidInstanceConfig(instanceConfig)) {
+    public static findModel(req, entityConfig): ORMModel {
+        if (!this._isValidEntityConfig(entityConfig)) {
             return null;
         }
-        return this.getModel(instanceConfig.model);
+        return this.getModel(entityConfig.model);
     }
 
     /**
-     * Will create instance object from request.
+     * Will create entity object from request.
      *
-     * Instance Object will have this format:
+     * Entity Object will have this format:
      *
      * @example
      * ```javascript
@@ -215,16 +215,16 @@ export class AdminUtil {
      * @param req
      * @returns {Object}
      */
-    public static findInstanceObject(req): Instance {
-        let instanceName = this.findInstanceName(req);
-        let instanceConfig = this.findInstanceConfig(req, instanceName);
-        let instanceModel = this.findModel(req, instanceConfig);
-        let instanceUri = this.config().routePrefix + '/' + instanceName;
+    public static findEntityObject(req): Entity {
+        let entityName = this.findEntityName(req);
+        let entityConfig = this.findEntityConfig(req, entityName);
+        let entityModel = this.findModel(req, entityConfig);
+        let entityUri = this.config().routePrefix + '/' + entityName;
         return {
-            name: instanceName,
-            config: instanceConfig,
-            model: instanceModel,
-            uri: instanceUri,
+            name: entityName,
+            config: entityConfig,
+            model: entityModel,
+            uri: entityUri,
             type: "model"
         };
     }

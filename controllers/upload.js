@@ -6,13 +6,13 @@ const Jimp = require('jimp');
 // !TODO for images resizing need usage parameters to get request cat.jpg?150. It makes image inscribed in square 150*150px
 function upload(req, res) {
     console.log('admin > upload');
-    let instance = adminUtil_1.AdminUtil.findInstanceObject(req);
+    let entity = adminUtil_1.AdminUtil.findEntityObject(req);
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
             return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
         }
-        else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`update-${instance.name}-instance`, req.session.UserAP) &&
-            !accessRightsHelper_1.AccessRightsHelper.havePermission(`create-${instance.name}-instance`, req.session.UserAP)) {
+        else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`update-${entity.name}-entity`, req.session.UserAP) &&
+            !accessRightsHelper_1.AccessRightsHelper.havePermission(`create-${entity.name}-entity`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
     }
@@ -27,7 +27,7 @@ function upload(req, res) {
             return res.serverError('No field name in request');
         }
         // set upload directory
-        const dirDownload = '/uploads/' + instance.name + '/' + req.body.field + '/';
+        const dirDownload = '/uploads/' + entity.name + '/' + req.body.field + '/';
         const dir = '/.tmp/public' + dirDownload;
         const assetsDir = process.cwd() + '/assets' + dirDownload;
         const fullDir = process.cwd() + dir;

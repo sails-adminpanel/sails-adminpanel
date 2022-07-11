@@ -5,25 +5,25 @@ import {CreateUpdateConfig} from "../interfaces/adminpanelConfig";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 
 export default async function add(req, res) {
-    let instance = AdminUtil.findInstanceObject(req);
+    let entity = AdminUtil.findEntityObject(req);
 
-    if (!instance.model) {
+    if (!entity.model) {
         return res.notFound();
     }
 
-    if (!instance.config.add) {
-        return res.redirect(instance.uri);
+    if (!entity.config.add) {
+        return res.redirect(entity.uri);
     }
 
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
             return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
-        } else if (!AccessRightsHelper.havePermission(`create-${instance.name}-instance`, req.session.UserAP)) {
+        } else if (!AccessRightsHelper.havePermission(`create-${entity.name}-entity`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
     }
 
-    let fields = FieldsHelper.getFields(req, instance, 'add');
+    let fields = FieldsHelper.getFields(req, entity, 'add');
     let data = {}; //list of field values
 
     fields = await FieldsHelper.loadAssociations(fields);
@@ -59,14 +59,14 @@ export default async function add(req, res) {
             }
         }
 
-        // callback before save instance
-        let instanceAdd = instance.config.add as CreateUpdateConfig;
-        if (typeof instanceAdd.instanceModifier === "function") {
-            reqData = instanceAdd.instanceModifier(reqData);
+        // callback before save entity
+        let entityAdd = entity.config.add as CreateUpdateConfig;
+        if (typeof entityAdd.entityModifier === "function") {
+            reqData = entityAdd.entityModifier(reqData);
         }
 
         try {
-            let record = await instance.model.create(reqData).fetch();
+            let record = await entity.model.create(reqData).fetch();
             sails.log(`A new record was created: `, record);
             req.session.messages.adminSuccess.push('Your record was created !');
         } catch (e) {
@@ -77,7 +77,7 @@ export default async function add(req, res) {
     }
 
     return res.viewAdmin({
-        instance: instance,
+        entity: entity,
         fields: fields,
         data: data
     });

@@ -9,14 +9,14 @@ describe('Access rights helper test', function () {
         expect(sails.hooks.adminpanel.havePermission).to.exist;
     })
 
-    it("Default (CRUD) tokens created for every instance test", function () {
-        let instances = sails.config.adminpanel.instances;
+    it("Default (CRUD) tokens created for every entity test", function () {
+        let entities = sails.config.adminpanel.entities;
         let forms = sails.config.adminpanel.generator.forms;
 
-        let instancesAmount = Object.keys(instances).length;
+        let entitiesAmount = Object.keys(entities).length;
         let formsAmount = Object.keys(forms).length;
 
         let tokensAmount = AccessRightsHelper.getTokens().length;
-        expect(tokensAmount).to.equal(4 * (instancesAmount + formsAmount))
+        expect(tokensAmount).to.equal(4 * (entitiesAmount + formsAmount))
     })
 })

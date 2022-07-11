@@ -10,7 +10,7 @@ describe('Have permission test', function () {
         await UserAP.destroy({login: "test"});
 
         let group = await GroupAP.create({name: "Test Group", description: "Group for test", isAdministrator: false,
-            tokens: [`read-users-instance`, `update-users-instance`]}).fetch();
+            tokens: [`read-users-entity`, `update-users-entity`]}).fetch();
         let user = await UserAP.create({login: "test", fullName: "Test user", password: "test", groups: group.id}).fetch();
 
         let agent = chai.request.agent(sails.hooks.http.app);

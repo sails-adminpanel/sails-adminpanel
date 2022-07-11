@@ -49,7 +49,7 @@ module.exports.session = {
   /***************************************************************************
   *                                                                          *
   * The following values are optional, if no options are set a redis         *
-  * instance running on localhost is expected. Read more about options at:   *
+  * entity running on localhost is expected. Read more about options at:   *
   *                                                                          *
   * https://github.com/visionmedia/connect-redis                             *
   *                                                                          *

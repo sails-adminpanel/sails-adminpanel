@@ -4,21 +4,21 @@ const adminUtil_1 = require("../lib/adminUtil");
 const fieldsHelper_1 = require("../helper/fieldsHelper");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 async function list(req, res) {
-    let instance = adminUtil_1.AdminUtil.findInstanceObject(req);
-    if (!instance.model) {
+    let entity = adminUtil_1.AdminUtil.findEntityObject(req);
+    if (!entity.model) {
         return res.notFound();
     }
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
             return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
         }
-        else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`read-${instance.name}-instance`, req.session.UserAP)) {
+        else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`read-${entity.name}-entity`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
     }
-    let fields = fieldsHelper_1.FieldsHelper.getFields(req, instance, 'list');
+    let fields = fieldsHelper_1.FieldsHelper.getFields(req, entity, 'list');
     res.viewAdmin({
-        instance: instance,
+        entity: entity,
         fields: fields,
         config: sails.adminpanel
     });

@@ -1,14 +1,14 @@
 <% include head %>
 <% include headContent %>
 
-<form id="editGroupForm" action="<%= instance.uri %>/edit/<%= group.id %>" method="POST">
+<form id="editGroupForm" action="<%= entity.uri %>/edit/<%= group.id %>" method="POST">
     <div class="layout">
         <div class="nav-header">
-            <a href="<%= instance.uri %>/">
+            <a href="<%= entity.uri %>/">
                 <i class="las la-long-arrow-alt-left"></i>
                 <%= __("Back") %>
             </a>
-            <a href="<%= instance.uri %>/remove/<%= group.id %>" onclick="return confirm('<%= __('Are you sure?') %>')">
+            <a href="<%= entity.uri %>/remove/<%= group.id %>" onclick="return confirm('<%= __('Are you sure?') %>')">
                 <%= __("Delete") %>
                 <i class="las la-trash-alt"></i>
             </a>

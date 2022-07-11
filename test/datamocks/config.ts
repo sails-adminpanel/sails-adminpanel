@@ -1,4 +1,4 @@
-import {AdminpanelConfig, FieldsTypes, InstanceConfig} from "../../interfaces/adminpanelConfig";
+import {AdminpanelConfig, FieldsTypes, EntityConfig} from "../../interfaces/adminpanelConfig";
 
 /**
  * This configuration loads all sail models as they are
@@ -23,7 +23,7 @@ function randomFaIcon(params) {
     return faIcons[Math.floor(Math.random() * faIcons.length)];
 }
 
-let instances: {[key: string]: InstanceConfig} = {
+let entities: {[key: string]: EntityConfig} = {
     navigation: {
         title: "Навигация",
         model: "navigation",
@@ -234,7 +234,7 @@ setTimeout(() => {
     sails.after(["hook:orm:loaded"], () => {
         Object.keys(sails.models).forEach((modelname) => {
             let modelName = sails.models[modelname].globalId;
-            instances[modelName] = {
+            entities[modelName] = {
                 title: modelName + " dev",
                 model: modelName,
                 fields: {
@@ -260,5 +260,5 @@ let adminpanel: AdminpanelConfig = {
         // title: "hello",
         // text: "world"
     },
-    instances: instances
+    entities: entities
 };

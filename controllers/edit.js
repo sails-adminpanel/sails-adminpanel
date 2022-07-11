@@ -10,37 +10,37 @@ async function edit(req, res) {
         return res.notFound();
     }
     console.log("REQ", req.body);
-    let instance = adminUtil_1.AdminUtil.findInstanceObject(req);
-    if (!instance.model) {
+    let entity = adminUtil_1.AdminUtil.findEntityObject(req);
+    if (!entity.model) {
         return res.notFound();
     }
-    if (!instance.config.edit) {
-        return res.redirect(instance.uri);
+    if (!entity.config.edit) {
+        return res.redirect(entity.uri);
     }
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
             return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
         }
-        else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`update-${instance.name}-instance`, req.session.UserAP)) {
+        else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`update-${entity.name}-entity`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
     }
     let record;
     try {
-        record = await instance.model.findOne(req.param('id')).populateAll();
+        record = await entity.model.findOne(req.param('id')).populateAll();
     }
     catch (e) {
         req._sails.log.error('Admin edit error: ');
         req._sails.log.error(e);
         return res.serverError();
     }
-    let fields = fieldsHelper_1.FieldsHelper.getFields(req, instance, 'edit');
+    let fields = fieldsHelper_1.FieldsHelper.getFields(req, entity, 'edit');
     let reloadNeeded = false;
     fields = await fieldsHelper_1.FieldsHelper.loadAssociations(fields);
     if (req.method.toUpperCase() === 'POST') {
         let reqData = requestProcessor_1.RequestProcessor.processRequest(req, fields);
         let params = {};
-        params[instance.config.identifierField || req._sails.config.adminpanel.identifierField] = req.param('id');
+        params[entity.config.identifierField || req._sails.config.adminpanel.identifierField] = req.param('id');
         for (let prop in reqData) {
             if (Number.isNaN(reqData[prop]) || reqData[prop] === undefined || reqData[prop] === null) {
                 delete reqData[prop];
@@ -66,13 +66,13 @@ async function edit(req, res) {
                 reqData[prop] = reqData[prop].split(",");
             }
         }
-        // callback before save instance
-        let instanceEdit = instance.config.edit;
-        if (typeof instanceEdit.instanceModifier === "function") {
-            reqData = instanceEdit.instanceModifier(reqData);
+        // callback before save entity
+        let entityEdit = entity.config.edit;
+        if (typeof entityEdit.entityModifier === "function") {
+            reqData = entityEdit.entityModifier(reqData);
         }
         try {
-            let newRecord = await instance.model.update(params, reqData).fetch();
+            let newRecord = await entity.model.update(params, reqData).fetch();
             sails.log(`Record was updated: `, newRecord);
             req.session.messages.adminSuccess.push('Your record was updated !');
             reloadNeeded = true;
@@ -85,7 +85,7 @@ async function edit(req, res) {
     }
     if (reloadNeeded) {
         try {
-            record = await instance.model.findOne(req.param('id')).populateAll();
+            record = await entity.model.findOne(req.param('id')).populateAll();
         }
         catch (e) {
             req._sails.log.error('Admin edit error: ');
@@ -94,7 +94,7 @@ async function edit(req, res) {
         }
     }
     res.viewAdmin({
-        instance: instance,
+        entity: entity,
         record: record,
         fields: fields
     });

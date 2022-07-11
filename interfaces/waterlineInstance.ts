@@ -1,5 +1,5 @@
 /**
- * Custom types for waterline Instance
+ * Custom types for waterline Entity
  */
 export default interface ORM {
     id: number;

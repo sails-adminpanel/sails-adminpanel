@@ -3,8 +3,8 @@
   <section class="sidenav-content">
     <section class="nav-group">
       <% adminpanel.menuHelper.getMenuItems().forEach(function(menuItem) { %>
-        <% var active = ""; if (menuItem && menuItem.instanceName && instance && instance.name) { active = menuItem.instanceName === instance.name ? 'active' : '' } %>
-        <% if (havePermission(`read-${menuItem.instanceName}-instance`, req.session.UserAP)) { %>
+        <% var active = ""; if (menuItem && menuItem.entityName && entity && entity.name) { active = menuItem.entityName === entity.name ? 'active' : '' } %>
+        <% if (havePermission(`read-${menuItem.entityName}-entity`, req.session.UserAP)) { %>
           <section class="nav-group collapsible <% if(active) {%>active<% } %>">
             <input class="clr-input" id="tab-<%=menuItem.id%>" type="checkbox" />
             <div class="nav-label">

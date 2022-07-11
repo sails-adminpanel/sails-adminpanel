@@ -20,34 +20,34 @@ export default function bindRoutes() {
     let config = sails.config.adminpanel;
     let policies = config.policies || '';
 
-    //Create a base instance route
-    let baseRoute = config.routePrefix + '/:instance';
+    //Create a base entity route
+    let baseRoute = config.routePrefix + '/:entity';
 
     /**
      * List of records
      */
     sails.router.bind(baseRoute, _bindPolicies(policies, _list));
 
-    if (config.instances) {
-        for (let instance of Object.keys(config.instances)) {
+    if (config.entities) {
+        for (let entity of Object.keys(config.entities)) {
             /**
              * Create new record
              */
-            if (config.instances[instance].add && config.instances[instance].add.controller) {
-                let controller = require(config.instances[instance].add.controller);
-                sails.router.bind(`${config.routePrefix}/${instance}/add`, _bindPolicies(policies, controller.default));
+            if (config.entities[entity].add && config.entities[entity].add.controller) {
+                let controller = require(config.entities[entity].add.controller);
+                sails.router.bind(`${config.routePrefix}/${entity}/add`, _bindPolicies(policies, controller.default));
             } else {
-                sails.router.bind(`${config.routePrefix}/${instance}/add`, _bindPolicies(policies, _add));
+                sails.router.bind(`${config.routePrefix}/${entity}/add`, _bindPolicies(policies, _add));
             }
 
             /**
              * Edit existing record
              */
-            if (config.instances[instance].edit && config.instances[instance].edit.controller) {
-                let controller = require(config.instances[instance].edit.controller);
-                sails.router.bind(`${config.routePrefix}/${instance}/edit/:id`, _bindPolicies(policies, controller.default));
+            if (config.entities[entity].edit && config.entities[entity].edit.controller) {
+                let controller = require(config.entities[entity].edit.controller);
+                sails.router.bind(`${config.routePrefix}/${entity}/edit/:id`, _bindPolicies(policies, controller.default));
             } else {
-                sails.router.bind(`${config.routePrefix}/${instance}/edit/:id`, _bindPolicies(policies, _edit));
+                sails.router.bind(`${config.routePrefix}/${entity}/edit/:id`, _bindPolicies(policies, _edit));
             }
         }
     }

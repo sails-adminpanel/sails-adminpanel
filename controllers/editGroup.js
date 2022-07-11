@@ -3,12 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const adminUtil_1 = require("../lib/adminUtil");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 async function editGroup(req, res) {
-    let instance = adminUtil_1.AdminUtil.findInstanceObject(req);
+    let entity = adminUtil_1.AdminUtil.findEntityObject(req);
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
             return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
         }
-        else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`update-${instance.name}-instance`, req.session.UserAP)) {
+        else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`update-${entity.name}-entity`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
     }
@@ -89,7 +89,7 @@ async function editGroup(req, res) {
         }
     }
     console.log("GROUP", group);
-    return res.viewAdmin("editGroup", { instance: instance, group: group, users: users, groupedTokens: groupedTokens });
+    return res.viewAdmin("editGroup", { entity: entity, group: group, users: users, groupedTokens: groupedTokens });
 }
 exports.default = editGroup;
 ;

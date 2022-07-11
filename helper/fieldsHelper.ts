@@ -34,15 +34,15 @@ export class FieldsHelper {
      *
      * There are several places for field config definition and an inheritance of field configs.
      *
-     * 1. You could use a global `fields` property into `config/adminpanel.js` file into `instances` section.
-     * 2. You could use `fields` property into `instances:action` configuration. This config will overwrite global one
+     * 1. You could use a global `fields` property into `config/adminpanel.js` file into `entities` section.
+     * 2. You could use `fields` property into `entities:action` configuration. This config will overwrite global one
      *
      * ```
      *  module.exports.adminpanel = {
-     *      instances: {
+     *      entities: {
      *          users: {
-     *              title: 'Users', //Menu title for instance
-     *              model: 'User', // Model definition for instance
+     *              title: 'Users', //Menu title for entity
+     *              model: 'User', // Model definition for entity
      *
      *              fields: {
      *                  email: 'User Email', //it will define title for this field in all actions (list/add/edit/view)
@@ -248,23 +248,23 @@ export class FieldsHelper {
      * </code>
      *
      * @param {Request} req Sails.js req object
-     * @param {Object} instance Instance object with `name`, `config`, `model` {@link AdminUtil.findInstanceObject}
+     * @param {Object} entity Entity object with `name`, `config`, `model` {@link AdminUtil.findEntityObject}
      * @param {string=} [type] Type of action that config should be loaded for. Example: list, edit, add, remove, view. Defaut: list
      * @returns {Object} Empty object or pbject with list of properties
      */
-    public static getFields(req, instance, type) {
-        if (!instance.model || !instance.model.attributes) {
+    public static getFields(req, entity, type) {
+        if (!entity.model || !entity.model.attributes) {
             return {};
         }
         //get type of fields to show
         type = type || 'list';
         //get field config for actions
-        let actionConfig = AdminUtil.findActionConfig(instance, type);
-        let fieldsConfig = instance.config.fields || {};
+        let actionConfig = AdminUtil.findActionConfig(entity, type);
+        let fieldsConfig = entity.config.fields || {};
         //Get keys from config
         //var actionConfigFields = _.keys(actionConfig.fields);
         //Getting list of fields from model
-        let modelAttributes = instance.model.attributes
+        let modelAttributes = entity.model.attributes
 
 
         let that = this;
@@ -300,7 +300,7 @@ export class FieldsHelper {
             //Getting config form configuration file
             let fldConfig: any = { key: key, title: key };
             let ignoreField = false; // if set to true, field will be removed from editor/list
-            //Checking global instance fields configuration
+            //Checking global entity fields configuration
             if (fieldsConfig[key] || fieldsConfig[key] === false) {
                 //if config set to false ignoring this field
                 if (fieldsConfig[key] === false) {
@@ -311,7 +311,7 @@ export class FieldsHelper {
                     fldConfig = {...fldConfig, ...tmpCfg};
                 }
             }
-            //Checking inaction instance fields configuration. Should overwrite global one
+            //Checking inaction entity fields configuration. Should overwrite global one
             if (actionConfig.fields[key] || actionConfig.fields[key] === false) {
                 //if config set to false ignoring this field
                 if (actionConfig.fields[key] === false) {

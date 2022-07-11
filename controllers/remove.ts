@@ -8,20 +8,20 @@ export default async function remove(req, res) {
         return res.notFound();
     }
 
-    let instance = AdminUtil.findInstanceObject(req);
-    if (!instance.model) {
+    let entity = AdminUtil.findEntityObject(req);
+    if (!entity.model) {
         req._sails.log.error(new Error('Admin panel: no model found'));
         return res.notFound();
     }
 
-    if (!instance.config.remove) {
-        return res.redirect(instance.uri);
+    if (!entity.config.remove) {
+        return res.redirect(entity.uri);
     }
 
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
             return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
-        } else if (!AccessRightsHelper.havePermission(`delete-${instance.name}-instance`, req.session.UserAP)) {
+        } else if (!AccessRightsHelper.havePermission(`delete-${entity.name}-entity`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
     }
@@ -31,7 +31,7 @@ export default async function remove(req, res) {
      */
     let record;
     try {
-        record = await instance.model.findOne(req.param('id'));
+        record = await entity.model.findOne(req.param('id'));
     } catch (e) {
         if (req.wantsJSON) {
             return res.json({
@@ -56,7 +56,7 @@ export default async function remove(req, res) {
 
     let destroyedRecord;
     try {
-        destroyedRecord = await instance.model.destroyOne(record[instance.config.identifierField || req._sails.config.adminpanel.identifierField]);
+        destroyedRecord = await entity.model.destroyOne(record[entity.config.identifierField || req._sails.config.adminpanel.identifierField]);
     } catch (e) {
         sails.log.error('adminpanel > error', e);
     }
@@ -67,5 +67,5 @@ export default async function remove(req, res) {
         req.session.messages.adminError.push('Record was not removed');
     }
 
-    res.redirect(instance.uri);
+    res.redirect(entity.uri);
 };

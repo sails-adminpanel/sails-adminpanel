@@ -1,5 +1,5 @@
-<% if (adminpanel.menuHelper.hasGlobalActions(instance.config, actionType)) { %>
-    <% var actions = adminpanel.menuHelper.getGlobalActions(instance.config, actionType) %>
+<% if (adminpanel.menuHelper.hasGlobalActions(entity.config, actionType)) { %>
+    <% var actions = adminpanel.menuHelper.getGlobalActions(entity.config, actionType) %>
     <% if (actions && actions.length > 0) { %>
         <% actions.forEach(function(action) { %>
             <% if (havePermission(action.accessRightsToken, req.session.UserAP)) { %>

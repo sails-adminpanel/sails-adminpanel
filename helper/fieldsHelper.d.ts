@@ -32,15 +32,15 @@ export declare class FieldsHelper {
      *
      * There are several places for field config definition and an inheritance of field configs.
      *
-     * 1. You could use a global `fields` property into `config/adminpanel.js` file into `instances` section.
-     * 2. You could use `fields` property into `instances:action` configuration. This config will overwrite global one
+     * 1. You could use a global `fields` property into `config/adminpanel.js` file into `entities` section.
+     * 2. You could use `fields` property into `entities:action` configuration. This config will overwrite global one
      *
      * ```
      *  module.exports.adminpanel = {
-     *      instances: {
+     *      entities: {
      *          users: {
-     *              title: 'Users', //Menu title for instance
-     *              model: 'User', // Model definition for instance
+     *              title: 'Users', //Menu title for entity
+     *              model: 'User', // Model definition for entity
      *
      *              fields: {
      *                  email: 'User Email', //it will define title for this field in all actions (list/add/edit/view)
@@ -117,9 +117,9 @@ export declare class FieldsHelper {
      * </code>
      *
      * @param {Request} req Sails.js req object
-     * @param {Object} instance Instance object with `name`, `config`, `model` {@link AdminUtil.findInstanceObject}
+     * @param {Object} entity Entity object with `name`, `config`, `model` {@link AdminUtil.findEntityObject}
      * @param {string=} [type] Type of action that config should be loaded for. Example: list, edit, add, remove, view. Defaut: list
      * @returns {Object} Empty object or pbject with list of properties
      */
-    static getFields(req: any, instance: any, type: any): {};
+    static getFields(req: any, entity: any, type: any): {};
 }

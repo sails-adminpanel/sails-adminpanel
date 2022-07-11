@@ -1,7 +1,7 @@
 <% include head %>
 <% include headContent %>
 
-<% var idField = adminpanel.configHelper.getIdentifierField(instance.config.model) %>
+<% var idField = adminpanel.configHelper.getIdentifierField(entity.config.model) %>
 
 <div class="horizontal layout">
     <div class="flex">
@@ -12,23 +12,23 @@
 <div class="layout">
 
     <div class="horizontal end-justified layout">
-        <a href="<%= instance.uri %>/">
+        <a href="<%= entity.uri %>/">
             <button raised class="btn">
                 <i class="las la-undo"></i>
                 <%= __("Back to list") %>
             </button>
         </a>
         <!--  !TODO добавить экшен на view -->
-        <% if (instance.config.edit && havePermission(`update-${instance.name}-instance`, req.session.UserAP)) { %>
-            <a href="<%= instance.uri %>/edit/<%= record[idField] %>">
+        <% if (entity.config.edit && havePermission(`update-${entity.name}-entity`, req.session.UserAP)) { %>
+            <a href="<%= entity.uri %>/edit/<%= record[idField] %>">
                 <button raised class="button-green">
                     <i class="las la-plus"></i>
                     <%= __("Edit record") %>
                 </button>
             </a>
         <% } %>
-        <% if (instance.config.remove && havePermission(`delete-${instance.name}-instance`, req.session.UserAP)) { %>
-            <a href="<%= instance.uri %>/remove/<%= record[idField] %>" onclick="return confirm('Are you sure ?');">
+        <% if (entity.config.remove && havePermission(`delete-${entity.name}-entity`, req.session.UserAP)) { %>
+            <a href="<%= entity.uri %>/remove/<%= record[idField] %>" onclick="return confirm('Are you sure ?');">
                 <button raised class="button-red">
                     <i class="las la-trash"></i>
                     <%= __("Remove record") %>

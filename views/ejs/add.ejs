@@ -11,7 +11,7 @@
     </div>
     <div class="layout">
         <div class="nav-header">
-            <a href="<%= instance.uri %>/">
+            <a href="<%= entity.uri %>/">
                 <button raised class="btn">
                 <i class="las la-long-arrow-alt-left"></i>
                 <%= __("Back") %>
@@ -19,7 +19,7 @@
             </a>
         </div>
 
-        <form id="form" action="<%= instance.uri %>/add" method="POST" enctype="multipart/form-data">
+        <form id="form" action="<%= entity.uri %>/add" method="POST" enctype="multipart/form-data">
 
             <%# global variables %>
             <script>

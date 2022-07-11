@@ -73,7 +73,7 @@ But you should use icon class without `la-` prefix. **It will be added automatic
 
 ```javascript
 module.exports.adminpanel = {
-    instances: {
+    entities: {
         user: {
             model: 'User',
             title: 'Users',

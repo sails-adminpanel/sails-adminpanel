@@ -3,12 +3,12 @@ import {AccessRightsHelper} from "../helper/accessRightsHelper";
 
 export default async function editGroup(req, res) {
 
-    let instance = AdminUtil.findInstanceObject(req);
+    let entity = AdminUtil.findEntityObject(req);
 
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
             return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
-        } else if (!AccessRightsHelper.havePermission(`update-${instance.name}-instance`, req.session.UserAP)) {
+        } else if (!AccessRightsHelper.havePermission(`update-${entity.name}-entity`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
     }
@@ -99,5 +99,5 @@ export default async function editGroup(req, res) {
 
     console.log("GROUP", group)
 
-    return res.viewAdmin("editGroup", { instance: instance, group: group, users: users, groupedTokens: groupedTokens });
+    return res.viewAdmin("editGroup", { entity: entity, group: group, users: users, groupedTokens: groupedTokens });
 };

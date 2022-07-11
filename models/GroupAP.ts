@@ -1,5 +1,5 @@
 import WaterlineModel from "../interfaces/waterlineModel";
-import WaterlineInstance from "../interfaces/waterlineInstance";
+import WaterlineEntity from "../interfaces/waterlineEntity";
 import UserAP from "./UserAP";
 import {AccessRightsToken} from "../interfaces/types";
 
@@ -25,7 +25,7 @@ let attributes = {
 
 };
 
-type attributes = typeof attributes & WaterlineInstance;
+type attributes = typeof attributes & WaterlineEntity;
 interface GroupAP extends attributes {}
 export default GroupAP;
 

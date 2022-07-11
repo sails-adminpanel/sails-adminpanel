@@ -5,7 +5,7 @@
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 import WaterlineModel from "../interfaces/waterlineModel";
-import WaterlineInstance from "../interfaces/waterlineInstance";
+import WaterlineEntity from "../interfaces/waterlineEntity";
 import GroupAP from "./GroupAP";
 import {password} from "../assets/handsontable";
 
@@ -41,7 +41,7 @@ let attributes = {
 
 };
 
-type attributes = typeof attributes & WaterlineInstance;
+type attributes = typeof attributes & WaterlineEntity;
 interface UserAP extends attributes {}
 export default UserAP;
 

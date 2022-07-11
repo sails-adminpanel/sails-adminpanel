@@ -8,28 +8,28 @@ export default async function view(req, res) {
         return res.notFound();
     }
 
-    let instance = AdminUtil.findInstanceObject(req);
-    if (!instance.config.view) {
-        return res.redirect(instance.uri);
+    let entity = AdminUtil.findEntityObject(req);
+    if (!entity.config.view) {
+        return res.redirect(entity.uri);
     }
 
-    if (!instance.model) {
+    if (!entity.model) {
         return res.notFound();
     }
 
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
             return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
-        } else if (!AccessRightsHelper.havePermission(`read-${instance.name}-instance`, req.session.UserAP)) {
+        } else if (!AccessRightsHelper.havePermission(`read-${entity.name}-entity`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
     }
 
-    let fields = FieldsHelper.getFields(req, instance, 'view');
+    let fields = FieldsHelper.getFields(req, entity, 'view');
 
     let record;
     try {
-        record = await instance.model.findOne(req.param('id')).populateAll();
+        record = await entity.model.findOne(req.param('id')).populateAll();
     } catch (e) {
         req._sails.log.error('Admin edit error: ');
         req._sails.log.error(e);
@@ -37,7 +37,7 @@ export default async function view(req, res) {
     }
 
     res.viewAdmin({
-        instance: instance,
+        entity: entity,
         record: record,
         fields: fields
     });

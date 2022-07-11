@@ -7,13 +7,13 @@ const Jimp = require('jimp');
 export default function upload(req, res) {
 
     console.log('admin > upload');
-    let instance = AdminUtil.findInstanceObject(req);
+    let entity = AdminUtil.findEntityObject(req);
 
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
             return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
-        } else if (!AccessRightsHelper.havePermission(`update-${instance.name}-instance`, req.session.UserAP) &&
-            !AccessRightsHelper.havePermission(`create-${instance.name}-instance`, req.session.UserAP)) {
+        } else if (!AccessRightsHelper.havePermission(`update-${entity.name}-entity`, req.session.UserAP) &&
+            !AccessRightsHelper.havePermission(`create-${entity.name}-entity`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
     }
@@ -33,7 +33,7 @@ export default function upload(req, res) {
         }
 
         // set upload directory
-        const dirDownload = '/uploads/' + instance.name + '/' + req.body.field + '/';
+        const dirDownload = '/uploads/' + entity.name + '/' + req.body.field + '/';
         const dir = '/.tmp/public' + dirDownload;
         const assetsDir = process.cwd() + '/assets' + dirDownload;
         const fullDir = process.cwd() + dir;

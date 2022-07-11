@@ -1,9 +1,9 @@
 import ORMModel from "./ORMModel";
-import {InstanceConfig} from "./adminpanelConfig";
+import {EntityConfig} from "./adminpanelConfig";
 
-export interface Instance {
+export interface Entity {
     name: string
-    config: InstanceConfig
+    config: EntityConfig
     model: ORMModel
     uri: string
 }

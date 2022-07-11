@@ -21,7 +21,7 @@ function randomFaIcon(params) {
     ];
     return faIcons[Math.floor(Math.random() * faIcons.length)];
 }
-let instances = {
+let entities = {
     navigation: {
         title: "Навигация",
         model: "navigation",
@@ -216,7 +216,7 @@ setTimeout(() => {
     sails.after(["hook:orm:loaded"], () => {
         Object.keys(sails.models).forEach((modelname) => {
             let modelName = sails.models[modelname].globalId;
-            instances[modelName] = {
+            entities[modelName] = {
                 title: modelName + " dev",
                 model: modelName,
                 fields: {
@@ -241,5 +241,5 @@ let adminpanel = {
     // title: "hello",
     // text: "world"
     },
-    instances: instances
+    entities: entities
 };

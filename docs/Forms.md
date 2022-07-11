@@ -1,6 +1,6 @@
 # Forms
 
-You can add forms when you have no need to create an instance. For example, for
+You can add forms when you have no need to create an entity. For example, for
 single block on page that will not be repeated. Or like a link with model settings.
 
 You can add forms directly to adminpanel configuration or put them in files with

@@ -1,5 +1,5 @@
 <% include head %>
-<% var instance = {uri: sails.config.adminpanel.routePrefix + '/form/' + slug, config: {model: false} } %>
+<% var entity = {uri: sails.config.adminpanel.routePrefix + '/form/' + slug, config: {model: false} } %>
 <% include headContent %>
 
 <form id="form" action="<%- sails.config.adminpanel.routePrefix %>/form/<%= slug %>"
@@ -22,7 +22,7 @@
             <% var value = formData[key].value %>
 
             <div class="admin-panel__widget">
-                <%- include("mixin/fieldWidget.ejs", {field: field, instance: instance, value: value, key: key}) %>
+                <%- include("mixin/fieldWidget.ejs", {field: field, entity: entity, value: value, key: key}) %>
             </div>
         <% }) %>
         <% if (sails.config.security.csrf) { %>

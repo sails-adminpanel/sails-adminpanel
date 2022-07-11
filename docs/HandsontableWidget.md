@@ -11,7 +11,7 @@ can find [here](https://handsontable.com/docs/language/#list-of-available-langua
 
 ```javascript
 module.exports.adminpanel = {
-    instances: {
+    entities: {
         pages: {
             title: 'Pages', 
             model: 'Page',

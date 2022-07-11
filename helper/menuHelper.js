@@ -46,60 +46,60 @@ class MenuHelper {
     /**
      * Check if global actions buttons added to action
      *
-     * @param {Object} instanceConfig
+     * @param {Object} entityConfig
      * @param {string=} [action] Defaults to `list`
      * @returns {boolean}
      */
-    hasGlobalActions(instanceConfig, action) {
+    hasGlobalActions(entityConfig, action) {
         action = action || 'list';
-        if (!instanceConfig[action] || !instanceConfig[action].actions || !instanceConfig[action].actions.global) {
+        if (!entityConfig[action] || !entityConfig[action].actions || !entityConfig[action].actions.global) {
             return false;
         }
-        let actions = instanceConfig[action].actions.global;
+        let actions = entityConfig[action].actions.global;
         return actions.length > 0;
     }
     /**
      * Check if inline actions buttons added to action
      *
-     * @param {Object} instanceConfig
+     * @param {Object} entityConfig
      * @param {string=} [action] Defaults to `list`
      * @returns {boolean}
      */
-    hasInlineActions(instanceConfig, action) {
+    hasInlineActions(entityConfig, action) {
         action = action || 'list';
-        if (!instanceConfig[action] || !instanceConfig[action].actions || !instanceConfig[action].actions.inline) {
+        if (!entityConfig[action] || !entityConfig[action].actions || !entityConfig[action].actions.inline) {
             return false;
         }
-        let actions = instanceConfig[action].actions.inline;
+        let actions = entityConfig[action].actions.inline;
         return actions.length > 0;
     }
     /**
      * Get list of custom global buttons for action
      *
-     * @param {Object} instanceConfig
+     * @param {Object} entityConfig
      * @param {string=} [action]
      * @returns {Array}
      */
-    getGlobalActions(instanceConfig, action) {
+    getGlobalActions(entityConfig, action) {
         action = action || 'list';
-        if (!this.hasGlobalActions(instanceConfig, action)) {
+        if (!this.hasGlobalActions(entityConfig, action)) {
             return [];
         }
-        return instanceConfig[action].actions.global;
+        return entityConfig[action].actions.global;
     }
     /**
      * Get list of custom inline buttons for action
      *
-     * @param {Object} instanceConfig
+     * @param {Object} entityConfig
      * @param {string=} [action]
      * @returns {Array}
      */
-    getInlineActions(instanceConfig, action) {
+    getInlineActions(entityConfig, action) {
         action = action || 'list';
-        if (!this.hasInlineActions(instanceConfig, action)) {
+        if (!this.hasInlineActions(entityConfig, action)) {
             return [];
         }
-        return instanceConfig[action].actions.inline;
+        return entityConfig[action].actions.inline;
     }
     /**
      * Replace fields in given URL and binds to model fields.
@@ -132,7 +132,7 @@ class MenuHelper {
         return url;
     }
     /**
-     * Get list of instance menus that was not bound to groups
+     * Get list of entity menus that was not bound to groups
      *
      * @returns {Array}
      */
@@ -152,8 +152,8 @@ class MenuHelper {
                 });
             });
         }
-        if (MenuHelper.config.instances) {
-            Object.entries(MenuHelper.config.instances).forEach(function ([key, val]) {
+        if (MenuHelper.config.entities) {
+            Object.entries(MenuHelper.config.entities).forEach(function ([key, val]) {
                 if (!val.hide) {
                     if (val.tools && val.tools.length > 0 && val.tools[0].id !== "overview") {
                         val.tools.unshift({
@@ -169,7 +169,7 @@ class MenuHelper {
                         icon: val.icon || null,
                         actions: val.tools || null,
                         id: val.title.replace(" ", "_"),
-                        instanceName: key
+                        entityName: key
                     });
                 }
             });

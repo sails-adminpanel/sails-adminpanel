@@ -3,23 +3,23 @@ import { FieldsHelper } from "../helper/fieldsHelper";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 
 export default async function list(req, res) {
-    let instance = AdminUtil.findInstanceObject(req);
-    if (!instance.model) {
+    let entity = AdminUtil.findEntityObject(req);
+    if (!entity.model) {
         return res.notFound();
     }
 
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
             return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
-        } else if (!AccessRightsHelper.havePermission(`read-${instance.name}-instance`, req.session.UserAP)) {
+        } else if (!AccessRightsHelper.havePermission(`read-${entity.name}-entity`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
     }
 
-    let fields = FieldsHelper.getFields(req, instance, 'list');
+    let fields = FieldsHelper.getFields(req, entity, 'list');
 
     res.viewAdmin({
-        instance: instance,
+        entity: entity,
         fields: fields,
         config: sails.adminpanel
     });

@@ -5,7 +5,7 @@
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 import WaterlineModel from "../interfaces/waterlineModel";
-import WaterlineInstance from "../interfaces/waterlineInstance";
+import WaterlineEntity from "../interfaces/waterlineEntity";
 import GroupAP from "./GroupAP";
 declare let attributes: {
     id: {
@@ -24,7 +24,7 @@ declare let attributes: {
     isAdministrator: boolean;
     groups: GroupAP[];
 };
-declare type attributes = typeof attributes & WaterlineInstance;
+declare type attributes = typeof attributes & WaterlineEntity;
 interface UserAP extends attributes {
 }
 export default UserAP;

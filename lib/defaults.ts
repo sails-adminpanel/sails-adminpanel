@@ -43,7 +43,7 @@ const adminpanelConfig: AdminpanelConfig = {
     /**
      * List of admin pages
      */
-    instances: {
+    entities: {
         usersap: {
             title: "Users AP",
             model: "userap",

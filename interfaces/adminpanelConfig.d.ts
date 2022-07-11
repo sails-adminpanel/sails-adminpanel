@@ -1,9 +1,9 @@
 export interface AdminpanelConfig {
     /**
-     * Instances configuration
+     * Entitys configuration
      * */
-    instances: {
-        [key:string]: InstanceConfig
+    entities: {
+        [key:string]: EntityConfig
     }
     /**
      * For custom adminpanel sections, displays inside header
@@ -102,18 +102,18 @@ export interface AdminpanelConfig {
     showVersion?: boolean
 }
 
-export interface InstanceConfig {
+export interface EntityConfig {
     title: string
     /**
      * Model name
      * */
     model: string
     /**
-     * Hide instance in left navbar
+     * Hide entity in left navbar
      * */
     hide: boolean
     /**
-     * Instance fields configuration
+     * Entity fields configuration
      * */
     fields?: Fields
     /**
@@ -149,11 +149,11 @@ export interface InstanceConfig {
      * */
     view?: boolean
     /**
-     * Instance actions displayed in left navbar for specific instance
+     * Entity actions displayed in left navbar for specific entity
      * */
     tools?: HrefConfig[]
     /**
-     * Instance icon
+     * Entity icon
      * */
     icon?: string
     /**
@@ -277,9 +277,9 @@ export interface CreateUpdateConfig {
      *
      * function(reqData) {return reqData}
      * */
-    instanceModifier?: Function
+    entityModifier?: Function
     /**
-     * You can change standard controller for any instance by this property
+     * You can change standard controller for any entity by this property
      * */
     controller?: string
 }

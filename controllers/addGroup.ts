@@ -3,12 +3,12 @@ import {AccessRightsHelper} from "../helper/accessRightsHelper";
 
 export default async function addGroup(req, res) {
 
-    let instance = AdminUtil.findInstanceObject(req);
+    let entity = AdminUtil.findEntityObject(req);
 
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
             return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
-        } else if (!AccessRightsHelper.havePermission(`create-${instance.name}-instance`, req.session.UserAP)) {
+        } else if (!AccessRightsHelper.havePermission(`create-${entity.name}-entity`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
     }
@@ -67,5 +67,5 @@ export default async function addGroup(req, res) {
         console.log(group)
     }
 
-    return res.viewAdmin("addGroup", { instance: instance, users: users, groupedTokens: groupedTokens });
+    return res.viewAdmin("addGroup", { entity: entity, users: users, groupedTokens: groupedTokens });
 };

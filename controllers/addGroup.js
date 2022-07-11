@@ -3,12 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const adminUtil_1 = require("../lib/adminUtil");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 async function addGroup(req, res) {
-    let instance = adminUtil_1.AdminUtil.findInstanceObject(req);
+    let entity = adminUtil_1.AdminUtil.findEntityObject(req);
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
             return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
         }
-        else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`create-${instance.name}-instance`, req.session.UserAP)) {
+        else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`create-${entity.name}-entity`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
     }
@@ -59,7 +59,7 @@ async function addGroup(req, res) {
         }
         console.log(group);
     }
-    return res.viewAdmin("addGroup", { instance: instance, users: users, groupedTokens: groupedTokens });
+    return res.viewAdmin("addGroup", { entity: entity, users: users, groupedTokens: groupedTokens });
 }
 exports.default = addGroup;
 ;

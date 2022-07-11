@@ -11,5 +11,5 @@ export default function welcome(req, res) {
         return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
     }
 
-    return res.viewAdmin('welcome', { instance: "instance" });
+    return res.viewAdmin('welcome', { entity: "entity" });
 };

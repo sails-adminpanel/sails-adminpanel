@@ -8,19 +8,19 @@ async function remove(req, res) {
         req._sails.log.error(new Error('Admin panel: No id for record provided'));
         return res.notFound();
     }
-    let instance = adminUtil_1.AdminUtil.findInstanceObject(req);
-    if (!instance.model) {
+    let entity = adminUtil_1.AdminUtil.findEntityObject(req);
+    if (!entity.model) {
         req._sails.log.error(new Error('Admin panel: no model found'));
         return res.notFound();
     }
-    if (!instance.config.remove) {
-        return res.redirect(instance.uri);
+    if (!entity.config.remove) {
+        return res.redirect(entity.uri);
     }
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
             return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
         }
-        else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`delete-${instance.name}-instance`, req.session.UserAP)) {
+        else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`delete-${entity.name}-entity`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
     }
@@ -29,7 +29,7 @@ async function remove(req, res) {
      */
     let record;
     try {
-        record = await instance.model.findOne(req.param('id'));
+        record = await entity.model.findOne(req.param('id'));
     }
     catch (e) {
         if (req.wantsJSON) {
@@ -53,7 +53,7 @@ async function remove(req, res) {
     console.log('admin > remove > record > ', record);
     let destroyedRecord;
     try {
-        destroyedRecord = await instance.model.destroyOne(record[instance.config.identifierField || req._sails.config.adminpanel.identifierField]);
+        destroyedRecord = await entity.model.destroyOne(record[entity.config.identifierField || req._sails.config.adminpanel.identifierField]);
     }
     catch (e) {
         sails.log.error('adminpanel > error', e);
@@ -64,7 +64,7 @@ async function remove(req, res) {
     else {
         req.session.messages.adminError.push('Record was not removed');
     }
-    res.redirect(instance.uri);
+    res.redirect(entity.uri);
 }
 exports.default = remove;
 ;

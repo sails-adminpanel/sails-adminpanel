@@ -1,7 +1,7 @@
 <% include head %>
 <% include headContent %>
 
-    <% var idField = adminpanel.configHelper.getIdentifierField(instance.config.model) %>
+    <% var idField = adminpanel.configHelper.getIdentifierField(entity.config.model) %>
         <% var data = record %>
         <% var config = adminpanel.configHelper.getConfig() %>
 
@@ -13,7 +13,7 @@
             </div>
             <div class="layout">
                 <div class="nav-header">
-                    <a href="<%= instance.uri %>/">
+                    <a href="<%= entity.uri %>/">
                         <button raised class="btn">
                 <i class="las la-long-arrow-alt-left"></i>
                 <%= __("Back") %>
@@ -24,8 +24,8 @@
                 Скрыть
                 <i class="las la-eye-slash"></i>
             </button> -->
-            <% if (instance.config.remove && havePermission(`delete-${instance.name}-instance`, req.session.UserAP)) { %>
-                <a href="<%= instance.uri %>/remove/<%= record[idField] %>" onclick="return confirm('<%= __('Are you sure?') %>')">
+            <% if (entity.config.remove && havePermission(`delete-${entity.name}-entity`, req.session.UserAP)) { %>
+                <a href="<%= entity.uri %>/remove/<%= record[idField] %>" onclick="return confirm('<%= __('Are you sure?') %>')">
                     <button class="btn-nav">
                     <%= __("Delete") %>
                     <i class="las la-trash-alt"></i>
@@ -33,7 +33,7 @@
             <% } %>
                     </div>
                 </div>
-                <form id="form" action="<%= instance.uri %>/edit/<%= record[idField] %>" method="POST" enctype="multipart/form-data">
+                <form id="form" action="<%= entity.uri %>/edit/<%= record[idField] %>" method="POST" enctype="multipart/form-data">
 
                     <%# global variables %>
                     <script>

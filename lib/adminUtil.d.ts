@@ -1,13 +1,13 @@
-import { Instance } from "../interfaces/types";
-import { InstanceConfig } from "../interfaces/adminpanelConfig";
+import { Entity } from "../interfaces/types";
+import { EntityConfig } from "../interfaces/adminpanelConfig";
 import ORMModel from "../interfaces/ORMModel";
 export declare class AdminUtil {
     /**
-     * Default configuration for instance
+     * Default configuration for entity
      *
      * @see AdminUtil.findConfig
      */
-    private static _defaultInstanceConfig;
+    private static _defaultEntityConfig;
     /**
      * Default configs that will be returned for action. If nothing exists in config file.
      *
@@ -15,23 +15,23 @@ export declare class AdminUtil {
      */
     private static _defaultActionConfig;
     /**
-     * Check if given instance config has all required properties
+     * Check if given entity config has all required properties
      *
      * @param {Object} config
      * @returns {boolean}
      * @private
      */
-    private static _isValidInstanceConfig;
+    private static _isValidEntityConfig;
     /**
-     * Normalizing instance config.
+     * Normalizing entity config.
      * Will return fulfilled configuration object.
      *
-     * @see AdminUtil._isValidInstanceConfig
+     * @see AdminUtil._isValidEntityConfig
      * @param {Object} config
      * @returns {Object}
      * @private
      */
-    private static _normalizeInstanceConfig;
+    private static _normalizeEntityConfig;
     /**
      * Normalize action config object
      *
@@ -54,20 +54,20 @@ export declare class AdminUtil {
      */
     static getModel(name: string): ORMModel;
     /**
-     * Get instance name
+     * Get entity name
      *
      * @param {Request} req
      * @returns {?string}
      */
-    static findInstanceName(req: any): string;
+    static findEntityName(req: any): string;
     /**
      * Searches for config from admin panel
      *
      * @param {Request} req
-     * @param {String} instanceName
+     * @param {String} entityName
      * @returns {?Object}
      */
-    static findInstanceConfig(req: any, instanceName: any): InstanceConfig;
+    static findEntityConfig(req: any, entityName: any): EntityConfig;
     /**
      * Will get action config from configuration file depending to given action
      *
@@ -87,24 +87,24 @@ export declare class AdminUtil {
      *  }
      *
      * @throws {Error} if req or actionType not passed
-     * @param {Object} instance Instance object with `name`, `config`, `model` {@link AdminUtil.findInstanceObject}
+     * @param {Object} entity Entity object with `name`, `config`, `model` {@link AdminUtil.findEntityObject}
      * @param {string} actionType Type of action that config should be loaded for. Example: list, edit, add, remove, view.
      * @returns {Object} Will return object with configs or default configs.
      */
-    static findActionConfig(instance: any, actionType: any): any;
+    static findActionConfig(entity: any, actionType: any): any;
     /**
      * Trying to find model by request
      *
-     * @see AdminUtil._isValidInstanceConfig
+     * @see AdminUtil._isValidEntityConfig
      * @param {Request} req
-     * @param {Object} instanceConfig
+     * @param {Object} entityConfig
      * @returns {?Model}
      */
-    static findModel(req: any, instanceConfig: any): ORMModel;
+    static findModel(req: any, entityConfig: any): ORMModel;
     /**
-     * Will create instance object from request.
+     * Will create entity object from request.
      *
-     * Instance Object will have this format:
+     * Entity Object will have this format:
      *
      * @example
      * ```javascript
@@ -119,5 +119,5 @@ export declare class AdminUtil {
      * @param req
      * @returns {Object}
      */
-    static findInstanceObject(req: any): Instance;
+    static findEntityObject(req: any): Entity;
 }

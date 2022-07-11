@@ -22,35 +22,35 @@ export declare class MenuHelper {
     /**
      * Check if global actions buttons added to action
      *
-     * @param {Object} instanceConfig
+     * @param {Object} entityConfig
      * @param {string=} [action] Defaults to `list`
      * @returns {boolean}
      */
-    hasGlobalActions(instanceConfig: any, action: any): boolean;
+    hasGlobalActions(entityConfig: any, action: any): boolean;
     /**
      * Check if inline actions buttons added to action
      *
-     * @param {Object} instanceConfig
+     * @param {Object} entityConfig
      * @param {string=} [action] Defaults to `list`
      * @returns {boolean}
      */
-    hasInlineActions(instanceConfig: any, action: any): boolean;
+    hasInlineActions(entityConfig: any, action: any): boolean;
     /**
      * Get list of custom global buttons for action
      *
-     * @param {Object} instanceConfig
+     * @param {Object} entityConfig
      * @param {string=} [action]
      * @returns {Array}
      */
-    getGlobalActions(instanceConfig: any, action: any): any;
+    getGlobalActions(entityConfig: any, action: any): any;
     /**
      * Get list of custom inline buttons for action
      *
-     * @param {Object} instanceConfig
+     * @param {Object} entityConfig
      * @param {string=} [action]
      * @returns {Array}
      */
-    getInlineActions(instanceConfig: any, action: any): any;
+    getInlineActions(entityConfig: any, action: any): any;
     /**
      * Replace fields in given URL and binds to model fields.
      *
@@ -63,7 +63,7 @@ export declare class MenuHelper {
      */
     static replaceModelFields(url: any, model: any): any;
     /**
-     * Get list of instance menus that was not bound to groups
+     * Get list of entity menus that was not bound to groups
      *
      * @returns {Array}
      */

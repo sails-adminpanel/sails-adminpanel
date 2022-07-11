@@ -3,7 +3,7 @@
 
 ```javascript
 module.exports.adminpanel = {
-    instances: {
+    entities: {
         users: {
             title: 'Users', 
             model: 'User', 
