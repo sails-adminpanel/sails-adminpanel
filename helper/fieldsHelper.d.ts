@@ -33,11 +33,11 @@ export declare class FieldsHelper {
      * There are several places for field config definition and an inheritance of field configs.
      *
      * 1. You could use a global `fields` property into `config/adminpanel.js` file into `entities` section.
-     * 2. You could use `fields` property into `entities:action` configuration. This config will overwrite global one
+     * 2. You could use `fields` property into `models:action` configuration. This config will overwrite global one
      *
      * ```
      *  module.exports.adminpanel = {
-     *      entities: {
+     *      models: {
      *          users: {
      *              title: 'Users', //Menu title for entity
      *              model: 'User', // Model definition for entity
