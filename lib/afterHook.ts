@@ -29,14 +29,17 @@ export default async function () {
         require('./bindRoutes').default();
     })
 
+
+    // binding forms from files
+    bindForms();
+
     //bind access rights
     bindAccessRights();
 
     //binding authorization
     await bindAuthorization();
 
-    // binding forms from files
-    bindForms();
+
 
     if (sails.hooks.i18n && sails.hooks.i18n.appendLocale) {
         sails.after(["hook:i18n:loaded"], async () => {
