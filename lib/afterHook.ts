@@ -12,7 +12,7 @@ export default async function () {
     // bind config for views
     require('./bindConfig').default();
 
-    if (!sails.config.adminpanel.models && sails.config.adminpanel.instances) {
+    if (sails.config.adminpanel.instances) {
         sails.log.warn('\x1b[33m%s\x1b[0m', "sails.config.adminpanel.instances is deprecated")
         sails.log.warn('\x1b[33m%s\x1b[0m', "use sails.config.adminpanel.models instead")
         sails.log.warn('\x1b[33m%s\x1b[0m', "sails.config.adminpanel.instances will not be supported anymore in version 3.0.0")
