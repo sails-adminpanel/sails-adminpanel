@@ -8,6 +8,7 @@ import _view from "../controllers/view";
 import _remove from "../controllers/remove";
 import _upload from "../controllers/upload";
 import _form from "../controllers/form"
+import _normalizeNavigationConfig from "../controllers/normalizeNavigationConfig"
 
 export default function bindRoutes() {
 
@@ -29,6 +30,12 @@ export default function bindRoutes() {
 
     //Create a base entity route
     let baseRoute = config.routePrefix + '/:entityType/:entityName';
+
+    /**
+     * Do widget helper functions (for now only one case handled)
+     * @todo for custom widgets api we will have to create universal controller that will call methods from any custom widgets
+     */
+    sails.router.bind(baseRoute + '/widget', _bindPolicies(policies, _normalizeNavigationConfig));
 
     /**
      * List of records
@@ -77,7 +84,6 @@ export default function bindRoutes() {
      * Create a default dashboard
      * @todo define information that should be shown here
      */
-
     if (Boolean(config.dashboard)) {
         sails.router.bind(config.routePrefix, _bindPolicies(policies, _dashboard));
     } else {

@@ -225,6 +225,14 @@ interface NavigationOptionsField {
      * */
     displacementControl?: boolean
     /**
+     * forbid/allow adding new property in pop-up
+     * */
+    disableAddingProperty?: boolean
+    /**
+     * forbid/allow deleting new property in pop-up
+     * */
+    disableDeletingProperty?: boolean
+    /**
      * add list of properties that can be chosen
      * */
     propertyList?: {
@@ -233,6 +241,7 @@ interface NavigationOptionsField {
             title: string
             description?: string
             required?: string
+            options?: Function
         }
     }
     /**

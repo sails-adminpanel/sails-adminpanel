@@ -3,15 +3,16 @@
         <%= field.config.disabled && 'disabled'%>
         name="<%= key %>"
         id="form-<%= key %>"
-        rows="10" hidden><%-JSON.stringify(value)%></textarea>
+        rows="10" ><%-JSON.stringify(value)%></textarea>
 
 <script>
-    var options<%=key%> = <%- JSON.stringify(field.config.options) %>
-    new EditNavigation({
-        ...options<%=key%>,
-        element: '<%=key%>-container',
-        field: '<%=key%>',
-        data: $('#form-<%=key%>').val(),
-    });
-
+    $.post("<%= entity.uri %>/widget", {key: "<%=key%>"})
+        .done(function( options<%=key%> ) {
+            new EditNavigation({
+                ...options<%=key%>,
+                element: '<%=key%>-container',
+                field: '<%=key%>',
+                data: $('#form-<%=key%>').val(),
+            });
+        });
 </script>
