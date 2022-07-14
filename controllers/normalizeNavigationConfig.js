@@ -11,7 +11,13 @@ async function normalizeNavigationConfig(req, res) {
             return res.sendStatus(403);
         }
     }
-    let editNavigationWidgetConfig = sails.config.adminpanel[`${req.param("entityType")}s`][req.param("entityName")].fields[req.body.key].options;
+    let editNavigationWidgetConfig;
+    if (req.param("entityType") === "model") {
+        editNavigationWidgetConfig = sails.config.adminpanel[`${req.param("entityType")}s`][req.param("entityName")].fields[req.body.key].options;
+    }
+    else {
+        editNavigationWidgetConfig = sails.config.adminpanel[`${req.param("entityType")}s`].data[req.param("entityName")][req.body.key].options;
+    }
     let normalizedConfig = await widgetHelper_1.WidgetHelper.editNavigationConfigNormalize(editNavigationWidgetConfig);
     return res.send(normalizedConfig);
 }
