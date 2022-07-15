@@ -25,11 +25,11 @@ async function form(req, res) {
             return res.status(500).send("Data is empty");
         }
         for (let field of Object.keys(req.body)) {
-            sails.config.adminpanel.forms.set(slug, field, req.body[field]);
+            await sails.config.adminpanel.forms.set(slug, field, req.body[field]);
         }
     }
     for (let key of Object.keys(form)) {
-        let value = sails.config.adminpanel.forms.get(slug, key);
+        let value = await sails.config.adminpanel.forms.get(slug, key);
         if (value) {
             form[key].value = value;
         }
