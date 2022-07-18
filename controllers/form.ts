@@ -17,6 +17,17 @@ export default async function form(req, res) {
         }
     }
 
+    for (let prop in req.body) {
+        try {
+            req.body[prop] = JSON.parse(req.body[prop]);
+        } catch (e) {
+            if (typeof req.body[prop] === "string" && req.body[prop].replace(/(\r\n|\n|\r|\s{2,})/gm, "") &&
+                e.message !== "Unexpected end of JSON input" && !/Unexpected token . in JSON at position \d/.test(e.message)) {
+                sails.log.error(JSON.stringify(req.body[prop]), e);
+            }
+        }
+    }
+
     let form = await FormHelper.get(slug);
 
     if (!form) {

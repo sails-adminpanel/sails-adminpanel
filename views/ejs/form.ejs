@@ -2,9 +2,14 @@
 <% var entity = {uri: sails.config.adminpanel.routePrefix + '/form/' + slug, config: {model: false} } %>
 <% include headContent %>
 
-<form id="form" action="<%- sails.config.adminpanel.routePrefix %>/form/<%= slug %>"
-      method="POST" enctype="multipart/form-data">
+<form id="form" action="<%- sails.config.adminpanel.routePrefix %>/form/<%= slug %>" method="POST" enctype="multipart/form-data">
     <div class="layout">
+        <%# global variables %>
+        <script>
+            var jsonEditor = {};
+            var tables = {};
+        </script>
+
         <% Object.keys(formData).forEach(function(key) { %>
             <label class="admin-panel__title" for="form-<%=key%>"><%= formData[key].title %></label>
             <% if(formData[key].tooltip) { %>
@@ -38,4 +43,34 @@
     </div>
 </form>
 
+<script>
+    function submitForm() {
+        // Assign JSONEditor value to form textarea
+        for (var id in jsonEditor) {
+            try {
+                var json = jsonEditor[id].get();
+                $('#form-' + id).val(JSON.stringify(json));
+            } catch (e) {
+                alert('JSON is invalid.');
+                $('#form-' + id).show().focus().hide();
+                jsonEditor[id].focus();
+                return false;
+            }
+        }
+        ;
+
+        for (var id in tables) {
+            try {
+                var table = tables[id].getData().map((item) => {
+                    return [null].concat(item)
+                });
+                $('#form-' + id).val(JSON.stringify(table));
+            } catch (e) {
+                alert('Table is invalid!');
+                return false;
+            }
+        }
+        document.getElementById('form').submit();
+    }
+</script>
 

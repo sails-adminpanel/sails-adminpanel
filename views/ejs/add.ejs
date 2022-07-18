@@ -1,89 +1,92 @@
 <% include head %>
 <% include headContent %>
+<% var config = adminpanel.configHelper.getConfig() %>
 
-    <% var config = adminpanel.configHelper.getConfig() %>
-
-    <div class="horizontal layout">
-        <div class="flex">
-            <% var actionType = 'add' %>
-                <% include mixin/globalActions %>
-        </div>
+<div class="horizontal layout">
+    <div class="flex">
+        <% var actionType = 'add' %>
+        <% include mixin/globalActions %>
     </div>
-    <div class="layout">
-        <div class="nav-header">
-            <a href="<%= entity.uri %>/">
-                <button raised class="btn">
+</div>
+<div class="layout">
+    <div class="nav-header">
+        <a href="<%= entity.uri %>/">
+            <button raised class="btn">
                 <i class="las la-long-arrow-alt-left"></i>
                 <%= __("Back") %>
             </button>
-            </a>
-        </div>
-
-        <form id="form" action="<%= entity.uri %>/add" method="POST" enctype="multipart/form-data">
-
-            <%# global variables %>
-            <script>
-                var jsonEditor = {};
-                var aceCounter = 0;
-                let editor = [];
-                let textarea = [];
-                var tables = {};
-            </script>
-
-            <% Object.keys(fields).forEach(function(key) { %>
-                <% if ((!config.showORMtime) && (key === 'createdAt' || key === 'updatedAt')) return %>
-                <label class="admin-panel__title" for="form-<%=key%>"><%= __(fields[key].config.title) %></label>
-                <% if(fields[key].config.tooltip) {%>
-                    <a href="javascript:void(0)" role="tooltip" aria-haspopup="true" class="tooltip tooltip-md tooltip-top-right">
-                        <i class="las la-info-circle"></i>
-                        <span class="tooltip-content"><%= __(fields[key].config.tooltip) %></span>
-                    </a>
-                    <% } %>
-                        <% var field = fields[key] %>
-                            <% var value = data[key] %>
-                                <div class="admin-panel__widget">
-                                    <% include mixin/fieldWidget %>
-                                </div>
-                                <% }) %>
-                                    <% if (adminpanel.configHelper.isCsrfEnabled()) { %>
-                                        <div>
-                                            <input class="clr-input" type="hidden" name="_csrf" value="<%= _csrf %>" />
-                                        </div>
-                                    <% } %>
-                                    <p>
-                                        <button raised class="btn-save" id="submit" onclick="submitForm()">
-                <%= __("Save") %>
-            </button>
-                                    </p>
-        </form>
+        </a>
     </div>
 
-    <script>
-        function submitForm() {
-            // Assign JSONEditor value to form textarea
-            for (var id in jsonEditor) {
-                try {
-                    var json = jsonEditor[id].get();
-                    $('#form-' + id).val(JSON.stringify(json));
-                } catch (e) {
-                    alert('JSON is invalid.');
-                    $('#form-' + id).show().focus().hide();
-                    jsonEditor[id].focus();
-                    return false;
-                }
-            };
+    <form id="form" action="<%= entity.uri %>/add" method="POST" enctype="multipart/form-data">
 
-            for (var id in tables) {
-                try {
-                    var table = tables[id].getData().map((item) => {return [null].concat(item)});
-                    $('#form-' + id).val(JSON.stringify(table));
-                } catch (e) {
-                    alert('Table is invalid!');
-                    return false;
-                }
+        <%# global variables %>
+        <script>
+            var jsonEditor = {};
+            var aceCounter = 0;
+            let editor = [];
+            let textarea = [];
+            var tables = {};
+        </script>
+
+        <% Object.keys(fields).forEach(function(key) { %>
+            <% if ((!config.showORMtime) && (key === 'createdAt' || key === 'updatedAt')) return %>
+            <label class="admin-panel__title" for="form-<%= key %>"><%= __(fields[key].config.title) %></label>
+            <% if(fields[key].config.tooltip) { %>
+                <a href="javascript:void(0)" role="tooltip" aria-haspopup="true"
+                   class="tooltip tooltip-md tooltip-top-right">
+                    <i class="las la-info-circle"></i>
+                    <span class="tooltip-content"><%= __(fields[key].config.tooltip) %></span>
+                </a>
+            <% } %>
+            <% var field = fields[key] %>
+            <% var value = data[key] %>
+            <div class="admin-panel__widget">
+                <% include mixin/fieldWidget %>
+            </div>
+        <% }) %>
+        <% if (adminpanel.configHelper.isCsrfEnabled()) { %>
+            <div>
+                <input class="clr-input" type="hidden" name="_csrf" value="<%= _csrf %>"/>
+            </div>
+        <% } %>
+        <p>
+            <button raised class="btn-save" id="submit" onclick="submitForm()">
+                <%= __("Save") %>
+            </button>
+        </p>
+    </form>
+</div>
+
+<script>
+    function submitForm() {
+        // Assign JSONEditor value to form textarea
+        for (var id in jsonEditor) {
+            try {
+                var json = jsonEditor[id].get();
+                $('#form-' + id).val(JSON.stringify(json));
+            } catch (e) {
+                alert('JSON is invalid.');
+                $('#form-' + id).show().focus().hide();
+                jsonEditor[id].focus();
+                return false;
             }
-            document.getElementById('form').submit();
         }
-    </script>
+        ;
 
-    <% include footer %>
+        for (var id in tables) {
+            try {
+                var table = tables[id].getData().map((item) => {
+                    return [null].concat(item)
+                });
+                $('#form-' + id).val(JSON.stringify(table));
+            } catch (e) {
+                alert('Table is invalid!');
+                return false;
+            }
+        }
+        document.getElementById('form').submit();
+    }
+</script>
+
+<% include footer %>

@@ -1,6 +1,5 @@
 class EditNavigation {
     constructor(config) {
-        console.log("config upside", JSON.stringify(config))
         this.elName = config.element;
         this.field = config.field;
         this.dataInput = config.data;
