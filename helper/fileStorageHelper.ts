@@ -25,6 +25,8 @@ export class FileStorageHelper {
 
         if (this._storage[slug]) {
             return this._storage[slug][key]
+        } else {
+            throw new Error(`${slug} was not found in storage`)
         }
     }
 
