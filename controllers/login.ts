@@ -57,6 +57,6 @@ export default async function login(req, res) {
       return res.redirect(`${sails.config.adminpanel.routePrefix}/`);
     }
     req.session.UserAP = undefined;
-    res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
+    res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
   }
 };

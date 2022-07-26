@@ -21,7 +21,7 @@ export default async function edit(req, res) {
 
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
+            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
         } else if (!AccessRightsHelper.havePermission(`update-${entity.name}-model`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
