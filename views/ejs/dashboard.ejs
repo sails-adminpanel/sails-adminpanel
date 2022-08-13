@@ -1,5 +1,5 @@
-<% include head %>
-<% include headContent %>
+<%- include ("head") %>
+<%- include ("headContent") %>
 
 <% if (Boolean((adminpanel.configHelper.getConfig()).dashboard)) { %>
     <div class="layout">
@@ -93,4 +93,4 @@
 
     HELLO
 <% } %>
-<% include footer %>
+<%- include ("footer") %>

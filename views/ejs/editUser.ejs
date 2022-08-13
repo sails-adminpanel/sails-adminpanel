@@ -1,5 +1,5 @@
-<% include head %>
-<% include headContent %>
+<%- include ("head") %>
+<%- include ("headContent") %>
 
 <form id="editUserForm" action="<%= entity.uri %>/edit/<%= user.id %>" method="POST">
     <div class="layout">

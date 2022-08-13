@@ -1,11 +1,11 @@
-<% include head %>
-<% include headContent %>
+<%- include ("head") %>
+<%- include ("headContent") %>
 <% var config = adminpanel.configHelper.getConfig() %>
 
 <div class="horizontal layout">
     <div class="flex">
         <% var actionType = 'add' %>
-        <% include mixin/globalActions %>
+        <%- include ("mixin/globalActions") %>
     </div>
 </div>
 <div class="layout">
@@ -47,7 +47,7 @@
                 </div>
             <% } %>
             <div class="admin-panel__widget">
-                <% include mixin/fieldWidget %>
+                <%- include ("mixin/fieldWidget") %>
             </div>
         <% }) %>
         <% if (adminpanel.configHelper.isCsrfEnabled()) { %>
@@ -110,4 +110,4 @@
     }
 </script>
 
-<% include footer %>
+<%- include ("footer") %>

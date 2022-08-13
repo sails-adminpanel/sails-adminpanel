@@ -1,5 +1,5 @@
-<% include head %>
-<% include headContent %>
+<%- include ("head") %>
+<%- include ("headContent") %>
 <% var idField = adminpanel.configHelper.getIdentifierField(entity.config.model) %>
 <% var data = record %>
 <% var config = adminpanel.configHelper.getConfig() %>
@@ -7,7 +7,7 @@
 <div class="horizontal layout">
     <div class="flex">
         <% var actionType = 'edit' %>
-        <% include mixin/globalActions %>
+        <%- include ("mixin/globalActions") %>
     </div>
 </div>
 <div class="layout">
@@ -65,7 +65,7 @@
                 </div>
             <% } %>
             <div class="admin-panel__widget">
-                <% include mixin/fieldWidget %>
+                <%- include ("mixin/fieldWidget") %>
             </div>
         <% }) %>
         <% if (adminpanel.configHelper.isCsrfEnabled()) { %>
@@ -128,4 +128,4 @@
     }
 </script>
 
-<% include footer %>
+<%- include ("footer") %>
