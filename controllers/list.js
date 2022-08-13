@@ -10,7 +10,7 @@ async function list(req, res) {
     }
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/userap/login`);
+            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
         }
         else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`read-${entity.name}-model`, req.session.UserAP)) {
             return res.sendStatus(403);

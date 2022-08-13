@@ -14,7 +14,7 @@ describe('Have permission test', function () {
         let user = await UserAP.create({login: "test", fullName: "Test user", password: "test", groups: group.id}).fetch();
 
         let agent = chai.request.agent(sails.hooks.http.app);
-        agent.post('/admin/userap/login')
+        agent.post('/admin/model/userap/login')
             .type('form')
             .send({login: "test", password: "test"})
             .then(function(res){
