@@ -6,7 +6,7 @@
 <%# plain inputs %>
 <% var inputTextTypes = ['string', 'password', 'date', 'datetime', 'time',  'integer', 'number', 'float','color','email','month', 'week', 'range', 'enum'] %>
 <% if (~inputTextTypes.indexOf(type)) { %>
-   <%- include("fields/inputText") %>
+   <%- include("fields/inputText", {type: type}) %>
 <% } %>
 
 
@@ -45,7 +45,7 @@
 <%# FileUploader %>
 <% var widgetFileUploader = ['image','images', 'file', 'files'] %>
 <% if (~widgetFileUploader.indexOf(type)) { %>
-   <%- include("fields/widgetFileUploader") %>
+   <%- include("fields/widgetFileUploader, {type: type}") %>
 <% } %>
 
 <%# EditNavigation %>
