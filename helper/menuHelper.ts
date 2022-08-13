@@ -184,10 +184,10 @@ export class MenuHelper {
                     }
                     menus.push({
                         link: MenuHelper.config.routePrefix + '/model/' + key,
-                        title: val.title,
+                        title: val.title || key,
                         icon: val.icon || null,
                         actions: val.tools || null,
-                        id: val.title.replace(" ","_"),
+                        id: val.title ? val.title.replace(" ","_") : key,
                         entityName: key
                     });
                 }
