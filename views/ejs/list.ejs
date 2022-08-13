@@ -39,7 +39,7 @@
                         if (<%- havePermission(`update-${entity.name}-model`, req.session.UserAP) %>) {
                             data += '<a href="<%= entity.uri %>/edit/' + row[0] + '"><i class="las la-edit"></i><%= __('Edit') %></a><br>';
                         }
-                       <%- include("mixin/list/inlineActions %>
+                       <%- include("mixin/list/inlineActions") %>
                     }
                     return data;
                 }
@@ -56,7 +56,7 @@
             <button class="btn-add"><i class="las la-plus"></i><%= __('create') %></button>
         </a>
         <% } %>
-       <%- include("mixin/globalActions %>
+       <%- include("mixin/globalActions") %>
     </div>
 </div>
 <div class="layout">
