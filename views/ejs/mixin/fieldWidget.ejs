@@ -45,7 +45,7 @@
 <%# FileUploader %>
 <% var widgetFileUploader = ['image','images', 'file', 'files'] %>
 <% if (~widgetFileUploader.indexOf(type)) { %>
-   <%- include("fields/widgetFileUploader, {type: type}") %>
+   <%- include("fields/widgetFileUploader", {type: type}) %>
 <% } %>
 
 <%# EditNavigation %>

@@ -56,7 +56,7 @@
             <button class="btn-add"><i class="las la-plus"></i><%= __('create') %></button>
         </a>
         <% } %>
-       <%- include("mixin/globalActions") %>
+       <%- include("mixin/globalActions", {actionType: actionType}) %>
     </div>
 </div>
 <div class="layout">

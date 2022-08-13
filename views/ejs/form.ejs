@@ -1,6 +1,6 @@
 <%- include("head") %>
 <% var entity = {uri: sails.config.adminpanel.routePrefix + '/form/' + slug, config: {model: false} } %>
-<%- include("headContent") %>
+<%- include("headContent", {entity: entity}) %>
 
 <form id="form" action="<%- sails.config.adminpanel.routePrefix %>/form/<%= slug %>" method="POST" enctype="multipart/form-data">
     <div class="layout">
