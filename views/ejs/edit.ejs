@@ -59,6 +59,11 @@
                     </a>
                 <% } %>
             </div>
+            <% if (field.config.description) { %>
+                <div class="admin-panel__description">
+                    <%- __(field.config.description) %>
+                </div>
+            <% } %>
             <div class="admin-panel__widget">
                 <% include mixin/fieldWidget %>
             </div>
