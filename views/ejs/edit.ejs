@@ -7,7 +7,7 @@
 <div class="horizontal layout">
     <div class="flex">
         <% var actionType = 'edit' %>
-        <%- include ("mixin/globalActions") %>
+       <%- include("mixin/globalActions") %>
     </div>
 </div>
 <div class="layout">
@@ -65,7 +65,7 @@
                 </div>
             <% } %>
             <div class="admin-panel__widget">
-                <%- include ("mixin/fieldWidget") %>
+               <%- include("mixin/fieldWidget") %>
             </div>
         <% }) %>
         <% if (adminpanel.configHelper.isCsrfEnabled()) { %>
