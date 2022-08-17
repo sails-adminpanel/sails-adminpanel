@@ -8,7 +8,7 @@
             <% Object.keys(field.config.isIn).forEach(function(optKey) { %>
                 <% var opt = field.config.isIn[optKey] %>
                     <option value="<%= opt%>"
-                        <%= (optKey === value) && 'selected' %>> <%= opt %> </option>
+                        <%= (opt === value) && 'selected' %>> <%= opt %> </option>
             <% }) %>
         <% } else { %>
             <% field.model.isIn.forEach(function(opt) { %>
