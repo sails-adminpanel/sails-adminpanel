@@ -7,7 +7,7 @@
         <% if (field.config.isIn && typeof field.config.isIn === 'object') { %>
             <% Object.keys(field.config.isIn).forEach(function(optKey) { %>
                 <% var opt = field.config.isIn[optKey] %>
-                    <option value="<%= optKey%>"
+                    <option value="<%= opt%>"
                         <%= (optKey === value) && 'selected' %>> <%= opt %> </option>
             <% }) %>
         <% } else { %>
