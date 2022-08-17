@@ -27,7 +27,7 @@ describe('Form test', function () {
             .end(function (err, res) {
                 expect(err).to.be.null;
                 let formFromFile = require("../fixture/.tmp/adminpanel_file_storage.json");
-                expect(formFromFile['testForm-label']).to.equal("Label123")
+                expect(formFromFile['testForm'].label).to.equal("Label123")
             })
     })
 })
