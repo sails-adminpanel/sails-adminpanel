@@ -1,12 +1,12 @@
-<% include head %>
-<% include headContent %>
+<%- include("head") %>
+<%- include("headContent") %>
 
 <% var idField = adminpanel.configHelper.getIdentifierField(entity.config.model) %>
 
 <div class="horizontal layout">
     <div class="flex">
         <% var actionType = 'view' %>
-        <% include mixin/globalActions %>
+       <%- include("mixin/globalActions", {actionType: actionType}) %>
     </div>
 </div>
 <div class="layout">
@@ -43,11 +43,11 @@
             <div class="layout horizontal field-row">
                 <div class="field-name"><%= __(field.config.title) %></div>
                 <div flex>
-                    <% include mixin/fieldValue %>
+                   <%- include("mixin/fieldValue", {key: key, field: field}) %>
                 </div>
             </div>
         <% }) %>
     </material>
 </div>
 
-<% include footer %>
+<%- include("footer") %>

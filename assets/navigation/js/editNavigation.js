@@ -4,6 +4,8 @@ class EditNavigation {
         this.field = config.field;
         this.dataInput = config.data;
         this.counter = 0;
+        this.disableAddingProperty = config.disableAddingProperty || false;
+        this.disableDeletingProperty = config.disableDeletingProperty || false;
         this.maxNestedItems = config.maxNestedItems || 4;
         this.visibleElement = config.visibleElement || 'visible'; // can be 'visible', 'hidden', false
         this.titleProperties = config.titleProperties || 'title';
@@ -126,6 +128,7 @@ class EditNavigation {
         $('.modal').click(function(e) {
             if ($(e.target).closest('.modal-body').length === 0) {
                 menu.clearPopup();
+                $('#popUp').modal('hide');
             }
         });
     }
@@ -195,13 +198,34 @@ class EditNavigation {
         if ($('#propertyAdder').val() !== "None") {
             let typeRecognition = this.recognizeType($('#propertyAdder').val());
             let capitalizedKey = $('#propertyAdder').val().charAt(0).toUpperCase() + $('#propertyAdder').val().slice(1);
-            $("#propertyAdder").closest('.navigation-block').before(`<div class="navigation-wrapper" id="data-${$('#propertyAdder').val()}">` +
-                `<div class="navigation-inner">` +
+            if (typeRecognition.inputType === 'select') {
+                $("#propertyAdder").closest('.navigation-block').before(`<div class="navigation-wrapper" id="data-${$('#propertyAdder').val()}">` +
+                    `<div class="navigation-inner">` +
+                    `<label for="item${capitalizedKey}">${capitalizedKey}</label>` +
+                    `<input type="hidden" id="item${capitalizedKey}">` +
+                    `<span class="selectPure-${capitalizedKey}"></span>` +
+                    `</div>` +
+                    '<a href="#" class="deleteProp navigation-del"><i class="las la-times"></i></a>' +
+                    '</div>' +
+                    `<script>let select${capitalizedKey} = new SelectPure(".selectPure-${capitalizedKey}", {options: ${JSON.stringify(this.propertyList[$('#propertyAdder').val()].options)},autocomplete: true,onChange: function(value) {$('#item${capitalizedKey}').val(value)}});</script>`
+                )
+            } else if (typeRecognition.inputType === 'textarea') {
+                $("#propertyAdder").closest('.navigation-block').before(`<div class="navigation-wrapper" id="data-${$('#propertyAdder').val()}">` +
+                    `<div class="navigation-inner">` +
+                    `<label for="item${capitalizedKey}">${capitalizedKey}</label>` +
+                    `<textarea id="item${capitalizedKey}"></textarea>` +
+                    `</div>` +
+                    '<a href="#" class="deleteProp navigation-del"><i class="las la-times"></i></a>' +
+                    '</div>')
+            } else {
+                $("#propertyAdder").closest('.navigation-block').before(`<div class="navigation-wrapper" id="data-${$('#propertyAdder').val()}">` +
+                    `<div class="navigation-inner">` +
                     `<label for="item${capitalizedKey}">${capitalizedKey}</label>` +
                     `<input type=${typeRecognition.inputType} id="item${capitalizedKey}">` +
-                `</div>` +
-                '<a href="#" class="deleteProp navigation-del"><i class="las la-times"></i></a>' +
-                '</div>')
+                    `</div>` +
+                    '<a href="#" class="deleteProp navigation-del"><i class="las la-times"></i></a>' +
+                    '</div>')
+            }
             if (typeRecognition.required === "true") {
                 $(`data-${$('#propertyAdder').val()} > .deleteProp`).remove();
             }
@@ -212,7 +236,8 @@ class EditNavigation {
     }
 
     deleteProp(prop) {
-        $('li[id^="item_"]').removeAttr($(prop).parent().attr('id'));
+        let itemId = $(prop).parent().attr("option-for");
+        $('li[id^=' + itemId + ']').removeAttr($(prop).parent().attr('id'));
         $(prop).parent().hide();
         this.saveChanges();
     }
@@ -287,6 +312,14 @@ class EditNavigation {
                         output.inputType = "checkbox";
                         output.defaultValue = "false";
                         break;
+                    case "text":
+                        output.inputType = "textarea";
+                        output.defaultValue = "";
+                        break;
+                    case "select":
+                        output.inputType = "select";
+                        output.defaultValue = "";
+                        break;
                 }
 
                 if (value.required === 'true') {
@@ -313,6 +346,8 @@ class EditNavigation {
                             }
                         }
                     }
+                } else if ((menu.recognizeType(($(element).attr('id')).slice(5))).inputType === 'textarea') {
+                    $(itemId).attr($(element).attr('id'), $(' > div > textarea', element).val());
                 } else {
                     $(itemId).attr($(element).attr('id'), $(' > div > input', element).val());
                 }
@@ -367,6 +402,7 @@ class EditNavigation {
 
     fillPopUp(item, menu) {
         let currentItem = $(item).closest('li');
+        let currentItemId = $(currentItem).attr('id');
         let attributes = $(currentItem).getAttr(); // getAttr() gives an object with attributes and their values
         let itemId;
         for (let [key, value] of Object.entries(attributes)) {
@@ -376,22 +412,47 @@ class EditNavigation {
             } else if (key.startsWith('data-')) {
                 let typeRecognition = menu.recognizeType(key.slice(5));
                 let capitalizedKey = key.slice(5).charAt(0).toUpperCase() + key.slice(6);
-                $("#propertyAdder").closest('.navigation-block').before(`<div class="navigation-wrapper" id="${key}">` +
-                    `<div class="navigation-inner">` +
-                    `<label for="item${capitalizedKey}">${capitalizedKey}</label>` +
-                    `<input type=${typeRecognition.inputType} id="item${capitalizedKey}">` +
-                    `</div>` +
-                    '<a href="#" class="deleteProp navigation-del"><i class="las la-times"></i></a>' +
-                    '</div>')
-                if (typeRecognition.inputType === 'checkbox') {
-                    if (value === 'true') {
-                        $(`#${key} > div > input`).prop("checked", "checked");
-                    }
+                if (typeRecognition.inputType === 'select') {
+                    $("#propertyAdder").closest('.navigation-block').before(`<div class="navigation-wrapper" id="${key}" option-for="${currentItemId}">` +
+                        `<div class="navigation-inner">` +
+                        `<label for="item${capitalizedKey}">${capitalizedKey}</label>` +
+                        `<input type="hidden" id="item${capitalizedKey}" value="${value}">` +
+                        `<span class="selectPure-${capitalizedKey}"></span>` +
+                        `</div>` +
+                        '<a href="#" class="deleteProp navigation-del"><i class="las la-times"></i></a>' +
+                        '</div>' +
+                        `<script>let select${capitalizedKey} = new SelectPure(".selectPure-${capitalizedKey}", {options: ${JSON.stringify(this.propertyList[key.slice(5)].options)},autocomplete: true,value: "${value}",onChange: function(value) {$('#item${capitalizedKey}').val(value)}});</script>`
+                    )
+                } else if (typeRecognition.inputType === 'textarea') {
+                    $("#propertyAdder").closest('.navigation-block').before(`<div class="navigation-wrapper" id="${key}" option-for="${currentItemId}">` +
+                        `<div class="navigation-inner">` +
+                        `<label for="item${capitalizedKey}">${capitalizedKey}</label>` +
+                        `<textarea id="item${capitalizedKey}"></textarea>` +
+                        `</div>` +
+                        '<a href="#" class="deleteProp navigation-del"><i class="las la-times"></i></a>' +
+                        '</div>')
+                    $(`#${key} > div > textarea`).val(value);
                 } else {
-                    $(`#${key} > div > input`).attr('value', value);
+                    $("#propertyAdder").closest('.navigation-block').before(`<div class="navigation-wrapper" id="${key}" option-for="${currentItemId}">` +
+                        `<div class="navigation-inner">` +
+                        `<label for="item${capitalizedKey}">${capitalizedKey}</label>` +
+                        `<input type=${typeRecognition.inputType} id="item${capitalizedKey}">` +
+                        `</div>` +
+                        '<a href="#" class="deleteProp navigation-del"><i class="las la-times"></i></a>' +
+                        '</div>')
+                    if (typeRecognition.inputType === 'checkbox') {
+                        if (value === 'true') {
+                            $(`#${key} > div > input`).prop("checked", "checked");
+                        }
+                    } else {
+                        $(`#${key} > div > input`).attr('value', value);
+                    }
                 }
-                if (typeRecognition.required === "true") {
+                if (typeRecognition.required === "true" || this.disableDeletingProperty) {
                     $(`#${key} > .deleteProp`).remove();
+                }
+                if (this.disableAddingProperty) {
+                    $("#propertyAdder").parent().parent().hide();
                 }
             }
         }

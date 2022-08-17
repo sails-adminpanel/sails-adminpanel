@@ -63,7 +63,7 @@ export default async function bindAuthorization() {
      */
     let _bindPolicies = require('../lib/bindPolicies').default();
     let policies = sails.config.adminpanel.policies || '';
-    let baseRoute = sails.config.adminpanel.routePrefix + '/:entity';
+    let baseRoute = sails.config.adminpanel.routePrefix + '/model/:entity';
     sails.router.bind(baseRoute + '/login', _bindPolicies(policies, _login));
     sails.router.bind(baseRoute + '/logout', _bindPolicies(policies, _login));
 };

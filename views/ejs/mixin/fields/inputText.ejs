@@ -1,6 +1,6 @@
 <!-- prettier-ignore -->
 <% if (field.config.isIn) { %>
-    <% include select %>
+   <%- include("select") %>
 <% } else if(field.model.email) { %>
     <input class="clr-input" label="<%= field.config.title %>"
             <%= field.config.required && 'required' %>

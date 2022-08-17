@@ -16,6 +16,8 @@ navigation: {
                 options: {
                     maxNestedItems: number,
                     displacementControl: boolean,
+                    disableAddingProperty: boolean,
+                    disableDeletingProperty: boolean,
                     propertyList: {},
                     visibleElement: string or false,
                     titleProperties: string
@@ -33,12 +35,21 @@ Navigation editor has opts field where you can add next properties:
 + propertyList
 + visibleElement
 + titleProperties
++ disableAddingProperty
++ disableDeletingProperty
 
 Using propertyList you can add list of properties that can be chosen.
-It can contain three types of properties: string, boolean and number.
-Also, you have to declare there all properties that would be placed in
-elements. And every element should have an id. Without ids DOM will not be
-displayed properly.
+It can contain 5 types of properties:
+- string
+- boolean
+- number
+- text
+- select
+
+`select` type will be displayed as [select-pure widget](https://www.cssscript.com/multi-select-autocomplete-selectpure/).
+This type should contain `options` field which is an array of objects that represents select-pure options:
+`{label: "label", value: "value"}`. Also you can use custom function for create
+needed array.
 
 For example:
 ```javascript
@@ -59,6 +70,21 @@ propertyList: {
             title: "Age",
             description: "this is the age",
     },
+    hint: {
+            type: 'text',
+            title: 'Hint',
+            description: "element hint",
+    },
+    link: {
+            type: 'select',
+            title: 'Link',
+            description: "this is the link",
+            options: async function () {
+                let pages = await Page.find({});
+                pages = pages.map(function(item, index) {return {label: item.label, value: item.slug}})
+                return pages;
+            }
+    }
 }
 ```
 
@@ -75,6 +101,20 @@ if element has inserted elements.
 For example:
 ```javascript
 displacementControl: true
+```
+
+Using disableAddingProperty you can forbid adding properties in pop-up
+
+For example:
+```javascript
+disableAddingProperty: true
+```
+
+Using disableDeletingProperty you can forbid deleting properties in pop-up
+
+For example:
+```javascript
+disableDeletingProperty: true
 ```
 
 Using visibleElement you can set default value of visible

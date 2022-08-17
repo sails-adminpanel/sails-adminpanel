@@ -19,10 +19,18 @@ class FileStorageHelper {
         if (!this._isInitialized) {
             this._init();
         }
-        return this._storage[`${slug}-${key}`];
+        if (this._storage[slug]) {
+            return this._storage[slug][key];
+        }
+        else {
+            throw new Error(`${slug} was not found in storage`);
+        }
     }
     static set(slug, key, value) {
-        this._storage[`${slug}-${key}`] = value;
+        if (!this._storage[slug]) {
+            this._storage[slug] = {};
+        }
+        this._storage[slug][key] = value;
         fs.writeFileSync(this._filePath, JSON.stringify(this._storage));
     }
 }
