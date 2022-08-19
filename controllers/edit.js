@@ -54,10 +54,10 @@ async function edit(req, res) {
                     }
                 }
             }
-            // delete whitespace characters from association-many and association
+            // delete property from association-many and association if empty
             if (fields[prop] && fields[prop].model && (fields[prop].model.type === 'association-many' || fields[prop].model.type === 'association')) {
                 if (!reqData[prop]) {
-                    reqData[prop] = "null";
+                    delete reqData[prop];
                 }
             }
             // split string for association-many
