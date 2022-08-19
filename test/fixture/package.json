@@ -18,7 +18,7 @@
   "scripts": {
     "debug": "node debug app.js",
     "start": "node app.js",
-    "postinstall": "patch-package --patch-dir=node_modules/dark-sails"
+    "postinstall": "patch-package --patch-dir=node_modules/dark-sails --error-on-fail=false"
   },
   "main": "app.js",
   "author": "42pub",
