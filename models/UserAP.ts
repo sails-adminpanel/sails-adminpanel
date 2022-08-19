@@ -27,6 +27,7 @@ let attributes = {
     } as unknown as string,
     email: "string",
     passwordHashed: 'string',
+    password: 'string',
     timezone: "string",
     expires: "string",
     locale: "string",
@@ -47,12 +48,14 @@ export default UserAP;
 let model = {
     beforeCreate: (values, next) => {
         values.passwordHashed = passwordHash.generate(values.login + values.password);
+        values.password = 'masked';
         return next();
     },
 
     beforeUpdate: (values, next) => {
         if (values.password) {
             values.passwordHashed = passwordHash.generate(values.login + values.password);
+            values.password = 'masked';
         }
         return next();
     }

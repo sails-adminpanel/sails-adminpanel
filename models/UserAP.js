@@ -17,6 +17,7 @@ let attributes = {
     },
     email: "string",
     passwordHashed: 'string',
+    password: 'string',
     timezone: "string",
     expires: "string",
     locale: "string",
@@ -31,11 +32,13 @@ let attributes = {
 let model = {
     beforeCreate: (values, next) => {
         values.passwordHashed = passwordHash.generate(values.login + values.password);
+        values.password = 'masked';
         return next();
     },
     beforeUpdate: (values, next) => {
         if (values.password) {
             values.passwordHashed = passwordHash.generate(values.login + values.password);
+            values.password = 'masked';
         }
         return next();
     }
