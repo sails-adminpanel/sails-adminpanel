@@ -126,7 +126,7 @@ function upload(req, res) {
                             i.quality = 60;
                         }
                         let name = await jimpResize(i);
-                        resizes[i.name] = dirDownload + path.basename(name) + path.extname(name);
+                        resizes[i.name] = dirDownload + path.basename(name);
                     }
                     async function jimpResize(i) {
                         return new Promise((resolve, reject) => {
