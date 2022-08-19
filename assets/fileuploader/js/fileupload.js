@@ -155,7 +155,7 @@ class FileUploader {
             },
             success: (file, res) => {
                 // create new file
-                const f = new File_(fu.files.length, res.name, res.url, res.urlSmall, res.urlLarge, res.width, res.height, res.size, res.urls);
+                const f = new File_(fu.files.length, res.name, res.url, res.urlSmall, res.urlLarge, res.width, res.height, res.size, res.sizes);
                 fu.files.push(f);
                 // add in html
                 fu.addFile(f);

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const adminUtil_1 = require("../lib/adminUtil");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
+const path_1 = require("path");
 const Jimp = require('jimp');
 // !TODO for images resizing need usage parameters to get request cat.jpg?150. It makes image inscribed in square 150*150px
 function upload(req, res) {
@@ -117,13 +118,15 @@ function upload(req, res) {
                     else if (valid === 'aspect') {
                         return res.badRequest('Неправильное соотношение сторон');
                     }
+                    let resizes = {};
                     for await (let i of resize) {
                         i.w = parseInt(i.w);
                         i.h = parseInt(i.h);
                         if (!i.quality) {
                             i.quality = 60;
                         }
-                        await jimpResize(i);
+                        let name = await jimpResize(i);
+                        resizes[i.name] = dirDownload + path_1.default.basename(name) + path_1.default.extname(name);
                     }
                     async function jimpResize(i) {
                         return new Promise((resolve, reject) => {
@@ -134,7 +137,7 @@ function upload(req, res) {
                                     image.write(name2);
                                     if (err)
                                         return reject(err);
-                                    return resolve(name);
+                                    return resolve(name2);
                                 });
                             });
                         });
@@ -150,16 +153,18 @@ function upload(req, res) {
                                 const url = dirDownload + filename;
                                 const urlSmall = dirDownload + nameSmall;
                                 const urlLarge = dirDownload + nameLarge;
-                                res.status(201);
-                                res.send({
+                                let result = {
                                     name: filenameOrig,
                                     url: url,
                                     urlSmall: urlSmall,
                                     urlLarge: urlLarge,
                                     width: width,
                                     height: height,
-                                    size: size
-                                });
+                                    size: size,
+                                    sizes: resizes
+                                };
+                                res.status(201);
+                                res.send(result);
                             });
                         });
                     });
