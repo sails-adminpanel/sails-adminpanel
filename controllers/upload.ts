@@ -1,6 +1,6 @@
 import { AdminUtil } from "../lib/adminUtil";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
-import path from "path";
+import * as path from "path";
 const Jimp = require('jimp');
 
 // !TODO for images resizing need usage parameters to get request cat.jpg?150. It makes image inscribed in square 150*150px
@@ -142,7 +142,7 @@ export default function upload(req, res) {
                         resizes[i.name] = dirDownload + path.basename(name) + path.extname(name);
                     }
 
-                    async function jimpResize(i) {
+                    async function jimpResize(i): Promise<string> {
                         return new Promise((resolve, reject) => {
                             const name = fullDir + filename.substr(0, filename.lastIndexOf('.')) + '_' + i.name + '.' + filename.split('.').reverse()[0];
                             const name2 = assetsDir + filename.substr(0, filename.lastIndexOf('.')) + '_' + i.name + '.' + filename.split('.').reverse()[0];

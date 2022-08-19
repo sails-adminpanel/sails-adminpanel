@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const adminUtil_1 = require("../lib/adminUtil");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
-const path_1 = require("path");
+const path = require("path");
 const Jimp = require('jimp');
 // !TODO for images resizing need usage parameters to get request cat.jpg?150. It makes image inscribed in square 150*150px
 function upload(req, res) {
@@ -126,7 +126,7 @@ function upload(req, res) {
                             i.quality = 60;
                         }
                         let name = await jimpResize(i);
-                        resizes[i.name] = dirDownload + path_1.default.basename(name) + path_1.default.extname(name);
+                        resizes[i.name] = dirDownload + path.basename(name) + path.extname(name);
                     }
                     async function jimpResize(i) {
                         return new Promise((resolve, reject) => {
