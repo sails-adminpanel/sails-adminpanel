@@ -26,7 +26,7 @@ describe('Form test', function () {
             .end(function (err, res) {
             (0, chai_1.expect)(err).to.be.null;
             let formFromFile = require("../fixture/.tmp/adminpanel_file_storage.json");
-            (0, chai_1.expect)(formFromFile['testForm-label']).to.equal("Label123");
+            (0, chai_1.expect)(formFromFile['testForm'].label).to.equal("Label123");
         });
     });
 });

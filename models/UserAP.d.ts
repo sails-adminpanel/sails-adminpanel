@@ -16,6 +16,7 @@ declare let attributes: {
     fullName: string;
     email: string;
     passwordHashed: string;
+    password: string;
     timezone: string;
     expires: string;
     locale: string;

@@ -1,5 +1,6 @@
 import { AdminUtil } from "../lib/adminUtil";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
+import * as path from "path";
 const Jimp = require('jimp');
 
 // !TODO for images resizing need usage parameters to get request cat.jpg?150. It makes image inscribed in square 150*150px
@@ -130,16 +131,18 @@ export default function upload(req, res) {
                         return res.badRequest('Неправильное соотношение сторон');
                     }
 
+                    let resizes = {};
                     for await (let i of resize) {
                         i.w = parseInt(i.w);
                         i.h = parseInt(i.h);
                         if(!i.quality) {
                             i.quality = 60;
                         }
-                        await jimpResize(i)
+                        let name = await jimpResize(i);
+                        resizes[i.name] = dirDownload + path.basename(name);
                     }
 
-                    async function jimpResize(i) {
+                    async function jimpResize(i): Promise<string> {
                         return new Promise((resolve, reject) => {
                             const name = fullDir + filename.substr(0, filename.lastIndexOf('.')) + '_' + i.name + '.' + filename.split('.').reverse()[0];
                             const name2 = assetsDir + filename.substr(0, filename.lastIndexOf('.')) + '_' + i.name + '.' + filename.split('.').reverse()[0];
@@ -147,7 +150,7 @@ export default function upload(req, res) {
                                 imageTemp.resize(i.w === -1 ? Jimp.AUTO : i.w, i.h === -1 ? Jimp.AUTO : i.h).quality(i.quality).write(name, function (err, image) {
                                     image.write(name2);
                                     if (err) return reject(err);
-                                    return resolve(name);
+                                    return resolve(name2);
                                 });
                             });
                         });
@@ -163,16 +166,18 @@ export default function upload(req, res) {
                                 const url = dirDownload + filename;
                                 const urlSmall = dirDownload + nameSmall;
                                 const urlLarge = dirDownload + nameLarge;
-                                res.status(201);
-                                res.send({
+                                let result = {
                                     name: filenameOrig,
                                     url: url,
                                     urlSmall: urlSmall,
                                     urlLarge: urlLarge,
                                     width: width,
                                     height: height,
-                                    size: size
-                                });
+                                    size: size,
+                                    sizes: resizes
+                                }
+                                res.status(201);
+                                res.send(result);
                             });
                         });
                     });
