@@ -1,19 +1,18 @@
 <div class="widget">
-    <%= field.config.title %>&nbsp;
+    <%= (field.model.type !== 'string') && `Model field type not allowed current (${field.model.type}) expected (string)` %> 
     <select name="<%= key %>" id="form-<%= key %>"
         <%= field.config.required && 'required' %>
         <%= field.config.disabled && 'disabled'%>>
 
-        <% if (field.config.isIn && !Array.isArray(field.config.isIn)) { %>
-            <% Object.keys(field.config.isIn).forEach(function(optKey) { %>
-                <% var opt = field.config.isIn[optKey] %>
+        <% if (!Array.isArray(isIn)) { %>
+            <% Object.keys(isIn).forEach(function(optKey) { %>
+                <% var opt = isIn[optKey] %>
                     <option value="<%= optKey %>"
                         <%= (optKey === value) && 'selected' %>> <%= opt %> </option>
             <% }) %>
         <% } else { %>
-            <% field.model.isIn.forEach(function(opt) { %>
-                <option value="<%= opt %>"
-                    <%= (opt === value) && 'selected' %>><%= opt %></option>
+            <% isIn.forEach(function(opt){ %> 
+                <option value="<%= opt %>" <%= (opt === value) && 'selected' %>><%= opt %></option>
             <% }) %>
         <% } %>
     </select>

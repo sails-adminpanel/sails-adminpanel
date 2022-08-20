@@ -255,6 +255,44 @@ module.exports.adminpanel = {
 }
 ```
 
+## Select many
+You need configure you fieald as json 
+
+Your model:
+```javascript
+module.exports = {
+    attributes: {
+        contactType: {
+            type: 'json',
+        }
+    }
+};
+```
+
+Your admin panel configuration:
+You need configure isIn option for you filed as plain object {} or array of strings 
+
+```javascript
+module.exports.adminpanel = {
+    models: {
+        users: {
+            title: 'Users', // Menu title for model
+            model: 'User', // Model definition for model
+
+            fields: {
+                'contactType': {
+                    isIn: {
+                        'email': 'E-Mail',
+                        'phone': 'Phone',
+                        'sms': 'SMS'
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
 ## Associations
 
 Now Adminpanel hook partially supports assotiations.

@@ -1,14 +1,27 @@
 <%# detection type %>
 <% var type = field.config.type || field.model.type %>
-<% type = type.toLowerCase() %>
 
+<% type = type.toLowerCase() %>
+<% var isIn = typeof field.config.isIn === 'object' ? field.config.isIn : ( field.model && typeof {... field.model.validations }.isIn === 'object' ? {... field.model.validations }.isIn : [] ) %>
 
 <%# plain inputs %>
-<% var inputTextTypes = ['string', 'password', 'date', 'datetime', 'time',  'integer', 'number', 'float','color','email','month', 'week', 'range', 'enum'] %>
-<% if (~inputTextTypes.indexOf(type)) { %>
-   <%- include("fields/inputText", {type: type}) %>
+<%# Here applied select for string + isIn%>
+<% var inputTextTypes = ['string', 'password', 'date', 'datetime', 'time',  'integer', 'number', 'float','color','email','month', 'week', 'range'] %>
+<% if (inputTextTypes.includes(type)) { %>
+   <%- include("fields/inputText", {type: type, isIn: isIn}) %>
 <% } %>
 
+<%# select %>
+<% var selectTypes = ['select'] %>
+<% if (selectTypes.includes(type)) { %>
+   <%- include("fields/select", {type: type, isIn: isIn}) %>
+<% } %>
+
+<%# select-many %>
+<% var selectManyTypes = ['select-many'] %>
+<% if (selectManyTypes.includes(type)) { %>
+   <%- include("fields/selectMany", {type: type, isIn: isIn}) %>
+<% } %>
 
 <%# boolean %>
 <% if (type === 'boolean' || type === 'binary') { %>
@@ -18,45 +31,44 @@
 
 <%# textarea %>
 <% var inputTextAreaTypes = ['text', 'longtext', 'mediumtext' ] %>
-<% if (~inputTextAreaTypes.indexOf(type)) { %>
+<% if (inputTextAreaTypes.includes(type)) { %>
    <%- include("fields/inputTextarea") %>
 <% } %>
 
 <%# wysiwyg %>
 <% var widgetWysiwygTypes = ['ckeditor', 'wysiwyg', 'texteditor', 'word'] %>
-<% if (~widgetWysiwygTypes.indexOf(type)) { %>
+<% if (widgetWysiwygTypes.includes(type)) { %>
    <%- include("fields/widgetWysiwyg") %>
 <% } %>
 
 <%# jsoneditor %>
 <% var widgetJsonEditorTypes = ['jsoneditor', 'json', 'array', 'object'] %>
-<% if (~widgetJsonEditorTypes.indexOf(type)) { %>
-   <%- include("fields/widgetJsonEditor") %>
+<% if (widgetJsonEditorTypes.includes(type)) { %>
+      <%- include("fields/widgetJsonEditor") %>
 <% } %>
-
 
 <%# ace %>
 <% var widgetAceTypes = ['ace', 'html', 'xml', 'aceeditor'] %>
-<% if (~widgetAceTypes.indexOf(type)) { %>
+<% if (widgetAceTypes.includes(type)) { %>
    <%- include("fields/widgetAce") %>
 <% } %>
 
 
 <%# FileUploader %>
 <% var widgetFileUploader = ['image','images', 'file', 'files'] %>
-<% if (~widgetFileUploader.indexOf(type)) { %>
+<% if (widgetFileUploader.includes(type)) { %>
    <%- include("fields/widgetFileUploader", {type: type}) %>
 <% } %>
 
 <%# EditNavigation %>
 <% var widgetEditNavigation = ['menu','navigation'] %>
-<% if (~widgetEditNavigation.indexOf(type)) { %>
+<% if (widgetEditNavigation.includes(type)) { %>
    <%- include("fields/widgetEditNavigation") %>
 <% } %>
 
 <%# EditSchedule %>
 <% var widgetEditSchedule = ['schedule','worktime'] %>
-<% if (~widgetEditSchedule.indexOf(type)) { %>
+<% if (widgetEditSchedule.includes(type)) { %>
    <%- include("fields/widgetEditSchedule") %>
 <% } %>
 

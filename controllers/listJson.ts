@@ -22,9 +22,9 @@ export default async function listJson(req, res) {
 
     let query;
     try {
-        // adminpanel design do not support list of more than 20000 lines per request
-        // !TODO take off this limit
-        query = entity.model.find().limit(20000);
+        // adminpanel design do not support list of more than 50000 lines per request
+        // !TODO take off this limit :)
+        query = entity.model.find({}).limit(50000);
     } catch (e) {
         sails.log.error(e);
     }
@@ -39,7 +39,7 @@ export default async function listJson(req, res) {
     let keyFields = Object.keys(fields);
     let result = [];
 
-    records.forEach((entity) => {
+    records.reverse().forEach((entity) => {
         let a = [];
         a.push(entity[identifierField]); // Push ID for Actions
         keyFields.forEach((key) => {
