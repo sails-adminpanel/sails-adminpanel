@@ -51,10 +51,15 @@ export default async function edit(req, res) {
                 delete reqData[prop]
             }
 
+            if(fields[prop].config.type === 'select-many') {
+                reqData[prop] = reqData[prop].split(",")
+            }
+
             if (fields[prop] && fields[prop].model && fields[prop].model.type === 'json' && reqData[prop] !== '') {
                 try {
                     reqData[prop] = JSON.parse(reqData[prop]);
                 } catch (e) {
+                    // Why it here? 
                     if (typeof reqData[prop] === "string" && reqData[prop].replace(/(\r\n|\n|\r|\s{2,})/gm, "")) {
                         sails.log.error(JSON.stringify(reqData[prop]), e);
                     }
@@ -84,7 +89,7 @@ export default async function edit(req, res) {
             let newRecord = await entity.model.update(params, reqData).fetch();
             sails.log(`Record was updated: `, newRecord);
             req.session.messages.adminSuccess.push('Your record was updated !');
-            reloadNeeded = true;
+            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
         } catch (e) {
             req._sails.log.error(e);
             req.session.messages.adminError.push(e.message || 'Something went wrong...');
@@ -92,15 +97,15 @@ export default async function edit(req, res) {
         }
     }
 
-    if (reloadNeeded) {
-        try {
-            record = await entity.model.findOne(req.param('id')).populateAll();
-        } catch (e) {
-            req._sails.log.error('Admin edit error: ');
-            req._sails.log.error(e);
-            return res.serverError();
-        }
-    }
+    // if (reloadNeeded) {
+    //     try {
+    //         record = await entity.model.findOne(req.param('id')).populateAll();
+    //     } catch (e) {
+    //         req._sails.log.error('Admin edit error: ');
+    //         req._sails.log.error(e);
+    //         return res.serverError();
+    //     }
+    // }
 
     res.viewAdmin({
         entity: entity,

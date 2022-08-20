@@ -36,6 +36,10 @@ export default async function add(req, res) {
                 delete reqData[prop]
             }
 
+            if(fields[prop].config.type === 'select-many') {
+                reqData[prop] = reqData[prop].split(",")
+            }
+
             if (fields[prop] && fields[prop].model && fields[prop].model.type === 'json' && reqData[prop] !== '') {
                 try {
                     reqData[prop] = JSON.parse(reqData[prop]);
@@ -69,6 +73,7 @@ export default async function add(req, res) {
             let record = await entity.model.create(reqData).fetch();
             sails.log(`A new record was created: `, record);
             req.session.messages.adminSuccess.push('Your record was created !');
+            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
         } catch (e) {
             sails.log.error(e);
             req.session.messages.adminError.push(e.message || 'Something went wrong...');

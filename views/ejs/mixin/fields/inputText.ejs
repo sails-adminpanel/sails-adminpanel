@@ -1,12 +1,5 @@
-<!-- prettier-ignore -->
-<% if (field.config.isIn) { %>
+<% if (type === "string" && isIn.length) { %>
    <%- include("select") %>
-<% } else if(field.model.email) { %>
-    <input class="clr-input" label="<%= field.config.title %>"
-            <%= field.config.required && 'required' %>
-            <%= field.config.disabled && 'disabled'%>
-            value="<%= value || '' %>"
-            name="<%= key %>">
 <% } else { %>
     <%
     var fieldType = 'text'
