@@ -3,7 +3,7 @@ class File_ {
         this.id = id;
         this.name = name;
         this.url = url;
-        this['url@0.5x'] = url_0_5x;
+        this['url@0_5x'] = url_0_5x;
         this['url@2x'] = url_2x;
         this.urlS = urlS;
         this.urlL = urlL;
