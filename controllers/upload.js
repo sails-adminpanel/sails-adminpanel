@@ -155,7 +155,9 @@ function upload(req, res) {
                                 const urlLarge = dirDownload + nameLarge;
                                 let result = {
                                     name: filenameOrig,
-                                    url: url,
+                                    'url': url,
+                                    'url@0_5x': url,
+                                    'url@2x': url,
                                     urlSmall: urlSmall,
                                     urlLarge: urlLarge,
                                     width: width,
@@ -164,6 +166,7 @@ function upload(req, res) {
                                     sizes: resizes
                                 };
                                 res.status(201);
+                                console.log(result);
                                 res.send(result);
                             });
                         });
