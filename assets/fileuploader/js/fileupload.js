@@ -1,8 +1,10 @@
 class File_ {
-    constructor(id, name, url, urlS, urlL, width, height, size, sizes, title, descritpion, year, author) {
+    constructor(id, name, url, url_0_5x, url_2x, urlS, urlL, width, height, size, sizes, title, descritpion, year, author) {
         this.id = id;
         this.name = name;
         this.url = url;
+        this['url@0_5x'] = url_0_5x;
+        this['url@2x'] = url_2x;
         this.urlS = urlS;
         this.urlL = urlL;
         this.width = width;
@@ -34,6 +36,7 @@ class FileUploader {
 
         this.files = [];
         this.el = $('#' + this.elName);
+
 
         if (this.type === 'images') {
             const ci = config.images;
@@ -155,7 +158,7 @@ class FileUploader {
             },
             success: (file, res) => {
                 // create new file
-                const f = new File_(fu.files.length, res.name, res.url, res.urlSmall, res.urlLarge, res.width, res.height, res.size, res.sizes);
+                const f = new File_(fu.files.length, res.name, res.url,res['url@0_5x'],res['url@2x'], res.urlSmall, res.urlLarge, res.width, res.height, res.size, res.sizes);
                 fu.files.push(f);
                 // add in html
                 fu.addFile(f);
@@ -352,7 +355,7 @@ class FileUploader {
                 const files = JSON.parse(data);
                 if (Array.isArray(files)) {
                     files.forEach((i) => {
-                        const f = new File_(this.files.length, i.name, i.url, i.urlS, i.urlL, i.width, i.height, i.size, i.sizes,
+                        const f = new File_(this.files.length, i.name, i.url, i.url_0_5x, i.url_2x, i.urlS, i.urlL, i.width, i.height, i.size, i.sizes,
                             i.title, i.description, i.year, i.author);
                         this.files.push(f);
                         this.addFile(f);
