@@ -22,7 +22,7 @@ export default async function form(req, res) {
             req.body[prop] = JSON.parse(req.body[prop]);
         } catch (e) {
             if (typeof req.body[prop] === "string" && req.body[prop].replace(/(\r\n|\n|\r|\s{2,})/gm, "") &&
-                e.message !== "Unexpected end of JSON input" && !/Unexpected token . in JSON at position \d/.test(e.message)) {
+                e.message !== "Unexpected end of JSON input" && !/Unexpected (token .|number) in JSON at position \d/.test(e.message)) {
                 sails.log.error(JSON.stringify(req.body[prop]), e);
             }
         }
@@ -39,6 +39,19 @@ export default async function form(req, res) {
 
         if (!req.body) {
             return res.status(500).send("Data is empty")
+        }
+
+        // checkboxes processing
+        let checkboxes = [];
+        for (let key in form) {
+            if (form[key].type === "boolean") {
+                checkboxes.push(key)
+            }
+        }
+        for (let field of checkboxes) {
+            if (!req.body[field]) {
+                await sails.config.adminpanel.forms.set(slug, field, false);
+            }
         }
 
         for (let field of Object.keys(req.body)) {
