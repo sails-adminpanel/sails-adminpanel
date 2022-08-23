@@ -355,7 +355,7 @@ class FileUploader {
                 const files = JSON.parse(data);
                 if (Array.isArray(files)) {
                     files.forEach((i) => {
-                        const f = new File_(this.files.length, i.name, i.url, null, null, i.urlS, i.urlL, i.width, i.height, i.size, i.sizes,
+                        const f = new File_(this.files.length, i.name, i.url, i.url_0_5x, i.url_2x, i.urlS, i.urlL, i.width, i.height, i.size, i.sizes,
                             i.title, i.description, i.year, i.author);
                         this.files.push(f);
                         this.addFile(f);
