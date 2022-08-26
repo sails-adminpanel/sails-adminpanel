@@ -36,9 +36,7 @@ class GeoJsonEditor {
                         clickable: false
                     }
                 },
-                // marker: {
-                //     icon: new MyCustomMarker()
-                // }
+                marker: false
             },
             edit: {
                 featureGroup: editableLayers, //REQUIRED!!
