@@ -56,6 +56,13 @@ table.dataTable {
   .checkbox-row {
     float: left;
   }
+/** 
+in Yandex browser is not working
+*/
+  [type="checkbox"], [type="radio"] {
+    width: auto;
+  }
+
 
   /** Styles for select-pure */
 
