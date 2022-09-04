@@ -256,7 +256,7 @@ module.exports.adminpanel = {
 ```
 
 ## Select many
-You need configure you fieald as json 
+You need configure you field as json 
 
 Your model:
 ```javascript
