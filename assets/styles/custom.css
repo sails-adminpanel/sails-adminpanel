@@ -179,3 +179,11 @@ in Yandex browser is not working
     padding: 10px;
     width: 100%;
 }
+
+.ql-editor {
+    background: #fff;
+}
+
+.ql-toolbar.ql-snow {
+    background: #fcfcfc;
+}

@@ -49,7 +49,8 @@
             <% if ((!config.showORMtime) && (key === 'createdAt' || key === 'updatedAt')) return %>
             <% var field = fields[key] %>
             <% var value = adminpanel.viewHelper.getFieldValue(key, field, data) %>
-            <div class="admin-panel__title">
+            <div  class="admin-panel__wrapper-<%= key %>">
+            <div  class="admin-panel__title">
                 <%= __(field.config.title) %>
                 <% if(fields[key].config.tooltip) { %>
                     <a href="javascript:void(0)" role="tooltip" aria-haspopup="true"
@@ -66,6 +67,7 @@
             <% } %>
             <div class="admin-panel__widget">
                <%- include("mixin/fieldWidget", {field: field, value: value, key: key}) %>
+            </div>
             </div>
         <% }) %>
         <% if (adminpanel.configHelper.isCsrfEnabled()) { %>

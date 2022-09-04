@@ -3,8 +3,8 @@
         <%= field.config.disabled && 'disabled'%>
         name="<%= key %>"
         id="form-<%= key %>"><%- JSON.stringify(value) %></textarea>
-<div id="handsontable-<%= key %>"></div>
-
+<div id="handsontable-<%= key %>" style="height: 500px;"></div>
+<!-- <div  id="admin-panel-editor__wrapper-<%= key %>"></div> -->
 <% if (field.config.options.language) { %>
     <script src="/admin/assets/handsontable/dist/languages/<%= field.config.options.language %>.js"></script>
 <% } else if (sails.config.adminpanel.translation && sails.config.adminpanel.translation.defaultLocale) { %>
@@ -21,8 +21,7 @@
     }
 
     let container<%=key%> = document.getElementById('handsontable-<%= key %>');
-
-    <% if (!field.config.options.language && sails.config.adminpanel.translation && sails.config.adminpanel.translation.defaultLocale) { %>
+        <% if (!field.config.options.language && sails.config.adminpanel.translation && sails.config.adminpanel.translation.defaultLocale) { %>
     <% field.config.options.language = `${ sails.config.adminpanel.translation.defaultLocale.toLowerCase()}-${sails.config.adminpanel.translation.defaultLocale.toUpperCase()}` %>
     <% } %>
 
@@ -33,17 +32,17 @@
 
 
     let options<%=key%> = <%- JSON.stringify(field.config.options) %>;
-    let enableRichTextRenderer = false;
+    let enableRichTextRenderer<%=key%> = false;
     options<%=key%>.columns.forEach(function(column) {
         if (column.type === "html") {
-            enableRichTextRenderer = true;
+            enableRichTextRenderer<%=key%> = true;
             delete column.type;
             column.renderer = RichTextRenderer;
             column.editor = 'RichText'
         }
     })
 
-    if (enableRichTextRenderer) {
+    if (enableRichTextRenderer<%=key%>) {
         options<%=key%>.enterMoves = {row: 0, col: 1};
         options<%=key%>.outsideClickDeselects = false;
         options<%=key%>.afterOnCellMouseDown = function(sender, e) {
@@ -53,6 +52,9 @@
         };
     }
 
+    if(options<%=key%>.height === 'auto') options<%=key%>.height = 500
+
+    console.log("options<%=key%>",options<%=key%>)
     tables['<%= key %>'] = new Handsontable(container<%=key%>, {
         data: data<%=key%>,
         ...options<%=key%>
@@ -60,181 +62,160 @@
 
 
     (function(Handsontable) {
-        'use strict';
+  'use strict';
 
-        let offsetLeft;
-        let offsetTop;
-        let cke_myid;
-        let isMoveWindow = false;
+  let offsetLeft;
+  let offsetTop;
+  let editor;
+  let isOpen = false;
+  let isMoveWindow = false;
+  const RichTextEditor = Handsontable.editors.TextEditor.prototype.extend();
 
-        const onMouseMove = function(event) {
-            cke_myid.style.top = event.clientY - offsetTop + 'px';
-            cke_myid.style.left = event.clientX - offsetLeft + 'px';
-            isMoveWindow = true;
-        };
+  const quillWidth = 400;
+  const quillHeight = 100;
 
-        const RichTextEditor = Handsontable.editors.TextEditor.prototype.extend();
+  const onMouseMove = function(event) {
+    editor.style.top = event.clientY - offsetTop + 'px';
+    editor.style.left = event.clientX - offsetLeft + 'px';
+    isMoveWindow = true;
+  };
 
-        RichTextEditor.prototype.prepare = function(row, col, prop, td, originalValue, cellProperties) {
-            Handsontable.editors.TextEditor.prototype.prepare.apply(this, arguments);
-        };
+  RichTextEditor.prototype.prepare = function(row, col, prop, td, originalValue, cellProperties) {
+    this.TD = td;
+    this.row = row;
+    this.col = col;
+    this.prop = prop;
+    this.originalValue = originalValue;
+    this.cellProperties = cellProperties;
+    this.state = 'STATE_VIRGIN';
 
-        RichTextEditor.prototype.createElements = function() {
-            this.$body = document.getElementsByTagName('body');
+    if (this.editableDiv) return;
 
-            this.TEXTAREA = document.createElement('input');
-            this.TEXTAREA.setAttribute('type', 'text');
-            this.TEXTAREA.setAttribute('id', 'myid');
-            this.$textarea = document.getElementById('myid');
+    this.editableDiv = document.createElement('div');
+    this.editableDiv.innerHTML = originalValue;
+    this.TEXTAREA_PARENT.className += ' quillEditor';
+    this.TEXTAREA_PARENT.appendChild(this.editableDiv);
+    this.TEXTAREA_PARENT.style.width = quillWidth + 'px';
+    this.TEXTAREA_PARENT.style.height = quillHeight + 'px';
+    this.TEXTAREA_PARENT.style.display = 'none';
+    
+    this.quill = new Quill(this.editableDiv, {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          ['bold', 'strike', 'clean', 'link'],
+          [{'color': []}],
+        ],
+      },
+    });
 
-            this.textareaStyle = this.TEXTAREA.style;
-            this.textareaStyle.width = 0;
-            this.textareaStyle.height = 0;
+    const that = this;
 
-            this.TEXTAREA_PARENT = document.createElement('DIV');
+    this.quill.root.addEventListener('keydown', function(event) {
+      if (!isOpen) return;
 
-            this.textareaParentStyle = this.TEXTAREA_PARENT.style;
-            this.textareaParentStyle.top = 0;
-            this.textareaParentStyle.left = 0;
+      if (event.keyCode == 13 && !event.shiftKey) {
+        event.stopImmediatePropagation();
+        that.finishEditing(false, false);
+        that.close();
+      } else if (event.keyCode == 27) {
+        event.stopImmediatePropagation();
+        that.finishEditing(true, false);
+        that.close();
+      }
+    });
 
-            this.TEXTAREA_PARENT.appendChild(this.TEXTAREA);
+    this.instance._registerTimeout(setTimeout(function() {
+      that.refreshDimensions();
+    }, 0));
+  };
 
-            this.instance.rootElement.appendChild(this.TEXTAREA_PARENT);
+  Handsontable.cellTypes.registerCellType('RichText', {
+    editor: RichTextEditor,
+  });
 
-            const that = this;
+  RichTextEditor.prototype.open = function(keyboardEvent) {
+    isOpen = true;
+    this.refreshDimensions();
 
-            CKEDITOR.replace(this.TEXTAREA.id, {
-                on: {
-                    'instanceReady': function(ev) {
-                    },
-                    'loaded': function(ev) {
-                    },
-                    'key': function(event) {
-                        if (event.data.keyCode == CKEDITOR.ALT + 13) {
-                            this.execCommand('shiftEnter');
-                        } else if (event.data.keyCode == 13) {
-                            event.cancel();
-                            that.finishEditing(false, false);
-                        } else if (event.data.keyCode == 27) {
-                            event.cancel();
-                            that.finishEditing(true, false);
-                        }
-                    },
-                },
-                // ツールバーグループのカスタマイズ
-                toolbarGroups: [
-                    {name: 'document', groups: ['mode', 'document', 'doctools']},
-                    {name: 'clipboard', groups: ['clipboard', 'undo']},
-                    {name: 'editing', groups: ['find', 'selection', 'spellchecker', 'editing']},
-                    {name: 'forms', groups: ['forms']},
-                    {name: 'basicstyles', groups: ['basicstyles', 'cleanup']},
-                    {name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'bidi', 'paragraph']},
-                    {name: 'links', groups: ['links']},
-                    {name: 'insert', groups: ['insert']},
-                    {name: 'styles', groups: ['styles']},
-                    {name: 'colors', groups: ['colors']},
-                    {name: 'tools', groups: ['tools']},
-                    {name: 'others', groups: ['others']},
-                    {name: 'about', groups: ['about']},
-                ],
-                removeButtons: 'Source,Save,Templates,NewPage,Preview,Print,PasteFromWord,PasteText,' +
-                    'Find,Replace,Cut,Copy,Paste,SelectAll,Scayt,Form,Checkbox,Radio,TextField,' +
-                    'Textarea,Select,ImageButton,HiddenField,Subscript,Superscript,CopyFormatting,' +
-                    'RemoveFormat,NumberedList,BulletedList,Outdent,Indent,Blockquote,CreateDiv,' +
-                    'JustifyLeft,JustifyCenter,JustifyRight,JustifyBlock,BidiLtr,BidiRtl,' +
-                    'Language,Anchor,Unlink,Link,Image,Flash,Table,HorizontalRule,Smiley,' +
-                    'SpecialChar,PageBreak,Iframe,Styles,Format,Font,FontSize,' +
-                    'BGColor,Maximize,About,ShowBlocks,Italic,Underline,Button',
-                width: '455px',
-                colorButton_colors: 'F00,00F,0F0,0FF,FF0,F0F',
-            });
+    if (keyboardEvent) {
+      this.setValue(this.TD.innerHTML);
+    }
 
-            this.instance._registerTimeout(setTimeout(function() {
-                that.refreshDimensions();
-            }, 0));
-        };
+    const that = this;
 
-        RichTextEditor.prototype.open = function(keyboardEvent) {
-            this.refreshDimensions();
+    setTimeout(function() {
+      const toolbar = document.getElementsByClassName('ql-toolbar')[0];
+      editor = toolbar.parentNode;
+    //   editor.style.top = (document.documentElement.clientHeight - quillHeight) / 2 + 'px';
+    //   editor.style.left = (document.documentElement.clientWidth - quillWidth) / 2 + 'px';
+      editor.style.top = that.TD.offsetTop + that.TD.offsetHeight + 'px';
+      editor.style.left = that.TD.offsetLeft + 'px';
+      editor.style.display = '';
 
-            const that = this;
+      toolbar.onmousedown = function(event) {
+        offsetLeft = event.clientX - parseInt(editor.style.left);
+        offsetTop = event.clientY - parseInt(editor.style.top);
+        document.addEventListener('mousemove', onMouseMove);
+      };
+      toolbar.onmouseup = function(event) {
+        document.removeEventListener('mousemove', onMouseMove);
+        if (isMoveWindow) {
+          isMoveWindow = false;
+          that.quill.setSelection(0, 0);
+        }
+      };
 
-            if (keyboardEvent) {
-                this.setValue(this.TD.innerHTML);
-            }
-            const editor = CKEDITOR.instances[that.TEXTAREA.id];
+      that.quill.setText('');
+      that.quill.pasteHTML(0, that.TD.innerHTML);
+      // Set focus;
+      that.quill.setSelection(0, 0);
+    }, 1);
+  };
 
-            setTimeout(function() {
-                cke_myid = document.getElementById('cke_myid');
-                cke_myid.style.position = 'absolute';
-                cke_myid.style.zIndex = 103;
-                cke_myid.style.top = (document.documentElement.clientHeight - cke_myid.clientHeight) / 2 + 'px';
-                cke_myid.style.left = (document.documentElement.clientWidth - cke_myid.clientWidth) / 2 + 'px';
-                // cke_myid.style.top = that.TD.offsetTop + that.TD.offsetHeight + 'px';
-                // cke_myid.style.left = that.TD.offsetLeft + 'px';
+  RichTextEditor.prototype.close = function() {
+    isOpen = false;
+    this.instance.listen();
+    this.TEXTAREA_PARENT.display = 'none';
+    Handsontable.editors.TextEditor.prototype.close.apply(this, arguments);
+  };
 
-                const toolbar = document.getElementById('cke_1_top');
+  RichTextEditor.prototype.val = function(value) {
+    if (typeof value == 'undefined') {
+      return this.$textarea.val();
+    } else {
+      this.$textarea.val(value);
+    }
+  };
 
-                toolbar.onmousedown = function(event) {
-                    offsetLeft = event.clientX - parseInt(cke_myid.style.left);
-                    offsetTop = event.clientY - parseInt(cke_myid.style.top);
-                    document.addEventListener('mousemove', onMouseMove);
-                };
-                toolbar.onmouseup = function(event) {
-                    document.removeEventListener('mousemove', onMouseMove);
-                    if (isMoveWindow) {
-                        isMoveWindow = false;
-                        editor.focus();
-                    }
-                };
+  RichTextEditor.prototype.getValue = function() {
+    let val = this.quill.root.innerHTML;
+    val = val.replace(/<\/p><p>/ig, '</br>');
+    val = val.replace(/<p>/ig, '');
+    val = val.replace(/<\/p>/ig, '');
+    val = val.replace(/<br>/ig, '');
+    val = val.replace(/<strong><span class="ql-cursor">.*?<\/span><\/strong>/ig,'')
+    for (let i=0; i<3; i++) {
+      val = val.replace(/^<\/br>/i, '');
+      val = val.replace(/<\/br>$/i, '');
+    }
 
-                editor.focus();
-                editor.setData(that.TEXTAREA.value);
-            }, 1);
-        };
+    return val;
+  };
 
-        RichTextEditor.prototype.init = function() {
-            Handsontable.editors.TextEditor.prototype.init.apply(this, arguments);
-        };
+  RichTextEditor.prototype.beginEditing = function(initialValue) {
+    const onBeginEditing = this.instance.getSettings().onBeginEditing;
+    if (onBeginEditing && onBeginEditing() === false) {
+      return;
+    }
 
-        RichTextEditor.prototype.close = function() {
-            this.instance.listen();
-            this.textareaStyle.display = 'none';
-            Handsontable.editors.TextEditor.prototype.close.apply(this, arguments);
-        };
+    Handsontable.editors.TextEditor.prototype.beginEditing.apply(this, arguments);
+  };
 
-        RichTextEditor.prototype.val = function(value) {
-            if (typeof value == 'undefined') {
-                return this.$textarea.val();
-            } else {
-                this.$textarea.val(value);
-            }
-        };
-
-        RichTextEditor.prototype.getValue = function() {
-            let val = CKEDITOR.instances[this.TEXTAREA.id].getData();
-            val = val.replace(/\r?\n/g, '');
-            val = val.replace(/^<P>/i, '');
-            val = val.replace(/<\/P>$/i, '');
-            return val;
-        };
-
-        RichTextEditor.prototype.beginEditing = function(initialValue) {
-            const onBeginEditing = this.instance.getSettings().onBeginEditing;
-            if (onBeginEditing && onBeginEditing() === false) {
-                return;
-            }
-
-            Handsontable.editors.TextEditor.prototype.beginEditing.apply(this, arguments);
-        };
-
-        RichTextEditor.prototype.finishEditing = function(isCancelled, ctrlDown) {
-            return Handsontable.editors.TextEditor.prototype.finishEditing.apply(this, arguments);
-        };
-
-        Handsontable.editors.RichTextEditor = RichTextEditor;
-        Handsontable.editors.registerEditor('RichText', RichTextEditor);
-    })(Handsontable);
+  RichTextEditor.prototype.finishEditing = function(isCancelled, ctrlDown) {
+    return Handsontable.editors.TextEditor.prototype.finishEditing.apply(this, arguments);
+  };
+})(Handsontable);
 </script>
 
 
