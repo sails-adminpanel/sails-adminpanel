@@ -2,6 +2,11 @@ table.dataTable {
     width: 100% !important;
 }
 
+.admin-panel__widget.disabled {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
 #list_filter label {
     display: flex;
     padding: 10px 0px 5px 10px;
@@ -62,7 +67,7 @@ table.dataTable {
   height: 500px;
 }
 
-/** 
+/**
 in Yandex browser is not working
 */
 [type="checkbox"],

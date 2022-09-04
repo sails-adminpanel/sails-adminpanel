@@ -53,7 +53,6 @@
         <% Object.keys(fields).forEach(function(key) { %>
             <% if ((!config.showORMtime) && (key === 'createdAt' || key === 'updatedAt')) return %>
             <% var field = fields[key] %>
-            <% field.config.disabled = true %>
             <% var value = adminpanel.viewHelper.getFieldValue(key, field, data) %>
             <div class="admin-panel__title">
                 <%= __(field.config.title) %>
@@ -70,7 +69,7 @@
                     <%- __(field.config.description) %>
                 </div>
             <% } %>
-            <div class="admin-panel__widget">
+            <div class="admin-panel__widget disabled">
                 <%- include("mixin/fieldWidget", {field: field, value: value, key: key}) %>
             </div>
         <% }) %>
