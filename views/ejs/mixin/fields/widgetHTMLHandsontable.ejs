@@ -1,0 +1,240 @@
+<textarea
+        <%= field.config.required && 'required' %>
+        <%= field.config.disabled && 'disabled'%>
+        name="<%= key %>"
+        id="form-<%= key %>"><%- JSON.stringify(value) %></textarea>
+<div id="handsontable-<%= key %>"></div>
+
+<% if (field.config.options.language) { %>
+    <script src="/admin/assets/handsontable/dist/languages/<%= field.config.options.language %>.js"></script>
+<% } else if (sails.config.adminpanel.translation && sails.config.adminpanel.translation.defaultLocale) { %>
+    <script src="/admin/assets/handsontable/dist/languages/<%= sails.config.adminpanel.translation.defaultLocale.toLowerCase() %>-<%= sails.config.adminpanel.translation.defaultLocale.toUpperCase() %>.js"></script>
+<% } %>
+
+<script>
+
+    let data<%=key%> = document.getElementById('form-<%= key %>').value;
+    if (data<%=key%>) {
+        data<%=key%> = JSON.parse(data<%=key%>)
+    } else {
+        data<%=key%> = []
+    }
+
+    let container<%=key%> = document.getElementById('handsontable-<%= key %>');
+
+    <% if (!field.config.options.language && sails.config.adminpanel.translation && sails.config.adminpanel.translation.defaultLocale) { %>
+    <% field.config.options.language = `${ sails.config.adminpanel.translation.defaultLocale.toLowerCase()}-${sails.config.adminpanel.translation.defaultLocale.toUpperCase()}` %>
+    <% } %>
+
+    function RichTextRenderer(instance, td, row, col, prop, value, cellProperties) {
+        Handsontable.renderers.HtmlRenderer.apply(this, arguments);
+        td.id = 'id' + row + col;
+    }
+
+
+    let options<%=key%> = <%- JSON.stringify(field.config.options) %>;
+    let enableRichTextRenderer = false;
+    options<%=key%>.columns.forEach(function(column) {
+        if (column.type === "html") {
+            enableRichTextRenderer = true;
+            delete column.type;
+            column.renderer = RichTextRenderer;
+            column.editor = 'RichText'
+        }
+    })
+
+    if (enableRichTextRenderer) {
+        options<%=key%>.enterMoves = {row: 0, col: 1};
+        options<%=key%>.outsideClickDeselects = false;
+        options<%=key%>.afterOnCellMouseDown = function(sender, e) {
+            if (e.row === -1) {
+                this.getInstance().deselectCell();
+            }
+        };
+    }
+
+    tables['<%= key %>'] = new Handsontable(container<%=key%>, {
+        data: data<%=key%>,
+        ...options<%=key%>
+    });
+
+
+    (function(Handsontable) {
+        'use strict';
+
+        let offsetLeft;
+        let offsetTop;
+        let cke_myid;
+        let isMoveWindow = false;
+
+        const onMouseMove = function(event) {
+            cke_myid.style.top = event.clientY - offsetTop + 'px';
+            cke_myid.style.left = event.clientX - offsetLeft + 'px';
+            isMoveWindow = true;
+        };
+
+        const RichTextEditor = Handsontable.editors.TextEditor.prototype.extend();
+
+        RichTextEditor.prototype.prepare = function(row, col, prop, td, originalValue, cellProperties) {
+            Handsontable.editors.TextEditor.prototype.prepare.apply(this, arguments);
+        };
+
+        RichTextEditor.prototype.createElements = function() {
+            this.$body = document.getElementsByTagName('body');
+
+            this.TEXTAREA = document.createElement('input');
+            this.TEXTAREA.setAttribute('type', 'text');
+            this.TEXTAREA.setAttribute('id', 'myid');
+            this.$textarea = document.getElementById('myid');
+
+            this.textareaStyle = this.TEXTAREA.style;
+            this.textareaStyle.width = 0;
+            this.textareaStyle.height = 0;
+
+            this.TEXTAREA_PARENT = document.createElement('DIV');
+
+            this.textareaParentStyle = this.TEXTAREA_PARENT.style;
+            this.textareaParentStyle.top = 0;
+            this.textareaParentStyle.left = 0;
+
+            this.TEXTAREA_PARENT.appendChild(this.TEXTAREA);
+
+            this.instance.rootElement.appendChild(this.TEXTAREA_PARENT);
+
+            const that = this;
+
+            CKEDITOR.replace(this.TEXTAREA.id, {
+                on: {
+                    'instanceReady': function(ev) {
+                    },
+                    'loaded': function(ev) {
+                    },
+                    'key': function(event) {
+                        if (event.data.keyCode == CKEDITOR.ALT + 13) {
+                            this.execCommand('shiftEnter');
+                        } else if (event.data.keyCode == 13) {
+                            event.cancel();
+                            that.finishEditing(false, false);
+                        } else if (event.data.keyCode == 27) {
+                            event.cancel();
+                            that.finishEditing(true, false);
+                        }
+                    },
+                },
+                // ツールバーグループのカスタマイズ
+                toolbarGroups: [
+                    {name: 'document', groups: ['mode', 'document', 'doctools']},
+                    {name: 'clipboard', groups: ['clipboard', 'undo']},
+                    {name: 'editing', groups: ['find', 'selection', 'spellchecker', 'editing']},
+                    {name: 'forms', groups: ['forms']},
+                    {name: 'basicstyles', groups: ['basicstyles', 'cleanup']},
+                    {name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'bidi', 'paragraph']},
+                    {name: 'links', groups: ['links']},
+                    {name: 'insert', groups: ['insert']},
+                    {name: 'styles', groups: ['styles']},
+                    {name: 'colors', groups: ['colors']},
+                    {name: 'tools', groups: ['tools']},
+                    {name: 'others', groups: ['others']},
+                    {name: 'about', groups: ['about']},
+                ],
+                removeButtons: 'Source,Save,Templates,NewPage,Preview,Print,PasteFromWord,PasteText,' +
+                    'Find,Replace,Cut,Copy,Paste,SelectAll,Scayt,Form,Checkbox,Radio,TextField,' +
+                    'Textarea,Select,ImageButton,HiddenField,Subscript,Superscript,CopyFormatting,' +
+                    'RemoveFormat,NumberedList,BulletedList,Outdent,Indent,Blockquote,CreateDiv,' +
+                    'JustifyLeft,JustifyCenter,JustifyRight,JustifyBlock,BidiLtr,BidiRtl,' +
+                    'Language,Anchor,Unlink,Link,Image,Flash,Table,HorizontalRule,Smiley,' +
+                    'SpecialChar,PageBreak,Iframe,Styles,Format,Font,FontSize,' +
+                    'BGColor,Maximize,About,ShowBlocks,Italic,Underline,Button',
+                width: '455px',
+                colorButton_colors: 'F00,00F,0F0,0FF,FF0,F0F',
+            });
+
+            this.instance._registerTimeout(setTimeout(function() {
+                that.refreshDimensions();
+            }, 0));
+        };
+
+        RichTextEditor.prototype.open = function(keyboardEvent) {
+            this.refreshDimensions();
+
+            const that = this;
+
+            if (keyboardEvent) {
+                this.setValue(this.TD.innerHTML);
+            }
+            const editor = CKEDITOR.instances[that.TEXTAREA.id];
+
+            setTimeout(function() {
+                cke_myid = document.getElementById('cke_myid');
+                cke_myid.style.position = 'absolute';
+                cke_myid.style.zIndex = 103;
+                cke_myid.style.top = (document.documentElement.clientHeight - cke_myid.clientHeight) / 2 + 'px';
+                cke_myid.style.left = (document.documentElement.clientWidth - cke_myid.clientWidth) / 2 + 'px';
+                // cke_myid.style.top = that.TD.offsetTop + that.TD.offsetHeight + 'px';
+                // cke_myid.style.left = that.TD.offsetLeft + 'px';
+
+                const toolbar = document.getElementById('cke_1_top');
+
+                toolbar.onmousedown = function(event) {
+                    offsetLeft = event.clientX - parseInt(cke_myid.style.left);
+                    offsetTop = event.clientY - parseInt(cke_myid.style.top);
+                    document.addEventListener('mousemove', onMouseMove);
+                };
+                toolbar.onmouseup = function(event) {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    if (isMoveWindow) {
+                        isMoveWindow = false;
+                        editor.focus();
+                    }
+                };
+
+                editor.focus();
+                editor.setData(that.TEXTAREA.value);
+            }, 1);
+        };
+
+        RichTextEditor.prototype.init = function() {
+            Handsontable.editors.TextEditor.prototype.init.apply(this, arguments);
+        };
+
+        RichTextEditor.prototype.close = function() {
+            this.instance.listen();
+            this.textareaStyle.display = 'none';
+            Handsontable.editors.TextEditor.prototype.close.apply(this, arguments);
+        };
+
+        RichTextEditor.prototype.val = function(value) {
+            if (typeof value == 'undefined') {
+                return this.$textarea.val();
+            } else {
+                this.$textarea.val(value);
+            }
+        };
+
+        RichTextEditor.prototype.getValue = function() {
+            let val = CKEDITOR.instances[this.TEXTAREA.id].getData();
+            val = val.replace(/\r?\n/g, '');
+            val = val.replace(/^<P>/i, '');
+            val = val.replace(/<\/P>$/i, '');
+            return val;
+        };
+
+        RichTextEditor.prototype.beginEditing = function(initialValue) {
+            const onBeginEditing = this.instance.getSettings().onBeginEditing;
+            if (onBeginEditing && onBeginEditing() === false) {
+                return;
+            }
+
+            Handsontable.editors.TextEditor.prototype.beginEditing.apply(this, arguments);
+        };
+
+        RichTextEditor.prototype.finishEditing = function(isCancelled, ctrlDown) {
+            return Handsontable.editors.TextEditor.prototype.finishEditing.apply(this, arguments);
+        };
+
+        Handsontable.editors.RichTextEditor = RichTextEditor;
+        Handsontable.editors.registerEditor('RichText', RichTextEditor);
+    })(Handsontable);
+</script>
+
+
