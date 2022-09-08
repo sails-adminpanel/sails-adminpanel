@@ -98,7 +98,7 @@ class EditNavigation {
                                     '</div>' +
                                 '</div>' +
                                 '<div class="modal-footer navigation-footer">' +
-                                    '<a class="editItem btn btn-success" data-dismiss="modal" itemID="" href="#">Save</a>' +
+                                    '<a class="editItem btn btn-success" data-dismiss="modal" parent="" itemID="" href="#">Save</a>' +
                                     '<a class="close-btn btn btn-danger" data-dismiss="modal" href="#">Cancel</a>' +
                                 '</div>' +
                             '</div>' +
@@ -332,6 +332,7 @@ class EditNavigation {
 
     editItem(menu) {
         let itemId = '#' + $('.modal-footer > .editItem').attr('itemid');
+        let parentItem = $('.modal-footer > .editItem').attr('parent');
         $(' > div > div > label', itemId).text($(`.modal-body > div[id="data-${this.titleProperties}"] > div > input`).val());
         $('.modal-body > div').each(function(index, element) {
             if ($(element).is(":visible") && $(element).attr('id')) {
@@ -353,14 +354,16 @@ class EditNavigation {
                 }
             }
         })
-        if ($('#parentSelector').val() === 'global') {
-            $('#sortableList').append($(itemId));
-        } else if ($('#' + $('#parentSelector').val()).children().length === 1) {
-            $('#' + $('#parentSelector').val()).append(document.createElement('ul'));
-            $('#' + $('#parentSelector').val() + ' > ul').addClass()
-            $('#' + $('#parentSelector').val() + ' > ul').append($(itemId));
-        } else {
-            $('#' + $('#parentSelector').val() + ' > ul').append($(itemId));
+        if ($('#parentSelector').val() !== parentItem) {
+            if ($('#parentSelector').val() === 'global') {
+                $('#sortableList').append($(itemId));
+            } else if ($('#' + $('#parentSelector').val()).children().length === 1) {
+                $('#' + $('#parentSelector').val()).append(document.createElement('ul'));
+                $('#' + $('#parentSelector').val() + ' > ul').addClass()
+                $('#' + $('#parentSelector').val() + ' > ul').append($(itemId));
+            } else {
+                $('#' + $('#parentSelector').val() + ' > ul').append($(itemId));
+            }
         }
         this.saveChanges();
         this.clearPopup();
@@ -468,6 +471,7 @@ class EditNavigation {
         }
         $('#parentSelector').children().each(function(index, element) {
             if ($(currentItem).parent().parent().attr('id') === $(element).val()) {
+                $(".editItem").attr('parent', $(element).val());
                 $(element).prop('selected', true)
             }
         })
