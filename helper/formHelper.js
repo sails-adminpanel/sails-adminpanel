@@ -7,7 +7,7 @@ class FormHelper {
     static async get(slug) {
         return this._forms[slug];
     }
-    static loadForms(formsPath) {
+    static async loadForms(formsPath) {
         try {
             let formsDirectoryPath = path.resolve(formsPath);
             let forms = fs.readdirSync(formsDirectoryPath).filter(function (file) {
@@ -17,6 +17,12 @@ class FormHelper {
                 try {
                     let jsonData = require(`${formsDirectoryPath}/${form}`);
                     sails.config.adminpanel.forms.data[path.basename(form, '.json')] = jsonData;
+                    // Seeding forms data
+                    for (let key in forms[form]) {
+                        if (!await sails.config.adminpanel.forms.get(`${form}_${key}`)) {
+                            await sails.config.adminpanel.forms.set(`${form}_${key}`, forms[form][key].value, form);
+                        }
+                    }
                 }
                 catch (error) {
                     sails.log.error(`Adminpanel > Error when reading ${form}.json: ${error}`);
