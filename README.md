@@ -14,6 +14,7 @@ ___sails v0.x is not supported___
 TODO: 
 1. Check csrf to fileUpload
 2. Docs finish
+3. Add disabled fields to all widgets
 
 for fileUploader
 

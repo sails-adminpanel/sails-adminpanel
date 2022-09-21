@@ -1,1 +1,18 @@
-{"label":{"title":"Label","type":"string","value":"Label123","required":true,"tooltip":"tooltip for label","description":"Label from file"}}
+{
+    "label": {
+        "title": "Label",
+        "type": "string",
+        "value": "Label123",
+        "required": true,
+        "tooltip": "tooltip for label",
+        "description": "Label from file"
+    },
+    "test_seed_data": {
+        "title": "Label",
+        "type": "string",
+        "value": "VALUE",
+        "required": true,
+        "tooltip": "tooltip for label",
+        "description": "Label from file"
+    }
+}

@@ -1,0 +1,221 @@
+<textarea
+        <%= field.config.required && 'required' %>
+        <%= field.config.disabled && 'disabled'%>
+        name="<%= key %>"
+        id="form-<%= key %>"><%- JSON.stringify(value) %></textarea>
+<div id="handsontable-<%= key %>" style="height: 500px;"></div>
+<!-- <div  id="admin-panel-editor__wrapper-<%= key %>"></div> -->
+<% if (field.config.options.language) { %>
+    <script src="/admin/assets/handsontable/dist/languages/<%= field.config.options.language %>.js"></script>
+<% } else if (sails.config.adminpanel.translation && sails.config.adminpanel.translation.defaultLocale) { %>
+    <script src="/admin/assets/handsontable/dist/languages/<%= sails.config.adminpanel.translation.defaultLocale.toLowerCase() %>-<%= sails.config.adminpanel.translation.defaultLocale.toUpperCase() %>.js"></script>
+<% } %>
+
+<script>
+
+    let data<%=key%> = document.getElementById('form-<%= key %>').value;
+    if (data<%=key%>) {
+        data<%=key%> = JSON.parse(data<%=key%>)
+    } else {
+        data<%=key%> = []
+    }
+
+    let container<%=key%> = document.getElementById('handsontable-<%= key %>');
+        <% if (!field.config.options.language && sails.config.adminpanel.translation && sails.config.adminpanel.translation.defaultLocale) { %>
+    <% field.config.options.language = `${ sails.config.adminpanel.translation.defaultLocale.toLowerCase()}-${sails.config.adminpanel.translation.defaultLocale.toUpperCase()}` %>
+    <% } %>
+
+    function RichTextRenderer(instance, td, row, col, prop, value, cellProperties) {
+        Handsontable.renderers.HtmlRenderer.apply(this, arguments);
+        td.id = 'id' + row + col;
+    }
+
+
+    let options<%=key%> = <%- JSON.stringify(field.config.options) %>;
+    let enableRichTextRenderer<%=key%> = false;
+    options<%=key%>.columns.forEach(function(column) {
+        if (column.type === "html") {
+            enableRichTextRenderer<%=key%> = true;
+            delete column.type;
+            column.renderer = RichTextRenderer;
+            column.editor = 'RichText'
+        }
+    })
+
+    if (enableRichTextRenderer<%=key%>) {
+        options<%=key%>.enterMoves = {row: 0, col: 1};
+        options<%=key%>.outsideClickDeselects = false;
+        options<%=key%>.afterOnCellMouseDown = function(sender, e) {
+            if (e.row === -1) {
+                this.getInstance().deselectCell();
+            }
+        };
+    }
+
+    if(options<%=key%>.height === 'auto') options<%=key%>.height = 500
+
+    console.log("options<%=key%>",options<%=key%>)
+    tables['<%= key %>'] = new Handsontable(container<%=key%>, {
+        data: data<%=key%>,
+        ...options<%=key%>
+    });
+
+
+    (function(Handsontable) {
+  'use strict';
+
+  let offsetLeft;
+  let offsetTop;
+  let editor;
+  let isOpen = false;
+  let isMoveWindow = false;
+  const RichTextEditor = Handsontable.editors.TextEditor.prototype.extend();
+
+  const quillWidth = 400;
+  const quillHeight = 100;
+
+  const onMouseMove = function(event) {
+    editor.style.top = event.clientY - offsetTop + 'px';
+    editor.style.left = event.clientX - offsetLeft + 'px';
+    isMoveWindow = true;
+  };
+
+  RichTextEditor.prototype.prepare = function(row, col, prop, td, originalValue, cellProperties) {
+    this.TD = td;
+    this.row = row;
+    this.col = col;
+    this.prop = prop;
+    this.originalValue = originalValue;
+    this.cellProperties = cellProperties;
+    this.state = 'STATE_VIRGIN';
+
+    if (this.editableDiv) return;
+
+    this.editableDiv = document.createElement('div');
+    this.editableDiv.innerHTML = originalValue;
+    this.TEXTAREA_PARENT.className += ' quillEditor';
+    this.TEXTAREA_PARENT.appendChild(this.editableDiv);
+    this.TEXTAREA_PARENT.style.width = quillWidth + 'px';
+    this.TEXTAREA_PARENT.style.height = quillHeight + 'px';
+    this.TEXTAREA_PARENT.style.display = 'none';
+    
+    this.quill = new Quill(this.editableDiv, {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          ['bold', 'strike', 'clean', 'link'],
+          [{'color': []}],
+        ],
+      },
+    });
+
+    const that = this;
+
+    this.quill.root.addEventListener('keydown', function(event) {
+      if (!isOpen) return;
+
+      if (event.keyCode == 13 && !event.shiftKey) {
+        event.stopImmediatePropagation();
+        that.finishEditing(false, false);
+        that.close();
+      } else if (event.keyCode == 27) {
+        event.stopImmediatePropagation();
+        that.finishEditing(true, false);
+        that.close();
+      }
+    });
+
+    this.instance._registerTimeout(setTimeout(function() {
+      that.refreshDimensions();
+    }, 0));
+  };
+
+  Handsontable.cellTypes.registerCellType('RichText', {
+    editor: RichTextEditor,
+  });
+
+  RichTextEditor.prototype.open = function(keyboardEvent) {
+    isOpen = true;
+    this.refreshDimensions();
+
+    if (keyboardEvent) {
+      this.setValue(this.TD.innerHTML);
+    }
+
+    const that = this;
+
+    setTimeout(function() {
+      const toolbar = document.getElementsByClassName('ql-toolbar')[0];
+      editor = toolbar.parentNode;
+    //   editor.style.top = (document.documentElement.clientHeight - quillHeight) / 2 + 'px';
+    //   editor.style.left = (document.documentElement.clientWidth - quillWidth) / 2 + 'px';
+      editor.style.top = that.TD.offsetTop + that.TD.offsetHeight + 'px';
+      editor.style.left = that.TD.offsetLeft + 'px';
+      editor.style.display = '';
+
+      toolbar.onmousedown = function(event) {
+        offsetLeft = event.clientX - parseInt(editor.style.left);
+        offsetTop = event.clientY - parseInt(editor.style.top);
+        document.addEventListener('mousemove', onMouseMove);
+      };
+      toolbar.onmouseup = function(event) {
+        document.removeEventListener('mousemove', onMouseMove);
+        if (isMoveWindow) {
+          isMoveWindow = false;
+          that.quill.setSelection(0, 0);
+        }
+      };
+
+      that.quill.setText('');
+      that.quill.pasteHTML(0, that.TD.innerHTML);
+      // Set focus;
+      that.quill.setSelection(0, 0);
+    }, 1);
+  };
+
+  RichTextEditor.prototype.close = function() {
+    isOpen = false;
+    this.instance.listen();
+    this.TEXTAREA_PARENT.display = 'none';
+    Handsontable.editors.TextEditor.prototype.close.apply(this, arguments);
+  };
+
+  RichTextEditor.prototype.val = function(value) {
+    if (typeof value == 'undefined') {
+      return this.$textarea.val();
+    } else {
+      this.$textarea.val(value);
+    }
+  };
+
+  RichTextEditor.prototype.getValue = function() {
+    let val = this.quill.root.innerHTML;
+    val = val.replace(/<\/p><p>/ig, '</br>');
+    val = val.replace(/<p>/ig, '');
+    val = val.replace(/<\/p>/ig, '');
+    val = val.replace(/<br>/ig, '');
+    val = val.replace(/<strong><span class="ql-cursor">.*?<\/span><\/strong>/ig,'')
+    for (let i=0; i<3; i++) {
+      val = val.replace(/^<\/br>/i, '');
+      val = val.replace(/<\/br>$/i, '');
+    }
+
+    return val;
+  };
+
+  RichTextEditor.prototype.beginEditing = function(initialValue) {
+    const onBeginEditing = this.instance.getSettings().onBeginEditing;
+    if (onBeginEditing && onBeginEditing() === false) {
+      return;
+    }
+
+    Handsontable.editors.TextEditor.prototype.beginEditing.apply(this, arguments);
+  };
+
+  RichTextEditor.prototype.finishEditing = function(isCancelled, ctrlDown) {
+    return Handsontable.editors.TextEditor.prototype.finishEditing.apply(this, arguments);
+  };
+})(Handsontable);
+</script>
+
+

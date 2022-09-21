@@ -2,6 +2,8 @@
 <%- include("headContent") %>
 
 <% var idField = adminpanel.configHelper.getIdentifierField(entity.config.model) %>
+<% var data = record %>
+<% var config = adminpanel.configHelper.getConfig() %>
 
 <div class="horizontal layout">
     <div class="flex">
@@ -37,17 +39,42 @@
         <% } %>
     </div>
 
-    <material elevation="1" page>
+    <div>
+
+        <%# global variables %>
+        <script>
+            var jsonEditor = {};
+            var aceCounter = 0;
+            let editor = [];
+            let textarea = [];
+            var tables = {};
+        </script>
+
         <% Object.keys(fields).forEach(function(key) { %>
-        <% var field = fields[key] %>
-            <div class="layout horizontal field-row">
-                <div class="field-name"><%= __(field.config.title) %></div>
-                <div flex>
-                   <%- include("mixin/fieldValue", {key: key, field: field}) %>
+            <% if ((!config.showORMtime) && (key === 'createdAt' || key === 'updatedAt')) return %>
+            <% var field = fields[key] %>
+            <% var value = adminpanel.viewHelper.getFieldValue(key, field, data) %>
+            <div class="admin-panel__title">
+                <%= __(field.config.title) %>
+                <% if(fields[key].config.tooltip) { %>
+                    <a href="javascript:void(0)" role="tooltip" aria-haspopup="true"
+                       class="tooltip tooltip-md tooltip-top-right">
+                        <i class="las la-info-circle"></i>
+                        <span class="tooltip-content"><%= __(fields[key].config.tooltip) %></span>
+                    </a>
+                <% } %>
+            </div>
+            <% if (field.config.description) { %>
+                <div class="admin-panel__description">
+                    <%- __(field.config.description) %>
                 </div>
+            <% } %>
+            <div class="admin-panel__widget disabled">
+                <%- include("mixin/fieldWidget", {field: field, value: value, key: key}) %>
             </div>
         <% }) %>
-    </material>
+
+    </div>
 </div>
 
 <%- include("footer") %>

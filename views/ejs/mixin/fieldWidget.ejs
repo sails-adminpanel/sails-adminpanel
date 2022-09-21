@@ -72,6 +72,18 @@
    <%- include("fields/widgetEditSchedule") %>
 <% } %>
 
+<%# GeoJsonEditor %>
+<% var widgetGeoJsonEditor = ['geojson'] %>
+<% if (widgetGeoJsonEditor.includes(type)) { %>
+   <%- include("fields/widgetGeoJsonEditor") %>
+<% } %>
+
+<%# GeoJsonEditor %>
+<% var widgetGeoJsonEditor = ['geo-polygon'] %>
+<% if (widgetGeoJsonEditor.includes(type)) { %>
+   <%- include("fields/widgetGeoPolygonEditor") %>
+<% } %>
+
 <%# Select-pure %>
 <% if (type === 'association') { %>
    <%- include("fields/inputAssociation") %>
@@ -84,5 +96,5 @@
 
 <%# Handsontable %>
 <% if (type === 'table') { %>
-   <%- include("fields/widgetHandsontable") %>
+   <%- include("fields/widgetHTMLHandsontable") %>
 <% } %>

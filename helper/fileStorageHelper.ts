@@ -18,7 +18,7 @@ export class FileStorageHelper {
         }
     }
 
-    public static get(slug: string, key: string): string {
+    public static get(slug: string, key: string): string | undefined {
         if (!this._isInitialized) {
             this._init();
         }
@@ -26,7 +26,7 @@ export class FileStorageHelper {
         if (this._storage[slug]) {
             return this._storage[slug][key]
         } else {
-            throw new Error(`${slug} was not found in storage`)
+            return undefined
         }
     }
 
