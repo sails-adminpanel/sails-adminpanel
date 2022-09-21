@@ -29,4 +29,9 @@ describe('Form test', function () {
             (0, chai_1.expect)(formFromFile['testForm'].label).to.equal("Label123");
         });
     });
+    it("Seeding form data", function () {
+        let VALUE = sails.config.adminpanel.forms.get("testForm", "test_seed_data");
+        console.log(VALUE);
+        (0, chai_1.expect)(VALUE).to.equal("VALUE");
+    });
 });

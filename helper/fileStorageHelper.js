@@ -23,7 +23,7 @@ class FileStorageHelper {
             return this._storage[slug][key];
         }
         else {
-            throw new Error(`${slug} was not found in storage`);
+            return undefined;
         }
     }
     static set(slug, key, value) {
