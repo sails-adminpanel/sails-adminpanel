@@ -116,7 +116,7 @@ switch (type) {
         large: '<%=largeSize%>',
 
         <% if(checkConfig && field.config.options.resize) { %>
-          resize: <%=field.config.options.resize%>,
+          resize: <%- JSON.stringify(field.config.options.resize) %>,
         <% } %>
 
         <% if(checkConfig &&field.config.options.aspect) { %>
