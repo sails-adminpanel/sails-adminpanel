@@ -5,7 +5,9 @@ const path = require("path");
 const fs = require("fs");
 class FormHelper {
     static async get(slug) {
-        return this._forms[slug];
+        if (sails.config.adminpanel.forms && sails.config.adminpanel.forms !== null) {
+            return sails.config.adminpanel.forms[slug];
+        }
     }
     static async loadForms(formsPath) {
         try {
@@ -33,4 +35,3 @@ class FormHelper {
     }
 }
 exports.FormHelper = FormHelper;
-FormHelper._forms = sails.config.adminpanel.forms ? sails.config.adminpanel.forms.data : null;
