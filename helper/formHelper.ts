@@ -5,7 +5,7 @@ export class FormHelper {
 
     public static async get(slug: string): Promise<object> {
         if (sails.config.adminpanel.forms && sails.config.adminpanel.forms !== null) {
-            return sails.config.adminpanel.forms[slug]
+            return sails.config.adminpanel.forms.data[slug]
         }
     }
 

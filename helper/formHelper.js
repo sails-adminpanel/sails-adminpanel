@@ -6,7 +6,7 @@ const fs = require("fs");
 class FormHelper {
     static async get(slug) {
         if (sails.config.adminpanel.forms && sails.config.adminpanel.forms !== null) {
-            return sails.config.adminpanel.forms[slug];
+            return sails.config.adminpanel.forms.data[slug];
         }
     }
     static async loadForms(formsPath) {
