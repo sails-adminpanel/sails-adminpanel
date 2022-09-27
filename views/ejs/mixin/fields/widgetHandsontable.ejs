@@ -2,7 +2,7 @@
         <%= field.config.required && 'required' %>
         <%= field.config.disabled && 'disabled'%>
         name="<%= key %>"
-        id="form-<%= key %>"><%- JSON.stringify(value) %></textarea>
+        id="form-<%= key %>" hidden><%- JSON.stringify(value) %></textarea>
 <div id="handsontable-<%= key %>"></div>
 
 <% if (field.config.options.language) { %>
