@@ -1,5 +1,6 @@
 import { FieldsTypes } from "./fieldsTypes"
 export interface AdminpanelConfig {
+    auth?: boolean
     /**
      * Enable or disable auth for adminpanel
      */
