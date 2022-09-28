@@ -35,7 +35,6 @@ export class FormHelper {
             for (let form in sails.config.adminpanel.forms.data) {
                 for (let key in sails.config.adminpanel.forms.data[form]) {
                     if (!await sails.config.adminpanel.forms.get(form, key)){
-                        console.log(await sails.config.adminpanel.forms.get(`${form}_${key}`))
                         await sails.config.adminpanel.forms.set(form, key, sails.config.adminpanel.forms.data[form][key].value);
                     }
                 }
