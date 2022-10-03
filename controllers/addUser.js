@@ -40,7 +40,7 @@ async function default_1(req, res) {
                 locale: locale, isAdministrator: isAdministrator, groups: userGroups }).fetch();
             sails.log(`A new user was created: `, user);
             req.session.messages.adminSuccess.push('A new user was created !');
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/usersap`);
+            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/usersap`);
         }
         catch (e) {
             sails.log.error(e);
