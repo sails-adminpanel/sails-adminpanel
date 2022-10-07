@@ -1,1 +1,1 @@
-export default function bindForms(): void;
+export default function bindForms(): Promise<void>;
