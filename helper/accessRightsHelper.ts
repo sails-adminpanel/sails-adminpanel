@@ -1,5 +1,6 @@
 import {AccessRightsToken} from "../interfaces/types";
 import UserAP from "../models/UserAP";
+import userAP from "../models/UserAP";
 
 export class AccessRightsHelper {
 
@@ -37,6 +38,23 @@ export class AccessRightsHelper {
         return this._tokens
             .map((token) => {return token.department})
             .filter(function(item, pos, self) {return self.indexOf(item) == pos})
+    }
+
+    public static enoughPermissions(tokens: string[], user: userAP): boolean {
+        if (user.isAdministrator) {
+            return true;
+        }
+
+        if (!tokens.length) {
+            return false
+        }
+
+        let enoughPermissions = false
+        tokens.forEach((token)=>{
+            let havePermission = this.havePermission(token, user)
+            if(havePermission) enoughPermissions = true
+        })
+        return enoughPermissions
     }
 
     public static havePermission(tokenId: string, user: UserAP): boolean {

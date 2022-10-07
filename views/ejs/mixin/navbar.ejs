@@ -4,7 +4,11 @@
     <section class="nav-group">
       <% adminpanel.menuHelper.getMenuItems().forEach(function(menuItem) { %>
         <% var active = ""; if (menuItem && menuItem.entityName && entity && entity.name) { active = menuItem.entityName === entity.name ? 'active' : '' } %>
-        <% if (havePermission(`read-${menuItem.entityName}-model`, req.session.UserAP)) { %>
+
+        <%# Collect accessRightsTokens from menuItem and its children %>
+        <% var menuItemTokens = menuItem.actions ? menuItem.actions.map(item => {return item.accessRightsToken}).filter(item => {return item}) : [] %>
+        <% if (menuItem.accessRightsToken) menuItemTokens.push(menuItem.accessRightsToken) %>
+        <% if (enoughPermissions(menuItemTokens, req.session.UserAP)) { %>
           <section class="nav-group collapsible <% if(active) {%>active<% } %>">
             <input class="clr-input" id="tab-<%=menuItem.id%>" type="checkbox" />
             <div class="nav-label">
@@ -17,14 +21,16 @@
                 <% if (menuItem.actions && menuItem.actions.length > 0) { %> <%= menuItem.title %>
                   <i class="las la-chevron-right"></i>
                 <% } else { %>
-                  <a href="<%= menuItem.link %>"><%= __(menuItem.title) %></a>
+                  <% if (havePermission(menuItem.accessRightsToken, req.session.UserAP)) { %>
+                    <a href="<%= menuItem.link %>"><%= __(menuItem.title) %></a>
+                  <% } %>
                 <% } %>
               </label>
             </div>
             <% if (menuItem.actions && menuItem.actions.length > 0) { %>
               <% menuItem.actions.forEach(function(action) { %>
                 <ul class="nav-list">
-                    <% if (havePermission(action.accessRightsToken, req.session.UserAP) || action.id === 'overview') { %>
+                    <% if (havePermission(action.accessRightsToken, req.session.UserAP)) { %>
                       <li>
                         <a class="nav-link" href="<%= action.link %>"
                           ><span class="navbar-icon"> <i class="las la-<%=action.icon%>"></i></span><%= __(action.title) %></a
