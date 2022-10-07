@@ -29,6 +29,21 @@ class AccessRightsHelper {
             .map((token) => { return token.department; })
             .filter(function (item, pos, self) { return self.indexOf(item) == pos; });
     }
+    static enoughPermissions(tokens, user) {
+        if (user.isAdministrator) {
+            return true;
+        }
+        if (!tokens.length) {
+            return false;
+        }
+        let enoughPermissions = false;
+        tokens.forEach((token) => {
+            let havePermission = this.havePermission(token, user);
+            if (havePermission)
+                enoughPermissions = true;
+        });
+        return enoughPermissions;
+    }
     static havePermission(tokenId, user) {
         if (user.isAdministrator) {
             return true;

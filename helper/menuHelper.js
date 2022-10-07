@@ -160,7 +160,8 @@ class MenuHelper {
                             id: "overview",
                             link: MenuHelper.config.routePrefix + '/model/' + key,
                             title: 'Overview',
-                            icon: "list"
+                            icon: "list",
+                            accessRightsToken: `read-${key}-model`
                         });
                     }
                     menus.push({

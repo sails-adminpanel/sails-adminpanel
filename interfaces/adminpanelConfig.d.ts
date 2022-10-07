@@ -126,6 +126,10 @@ export interface AdminpanelConfig {
      * Show adminpanel version on the bottom of navbar
      * */
     showVersion?: boolean
+    /**
+     * Enable/disable authorization
+     * */
+    auth?: boolean
 }
 
 export interface ModelConfig {
