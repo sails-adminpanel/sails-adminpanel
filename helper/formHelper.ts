@@ -2,10 +2,11 @@ import * as path from "path";
 import * as fs from "fs";
 
 export class FormHelper {
-    private static _forms = sails.config.adminpanel.forms ? sails.config.adminpanel.forms.data : null;
 
     public static async get(slug: string): Promise<object> {
-        return this._forms[slug]
+        if (sails.config.adminpanel.forms && sails.config.adminpanel.forms !== null) {
+            return sails.config.adminpanel.forms.data[slug]
+        }
     }
 
     public static async loadForms(formsPath: string): Promise<void> {

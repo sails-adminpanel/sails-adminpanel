@@ -1,52 +1,56 @@
 <% var config = adminpanel.configHelper.getConfig() %>
 <nav class="sidenav sidenav-panel">
-  <section class="sidenav-content">
-    <section class="nav-group">
-      <% adminpanel.menuHelper.getMenuItems().forEach(function(menuItem) { %>
-        <% var active = ""; if (menuItem && menuItem.entityName && entity && entity.name) { active = menuItem.entityName === entity.name ? 'active' : '' } %>
+    <section class="sidenav-content">
+        <section class="nav-group">
+            <% adminpanel.menuHelper.getMenuItems().forEach(function(menuItem) { %>
+                <% var active = ""; if (menuItem && menuItem.entityName && entity && entity.name) { active = menuItem.entityName === entity.name ? 'active' : '' } %>
 
-        <%# Collect accessRightsTokens from menuItem and its children %>
-        <% var menuItemTokens = menuItem.actions ? menuItem.actions.map(item => {return item.accessRightsToken}).filter(item => {return item}) : [] %>
-        <% if (menuItem.accessRightsToken) menuItemTokens.push(menuItem.accessRightsToken) %>
-        <% if (enoughPermissions(menuItemTokens, req.session.UserAP)) { %>
-          <section class="nav-group collapsible <% if(active) {%>active<% } %>">
-            <input class="clr-input" id="tab-<%=menuItem.id%>" type="checkbox" />
-            <div class="nav-label">
-              <label for="tab-<%=menuItem.id%>" title="<%= menuItem.title %>">
-                <% if (menuItem.icon) { %>
-                  <span class="navbar-icon">
-                    <i class="las la-<%=menuItem.icon%>"></i>
-                  </span>
+                <%# Collect accessRightsTokens from menuItem and its children %>
+                <% var menuItemTokens = menuItem.actions ? menuItem.actions.map(item => {return item.accessRightsToken}).filter(item => {return item}) : [] %>
+                <% if (menuItem.accessRightsToken) menuItemTokens.push(menuItem.accessRightsToken) %>
+                <% if (enoughPermissions(menuItemTokens, req.session.UserAP)) { %>
+                <section class="nav-group collapsible <% if(active) {%>active<% } %>">
+                    <input class="clr-input" id="tab-<%=menuItem.id%>" type="checkbox" />
+                    <div class="nav-label">
+                        <label for="tab-<%=menuItem.id%>" title="<%= menuItem.title %>">
+                            <% if (menuItem.icon) { %>
+                                <span class="navbar-icon">
+                                    <i class="las la-<%=menuItem.icon%>"></i>
+                                </span>
+                            <% } %>
+
+                            <%# For multiple menuItem %>
+                            <% if (menuItem.actions && menuItem.actions.length > 0) { %> <%= menuItem.title %>
+                            <i class="las la-chevron-right"></i>
+                            <% } else { %>
+
+                                <%# For single menuItem %>
+                                <% if (havePermission(menuItem.accessRightsToken, req.session.UserAP)) { %>
+                                    <a href="<%= menuItem.link %>"><%= __(menuItem.title) %></a>
+                                <% } %>
+                            <% } %>
+                            </label>
+                        </div>
+                        <% if (menuItem.actions && menuItem.actions.length > 0) { %>
+                            <% menuItem.actions.forEach(function(action) { %>
+                                <ul class="nav-list">
+                                    <% if (havePermission(action.accessRightsToken, req.session.UserAP)) { %>
+                                        <li>
+                                            <a class="nav-link" href="<%= action.link %>">
+                                                <span class="navbar-icon"> <i class="las la-<%=action.icon%>"></i></span><%= __(action.title) %>
+                                            </a>
+                                        </li>
+                                    <% } %>
+                                </ul>
+                            <% }) %>
+                        <% } %>
+                    </section>
                 <% } %>
-                <% if (menuItem.actions && menuItem.actions.length > 0) { %> <%= menuItem.title %>
-                  <i class="las la-chevron-right"></i>
-                <% } else { %>
-                  <% if (havePermission(menuItem.accessRightsToken, req.session.UserAP)) { %>
-                    <a href="<%= menuItem.link %>"><%= __(menuItem.title) %></a>
-                  <% } %>
-                <% } %>
-              </label>
-            </div>
-            <% if (menuItem.actions && menuItem.actions.length > 0) { %>
-              <% menuItem.actions.forEach(function(action) { %>
-                <ul class="nav-list">
-                    <% if (havePermission(action.accessRightsToken, req.session.UserAP)) { %>
-                      <li>
-                        <a class="nav-link" href="<%= action.link %>"
-                          ><span class="navbar-icon"> <i class="las la-<%=action.icon%>"></i></span><%= __(action.title) %></a
-                        >
-                      </li>
-                    <% } %>
-                </ul>
-              <% }) %>
-            <% } %>
-          </section>
-        <% } %>
-      <% }) %>
+            <% }) %>
+        </section>
+
     </section>
-
-  </section>
-  <% if (config.showVersion) { %>
+    <% if (config.showVersion) { %>
     <section style="text-align: center;font-size: 10px;">v<%=config.package.version%></section>
-  <% } %>
+    <% } %>
 </nav>
