@@ -4,7 +4,7 @@ export default function bindAccessRights() {
     if (sails.config.adminpanel.models) {
         let entities = sails.config.adminpanel.models;
         for (let key of Object.keys(entities)) {
-            let department = `Section ${key}`;
+            let department = `Model ${key}`;
 
             // create
             AccessRightsHelper.registerToken({id: `create-${key}-model`, name: "Create",

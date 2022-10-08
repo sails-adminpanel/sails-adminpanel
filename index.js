@@ -51,7 +51,10 @@ module.exports = function (sails) {
 
         getAllAccessTokens: AccessRightsHelper.getTokens,
 
-        havePermission: AccessRightsHelper.havePermission
+        havePermission: AccessRightsHelper.havePermission,
+
+        enoughPermissions: AccessRightsHelper.enoughPermissions
+
     };
 };
 
