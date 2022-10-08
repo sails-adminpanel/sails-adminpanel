@@ -42,7 +42,7 @@ export default function upload(req, res) {
         const field: string = req.body.field
 
         // get options
-        let options;
+        let fielConfig;
 
 
         // TODO: wizards
@@ -50,11 +50,9 @@ export default function upload(req, res) {
         // Громоздко потомучто в конфиге сделали неодинаковые типы для ENTITY
         let adminpanelConfig = sails.config.adminpanel as AdminpanelConfig
         if (entity.type === 'model'){
-            let fielConfig = adminpanelConfig.models[entity.name].fields[field] as BaseFieldConfig
-            options = fielConfig.options
+            fielConfig = adminpanelConfig.models[entity.name].fields[field] as BaseFieldConfig
         } else if(entity.type === 'form'){
-            let fielConfig = adminpanelConfig.forms.data[entity.name][field] as BaseFieldConfig
-            options = fielConfig.options
+            fielConfig = adminpanelConfig.forms.data[entity.name][field] as BaseFieldConfig
         }
 
 
@@ -136,11 +134,12 @@ export default function upload(req, res) {
         /**
          * Saving in file
          */
-        if(options.type !== 'file' && options.file !== undefined) {
+        console.log(fielConfig)
+        if(fielConfig.type !== 'file' && fielConfig.options.file !== undefined) {
             return res.serverError('Only file full destination allowed');
-        } else if(options.file !== undefined) {
-            fullDir=path.resolve(path.dirname(options.path))
-            filename=path.basename(options.path)
+        } else if(fielConfig.options.file !== undefined) {
+            fullDir=path.resolve(path.dirname(fielConfig.options.file))
+            filename=path.basename(fielConfig.options.file)
         }
 
         req.file('file').upload({

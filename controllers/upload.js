@@ -33,18 +33,16 @@ function upload(req, res) {
         }
         const field = req.body.field;
         // get options
-        let options;
+        let fielConfig;
         // TODO: wizards
         // Need rewrite to EntityConfig in config adminpanel. 
         // Громоздко потомучто в конфиге сделали неодинаковые типы для ENTITY
         let adminpanelConfig = sails.config.adminpanel;
         if (entity.type === 'model') {
-            let fielConfig = adminpanelConfig.models[entity.name].fields[field];
-            options = fielConfig.options;
+            fielConfig = adminpanelConfig.models[entity.name].fields[field];
         }
         else if (entity.type === 'form') {
-            let fielConfig = adminpanelConfig.forms.data[entity.name][field];
-            options = fielConfig.options;
+            fielConfig = adminpanelConfig.forms.data[entity.name][field];
         }
         // set upload directory
         const dirDownload = `uploads/${entity.type}/${entity.name}/${req.body.field}`;
@@ -114,12 +112,13 @@ function upload(req, res) {
         /**
          * Saving in file
          */
-        if (options.type !== 'file' && options.file !== undefined) {
+        console.log(fielConfig);
+        if (fielConfig.type !== 'file' && fielConfig.options.file !== undefined) {
             return res.serverError('Only file full destination allowed');
         }
-        else if (options.file !== undefined) {
-            fullDir = path.resolve(path.dirname(options.path));
-            filename = path.basename(options.path);
+        else if (fielConfig.options.file !== undefined) {
+            fullDir = path.resolve(path.dirname(fielConfig.options.file));
+            filename = path.basename(fielConfig.options.file);
         }
         req.file('file').upload({
             dirname: fullDir,
