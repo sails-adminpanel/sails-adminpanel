@@ -148,7 +148,8 @@ class MenuHelper {
                     title: additionalLink.title,
                     id: additionalLink.id || additionalLink.title.replace(" ", "_"),
                     actions: additionalLink.subItems || null,
-                    icon: additionalLink.icon || null
+                    icon: additionalLink.icon || null,
+                    accessRightsToken: additionalLink.accessRightsToken || null
                 });
             });
         }
@@ -160,7 +161,8 @@ class MenuHelper {
                             id: "overview",
                             link: MenuHelper.config.routePrefix + '/model/' + key,
                             title: 'Overview',
-                            icon: "list"
+                            icon: "list",
+                            accessRightsToken: `read-${key}-model`
                         });
                     }
                     menus.push({
@@ -169,7 +171,8 @@ class MenuHelper {
                         icon: val.icon || null,
                         actions: val.tools || null,
                         id: val.title ? val.title.replace(" ", "_") : key,
-                        entityName: key
+                        entityName: key,
+                        accessRightsToken: `read-${key}-model`
                     });
                 }
             });
