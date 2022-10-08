@@ -6,7 +6,10 @@ export interface AdminpanelConfig {
      */
     auth: boolean
     /**
+     * @deprecated
      * Models configuration
+     * @todo rewrite for EntityType 
+     * reference upload contoroller ~50 line
      * */
     models: {
         [key:string]: ModelConfig
@@ -71,6 +74,11 @@ export interface AdminpanelConfig {
      * */
     forms?: {
         path: string
+        /** 
+         * @deprecated
+         * TODO: (wizards) rewrite to data -> setup 
+         * same for model (need entity config types)
+         * */ 
         data: {
             [key:string]: Fields
         }
@@ -193,7 +201,7 @@ export interface ModelConfig {
 }
 
 export interface Fields {
-    [key: string]: BaseFieldConfig | boolean | string
+    [key: string]: string | boolean | BaseFieldConfig 
 }
 
 interface BaseFieldConfig {
@@ -206,7 +214,7 @@ interface BaseFieldConfig {
     /**
      * Options for widgets like 'Navigation', 'Schedule' and 'FileUploader'
      * */
-    options?: NavigationOptionsField | ScheduleOptionsField | FileUploaderOptionsField
+    options?: NavigationOptionsField | ScheduleOptionsField | FileUploaderOptionsField | any
     /**
      * Function that makes data modification on list view
      * */

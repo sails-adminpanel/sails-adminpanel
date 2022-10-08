@@ -1,6 +1,7 @@
 import { AdminUtil } from "../lib/adminUtil";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import * as path from "path";
+import { AdminpanelConfig, BaseFieldConfig } from "../interfaces/adminpanelConfig";
 const Jimp = require('jimp');
 
 // !TODO for images resizing need usage parameters to get request cat.jpg?150. It makes image inscribed in square 150*150px
@@ -13,31 +14,58 @@ export default function upload(req, res) {
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
             return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
-        } else if (!AccessRightsHelper.havePermission(`update-${entity.name}-model`, req.session.UserAP) &&
-            !AccessRightsHelper.havePermission(`create-${entity.name}-model`, req.session.UserAP)) {
+        } else if (!AccessRightsHelper.enoughPermissions([
+            `update-${entity.name}-model`, 
+            `create-${entity.name}-model`,
+            `update-${entity.name}-form`, 
+            `create-${entity.name}-form`
+        ], req.session.UserAP)) {
             return res.sendStatus(403);
         }
     }
 
 
     if (req.method.toUpperCase() === 'POST') {
-        // if this file must not be loaded
-        if (req.body.stop === true) {
-            return res.badRequest();
-        }
+
+        // if this file must not be loaded 
+        // if (req.body.stop === true) {
+        //     return res.badRequest();
+        // }
 
         // sails.log.info(req.body);
+
 
         // read field
         if (!req.body.field) {
             return res.serverError('No field name in request');
         }
+        const field: string = req.body.field
+
+        // get options
+        let options;
+
+
+        // TODO: wizards
+        // Need rewrite to EntityConfig in config adminpanel. 
+        // Громоздко потомучто в конфиге сделали неодинаковые типы для ENTITY
+        let adminpanelConfig = sails.config.adminpanel as AdminpanelConfig
+        if (entity.type === 'model'){
+            let fielConfig = adminpanelConfig.models[entity.name].fields[field] as BaseFieldConfig
+            options = fielConfig.options
+        } else if(entity.type === 'form'){
+            let fielConfig = adminpanelConfig.forms.data[entity.name][field] as BaseFieldConfig
+            options = fielConfig.options
+        }
+
+
 
         // set upload directory
-        const dirDownload = '/uploads/' + entity.name + '/' + req.body.field + '/';
-        const dir = '/.tmp/public' + dirDownload;
-        const assetsDir = process.cwd() + '/assets' + dirDownload;
-        const fullDir = process.cwd() + dir;
+        const dirDownload = `uploads/${entity.type}/${entity.name}/${req.body.field}`;
+        const dir = `/.tmp/public/${dirDownload}/`;
+        const assetsDir = `${process.cwd()}/assets/${dirDownload}/`;
+        let fullDir = process.cwd() + dir;
+
+
 
         // small and large sizes
         let small, large;
@@ -68,6 +96,7 @@ export default function upload(req, res) {
         if (!req.body.type) {
             return res.serverError('No type of file');
         }
+        
         const type = req.body.type;
 
         let aspect;
@@ -99,9 +128,20 @@ export default function upload(req, res) {
 
         //save file
         const filenameOrig = req.body.filename.replace(' ', '_');
-        const filename = filenameOrig.substr(0, filenameOrig.lastIndexOf('.')) + rand + '.' + filenameOrig.split('.').reverse()[0];
+        let filename = filenameOrig.substr(0, filenameOrig.lastIndexOf('.')) + rand + '.' + filenameOrig.split('.').reverse()[0];
         const nameSmall = filename.substr(0, filename.lastIndexOf('.')) + '_tumblrDEFAULT.' + filename.split('.').reverse()[0];
         const nameLarge = filename.substr(0, filename.lastIndexOf('.')) + '_largeDEFAULT.' + filename.split('.').reverse()[0];
+
+
+        /**
+         * Saving in file
+         */
+        if(options.type !== 'file' && options.file !== undefined) {
+            return res.serverError('Only file full destination allowed');
+        } else if(options.file !== undefined) {
+            fullDir=path.resolve(path.dirname(options.path))
+            filename=path.basename(options.path)
+        }
 
         req.file('file').upload({
             dirname: fullDir,
@@ -139,7 +179,7 @@ export default function upload(req, res) {
                             i.quality = 60;
                         }
                         let name = await jimpResize(i);
-                        resizes[i.name] = dirDownload + path.basename(name);
+                        resizes[i.name] = `/${dirDownload}/${path.basename(name)}`;
                     }
 
                     async function jimpResize(i): Promise<string> {
@@ -163,9 +203,9 @@ export default function upload(req, res) {
                             image1.scaleToFit(small, small).write(fullDir + nameSmall, function () {
                                 image1.write(assetsDir + nameSmall);
                                 // return urls
-                                const url = dirDownload + filename;
-                                const urlSmall = dirDownload + nameSmall;
-                                const urlLarge = dirDownload + nameLarge;
+                                const url = `/${dirDownload}/${filename}`;
+                                const urlSmall = `/${dirDownload}/${nameSmall}`;
+                                const urlLarge = `/${dirDownload}/${nameLarge}`;
                                 let result = {
                                     name: filenameOrig,
                                     'url': url,
@@ -187,8 +227,8 @@ export default function upload(req, res) {
                 });
             } else if (type === 'files' || type === 'file') {
                 const ext = filename.substr(filename.lastIndexOf('.') + 1, filename.length);
-                const urlIcon = '/admin/assets/fileuploader/icons/' + ext + '.svg';
-                const url = dirDownload + filename;
+                const urlIcon = `/admin/assets/fileuploader/icons/${ext}.svg`;
+                const url = `/${dirDownload}/${filename}`;
                 res.status(201);
                 res.send({
                     name: filenameOrig,
@@ -255,5 +295,5 @@ function checkValid(w, h, aspect, size) {
 }
 
 function invalidSize(width, height) {
-    return 'Картинка не подходит по разрешению\nШирина: ' + width + ', высота: ' + height;
+    return `Image not allowed by size\nWidth: ${width}, Height: ${height}`;
 }
