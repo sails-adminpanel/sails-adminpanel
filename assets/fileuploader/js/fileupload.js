@@ -152,7 +152,7 @@ class FileUploader {
                 data.append("large", fu.large);
                 data.append("resize", JSON.stringify(fu.resize));
                 data.append("field", fu.field);
-                data.append("stop", file.stop);
+                // data.append("stop", file.stop);
                 data.append("aspect", JSON.stringify(fu.aspect));
                 data.append("size", JSON.stringify(fu.size));
             },

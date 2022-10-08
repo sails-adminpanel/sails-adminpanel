@@ -12,26 +12,43 @@ function upload(req, res) {
         if (!req.session.UserAP) {
             return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
         }
-        else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`update-${entity.name}-model`, req.session.UserAP) &&
-            !accessRightsHelper_1.AccessRightsHelper.havePermission(`create-${entity.name}-model`, req.session.UserAP)) {
+        else if (!accessRightsHelper_1.AccessRightsHelper.enoughPermissions([
+            `update-${entity.name}-model`,
+            `create-${entity.name}-model`,
+            `update-${entity.name}-form`,
+            `create-${entity.name}-form`
+        ], req.session.UserAP)) {
             return res.sendStatus(403);
         }
     }
     if (req.method.toUpperCase() === 'POST') {
-        // if this file must not be loaded
-        if (req.body.stop === true) {
-            return res.badRequest();
-        }
+        // if this file must not be loaded 
+        // if (req.body.stop === true) {
+        //     return res.badRequest();
+        // }
         // sails.log.info(req.body);
         // read field
         if (!req.body.field) {
             return res.serverError('No field name in request');
         }
+        const field = req.body.field;
+        // get options
+        let fielConfig;
+        // TODO: wizards
+        // Need rewrite to EntityConfig in config adminpanel. 
+        // Громоздко потомучто в конфиге сделали неодинаковые типы для ENTITY
+        let adminpanelConfig = sails.config.adminpanel;
+        if (entity.type === 'model') {
+            fielConfig = adminpanelConfig.models[entity.name].fields[field];
+        }
+        else if (entity.type === 'form') {
+            fielConfig = adminpanelConfig.forms.data[entity.name][field];
+        }
         // set upload directory
-        const dirDownload = '/uploads/' + entity.name + '/' + req.body.field + '/';
-        const dir = '/.tmp/public' + dirDownload;
-        const assetsDir = process.cwd() + '/assets' + dirDownload;
-        const fullDir = process.cwd() + dir;
+        const dirDownload = `uploads/${entity.type}/${entity.name}/${req.body.field}`;
+        const dir = `/.tmp/public/${dirDownload}/`;
+        const assetsDir = `${process.cwd()}/assets/${dirDownload}/`;
+        let fullDir = process.cwd() + dir;
         // small and large sizes
         let small, large;
         try {
@@ -89,9 +106,20 @@ function upload(req, res) {
         }
         //save file
         const filenameOrig = req.body.filename.replace(' ', '_');
-        const filename = filenameOrig.substr(0, filenameOrig.lastIndexOf('.')) + rand + '.' + filenameOrig.split('.').reverse()[0];
+        let filename = filenameOrig.substr(0, filenameOrig.lastIndexOf('.')) + rand + '.' + filenameOrig.split('.').reverse()[0];
         const nameSmall = filename.substr(0, filename.lastIndexOf('.')) + '_tumblrDEFAULT.' + filename.split('.').reverse()[0];
         const nameLarge = filename.substr(0, filename.lastIndexOf('.')) + '_largeDEFAULT.' + filename.split('.').reverse()[0];
+        /**
+         * Saving in file
+         */
+        console.log(fielConfig);
+        if (fielConfig.type !== 'file' && fielConfig.options.file !== undefined) {
+            return res.serverError('Only file full destination allowed');
+        }
+        else if (fielConfig.options.file !== undefined) {
+            fullDir = path.resolve(path.dirname(fielConfig.options.file));
+            filename = path.basename(fielConfig.options.file);
+        }
         req.file('file').upload({
             dirname: fullDir,
             saveAs: filename
@@ -126,7 +154,7 @@ function upload(req, res) {
                             i.quality = 60;
                         }
                         let name = await jimpResize(i);
-                        resizes[i.name] = dirDownload + path.basename(name);
+                        resizes[i.name] = `/${dirDownload}/${path.basename(name)}`;
                     }
                     async function jimpResize(i) {
                         return new Promise((resolve, reject) => {
@@ -150,9 +178,9 @@ function upload(req, res) {
                             image1.scaleToFit(small, small).write(fullDir + nameSmall, function () {
                                 image1.write(assetsDir + nameSmall);
                                 // return urls
-                                const url = dirDownload + filename;
-                                const urlSmall = dirDownload + nameSmall;
-                                const urlLarge = dirDownload + nameLarge;
+                                const url = `/${dirDownload}/${filename}`;
+                                const urlSmall = `/${dirDownload}/${nameSmall}`;
+                                const urlLarge = `/${dirDownload}/${nameLarge}`;
                                 let result = {
                                     name: filenameOrig,
                                     'url': url,
@@ -175,8 +203,8 @@ function upload(req, res) {
             }
             else if (type === 'files' || type === 'file') {
                 const ext = filename.substr(filename.lastIndexOf('.') + 1, filename.length);
-                const urlIcon = '/admin/assets/fileuploader/icons/' + ext + '.svg';
-                const url = dirDownload + filename;
+                const urlIcon = `/admin/assets/fileuploader/icons/${ext}.svg`;
+                const url = `/${dirDownload}/${filename}`;
                 res.status(201);
                 res.send({
                     name: filenameOrig,
@@ -241,5 +269,5 @@ function checkValid(w, h, aspect, size) {
     return res;
 }
 function invalidSize(width, height) {
-    return 'Картинка не подходит по разрешению\nШирина: ' + width + ', высота: ' + height;
+    return `Image not allowed by size\nWidth: ${width}, Height: ${height}`;
 }
