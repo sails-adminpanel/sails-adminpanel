@@ -1,4 +1,5 @@
 import sails from "@42pub/typed-sails";
+import { AdminpanelConfig } from "./adminpanelConfig";
 declare type sailsConfig = typeof sails.config;
 declare global {
     interface Sails extends sails.Sails {
@@ -10,6 +11,7 @@ declare global {
         adminpanel: any;
     }
     interface _sailsConfig extends sailsConfig {
+        adminpanel: AdminpanelConfig;
         [key: string]: any | object;
     }
     const sails: Sails;

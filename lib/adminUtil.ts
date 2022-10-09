@@ -1,5 +1,5 @@
 import {Entity} from "../interfaces/types";
-import {ModelConfig} from "../interfaces/adminpanelConfig";
+import {AdminpanelConfig, ModelConfig} from "../interfaces/adminpanelConfig";
 import ORMModel from "../interfaces/ORMModel";
 
 export class AdminUtil {
@@ -83,8 +83,8 @@ export class AdminUtil {
      *
      * @returns {Object}
      */
-    public static config() {
-        return sails.config.adminpanel || {};
+    public static config(): AdminpanelConfig {
+        return sails.config.adminpanel;
     }
 
     /**

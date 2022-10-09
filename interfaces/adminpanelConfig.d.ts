@@ -1,5 +1,8 @@
 import { FieldsTypes } from "./fieldsTypes"
 export interface AdminpanelConfig {
+    /** prepare to impl dashboard*/
+    dashboard?: any
+    theme?: string
     auth?: boolean
     /**
      * Enable or disable auth for adminpanel
@@ -42,11 +45,11 @@ export interface AdminpanelConfig {
     /**
      * Policies that will be executed before going to every page
      * */
-    policies?: string | string[] | Function | Function[]
+    policies?: string | string[] | function | function[]
     styles?: string[]
-    script?: {
-        header: string[]
-        footer: string[]
+    scripts?: {
+        header?: string[]
+        footer?: string[]
     }
     /**
      * Text for welcome page
@@ -80,7 +83,7 @@ export interface AdminpanelConfig {
          * same for model (need entity config types)
          * */ 
         data: {
-            [key:string]: Fields
+            [key:string]: FieldsForms
         }
         /**
          * Custom getter
@@ -138,6 +141,12 @@ export interface AdminpanelConfig {
      * Enable/disable authorization
      * */
     auth?: boolean
+
+    /**
+     * 
+     * System field for store absolute root path adminpanel hookfolder
+     */
+    rootPath?:string
 }
 
 export interface ModelConfig {
@@ -153,7 +162,7 @@ export interface ModelConfig {
     /**
      * Entity fields configuration
      * */
-    fields?: Fields
+    fields?: FieldsModelss
     /**
      * List display configuration
      * */
@@ -173,7 +182,7 @@ export interface ModelConfig {
     /**
      * Configuration for 'create model' action or disabling/enabling it
      * */
-    add?: CreateUpdateConfig | boolean
+    add?: boolean | CreateUpdateConfig 
     /**
      * Configuration for 'update model' action or disabling/enabling it
      * */
@@ -200,8 +209,16 @@ export interface ModelConfig {
     identifierField?: string
 }
 
-export interface Fields {
-    [key: string]: string | boolean | BaseFieldConfig 
+export interface FieldsForms {
+    [key: string]: FormFieldConfig 
+}
+
+export interface FieldsModels {
+    [key: string]: boolean | string | BaseFieldConfig 
+}
+
+interface FormFieldConfig extends BaseFieldConfig {
+    value: any
 }
 
 interface BaseFieldConfig {
