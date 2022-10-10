@@ -87,10 +87,3 @@ for build styles - sass --watch clarity/src:assets/styles/
 ## License
 
 MIT
- 
-<style>
-img[src*='#center'] {
-    display: block;
-    margin: auto;
-}
-</style>
