@@ -1,7 +1,7 @@
 
-
-
-![sails-adminpanel](./assets/identy/logo.svg#center)
+<p align="center">
+<img alt="Redox" width="346" src="assets/identy/logo.svg">
+</p>
 
 
 
