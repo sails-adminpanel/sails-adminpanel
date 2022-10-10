@@ -8,9 +8,9 @@ export default function ToConfigure() {
         // !TODO add styles render in ejs
         sails.config.adminpanel.styles = [];
         // !TODO add scripts
-        sails.config.adminpanel.script = {};
-        sails.config.adminpanel.script.header = [];
-        sails.config.adminpanel.script.footer = [];
+        sails.config.adminpanel.scripts = {};
+        sails.config.adminpanel.scripts.header = [];
+        sails.config.adminpanel.scripts.footer = [];
 
         sails.config.adminpanel.policies = [];
 

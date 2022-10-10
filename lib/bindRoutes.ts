@@ -9,6 +9,7 @@ import _remove from "../controllers/remove";
 import _upload from "../controllers/upload";
 import _form from "../controllers/form"
 import _normalizeNavigationConfig from "../controllers/normalizeNavigationConfig"
+import { CreateUpdateConfig } from "../interfaces/adminpanelConfig";
 
 export default function bindRoutes() {
 
@@ -47,18 +48,20 @@ export default function bindRoutes() {
             /**
              * Create new record
              */
-            if (config.models[model].add && config.models[model].add.controller) {
-                let controller = require(config.models[model].add.controller);
-                sails.router.bind(`${config.routePrefix}/model/${model}/add`, _bindPolicies(policies, controller.default));
-            } else {
-                sails.router.bind(`${config.routePrefix}/model/${model}/add`, _bindPolicies(policies, _add));
-            }
-
+                if (typeof config.models[model].add !== 'boolean') {
+                    let addHandler = config.models[model].add as CreateUpdateConfig
+                    let controller = require(addHandler.controller);
+                    sails.router.bind(`${config.routePrefix}/model/${model}/add`, _bindPolicies(policies, controller.default));
+                } else {
+                    sails.router.bind(`${config.routePrefix}/model/${model}/add`, _bindPolicies(policies, _add));
+                }
+            
             /**
              * Edit existing record
              */
-            if (config.models[model].edit && config.models[model].edit.controller) {
-                let controller = require(config.models[model].edit.controller);
+            if (typeof config.models[model].edit !== 'boolean') {
+                let editHandler = config.models[model].edit as CreateUpdateConfig
+                let controller = require(editHandler.controller);
                 sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, _bindPolicies(policies, controller.default));
             } else {
                 sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, _bindPolicies(policies, _edit));

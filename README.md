@@ -1,4 +1,9 @@
-# NodeJS AdminPanel
+
+<p align="center">
+<img alt="Redox" width="346" src="assets/identy/logo.svg">
+</p>
+
+
 
 <span class="badge-npmversion"><a href="https://npmjs.org/package/sails-adminpanel" title="View this project on NPM"><img src="https://img.shields.io/npm/v/sails-adminpanel.svg" alt="NPM version" /></a></span>
 
@@ -82,4 +87,3 @@ for build styles - sass --watch clarity/src:assets/styles/
 ## License
 
 MIT
- 

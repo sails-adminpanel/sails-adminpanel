@@ -1,5 +1,5 @@
 import { Entity } from "../interfaces/types";
-import { ModelConfig } from "../interfaces/adminpanelConfig";
+import { AdminpanelConfig, ModelConfig } from "../interfaces/adminpanelConfig";
 import ORMModel from "../interfaces/ORMModel";
 export declare class AdminUtil {
     /**
@@ -45,7 +45,7 @@ export declare class AdminUtil {
      *
      * @returns {Object}
      */
-    static config(): any;
+    static config(): AdminpanelConfig;
     /**
      * Get model from system
      *
