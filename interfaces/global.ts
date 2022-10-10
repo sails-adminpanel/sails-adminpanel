@@ -10,7 +10,6 @@ declare global {
     services: any;
     config: _sailsConfig;
     log: any;
-    adminpanel: any;
   }
   interface _sailsConfig extends sailsConfig {
     adminpanel: AdminpanelConfig;
