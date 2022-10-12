@@ -1,4 +1,4 @@
-<%= (field.model.type !== 'json') && __(`Model field type not allowed current (${field.model.type}) expected (json)`) %>
+<%= (field.model.type && field.model.type !== 'json') && __(`Model field type not allowed current (${field.model.type}) expected (json)`) %>
 
 <textarea
         <%= field.config.required && 'required' %>
