@@ -33,16 +33,16 @@ function upload(req, res) {
         }
         const field = req.body.field;
         // get options
-        let fielConfig;
+        let fieldConfig;
         // TODO: wizards
         // Need rewrite to EntityConfig in config adminpanel. 
         // Громоздко потомучто в конфиге сделали неодинаковые типы для ENTITY
         let adminpanelConfig = sails.config.adminpanel;
         if (entity.type === 'model') {
-            fielConfig = adminpanelConfig.models[entity.name].fields[field];
+            fieldConfig = adminpanelConfig.models[entity.name].fields[field];
         }
         else if (entity.type === 'form') {
-            fielConfig = adminpanelConfig.forms.data[entity.name][field];
+            fieldConfig = adminpanelConfig.forms.data[entity.name][field];
         }
         // set upload directory
         const dirDownload = `uploads/${entity.type}/${entity.name}/${req.body.field}`;
@@ -100,7 +100,7 @@ function upload(req, res) {
         }
         // make random string in end of file
         let rand = '';
-        const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        const possible = "abcdefghijklmnopqrstuvwxyz0123456789";
         for (let i = 0; i < 10; i++) {
             rand += possible.charAt(Math.floor(Math.random() * possible.length));
         }
@@ -112,13 +112,13 @@ function upload(req, res) {
         /**
          * Saving in file
          */
-        console.log(fielConfig);
-        if (fielConfig.type !== 'file' && fielConfig.options.file !== undefined) {
+        console.log(fieldConfig);
+        if (fieldConfig.type !== 'file' && fieldConfig.options.file !== undefined) {
             return res.serverError('Only file full destination allowed');
         }
-        else if (fielConfig.options.file !== undefined) {
-            fullDir = path.resolve(path.dirname(fielConfig.options.file));
-            filename = path.basename(fielConfig.options.file);
+        else if (fieldConfig.options.file !== undefined) {
+            fullDir = path.resolve(path.dirname(fieldConfig.options.file));
+            filename = path.basename(fieldConfig.options.file);
         }
         req.file('file').upload({
             dirname: fullDir,
