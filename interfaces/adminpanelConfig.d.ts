@@ -9,7 +9,7 @@ export interface AdminpanelConfig {
      */
     auth: boolean
     /**
-     * @deprecated
+     * @alpha
      * Models configuration
      * @todo rewrite for EntityType 
      * reference upload contoroller ~50 line
