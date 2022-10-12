@@ -31,8 +31,11 @@ async function default_1(req, res) {
                 }
             }
         }
-        let locale = req.body.locale === 'default' ? sails.config.adminpanel.translation.defaultLocale : req.body.locale;
         let isAdministrator = req.body.isAdmin === "on";
+        let locale;
+        if (typeof sails.config.adminpanel.translation !== "boolean") {
+            locale = req.body.locale === 'default' ? sails.config.adminpanel.translation.defaultLocale : req.body.locale;
+        }
         let user;
         try {
             user = await UserAP.create({ login: req.body.login, fullName: req.body.fullName, email: req.body.email,

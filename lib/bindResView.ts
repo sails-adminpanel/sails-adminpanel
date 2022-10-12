@@ -62,7 +62,8 @@ export default function bindResView() {
                 locals = {};
             }
             locals.theme = sails.config.adminpanel.theme || 'light';
-            locals.button = sails.config.adminpanel.button || 'solid';
+            locals.scripts = sails.config.adminpanel.scripts || {};
+            locals.scripts = sails.config.adminpanel.scripts || {};
             locals.havePermission = AccessRightsHelper.havePermission;
             locals.enoughPermissions = AccessRightsHelper.enoughPermissions;
 

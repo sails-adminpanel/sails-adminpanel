@@ -4,7 +4,11 @@ import * as fs from "fs";
 export class TranslationHelper {
     public static loadTranslations(translationsPath: string): void {
         let translationsConfig = sails.config.adminpanel.translation;
-        if (!translationsConfig) {
+
+        if ( typeof translationsConfig === "boolean") {
+            if(translationsConfig === true) {
+                sails.log.warn("sails.config.adminpanel.translation is TRUE, is not mater")
+            }
             return
         }
 

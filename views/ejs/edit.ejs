@@ -65,7 +65,7 @@
                     <%- __(field.config.description) %>
                 </div>
             <% } %>
-            <div class="admin-panel__widget">
+            <div class="admin-panel__widget <%= field.config.disabled && 'disabled'%>">
                <%- include("mixin/fieldWidget", {field: field, value: value, key: key}) %>
             </div>
             </div>
