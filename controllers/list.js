@@ -20,7 +20,7 @@ async function list(req, res) {
     res.viewAdmin({
         entity: entity,
         fields: fields,
-        config: sails.adminpanel
+        config: sails.config.adminpanel
     });
 }
 exports.default = list;
