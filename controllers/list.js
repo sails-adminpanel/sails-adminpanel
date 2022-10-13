@@ -16,12 +16,10 @@ async function list(req, res) {
             return res.sendStatus(403);
         }
     }
-    let fields = fieldsHelper_1.FieldsHelper.getFields(req, entity, 'list');
+    let fields = fieldsHelper_1.FieldsHelper.getFields(req, entity, "list");
     res.viewAdmin({
         entity: entity,
         fields: fields,
-        config: sails.config.adminpanel
     });
 }
 exports.default = list;
-;

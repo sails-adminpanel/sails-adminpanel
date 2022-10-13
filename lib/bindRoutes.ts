@@ -10,9 +10,9 @@ import _upload from "../controllers/upload";
 import _form from "../controllers/form";
 import _normalizeNavigationConfig from "../controllers/normalizeNavigationConfig";
 import { CreateUpdateConfig } from "../interfaces/adminpanelConfig";
+import bindPolicies from "../lib/bindPolicies"
 
 export default function bindRoutes() {
-  let _bindPolicies = require("../lib/bindPolicies").default();
 
   /**
    * List or one policy that should be bound to actions
@@ -24,9 +24,9 @@ export default function bindRoutes() {
   /**
    * Edit form
    * */
-  sails.router.bind(`${config.routePrefix}/form/:slug`, _bindPolicies(policies, _form));
+  sails.router.bind(`${config.routePrefix}/form/:slug`, bindPolicies(policies, _form));
   // upload files to form
-  sails.router.bind(`${config.routePrefix}/form/:slug/upload`, _bindPolicies(policies, _upload));
+  sails.router.bind(`${config.routePrefix}/form/:slug/upload`, bindPolicies(policies, _upload));
 
   //Create a base entity route
   let baseRoute = config.routePrefix + "/:entityType/:entityName";
@@ -35,12 +35,12 @@ export default function bindRoutes() {
    * Do widget helper functions (for now only one case handled)
    * @todo for custom widgets api we will have to create universal controller that will call methods from any custom widgets
    */
-  sails.router.bind(baseRoute + "/widget", _bindPolicies(policies, _normalizeNavigationConfig));
+  sails.router.bind(baseRoute + "/widget", bindPolicies(policies, _normalizeNavigationConfig));
 
   /**
    * List of records
    */
-  sails.router.bind(baseRoute, _bindPolicies(policies, _list));
+  sails.router.bind(baseRoute, bindPolicies(policies, _list));
 
   if (config.models) {
     for (let model of Object.keys(config.models)) {
@@ -51,9 +51,9 @@ export default function bindRoutes() {
         let addHandler = config.models[model].add as CreateUpdateConfig;
         if (addHandler.controller) {
           let controller = require(addHandler.controller);
-          sails.router.bind(`${config.routePrefix}/model/${model}/add`, _bindPolicies(policies, controller.default));
+          sails.router.bind(`${config.routePrefix}/model/${model}/add`, bindPolicies(policies, controller.default));
         } else {
-          sails.router.bind(`${config.routePrefix}/model/${model}/add`, _bindPolicies(policies, _add));
+          sails.router.bind(`${config.routePrefix}/model/${model}/add`, bindPolicies(policies, _add));
         }
       }
       /**
@@ -63,9 +63,9 @@ export default function bindRoutes() {
         let editHandler = config.models[model].edit as CreateUpdateConfig;
         if (editHandler.controller) {
           let controller = require(editHandler.controller);
-          sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, _bindPolicies(policies, controller.default));
+          sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, bindPolicies(policies, controller.default));
         } else {
-          sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, _bindPolicies(policies, _edit));
+          sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, bindPolicies(policies, _edit));
         }
       }
     }
@@ -74,24 +74,24 @@ export default function bindRoutes() {
   /**
    * View record details
    */
-  sails.router.bind(baseRoute + "/view/:id", _bindPolicies(policies, _view));
-  sails.router.bind(baseRoute + "/json", _bindPolicies(policies, _listJson));
+  sails.router.bind(baseRoute + "/view/:id", bindPolicies(policies, _view));
+  sails.router.bind(baseRoute + "/json", bindPolicies(policies, _listJson));
 
   /**
    * Remove record
    */
-  sails.router.bind(baseRoute + "/remove/:id", _bindPolicies(policies, _remove));
+  sails.router.bind(baseRoute + "/remove/:id", bindPolicies(policies, _remove));
   /**
    * Upload files
    */
-  sails.router.bind(baseRoute + "/upload", _bindPolicies(policies, _upload));
+  sails.router.bind(baseRoute + "/upload", bindPolicies(policies, _upload));
   /**
    * Create a default dashboard
    * @todo define information that should be shown here
    */
   if (Boolean(config.dashboard)) {
-    sails.router.bind(config.routePrefix, _bindPolicies(policies, _dashboard));
+    sails.router.bind(config.routePrefix, bindPolicies(policies, _dashboard));
   } else {
-    sails.router.bind(config.routePrefix, _bindPolicies(policies, _welcome));
+    sails.router.bind(config.routePrefix, bindPolicies(policies, _welcome));
   }
 }
