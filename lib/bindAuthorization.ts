@@ -1,6 +1,6 @@
 import _login from "../controllers/login";
 import {AdminpanelConfig} from "../interfaces/adminpanelConfig";
-import UserAP from "../models/UserAP";
+import bindPolicies from "../lib/bindPolicies"
 
 export default async function bindAuthorization() {
 
@@ -61,11 +61,10 @@ export default async function bindAuthorization() {
     /**
      * Router
      */
-    let _bindPolicies = require('../lib/bindPolicies').default();
     let policies = sails.config.adminpanel.policies || '';
     let baseRoute = sails.config.adminpanel.routePrefix + '/model/:entity';
-    sails.router.bind(baseRoute + '/login', _bindPolicies(policies, _login));
-    sails.router.bind(baseRoute + '/logout', _bindPolicies(policies, _login));
+    sails.router.bind(baseRoute + '/login', bindPolicies(policies, _login));
+    sails.router.bind(baseRoute + '/logout', bindPolicies(policies, _login));
 };
 
 sails.on('lifted', async function () {
