@@ -24,14 +24,12 @@ sails.after(["hook:policies:loaded"], () => {
 
 export default function bindPolicies(policies: string | Function | Function[], action: Function): Function | Function[] {
 
-  let result = [];
-
   /**
    * Bind policy to action
    *
    * @param {string|function} policy
    */
-  function bindPolicy (policy) {
+  function bindPolicy (policy: Function | string) {
     if (typeof policy === "function") {
       result.push(policy);
       return;
@@ -47,6 +45,7 @@ export default function bindPolicies(policies: string | Function | Function[], a
     } 
   };
 
+  let result = [];
   if (Array.isArray(policies)) {
     policies.forEach(bindPolicy);
   } else {
