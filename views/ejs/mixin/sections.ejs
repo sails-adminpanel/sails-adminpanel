@@ -10,7 +10,7 @@
         <% sections.forEach(function(itemSection) { %>
           <% if (itemSection.link && itemSection.title) { %>
           <li class="nav-item">
-            <a class="nav-link" <% if ( itemSection.id && section == itemSection.id) { %>active<% } %> href="<%=itemSection.link%>"><% if (itemSection.icon) { %> <i class="las la-<%=itemSection.icon%>"></i><% } %> <%=itemSection.title%></a>
+            <a class="nav-link" <% if ( itemSection.id && section == itemSection.id) { %>active<% } %> href="<%=itemSection.link%>"><% if (itemSection.icon) { %> <i class="las la-<%=itemSection.icon%>"></i><% } %> <%= __(itemSection.title) %></a>
           </li>
           <% } %>
         <% }) %>
