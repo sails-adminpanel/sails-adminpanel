@@ -1,19 +1,24 @@
 <div class="widget">
-    <%= (field.model.type !== 'string') && `Model field type not allowed current (${field.model.type}) expected (string)` %> 
-    <select name="<%= key %>" id="form-<%= key %>"
-        <%= field.config.required && 'required' %>
-        <%= field.config.disabled && 'disabled'%>>
+    <% if(field.model.type !== 'string') { %>
+        <span class="label label-danger">
+            Model field type not allowed current (<%= field.model.type %>) expected (string)
+        </span>
+    <% } else { %> 
+        <select name="<%= key %>" id="form-<%= key %>"
+            <%= field.config.required && 'required' %>
+            <%= field.config.disabled && 'disabled'%>>
 
-        <% if (!Array.isArray(isIn)) { %>
-            <% Object.keys(isIn).forEach(function(optKey) { %>
-                <% var opt = isIn[optKey] %>
-                    <option value="<%= optKey %>"
-                        <%= (optKey === value) && 'selected' %>> <%= opt %> </option>
-            <% }) %>
-        <% } else { %>
-            <% isIn.forEach(function(opt){ %> 
-                <option value="<%= opt %>" <%= (opt === value) && 'selected' %>><%= opt %></option>
-            <% }) %>
-        <% } %>
-    </select>
+            <% if (!Array.isArray(isIn)) { %>
+                <% Object.keys(isIn).forEach(function(optKey) { %>
+                    <% var opt = isIn[optKey] %>
+                        <option value="<%= optKey %>"
+                            <%= (optKey === value) && 'selected' %>> <%= opt %> </option>
+                <% }) %>
+            <% } else { %>
+                <% isIn.forEach(function(opt){ %> 
+                    <option value="<%= opt %>" <%= (opt === value) && 'selected' %>><%= opt %></option>
+                <% }) %>
+            <% } %>
+        </select>
+    <% } %>
 </div>
