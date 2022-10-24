@@ -2,7 +2,7 @@
     <% if (adminpanel.viewHelper.hasMessages(req, 'adminError')) { %>
         <% req.session.messages.adminError.forEach(function(msg) { %>
             <div class="alert alert-danger"><div class="alert-items"><div class="alert-item static"><div class="alert-icon-wrapper"><i class="las la-exclamation-triangle"></i></div><span class="alert-text">
-                <%= msg %>
+                <%= __(msg) %>
             </span></div></div></div>
             <% req.session.messages.adminError = req.session.messages.adminError.filter(function(elem){return elem !== msg}) %>
         <% }) %>
@@ -11,7 +11,7 @@
     <% if (adminpanel.viewHelper.hasMessages(req, 'adminSuccess')) { %>
         <% req.session.messages.adminSuccess.forEach(function(msg) { %>
             <div class="alert alert-success"><div class="alert-items"><div class="alert-item static"><div class="alert-icon-wrapper"><i class="las la-thumbs-up"></i></div><span class="alert-text">
-                <%= msg %>
+                <%= __(msg) %>
             </span></div></div></div>
             <% req.session.messages.adminSuccess = req.session.messages.adminSuccess.filter(function(elem){return elem !== msg}) %>
         <% }) %>

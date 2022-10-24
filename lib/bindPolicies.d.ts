@@ -1,1 +1,1 @@
-export default function bindPolicies(): (policies: any, action: any) => any;
+export default function bindPolicies(policies: string | Function | Function[], action: Function): Function | Function[];
