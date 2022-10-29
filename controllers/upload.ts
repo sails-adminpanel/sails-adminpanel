@@ -15,9 +15,9 @@ export default function upload(req, res) {
         if (!req.session.UserAP) {
             return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
         } else if (!AccessRightsHelper.enoughPermissions([
-            `update-${entity.name}-model`, 
+            `update-${entity.name}-model`,
             `create-${entity.name}-model`,
-            `update-${entity.name}-form`, 
+            `update-${entity.name}-form`,
             `create-${entity.name}-form`
         ], req.session.UserAP)) {
             return res.sendStatus(403);
@@ -27,7 +27,7 @@ export default function upload(req, res) {
 
     if (req.method.toUpperCase() === 'POST') {
 
-        // if this file must not be loaded 
+        // if this file must not be loaded
         // if (req.body.stop === true) {
         //     return res.badRequest();
         // }
@@ -46,7 +46,7 @@ export default function upload(req, res) {
 
 
         // TODO: wizards
-        // Need rewrite to EntityConfig in config adminpanel. 
+        // Need rewrite to EntityConfig in config adminpanel.
         // Громоздко потомучто в конфиге сделали неодинаковые типы для ENTITY
         let adminpanelConfig = sails.config.adminpanel as AdminpanelConfig
         if (entity.type === 'model'){
@@ -94,7 +94,7 @@ export default function upload(req, res) {
         if (!req.body.type) {
             return res.serverError('No type of file');
         }
-        
+
         const type = req.body.type;
 
         let aspect;
@@ -144,7 +144,8 @@ export default function upload(req, res) {
 
         req.file('file').upload({
             dirname: fullDir,
-            saveAs: filename
+            saveAs: filename,
+            maxBytes: +req.body.maxBytes
         }, function (err, file) {
             if (err) return res.serverError(err);
 
