@@ -145,7 +145,7 @@ export default function upload(req, res) {
         req.file('file').upload({
             dirname: fullDir,
             saveAs: filename,
-            maxBytes: +req.body.maxBytes
+            maxBytes: 200 * 100 * 100
         }, function (err, file) {
             if (err) return res.serverError(err);
 
