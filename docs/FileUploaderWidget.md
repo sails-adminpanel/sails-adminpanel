@@ -46,7 +46,8 @@ Provides widget for upload only one file. If you upload new file, old will be fo
     options: { 
         file: './.tmp/upload/any.conf', // path for upload file (optional)
         filesize: number,  // max size of file in Mb, by default 1
-        accepted: ['conf'] // accepted extensions for upload
+        accepted: ['conf'] // accepted extensions for upload,
+        maxBytes: number // maxBytes skipper option
     }
 }
 ```
