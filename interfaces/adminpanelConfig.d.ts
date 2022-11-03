@@ -11,7 +11,7 @@ export interface AdminpanelConfig {
     /**
      * @alpha
      * Models configuration
-     * @todo rewrite for EntityType 
+     * @todo rewrite for EntityType
      * reference upload contoroller ~50 line
      * */
     models: {
@@ -77,11 +77,11 @@ export interface AdminpanelConfig {
      * */
     forms?: {
         path: string
-        /** 
+        /**
          * @deprecated
-         * TODO: (wizards) rewrite to data -> setup 
+         * TODO: (wizards) rewrite to data -> setup
          * same for model (need entity config types)
-         * */ 
+         * */
         data: {
             [key:string]: FieldsForms
         }
@@ -143,7 +143,7 @@ export interface AdminpanelConfig {
     auth?: boolean
 
     /**
-     * 
+     *
      * System field for store absolute root path adminpanel hookfolder
      */
     rootPath?:string
@@ -182,7 +182,7 @@ export interface ModelConfig {
     /**
      * Configuration for 'create model' action or disabling/enabling it
      * */
-    add?: boolean | CreateUpdateConfig 
+    add?: CreateUpdateConfig | boolean
     /**
      * Configuration for 'update model' action or disabling/enabling it
      * */
@@ -210,11 +210,11 @@ export interface ModelConfig {
 }
 
 export interface FieldsForms {
-    [key: string]: FormFieldConfig 
+    [key: string]: FormFieldConfig
 }
 
 export interface FieldsModels {
-    [key: string]: boolean | string | BaseFieldConfig 
+    [key: string]: boolean | string | BaseFieldConfig
 }
 
 interface FormFieldConfig extends BaseFieldConfig {
