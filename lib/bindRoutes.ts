@@ -53,7 +53,7 @@ export default function bindRoutes() {
           let controller = require(addHandler.controller);
           sails.router.bind(`${config.routePrefix}/model/${model}/add`, bindPolicies(policies, controller.default));
         } else {
-          sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, bindPolicies(policies, _edit));
+          sails.router.bind(`${config.routePrefix}/model/${model}/add`, bindPolicies(policies, _add));
         }
       } else {
         sails.router.bind(`${config.routePrefix}/model/${model}/add`, bindPolicies(policies, _add));
