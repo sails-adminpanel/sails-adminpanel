@@ -52,6 +52,8 @@ export default function bindRoutes() {
         if (addHandler.controller) {
           let controller = require(addHandler.controller);
           sails.router.bind(`${config.routePrefix}/model/${model}/add`, bindPolicies(policies, controller.default));
+        } else {
+          sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, bindPolicies(policies, _edit));
         }
       } else {
         sails.router.bind(`${config.routePrefix}/model/${model}/add`, bindPolicies(policies, _add));
@@ -64,6 +66,8 @@ export default function bindRoutes() {
         if (editHandler.controller) {
           let controller = require(editHandler.controller);
           sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, bindPolicies(policies, controller.default));
+        } else {
+          sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, bindPolicies(policies, _edit));
         }
       } else {
         sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, bindPolicies(policies, _edit));
