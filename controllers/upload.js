@@ -123,7 +123,7 @@ function upload(req, res) {
         req.file('file').upload({
             dirname: fullDir,
             saveAs: filename,
-            maxBytes: 200 * 100 * 100
+            maxBytes: 2 * 1000 * 1000 * 1000
         }, function (err, file) {
             if (err)
                 return res.serverError(err);
