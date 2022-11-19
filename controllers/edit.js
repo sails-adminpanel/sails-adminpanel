@@ -68,6 +68,10 @@ async function edit(req, res) {
             if (fields[prop] && fields[prop].model && fields[prop].model.type === 'association-many' && reqData[prop]) {
                 reqData[prop] = reqData[prop].split(",");
             }
+            // HardFix: Long string was splitted as array of strings. https://github.com/balderdashy/sails/issues/7262
+            if (fields[prop].model.type === 'string' && Array.isArray(reqData[prop])) {
+                reqData[prop] = reqData[prop].join("");
+            }
         }
         // callback before save entity
         let entityEdit = entity.config.edit;
