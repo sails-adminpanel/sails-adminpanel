@@ -78,7 +78,6 @@ export interface AdminpanelConfig {
     forms?: {
         path: string
         /**
-         * @deprecated
          * TODO: (wizards) rewrite to data -> setup
          * same for model (need entity config types)
          * */
