@@ -139,3 +139,11 @@
     }
   }
 }
+
+.sidenav .collapsible .nav-label .las.la-chevron-right {
+  transform: rotate(-90deg);
+}
+
+.sidenav .collapsible input[type=checkbox]:checked ~ .nav-label .las.la-chevron-right {
+  transform: rotateZ(90deg);
+}

@@ -1,69 +1,101 @@
 const gulp = require('gulp');
-const { path } = require('./gulp/config/path.js');
-const { plugins } = require('./gulp/config/plugins.js');
+const del = require('del');  // del@6.1.1 
+const dartSass = require('sass');
+const gulpSass = require('gulp-sass');
+const rename = require('gulp-rename');
+const sourcemaps = require('gulp-sourcemaps');
+const tilde = require('node-sass-tilde-importer');
 
-global.gulpApp = {
-	path: path,
-	gulp: gulp,
-	plugins: plugins,
-};
-const copy_dep = require('./gulp/tasks/copy_dep.js');
-const copy_fonts = require('./gulp/tasks/copy_fonts.js');
-const reset = require('./gulp/tasks/reset.js');
-const scss = require('./gulp/tasks/scss.js');
-const scssProd = require('./gulp/tasks/scss_prod.js');
-const js = require('./gulp/tasks/js.js');
-const jsProd = require('./gulp/tasks/js_prod.js');
-const img = require('./gulp/tasks/img.js');
-const sync = require('./gulp/tasks/sync.js');
-const { otfToTtf, ttfToWoff } = require('./gulp/tasks/fonts_create.js');
-const fontsStyle = require('./gulp/tasks/fonts.js');
-const svgSprite = require('./gulp/tasks/svgSprite.js');
-const svgSpriteProd = require('./gulp/tasks/svgSprite_prod.js');
+const sass = gulpSass(dartSass)
 
-const views = () => {
-	return gulp
-		.src('./views/**/*.ejs')
-		.pipe(gulpApp.plugins.browsersync.stream());
-};
+const buildFolder = `./assets/build`;
+const srcFolder = `./assets/src`;
 
-const assets = () => {
-	return gulp.src('./seeds/assets/**').pipe(gulp.dest('./.tmp/public'));
+const path = {
+  build: {
+    js: `${buildFolder}/js/`,
+    css: `${buildFolder}/style/`,
+	style_css: `${buildFolder}/style/img`,
+    fonts: `${buildFolder}/fonts/`,
+  },
+  src: {
+    js: `${srcFolder}/main_script.js`,
+    scss: `${srcFolder}/styles/style.scss`,
+    fonts: `${srcFolder}/fonts/ready/*.{woff,woff2}`,
+	style_css: `${srcFolder}/styles/img/**/*.*`,
+  },
+  clean: buildFolder,
+  srcfolder: srcFolder,
 };
 
-function watcher() {
-	gulp.watch(path.watch.ejs, views);
-	gulp.watch(path.watch.scss, scss);
-	gulp.watch(path.watch.js, js);
-	gulp.watch(path.watch.img, img);
+const reset = () => {
+	return del(path.clean)
 }
 
-// gulp.watch('./assets/sprites/*.svg', svgSprite);
+const copy_styles_files = () => {
+	return gulp.src(path.src.style_css)
+		.pipe(gulp.dest(path.build.style_css))
+}
 
-const fonts_create = gulp.series(otfToTtf, ttfToWoff);
+const scss = () => {
+	return gulp.src(path.src.scss, { sourcemaps: true })
+		.pipe(sourcemaps.init())
+		.pipe(
+			sass
+				.sync({
+					importer: tilde,
+					includePaths: ['./node_modules'],
+					outputStyle: 'expanded',
+				})
+				.on('error', sass.logError),
+		)
+		.pipe(rename({
+			extname: '.min.css'
+		}))
+		.pipe(sourcemaps.write('.'))
+		.pipe(gulp.dest(path.build.css))
+}
 
-const mainTasks = gulp.series(
-	fontsStyle,
-	svgSprite,
-	gulp.parallel(scss, js, img)
-);
-const prodTasks = gulp.series(
-	fontsStyle,
-	gulp.parallel(scssProd, jsProd, img, svgSpriteProd)
-);
+// const views = () => {
+// 	return gulp
+// 		.src('./views/**/*.ejs')
+// 		.pipe(gulpApp.plugins.browsersync.stream());
+// };
 
-const dev = gulp.series(
-	assets,
-	reset,
-	copy_dep,
-	copy_fonts,
-	mainTasks,
-	gulp.parallel(watcher, sync)
-);
-const prod = gulp.series(reset, copy_dep, copy_fonts, prodTasks);
+// const assets = () => {
+// 	return gulp.src('./seeds/assets/**').pipe(gulp.dest('./.tmp/public'));
+// };
 
-gulp.task('dev', dev);
-gulp.task('prod', prod);
+// function watcher() {
+// 	gulp.watch(path.watch.ejs, views);
+// 	gulp.watch(path.watch.scss, scss);
+// 	gulp.watch(path.watch.js, js);
+// 	gulp.watch(path.watch.img, img);
+// }
 
-gulp.task('svgSprite', svgSprite);
-gulp.task('fonts_create', fonts_create);
+// // gulp.watch('./assets/sprites/*.svg', svgSprite);
+
+// const fonts_create = gulp.series(otfToTtf, ttfToWoff);
+
+// const mainTasks = gulp.series(
+// 	fontsStyle,
+// 	svgSprite,
+// 	gulp.parallel(scss, js, img)
+// );
+// const prodTasks = gulp.series(
+// 	fontsStyle,
+// 	gulp.parallel(scssProd, jsProd, img, svgSpriteProd)
+// );
+
+// const dev = gulp.series(
+// 	assets,
+// 	reset,
+// 	copy_dep,
+// 	copy_fonts,
+// 	mainTasks,
+// 	gulp.parallel(watcher, sync)
+// );
+// const prod = gulp.series(reset, copy_dep, copy_fonts, prodTasks);
+const build = gulp.series(reset, copy_styles_files, scss);
+
+gulp.task('default', build);
