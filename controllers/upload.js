@@ -22,7 +22,7 @@ function upload(req, res) {
         }
     }
     if (req.method.toUpperCase() === 'POST') {
-        // if this file must not be loaded 
+        // if this file must not be loaded
         // if (req.body.stop === true) {
         //     return res.badRequest();
         // }
@@ -35,7 +35,7 @@ function upload(req, res) {
         // get options
         let fieldConfig;
         // TODO: wizards
-        // Need rewrite to EntityConfig in config adminpanel. 
+        // Need rewrite to EntityConfig in config adminpanel.
         // Громоздко потомучто в конфиге сделали неодинаковые типы для ENTITY
         let adminpanelConfig = sails.config.adminpanel;
         if (entity.type === 'model') {
@@ -122,7 +122,8 @@ function upload(req, res) {
         }
         req.file('file').upload({
             dirname: fullDir,
-            saveAs: filename
+            saveAs: filename,
+            maxBytes: 2 * 1000 * 1000 * 1000
         }, function (err, file) {
             if (err)
                 return res.serverError(err);

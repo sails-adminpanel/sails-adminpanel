@@ -47,7 +47,7 @@ export default function bindRoutes() {
       /**
        * Create new record
        */
-      if (config.models[model].add && typeof config.models[model].add !== "boolean") {
+      if (config.models[model].add) {
         let addHandler = config.models[model].add as CreateUpdateConfig;
         if (addHandler.controller) {
           let controller = require(addHandler.controller);
@@ -55,11 +55,13 @@ export default function bindRoutes() {
         } else {
           sails.router.bind(`${config.routePrefix}/model/${model}/add`, bindPolicies(policies, _add));
         }
+      } else {
+        sails.router.bind(`${config.routePrefix}/model/${model}/add`, bindPolicies(policies, _add));
       }
       /**
        * Edit existing record
        */
-      if (config.models[model].edit && typeof config.models[model].edit !== "boolean") {
+      if (config.models[model].edit) {
         let editHandler = config.models[model].edit as CreateUpdateConfig;
         if (editHandler.controller) {
           let controller = require(editHandler.controller);
@@ -67,6 +69,8 @@ export default function bindRoutes() {
         } else {
           sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, bindPolicies(policies, _edit));
         }
+      } else {
+        sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, bindPolicies(policies, _edit));
       }
     }
   }
