@@ -5,6 +5,7 @@ const gulpSass = require('gulp-sass');
 const rename = require('gulp-rename');
 const sourcemaps = require('gulp-sourcemaps');
 const tilde = require('node-sass-tilde-importer');
+const { src } = require('gulp');
 
 const sass = gulpSass(dartSass)
 
@@ -15,14 +16,12 @@ const path = {
   build: {
     js: `${buildFolder}/js/`,
     css: `${buildFolder}/style/`,
-	style_css: `${buildFolder}/style/img`,
     fonts: `${buildFolder}/fonts/`,
   },
   src: {
     js: `${srcFolder}/main_script.js`,
     scss: `${srcFolder}/styles/style.scss`,
     fonts: `${srcFolder}/fonts/ready/*.{woff,woff2}`,
-	style_css: `${srcFolder}/styles/img/**/*.*`,
   },
   clean: buildFolder,
   srcfolder: srcFolder,
@@ -33,8 +32,10 @@ const reset = () => {
 }
 
 const copy_styles_files = () => {
-	return gulp.src(path.src.style_css)
-		.pipe(gulp.dest(path.build.style_css))
+	return gulp.src('../../node_modules/jsoneditor/src/scss/img/**/*.*')
+		.pipe(gulp.dest('./assets/build/style/img'))
+		.pipe(gulp.src('../../node_modules/line-awesome/dist/line-awesome/fonts/**/*.*'))
+		.pipe(gulp.dest('./assets/build/fonts'))
 }
 
 const scss = () => {
