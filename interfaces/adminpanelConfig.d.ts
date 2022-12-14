@@ -3,11 +3,10 @@ export interface AdminpanelConfig {
     /** prepare to impl dashboard*/
     dashboard?: any
     theme?: string
-    auth?: boolean
     /**
      * Enable or disable auth for adminpanel
      */
-    auth: boolean
+    auth?: boolean
     /**
      * @alpha
      * Models configuration
@@ -45,7 +44,7 @@ export interface AdminpanelConfig {
     /**
      * Policies that will be executed before going to every page
      * */
-    policies?: string | string[] | function | function[]
+    policies?: string | string[] | Function | Function[]
     styles?: string[]
     scripts?: {
         header?: string[]
@@ -99,7 +98,7 @@ export interface AdminpanelConfig {
     wizards?: {
         path: string
         data: {
-            [key:string]: Fields
+            [key:string]: FieldsModels
         }
         /**
          * Custom getter
@@ -136,10 +135,6 @@ export interface AdminpanelConfig {
      * Show adminpanel version on the bottom of navbar
      * */
     showVersion?: boolean
-    /**
-     * Enable/disable authorization
-     * */
-    auth?: boolean
 
     /**
      *
@@ -161,7 +156,7 @@ export interface ModelConfig {
     /**
      * Entity fields configuration
      * */
-    fields?: FieldsModelss
+    fields?: FieldsModels
     /**
      * List display configuration
      * */
@@ -169,7 +164,7 @@ export interface ModelConfig {
         /**
          * Configuration for models' fields that will be displayed on 'list' page
          * */
-        fields: Fields
+        fields: FieldsModels
         /**
          * Actions configuration that will be displayed
          * */
@@ -323,11 +318,11 @@ interface FileUploaderOptionsField {
 }
 
 export interface CreateUpdateConfig {
-    fields?: Fields
+    fields?: FieldsModels
     /**
      * callback for data modification before saving record
      *
-     * function(reqData) {return reqData}
+     * Function(reqData) {return reqData}
      * */
     entityModifier?: Function
     /**
