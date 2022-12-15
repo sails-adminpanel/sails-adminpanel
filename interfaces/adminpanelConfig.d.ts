@@ -1,4 +1,4 @@
-type FieldsTypes = "string" | "password" | "date" | "datetime" | "time" | "integer" | "number" | "float" | "color" | "email" | "month" | "week" | "range" | "boolean" | "binary" | "text" | "longtext" | "mediumtext" | "ckeditor" | "wysiwyg" | "texteditor" | "word" | "jsoneditor" | "json" | "array" | "object" | "ace" | "html" | "xml" | "aceeditor" | "image" | "images" | "file" | "files" | "menu" | "navigation" | "schedule" | "worktime" | "association" | "association-many"
+type FieldsTypes = "string" | "password" | "date" | "datetime" | "time" | "integer" | "number" | "float" | "color" | "email" | "month" | "week" | "range" | "boolean" | "binary" | "text" | "longtext" | "mediumtext" | "ckeditor" | "wysiwyg" | "texteditor" | "word" | "jsoneditor" | "json" | "array" | "object" | "ace" | "html" | "xml" | "aceeditor" | "image" | "images" | "file" | "files" | "menu" | "navigation" | "schedule" | "worktime" | "association" | "association-many" | "select" | "select-many"
 
 export interface AdminpanelConfig {
     /** prepare to impl dashboard*/
@@ -165,7 +165,7 @@ export interface ModelConfig {
         /**
          * Configuration for models' fields that will be displayed on 'list' page
          * */
-        fields: FieldsModels
+        fields?: FieldsModels
         /**
          * Actions configuration that will be displayed
          * */
@@ -218,7 +218,7 @@ interface FormFieldConfig extends BaseFieldConfig {
 
 interface BaseFieldConfig {
     title?: string
-    type: FieldsTypes
+    type?: FieldsTypes
     /**
      * Field description
      * */
@@ -243,6 +243,9 @@ interface BaseFieldConfig {
      * Field that will be used only in select and select-pure widget
      * */
     isIn?: object
+
+    /** Show as disabled element HTML */
+    disabled?: boolean
 }
 
 interface NavigationOptionsField {
