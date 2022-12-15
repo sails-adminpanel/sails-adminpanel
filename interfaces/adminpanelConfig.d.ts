@@ -69,7 +69,7 @@ export interface AdminpanelConfig {
         /**
          * Relative path from project root to translations folder
          * */
-        path: string
+        path?: string
         defaultLocale: string
     } | boolean
     /**
@@ -213,7 +213,7 @@ export interface FieldsModels {
 }
 
 interface FormFieldConfig extends BaseFieldConfig {
-    value: any
+    value?: any
 }
 
 interface BaseFieldConfig {
