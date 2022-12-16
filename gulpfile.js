@@ -5,7 +5,7 @@ const gulpSass = require('gulp-sass');
 const rename = require('gulp-rename');
 const sourcemaps = require('gulp-sourcemaps');
 const tilde = require('node-sass-tilde-importer');
-const { src } = require('gulp');
+const webpack = require("webpack-stream");
 
 const sass = gulpSass(dartSass)
 
@@ -19,7 +19,7 @@ const path = {
     fonts: `${buildFolder}/fonts/`,
   },
   src: {
-    js: `${srcFolder}/main_script.js`,
+    js: `${srcFolder}/scripts/main_script.js`,
     scss: `${srcFolder}/styles/style.scss`,
     fonts: `${srcFolder}/fonts/ready/*.{woff,woff2}`,
   },
@@ -57,46 +57,21 @@ const scss = () => {
 		.pipe(gulp.dest(path.build.css))
 }
 
-// const views = () => {
-// 	return gulp
-// 		.src('./views/**/*.ejs')
-// 		.pipe(gulpApp.plugins.browsersync.stream());
-// };
+const js = () => {
+	return gulp.src(path.src.js, { sourcemaps: true })
+		.pipe(webpack({
+			mode: 'development',
+			output: {
+				filename: 'script.min.js'
+			},
+			optimization: {
+				minimize: false
+			},
+		}))
+		.pipe(gulp.dest(path.build.js))
+}
 
-// const assets = () => {
-// 	return gulp.src('./seeds/assets/**').pipe(gulp.dest('./.tmp/public'));
-// };
 
-// function watcher() {
-// 	gulp.watch(path.watch.ejs, views);
-// 	gulp.watch(path.watch.scss, scss);
-// 	gulp.watch(path.watch.js, js);
-// 	gulp.watch(path.watch.img, img);
-// }
-
-// // gulp.watch('./assets/sprites/*.svg', svgSprite);
-
-// const fonts_create = gulp.series(otfToTtf, ttfToWoff);
-
-// const mainTasks = gulp.series(
-// 	fontsStyle,
-// 	svgSprite,
-// 	gulp.parallel(scss, js, img)
-// );
-// const prodTasks = gulp.series(
-// 	fontsStyle,
-// 	gulp.parallel(scssProd, jsProd, img, svgSpriteProd)
-// );
-
-// const dev = gulp.series(
-// 	assets,
-// 	reset,
-// 	copy_dep,
-// 	copy_fonts,
-// 	mainTasks,
-// 	gulp.parallel(watcher, sync)
-// );
-// const prod = gulp.series(reset, copy_dep, copy_fonts, prodTasks);
-const build = gulp.series(reset, copy_styles_files, scss);
+const build = gulp.series(reset, copy_styles_files, scss, js);
 
 gulp.task('default', build);

@@ -3,3 +3,8 @@
 @import '~jsoneditor/src/scss/jsoneditor.scss';
 @import '~line-awesome/dist/line-awesome/scss/line-awesome.scss';
 @import 'clarity/src/main.scss';
+@import '../fileuploader/styles/styles';
+@import '../fileuploader/styles/basic';
+@import '../fileuploader/styles/dropzone';
+//@import '../fileuploader/styles/bootstrap'; //the source file is commented out
+@import '../fileuploader/styles/jquery-ui.min';
