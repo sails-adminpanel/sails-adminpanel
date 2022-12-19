@@ -23,6 +23,8 @@
     "mocha": "^8.1.1",
     "node-sass": "^7.0.1",
     "sails": "^1.4.0",
+    "datatables.net": "^1.13.1",
+    "datatables.net-dt": "^1.13.1",
     "ts-node": "^10.7.0",
     "typescript": "^3.9.7",
     "del": "^6.1.1",
