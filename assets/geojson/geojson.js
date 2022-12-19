@@ -65,17 +65,23 @@ class GeoJsonEditor {
         });
 
         // Create a GeoJson layer without adding it to the map
-        let geoJSONdata = JSON.parse($(config.data).val())
-        if (config.polygonEditor){
-            geoJSONdata = {"type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates": [geoJSONdata] }}
-        }
-        let geoJsonObj = L.geoJson(geoJSONdata, {
-            onEachFeature: (feature, layer) => {
-                console.log(layer)
-                editableLayers.addLayer(layer);
-            }
-        });
 
-        this.map.fitBounds(geoJsonObj.getBounds());
+        let geoJSONdata;
+        try{
+            geoJSONdata = JSON.parse($(config.data).val())
+            if (config.polygonEditor){
+                geoJSONdata = {"type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates": [geoJSONdata] }}
+            }
+            let geoJsonObj = L.geoJson(geoJSONdata, {
+                onEachFeature: (feature, layer) => {
+                    console.log(layer)
+                    editableLayers.addLayer(layer);
+                }
+            });
+    
+            this.map.fitBounds(geoJsonObj.getBounds());
+        } catch {
+            console.log('geoJSONdata is empty');
+        }
     }
 }
