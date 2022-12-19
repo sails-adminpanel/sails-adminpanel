@@ -19,7 +19,7 @@ class File_ {
     }
 }
 
-class FileUploader {
+export class FileUploader {
     constructor(config) {
         // init values
         this.type = config.type;
