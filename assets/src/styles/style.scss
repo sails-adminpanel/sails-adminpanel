@@ -7,5 +7,9 @@
 @import '../fileuploader/styles/styles';
 @import '../fileuploader/styles/basic';
 @import '../fileuploader/styles/dropzone';
+@import '../navigation//styles/styles';
 //@import '../fileuploader/styles/bootstrap'; //the source file is commented out
 // @import '../fileuploader/styles/jquery-ui.min';
+@import '~handsontable/dist/handsontable.full.min';
+@import '~leaflet/dist/leaflet';
+@import'~leaflet-draw/dist/leaflet.draw-src';
