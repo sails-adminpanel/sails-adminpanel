@@ -41,21 +41,14 @@ export default async function form(req, res) {
             return res.status(500).send("Data is empty")
         }
 
-        // checkboxes processing
-        let checkboxes = [];
-        for (let key in form) {
-            if (form[key].type === "boolean") {
-                checkboxes.push(key)
-            }
-        }
-        for (let field of checkboxes) {
-            if (!req.body[field]) {
-                await sails.config.adminpanel.forms.set(slug, field, false);
-            }
-        }
 
         for (let field of Object.keys(req.body)) {
-            await sails.config.adminpanel.forms.set(slug, field, req.body[field])
+            // false is undefined 
+            if (form[field].type === "boolean" && !req.body[field]) {
+                await sails.config.adminpanel.forms.set(slug, field, false);
+            } else {
+                await sails.config.adminpanel.forms.set(slug, field, req.body[field])
+            }
         }
     }
 
