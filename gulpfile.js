@@ -43,7 +43,9 @@ const copy_styles_files = () => {
 		gulp.src('../../node_modules/jsoneditor/dist/jsoneditor.min.js')
 			.pipe(gulp.dest('./assets/build/js/jsoneditor')),
 		gulp.src('../../node_modules/leaflet-draw/dist/images/**/*.*')
-			.pipe(gulp.dest('./assets/build/style/images'))
+			.pipe(gulp.dest('./assets/build/style/images')),
+		gulp.src('./assets/src/ckeditor/**/*.*')
+			.pipe(gulp.dest('./assets/build/js/ckeditor'))
 	])
 }
 
