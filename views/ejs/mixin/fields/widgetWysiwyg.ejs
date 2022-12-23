@@ -1,9 +1,24 @@
-<% if(Boolean((adminpanel.configHelper.getConfig()).ckeditor5)){ %>
-<div id="vue-app"></div>
-<% } %>
 <% if(!Boolean((adminpanel.configHelper.getConfig()).ckeditor5)){ %>
 <textarea <%= field.config.required && 'required' %> <%= field.config.disabled && 'disabled'%> name="<%= key %>" id="form-<%= key %>"><%=value%></textarea>
+<script src="/admin/assets/build/js/ckeditor/ckeditor.js"></script>
 <script>
     CKEDITOR.replace('form-<%= key %>');
+</script>
+<% } %>
+<% if(Boolean((adminpanel.configHelper.getConfig()).ckeditor5)){ %>
+<textarea <%= field.config.required && 'required' %> <%= field.config.disabled && 'disabled'%> name="<%= key %>" id="editor"><%=value%></textarea>
+<script src="/admin/assets/build/js/ckeditor5/ck5.js"></script>
+<script>
+    ClassicEditor
+        .create(document.querySelector('#editor'), {
+            plugins: [Essentials, Paragraph, Bold, Italic],
+            toolbar: ['bold', 'italic']
+        })
+        .then(editor => {
+            console.log('Editor was initialized', editor);
+        })
+        .catch(error => {
+            console.error(error.stack);
+        })
 </script>
 <% } %>

@@ -5,12 +5,14 @@ const gulpSass = require('gulp-sass');
 const rename = require('gulp-rename');
 const sourcemaps = require('gulp-sourcemaps');
 const tilde = require('node-sass-tilde-importer');
-const webpack = require("webpack-stream");
-const merge = require("merge-stream");
-const { VueLoaderPlugin  } = require('vue-loader')
-const Fpath = require('path')
-
 const sass = gulpSass(dartSass)
+const webpackStream = require('webpack-stream')
+const merge = require("merge-stream");
+//const { VueLoaderPlugin  } = require('vue-loader')
+const Fpath = require('path')
+const webpack = require('webpack');
+const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+
 
 const buildFolder = `./assets/build`;
 const srcFolder = `./assets/src`;
@@ -89,7 +91,7 @@ const scssProd = () => {
 
 const js = () => {
 	return gulp.src(path.src.js, { sourcemaps: true })
-		.pipe(webpack({
+		.pipe(webpackStream({
 			mode: 'development',
 			output: {
 				filename: 'script.min.js'
@@ -103,7 +105,7 @@ const js = () => {
 
 const jsProd = () => {
 	return gulp.src(path.src.js, { sourcemaps: true })
-		.pipe(webpack({
+		.pipe(webpackStream({
 			mode: 'production',
 			output: {
 				filename: 'script.min.js'
@@ -115,28 +117,97 @@ const jsProd = () => {
 		.pipe(gulp.dest(path.build.js))
 }
 
-const vue = () => {
-	return gulp.src(`${srcFolder}/scripts/vue/app.js`, { sourcemaps: true })
-		.pipe(webpack({
+// const vue = () => {
+// 	return gulp.src(`${srcFolder}/scripts/vue/app.js`, { sourcemaps: true })
+// 		.pipe(webpackStream({
+// 			mode: 'development',
+// 			entry: `${srcFolder}/scripts/vue/app.js`,
+// 			output: {
+// 				path: Fpath.resolve('./assets/build/js/'),
+// 				filename: 'vue-app.js'
+// 			},
+// 			module: {
+// 				rules: [
+// 					{
+// 						test: /\.vue$/,
+// 						loader: 'vue-loader'
+// 					},
+// 					{
+// 						test: /\.css$/,
+// 						use: [
+// 						  'vue-style-loader',
+// 						  'css-loader',
+// 						]
+// 					  }
+// 				]
+// 			},
+// 			plugins: [
+// 				new VueLoaderPlugin(),
+// 				new webpack.DefinePlugin({
+// 					__VUE_PROD_DEVTOOLS__: true,
+// 					__VUE_OPTIONS_API__: true
+// 				  })
+// 			]
+// 		}))
+// 		.pipe(gulp.dest(`${path.build.js}/vue/`))
+// }
+
+const ckeditorBuild = () => {
+	return gulp.src(`${srcFolder}/scripts/ckeditor5/app.js`, { sourcemaps: true })
+		.pipe(webpackStream({
 			mode: 'development',
-			entry: `${srcFolder}/scripts/vue/app.js`,
+			entry: `${srcFolder}/scripts/ckeditor5/app.js`,
+
+			// https://webpack.js.org/configuration/output/
 			output: {
 				path: Fpath.resolve('./assets/build/js/'),
-				filename: 'vue-app.js'
+				filename: 'ck5.js'
 			},
+		
 			module: {
 				rules: [
 					{
-						test: /\.vue$/,
-						loader: 'vue-loader'
+						test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+		
+						use: [ 'raw-loader' ]
+					},
+					{
+						test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
+		
+						use: [
+							{
+								loader: 'style-loader',
+								options: {
+									injectType: 'singletonStyleTag',
+									attributes: {
+										'data-cke': true
+									}
+								}
+							},
+							'css-loader',
+							{
+								loader: 'postcss-loader',
+								options: {
+									postcssOptions: styles.getPostCssConfig( {
+										themeImporter: {
+											themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+										},
+										minify: true
+									} )
+								}
+							}
+						]
 					}
 				]
 			},
-			plugins: [
-				new VueLoaderPlugin ()
-			]
+		
+			// Useful for debugging.
+			devtool: 'source-map',
+		
+			// By default webpack logs warnings if the bundle is bigger than 200kb.
+			performance: { hints: false }
 		}))
-		.pipe(gulp.dest(`${path.build.js}/vue/`))
+		.pipe(gulp.dest(`${path.build.js}/ckeditor5/`))
 }
 
 const build = gulp.series(reset, copy_styles_files, scss, js);
@@ -145,4 +216,5 @@ const prod = gulp.series(reset, copy_styles_files, scssProd, jsProd)
 
 gulp.task('default', build);
 gulp.task('prod', prod);
-gulp.task('vue', vue)
+//gulp.task('vue', vue)
+gulp.task('ckeditorBuild', ckeditorBuild)
