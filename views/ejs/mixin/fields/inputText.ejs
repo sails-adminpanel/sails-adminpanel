@@ -43,7 +43,7 @@
         <% field.config.disabled = true %>
     <% } %>
     <div class="widget_narrow">
-        <input class="clr-input" label="<%= field.config.title %>"
+        <input <% if (type !== "range") { -%>class="clr-input"<% } -%> label="<%= field.config.title %>"
                 type="<%= fieldType %>"
                 <%= field.config.required && 'required' %>
                 <%= field.config.disabled && 'disabled'%>

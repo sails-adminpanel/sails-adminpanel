@@ -31,10 +31,10 @@ export default async function () {
     sails.on('lifted', async function() {
         //binding all routes.
         require('./bindRoutes').default();
+
+        // binding forms from files
     })
 
-
-    // binding forms from files
     bindForms();
 
     //bind access rights
@@ -42,9 +42,7 @@ export default async function () {
 
     //binding authorization
     await bindAuthorization();
-
-
-
+    
     if (sails.hooks.i18n && sails.hooks.i18n.appendLocale) {
         sails.after(["hook:i18n:loaded"], async () => {
             bindTranslations();
@@ -52,5 +50,10 @@ export default async function () {
     } else {
         sails.config.adminpanel.translation = false
     }
+
+    sails.after(["hook:i18n:loaded"], async () => {
+        bindTranslations();
+    })
+
     return
 };

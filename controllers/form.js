@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 const formHelper_1 = require("../helper/formHelper");
 async function form(req, res) {
-    let slug = req.param('slug');
+    let slug = req.param("slug");
     //Check slug
     if (!slug) {
         return res.notFound();
@@ -21,8 +21,7 @@ async function form(req, res) {
             req.body[prop] = JSON.parse(req.body[prop]);
         }
         catch (e) {
-            if (typeof req.body[prop] === "string" && req.body[prop].replace(/(\r\n|\n|\r|\s{2,})/gm, "") &&
-                e.message !== "Unexpected end of JSON input" && !/Unexpected (token .|number) in JSON at position \d/.test(e.message)) {
+            if (typeof req.body[prop] === "string" && req.body[prop].replace(/(\r\n|\n|\r|\s{2,})/gm, "") && e.message !== "Unexpected end of JSON input" && !/Unexpected (token .|number) in JSON at position \d/.test(e.message)) {
                 sails.log.error(JSON.stringify(req.body[prop]), e);
             }
         }
@@ -31,7 +30,7 @@ async function form(req, res) {
     if (!form) {
         return res.status(404).send("Adminpanel > Form not found");
     }
-    if (req.method.toUpperCase() === 'POST') {
+    if (req.method.toUpperCase() === "POST") {
         if (!req.body) {
             return res.status(500).send("Data is empty");
         }
@@ -42,13 +41,13 @@ async function form(req, res) {
                 checkboxes.push(key);
             }
         }
+        for (let field of Object.keys(req.body)) {
+            await sails.config.adminpanel.forms.set(slug, field, req.body[field]);
+        }
         for (let field of checkboxes) {
             if (!req.body[field]) {
                 await sails.config.adminpanel.forms.set(slug, field, false);
             }
-        }
-        for (let field of Object.keys(req.body)) {
-            await sails.config.adminpanel.forms.set(slug, field, req.body[field]);
         }
     }
     for (let key of Object.keys(form)) {
@@ -62,4 +61,3 @@ async function form(req, res) {
     res.viewAdmin("form", { formData: form, slug: slug });
 }
 exports.default = form;
-;
