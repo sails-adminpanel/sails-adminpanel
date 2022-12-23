@@ -1,16 +1,3 @@
-let forms = {
-    example: {
-        label: {
-            title: "Label",
-            type: "string",
-            value: "label1",
-            required: true,
-            tooltip: 'tooltip for label',
-            description: "some description"
-        }
-    }
-}
-
 module.exports.adminpanel = {
     // auth: true
     translation: {
@@ -20,6 +7,17 @@ module.exports.adminpanel = {
     },
     forms: {
         path: '../datamocks/forms',
-        data: forms
+        data: {
+            example: {
+                label: {
+                    title: "Label",
+                    type: "string",
+                    value: "label1",
+                    required: true,
+                    tooltip: 'tooltip for label',
+                    description: "some description"
+                }
+            }
+        }
     }
 }
