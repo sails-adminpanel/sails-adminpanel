@@ -1,0 +1,952 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "AdminpanelConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "administrator": {
+          "additionalProperties": false,
+          "description": "Prime administrator login credentials",
+          "properties": {
+            "login": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "login",
+            "password"
+          ],
+          "type": "object"
+        },
+        "auth": {
+          "description": "Enable or disable auth for adminpanel",
+          "type": "boolean"
+        },
+        "brand": {
+          "additionalProperties": false,
+          "properties": {
+            "link": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/definitions/HrefConfig"
+                }
+              ]
+            }
+          },
+          "required": [
+            "link"
+          ],
+          "type": "object"
+        },
+        "dashboard": {
+          "description": "prepare to impl dashboard"
+        },
+        "forms": {
+          "additionalProperties": false,
+          "description": "Forms",
+          "properties": {
+            "data": {
+              "additionalProperties": {
+                "$ref": "#/definitions/FieldsForms"
+              },
+              "description": "TODO: (wizards) rewrite to data -> setup same for model (need entity config types)",
+              "type": "object"
+            },
+            "get": {
+              "additionalProperties": false,
+              "description": "Custom getter",
+              "properties": {
+                "arguments": {},
+                "caller": {
+                  "$ref": "#/definitions/interface-1644034429-10295-11759-1644034429-0-216469"
+                },
+                "length": {
+                  "type": "number"
+                },
+                "prototype": {}
+              },
+              "required": [
+                "prototype",
+                "length",
+                "arguments",
+                "caller"
+              ],
+              "type": "object"
+            },
+            "path": {
+              "type": "string"
+            },
+            "set": {
+              "additionalProperties": false,
+              "description": "Custom setter",
+              "properties": {
+                "arguments": {},
+                "caller": {
+                  "$ref": "#/definitions/interface-1644034429-10295-11759-1644034429-0-216469"
+                },
+                "length": {
+                  "type": "number"
+                },
+                "prototype": {}
+              },
+              "required": [
+                "prototype",
+                "length",
+                "arguments",
+                "caller"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "path",
+            "data"
+          ],
+          "type": "object"
+        },
+        "identifierField": {
+          "description": "Force set primary key",
+          "type": "string"
+        },
+        "models": {
+          "additionalProperties": {
+            "$ref": "#/definitions/ModelConfig"
+          },
+          "type": "object"
+        },
+        "navbar": {
+          "additionalProperties": false,
+          "description": "Left-side navigation bar",
+          "properties": {
+            "additionalLinks": {
+              "description": "will be created at the bottom of the sidenav panel",
+              "items": {
+                "$ref": "#/definitions/HrefConfig"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "additionalLinks"
+          ],
+          "type": "object"
+        },
+        "package": {
+          "description": "Adminpanel package.json config"
+        },
+        "pathToViews": {
+          "type": "string"
+        },
+        "policies": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "arguments": {},
+                "caller": {
+                  "$ref": "#/definitions/interface-1644034429-10295-11759-1644034429-0-216469"
+                },
+                "length": {
+                  "type": "number"
+                },
+                "prototype": {}
+              },
+              "required": [
+                "prototype",
+                "length",
+                "arguments",
+                "caller"
+              ],
+              "type": "object"
+            },
+            {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "arguments": {},
+                  "caller": {
+                    "$ref": "#/definitions/interface-1644034429-10295-11759-1644034429-0-216469"
+                  },
+                  "length": {
+                    "type": "number"
+                  },
+                  "prototype": {}
+                },
+                "required": [
+                  "prototype",
+                  "length",
+                  "arguments",
+                  "caller"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            }
+          ],
+          "description": "Policies that will be executed before going to every page"
+        },
+        "rootPath": {
+          "description": "System field for store absolute root path adminpanel hookfolder",
+          "type": "string"
+        },
+        "routePrefix": {
+          "description": "Route prefix for adminpanel, admin by default",
+          "type": "string"
+        },
+        "scripts": {
+          "additionalProperties": false,
+          "properties": {
+            "footer": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "header": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "sections": {
+          "description": "For custom adminpanel sections, displays inside header",
+          "items": {
+            "$ref": "#/definitions/HrefConfig"
+          },
+          "type": "array"
+        },
+        "showORMtime": {
+          "description": "Enable/disable displaying createdAt and updatedAt fields in `edit` and `add` sections",
+          "type": "boolean"
+        },
+        "showVersion": {
+          "description": "Show adminpanel version on the bottom of navbar",
+          "type": "boolean"
+        },
+        "styles": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "theme": {
+          "type": "string"
+        },
+        "timezones": {
+          "description": "Available timezones list",
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "translation": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "defaultLocale": {
+                  "type": "string"
+                },
+                "locales": {
+                  "description": "Locales list",
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "path": {
+                  "description": "Relative path from project root to translations folder",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "locales",
+                "path",
+                "defaultLocale"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "description": "Text translation using sails built-in internationalization"
+        },
+        "welcome": {
+          "additionalProperties": false,
+          "description": "Text for welcome page",
+          "properties": {
+            "text": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "wizards": {
+          "additionalProperties": false,
+          "description": "Wizards",
+          "properties": {
+            "data": {
+              "additionalProperties": {
+                "$ref": "#/definitions/FieldsModels"
+              },
+              "type": "object"
+            },
+            "get": {
+              "additionalProperties": false,
+              "description": "Custom getter",
+              "properties": {
+                "arguments": {},
+                "caller": {
+                  "$ref": "#/definitions/interface-1644034429-10295-11759-1644034429-0-216469"
+                },
+                "length": {
+                  "type": "number"
+                },
+                "prototype": {}
+              },
+              "required": [
+                "prototype",
+                "length",
+                "arguments",
+                "caller"
+              ],
+              "type": "object"
+            },
+            "path": {
+              "type": "string"
+            },
+            "set": {
+              "additionalProperties": false,
+              "description": "Custom setter",
+              "properties": {
+                "arguments": {},
+                "caller": {
+                  "$ref": "#/definitions/interface-1644034429-10295-11759-1644034429-0-216469"
+                },
+                "length": {
+                  "type": "number"
+                },
+                "prototype": {}
+              },
+              "required": [
+                "prototype",
+                "length",
+                "arguments",
+                "caller"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "path",
+            "data"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "models"
+      ],
+      "type": "object"
+    },
+    "BaseFieldConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "displayField": {
+          "description": "Label for associations",
+          "type": "string"
+        },
+        "displayModifier": {
+          "additionalProperties": false,
+          "description": "Function that makes data modification on list view",
+          "properties": {
+            "arguments": {},
+            "caller": {
+              "$ref": "#/definitions/interface-1644034429-10295-11759-1644034429-0-216469"
+            },
+            "length": {
+              "type": "number"
+            },
+            "prototype": {}
+          },
+          "required": [
+            "prototype",
+            "length",
+            "arguments",
+            "caller"
+          ],
+          "type": "object"
+        },
+        "identifierField": {
+          "description": "Force set primary key",
+          "type": "string"
+        },
+        "isIn": {
+          "description": "Field that will be used only in select and select-pure widget",
+          "type": "object"
+        },
+        "options": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/NavigationOptionsField"
+            },
+            {
+              "$ref": "#/definitions/ScheduleOptionsField"
+            },
+            {
+              "$ref": "#/definitions/FileUploaderOptionsField"
+            },
+            {}
+          ],
+          "description": "Options for widgets like 'Navigation', 'Schedule' and 'FileUploader'"
+        },
+        "title": {
+          "type": "string"
+        },
+        "tooltip": {
+          "description": "Field description",
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/FieldsTypes"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "type": "object"
+    },
+    "CreateUpdateConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "controller": {
+          "description": "You can change standard controller for any entity by this property",
+          "type": "string"
+        },
+        "entityModifier": {
+          "additionalProperties": false,
+          "description": "callback for data modification before saving record\n\nFunction(reqData) {return reqData}",
+          "properties": {
+            "arguments": {},
+            "caller": {
+              "$ref": "#/definitions/interface-1644034429-10295-11759-1644034429-0-216469"
+            },
+            "length": {
+              "type": "number"
+            },
+            "prototype": {}
+          },
+          "required": [
+            "prototype",
+            "length",
+            "arguments",
+            "caller"
+          ],
+          "type": "object"
+        },
+        "fields": {
+          "$ref": "#/definitions/FieldsModels"
+        }
+      },
+      "type": "object"
+    },
+    "FieldsForms": {
+      "additionalProperties": {
+        "$ref": "#/definitions/FormFieldConfig"
+      },
+      "type": "object"
+    },
+    "FieldsModels": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "#/definitions/BaseFieldConfig"
+          }
+        ]
+      },
+      "type": "object"
+    },
+    "FieldsTypes": {
+      "enum": [
+        "string",
+        "password",
+        "date",
+        "datetime",
+        "time",
+        "integer",
+        "number",
+        "float",
+        "color",
+        "email",
+        "month",
+        "week",
+        "range",
+        "boolean",
+        "binary",
+        "text",
+        "longtext",
+        "mediumtext",
+        "ckeditor",
+        "wysiwyg",
+        "texteditor",
+        "word",
+        "jsoneditor",
+        "json",
+        "array",
+        "object",
+        "ace",
+        "html",
+        "xml",
+        "aceeditor",
+        "image",
+        "images",
+        "file",
+        "files",
+        "menu",
+        "navigation",
+        "schedule",
+        "worktime",
+        "association",
+        "association-many"
+      ],
+      "type": "string"
+    },
+    "FileUploaderOptionsField": {
+      "additionalProperties": false,
+      "properties": {
+        "accepted": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "filesize": {
+          "type": "number"
+        },
+        "large": {
+          "type": "number"
+        },
+        "small": {
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "FormFieldConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "displayField": {
+          "description": "Label for associations",
+          "type": "string"
+        },
+        "displayModifier": {
+          "additionalProperties": false,
+          "description": "Function that makes data modification on list view",
+          "properties": {
+            "arguments": {},
+            "caller": {
+              "$ref": "#/definitions/interface-1644034429-10295-11759-1644034429-0-216469"
+            },
+            "length": {
+              "type": "number"
+            },
+            "prototype": {}
+          },
+          "required": [
+            "prototype",
+            "length",
+            "arguments",
+            "caller"
+          ],
+          "type": "object"
+        },
+        "identifierField": {
+          "description": "Force set primary key",
+          "type": "string"
+        },
+        "isIn": {
+          "description": "Field that will be used only in select and select-pure widget",
+          "type": "object"
+        },
+        "options": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/NavigationOptionsField"
+            },
+            {
+              "$ref": "#/definitions/ScheduleOptionsField"
+            },
+            {
+              "$ref": "#/definitions/FileUploaderOptionsField"
+            },
+            {}
+          ],
+          "description": "Options for widgets like 'Navigation', 'Schedule' and 'FileUploader'"
+        },
+        "title": {
+          "type": "string"
+        },
+        "tooltip": {
+          "description": "Field description",
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/FieldsTypes"
+        },
+        "value": {}
+      },
+      "required": [
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "HrefConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "accessRightsToken": {
+          "description": "Only for view, controller still uses his own access rights token",
+          "type": "string"
+        },
+        "icon": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "link": {
+          "type": "string"
+        },
+        "subItems": {
+          "description": "For menu items only",
+          "items": {
+            "$ref": "#/definitions/HrefConfig"
+          },
+          "type": "array"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "link"
+      ],
+      "type": "object"
+    },
+    "ModelConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "add": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/CreateUpdateConfig"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "description": "Configuration for 'create model' action or disabling/enabling it"
+        },
+        "edit": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/CreateUpdateConfig"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "description": "Configuration for 'update model' action or disabling/enabling it"
+        },
+        "fields": {
+          "$ref": "#/definitions/FieldsModels",
+          "description": "Entity fields configuration"
+        },
+        "hide": {
+          "description": "Hide entity in left navbar",
+          "type": "boolean"
+        },
+        "icon": {
+          "description": "Entity icon",
+          "type": "string"
+        },
+        "identifierField": {
+          "description": "Force set primary key",
+          "type": "string"
+        },
+        "list": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "actions": {
+                  "additionalProperties": false,
+                  "description": "Actions configuration that will be displayed",
+                  "properties": {
+                    "global": {
+                      "items": {
+                        "$ref": "#/definitions/HrefConfig"
+                      },
+                      "type": "array"
+                    },
+                    "inline": {
+                      "items": {
+                        "$ref": "#/definitions/HrefConfig"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "type": "object"
+                },
+                "fields": {
+                  "$ref": "#/definitions/FieldsModels",
+                  "description": "Configuration for models' fields that will be displayed on 'list' page"
+                }
+              },
+              "required": [
+                "fields"
+              ],
+              "type": "object"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "description": "List display configuration"
+        },
+        "model": {
+          "description": "Model name",
+          "type": "string"
+        },
+        "remove": {
+          "description": "Disabling/enabling 'delete model' action",
+          "type": "boolean"
+        },
+        "title": {
+          "type": "string"
+        },
+        "tools": {
+          "description": "Entity actions displayed in left navbar for specific entity",
+          "items": {
+            "$ref": "#/definitions/HrefConfig"
+          },
+          "type": "array"
+        },
+        "view": {
+          "description": "Disabling/enabling 'read model' action",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "title",
+        "model"
+      ],
+      "type": "object"
+    },
+    "NavigationOptionsField": {
+      "additionalProperties": false,
+      "properties": {
+        "disableAddingProperty": {
+          "description": "forbid/allow adding new property in pop-up",
+          "type": "boolean"
+        },
+        "disableDeletingProperty": {
+          "description": "forbid/allow deleting new property in pop-up",
+          "type": "boolean"
+        },
+        "displacementControl": {
+          "description": "forbid/allow using sortable if element has inserted elements",
+          "type": "boolean"
+        },
+        "maxNestedItems": {
+          "description": "max number of nested elements",
+          "type": "number"
+        },
+        "propertyList": {
+          "additionalProperties": {
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "options": {
+                "additionalProperties": false,
+                "properties": {
+                  "arguments": {},
+                  "caller": {
+                    "$ref": "#/definitions/interface-1644034429-10295-11759-1644034429-0-216469"
+                  },
+                  "length": {
+                    "type": "number"
+                  },
+                  "prototype": {}
+                },
+                "required": [
+                  "prototype",
+                  "length",
+                  "arguments",
+                  "caller"
+                ],
+                "type": "object"
+              },
+              "required": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "title"
+            ],
+            "type": "object"
+          },
+          "description": "add list of properties that can be chosen",
+          "type": "object"
+        },
+        "titleProperties": {
+          "description": "set the property, that would be title of the element",
+          "type": "string"
+        },
+        "visibleElement": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "const": false,
+              "type": "boolean"
+            }
+          ],
+          "description": "Set visibility to elements, can be set to string properties 'visible' or 'hidden'. Set boolean property 'false' to turn off this property"
+        }
+      },
+      "type": "object"
+    },
+    "ScheduleOptionsField": {
+      "additionalProperties": false,
+      "properties": {
+        "permutations": {
+          "additionalProperties": false,
+          "description": "forbid or allow displaying data, time or break fields",
+          "properties": {
+            "break": {
+              "type": "boolean"
+            },
+            "date": {
+              "type": "boolean"
+            },
+            "options": {
+              "description": "forbid or allow displaying the pop-up (modal window)",
+              "type": "boolean"
+            },
+            "time": {
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
+        "propertyList": {
+          "additionalProperties": {
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "required": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "title"
+            ],
+            "type": "object"
+          },
+          "description": "add list of properties that can be chosen",
+          "type": "object"
+        },
+        "supportOldVersion": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "interface-1644034429-10295-11759-1644034429-0-216469": {
+      "additionalProperties": false,
+      "properties": {
+        "arguments": {},
+        "caller": {
+          "$ref": "#/definitions/interface-1644034429-10295-11759-1644034429-0-216469"
+        },
+        "length": {
+          "type": "number"
+        },
+        "prototype": {}
+      },
+      "required": [
+        "prototype",
+        "length",
+        "arguments",
+        "caller"
+      ],
+      "type": "object"
+    }
+  }
+}

@@ -26,3 +26,4 @@ views/jade/includes.jade
 #new_layouts
 ejs2
 package-lock.json
+dist

@@ -9,7 +9,7 @@ sails.after(["hook:policies:loaded"], () => {
     for (let policy of policiesDir) {
       if (path.extname(policy).toLowerCase() === ".js") {
         let policyFile = require(__dirname + "/../policies/" + policy);
-        if (typeof policyFile === "function") {
+        if (typeof policyFile === "function" && Array.isArray(sails.config.adminpanel.policies)) {
           sails.config.adminpanel.policies.push(policyFile);
         } else {
           sails.log.error(`Adminpanel > Policy ${policyFile} is not a function`);
@@ -22,7 +22,7 @@ sails.after(["hook:policies:loaded"], () => {
 })
 
 
-export default function bindPolicies(policies: string | Function | Function[], action: Function): Function | Function[] {
+export default function bindPolicies(policies: string | string[] | Function | Function[], action: Function): Function | Function[] {
 
   /**
    * Bind policy to action

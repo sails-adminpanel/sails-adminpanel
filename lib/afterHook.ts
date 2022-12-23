@@ -33,8 +33,9 @@ export default async function () {
         require('./bindRoutes').default();
 
         // binding forms from files
-        bindForms();
     })
+
+    bindForms();
 
     //bind access rights
     bindAccessRights();

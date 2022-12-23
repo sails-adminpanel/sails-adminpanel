@@ -72,6 +72,13 @@ This is example of this file:
 
 And your admin panel will be accessible under: `http://127.0.0.1:port/admin`
 
+## Gulp
+***Main gulp file*** -- `gulpfile.js`
+### Gulp commands
+`gulp` -- development mode
+
+`gulp prod` -- production mode
+
 ## Documentation
 
 Take a look into [docs](https://github.com/sails-adminpanel/sails-adminpanel/tree/master/docs) folder. There are a lot of docs about configuration and usage.
@@ -83,6 +90,10 @@ We use VmWare Clarity framework as UI framework
 Clarity docs https://vmware.github.io/clarity/documentation/v0.13/
 
 for build styles - sass --watch clarity/src:assets/styles/
+
+# JSON-schema config 
+
+`npx ts-json-schema-generator -p ./interfaces/adminpanelConfig.d.ts > adminpanel-config.schema.json`
 
 ## License
 

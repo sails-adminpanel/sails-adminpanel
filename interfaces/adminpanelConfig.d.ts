@@ -1,13 +1,13 @@
-import { FieldsTypes } from "./fieldsTypes"
+type FieldsTypes = "string" | "password" | "date" | "datetime" | "time" | "integer" | "number" | "float" | "color" | "email" | "month" | "week" | "range" | "boolean" | "binary" | "text" | "longtext" | "mediumtext" | "ckeditor" | "wysiwyg" | "texteditor" | "word" | "jsoneditor" | "json" | "array" | "object" | "ace" | "html" | "xml" | "aceeditor" | "image" | "images" | "file" | "files" | "menu" | "navigation" | "schedule" | "worktime" | "association" | "association-many" | "select" | "select-many"
+
 export interface AdminpanelConfig {
     /** prepare to impl dashboard*/
     dashboard?: any
     theme?: string
-    auth?: boolean
     /**
      * Enable or disable auth for adminpanel
      */
-    auth: boolean
+    auth?: boolean
     /**
      * @alpha
      * Models configuration
@@ -45,7 +45,7 @@ export interface AdminpanelConfig {
     /**
      * Policies that will be executed before going to every page
      * */
-    policies?: string | string[] | function | function[]
+    policies?: string | string[] | Function | Function[]
     styles?: string[]
     scripts?: {
         header?: string[]
@@ -69,14 +69,14 @@ export interface AdminpanelConfig {
         /**
          * Relative path from project root to translations folder
          * */
-        path: string
+        path?: string
         defaultLocale: string
     } | boolean
     /**
      * Forms
      * */
     forms?: {
-        path: string
+        path?: string
         /**
          * TODO: (wizards) rewrite to data -> setup
          * same for model (need entity config types)
@@ -99,7 +99,7 @@ export interface AdminpanelConfig {
     wizards?: {
         path: string
         data: {
-            [key:string]: Fields
+            [key:string]: FieldsModels
         }
         /**
          * Custom getter
@@ -136,10 +136,6 @@ export interface AdminpanelConfig {
      * Show adminpanel version on the bottom of navbar
      * */
     showVersion?: boolean
-    /**
-     * Enable/disable authorization
-     * */
-    auth?: boolean
 
     /**
      *
@@ -161,7 +157,7 @@ export interface ModelConfig {
     /**
      * Entity fields configuration
      * */
-    fields?: FieldsModelss
+    fields?: FieldsModels
     /**
      * List display configuration
      * */
@@ -169,7 +165,7 @@ export interface ModelConfig {
         /**
          * Configuration for models' fields that will be displayed on 'list' page
          * */
-        fields: Fields
+        fields?: FieldsModels
         /**
          * Actions configuration that will be displayed
          * */
@@ -217,12 +213,12 @@ export interface FieldsModels {
 }
 
 interface FormFieldConfig extends BaseFieldConfig {
-    value: any
+    value?: any
 }
 
 interface BaseFieldConfig {
     title?: string
-    type: FieldsTypes
+    type?: FieldsTypes
     /**
      * Field description
      * */
@@ -247,6 +243,9 @@ interface BaseFieldConfig {
      * Field that will be used only in select and select-pure widget
      * */
     isIn?: object
+
+    /** Show as disabled element HTML */
+    disabled?: boolean
 }
 
 interface NavigationOptionsField {
@@ -323,11 +322,11 @@ interface FileUploaderOptionsField {
 }
 
 export interface CreateUpdateConfig {
-    fields?: Fields
+    fields?: FieldsModels
     /**
      * callback for data modification before saving record
      *
-     * function(reqData) {return reqData}
+     * Function(reqData) {return reqData}
      * */
     entityModifier?: Function
     /**
