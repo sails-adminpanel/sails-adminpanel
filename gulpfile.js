@@ -7,8 +7,6 @@ const sourcemaps = require('gulp-sourcemaps');
 const tilde = require('node-sass-tilde-importer');
 const webpack = require("webpack-stream");
 const merge = require("merge-stream");
-const { VueLoaderPlugin  } = require('vue-loader')
-const Fpath = require('path')
 
 const sass = gulpSass(dartSass)
 
@@ -115,34 +113,9 @@ const jsProd = () => {
 		.pipe(gulp.dest(path.build.js))
 }
 
-const vue = () => {
-	return gulp.src(`${srcFolder}/scripts/vue/app.js`, { sourcemaps: true })
-		.pipe(webpack({
-			mode: 'development',
-			entry: `${srcFolder}/scripts/vue/app.js`,
-			output: {
-				path: Fpath.resolve('./assets/build/js/'),
-				filename: 'vue-app.js'
-			},
-			module: {
-				rules: [
-					{
-						test: /\.vue$/,
-						loader: 'vue-loader'
-					}
-				]
-			},
-			plugins: [
-				new VueLoaderPlugin ()
-			]
-		}))
-		.pipe(gulp.dest(`${path.build.js}/vue/`))
-}
-
 const build = gulp.series(reset, copy_styles_files, scss, js);
 
 const prod = gulp.series(reset, copy_styles_files, scssProd, jsProd)
 
 gulp.task('default', build);
 gulp.task('prod', prod);
-gulp.task('vue', vue)
