@@ -1,24 +1,45 @@
-<% if(!Boolean((adminpanel.configHelper.getConfig()).ckeditor5)){ %>
+<% if(!Boolean(field.config.options.ckeditor5)){ %>
 <textarea <%= field.config.required && 'required' %> <%= field.config.disabled && 'disabled'%> name="<%= key %>" id="form-<%= key %>"><%=value%></textarea>
 <script src="/admin/assets/build/js/ckeditor/ckeditor.js"></script>
 <script>
     CKEDITOR.replace('form-<%= key %>');
 </script>
 <% } %>
-<% if(Boolean((adminpanel.configHelper.getConfig()).ckeditor5)){ %>
-<textarea <%= field.config.required && 'required' %> <%= field.config.disabled && 'disabled'%> name="<%= key %>" id="editor"><%=value%></textarea>
+<% if(Boolean(field.config.options.ckeditor5)){ %>
+<textarea <%= field.config.required && 'required' %> <%= field.config.disabled && 'disabled'%> name="<%= key %>" id="form-<%= key %>"><%=value%></textarea>
 <script src="/admin/assets/build/js/ckeditor5/ck5.js"></script>
+<% if (field.config.options.language) { %>
+<script src="/admin/assets/build/js/ckeditor5/translations/<%= field.config.options.language %>.js"></script>
+<% } %>
 <script>
     ClassicEditor
-        .create(document.querySelector('#editor'), {
-            plugins: [Essentials, Paragraph, Bold, Italic],
-            toolbar: ['bold', 'italic']
+        .create(document.querySelector("#form-<%= key %>"), {
+            licenseKey: '',
+            removePlugins: <%- typeof field.config.options.removePlugins !== 'undefined' ? 
+            JSON.stringify(field.config.options.removePlugins) : 
+            JSON.stringify([])%>,
+            language: '<%= field.config.options.language %>',
+            <%- typeof field.config.options.toolbar !== 'undefined' ?
+            `toolbar: {
+                items: ${JSON.stringify(field.config.options.toolbar.items)}
+            },` : ''%>
+            <%- typeof field.config.options.image !== 'undefined' ?
+            `image: {
+                toolbar: ${JSON.stringify(field.config.options.image.toolbar)}
+            },` : ''%>
+            <%- typeof field.config.options.table !== 'undefined' ?
+            `table: {
+                contentToolbar: ${JSON.stringify(field.config.options.table.contentToolbar)}
+            },` : ''%>
         })
         .then(editor => {
-            console.log('Editor was initialized', editor);
+            window.editor = editor;
         })
         .catch(error => {
-            console.error(error.stack);
-        })
+            console.error('Oops, something went wrong!');
+            console.error('Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:');
+            console.warn('Build id: u8zyzlfw7wwh-6mrum4n95juz');
+            console.error(error);
+        });
 </script>
 <% } %>

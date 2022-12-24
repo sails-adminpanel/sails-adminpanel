@@ -187,3 +187,14 @@ in Yandex browser is not working
 .ql-toolbar.ql-snow {
     background: #fcfcfc;
 }
+
+/* CKefitor 5 */
+.ck-editor__editable {
+    min-height: 250px;
+}
+
+.ck-editor__editable {
+    li {
+        list-style: initial !important;
+    }
+}
