@@ -23,11 +23,6 @@ export default function bindRoutes() {
   let policies = config.policies || "";
 
   /**
-   * Upload images CKeditor5
-   */
-   sails.router.bind(`${config.routePrefix}/ckeditor5/upload`, bindPolicies(policies, _uploadCKeditor5));
-
-  /**
    * Edit form
    * */
   sails.router.bind(`${config.routePrefix}/form/:slug`, bindPolicies(policies, _form));
@@ -94,7 +89,11 @@ export default function bindRoutes() {
   /**
    * Upload files
    */
-  sails.router.bind(baseRoute + "/upload", bindPolicies(policies, _upload));  
+  sails.router.bind(baseRoute + "/upload", bindPolicies(policies, _upload));
+   /**
+   * Upload images CKeditor5
+   */
+    sails.router.bind(`${baseRoute}/ckeditor5/upload`, bindPolicies(policies, _uploadCKeditor5));
   /**
    * Create a default dashboard
    * @todo define information that should be shown here

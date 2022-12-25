@@ -1,13 +1,10 @@
 import { AdminUtil } from "../lib/adminUtil";
 import { AccessRightsHelper } from "../helper/accessRightsHelper";
-import * as path from "path";
-import { AdminpanelConfig, BaseFieldConfig } from "../interfaces/adminpanelConfig";
 
 export default function upload(req, res) {
 
-	console.log('admin > CK-upload');
+	//console.log('admin > CK-upload');
 	let entity = AdminUtil.findEntityObject(req);
-	console.log(req.session.UserAP);
 
 	if (sails.config.adminpanel.auth) {
 		if (!req.session.UserAP) {
@@ -21,5 +18,33 @@ export default function upload(req, res) {
 			return res.sendStatus(403);
 		}
 	}
-	return res.ok('OK')
+
+	if (req.method.toUpperCase() === 'POST') {
+		// set upload directory
+		const dirDownload = `uploads/${entity.type}/${entity.name}/ckeditor`;
+		const dir = `${process.cwd()}/.tmp/public/${dirDownload}/`;
+
+		// make random string in end of file
+		let rand = '';
+		const possible = "abcdefghijklmnopqrstuvwxyz0123456789";
+		for (let i = 0; i < 10; i++) {
+			rand += possible.charAt(Math.floor(Math.random() * possible.length));
+		}
+
+		//save file
+		const filenameOrig = req.body.name.replace(' ', '_');
+		let filename = filenameOrig.substr(0, filenameOrig.lastIndexOf('.')) + rand + '.' + filenameOrig.split('.').reverse()[0];
+
+		req.file('image').upload({
+			dirname: dir,
+			saveAs: filename
+		}, function (err, file) {
+			if (err) return res.serverError(err);
+
+			return res.send({
+				msg: "success",
+				url: `/${dirDownload}/${filename}`
+			})
+		})
+	}
 }
