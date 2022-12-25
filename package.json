@@ -42,6 +42,7 @@
     "@ckeditor/ckeditor5-theme-lark": "^35.4.0",
     "@ckeditor/ckeditor5-typing": "^35.4.0",
     "@ckeditor/ckeditor5-word-count": "^35.4.0",
+    "@ckeditor/ckeditor5-upload": "^35.4.0",
     "postcss-loader": "^4.3.0",
     "postcss": "^8.4.20",
     "raw-loader": "^4.0.2",

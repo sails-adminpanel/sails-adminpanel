@@ -46,6 +46,7 @@
  import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation.js';
  import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
  import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount.js';
+ import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
  
  class Editor extends ClassicEditor {}
  
@@ -93,7 +94,8 @@
 	 TableToolbar,
 	 TextTransformation,
 	 Underline,
-	 WordCount
+	 WordCount,
+	 SimpleUploadAdapter
  ];
  
  // Editor configuration.

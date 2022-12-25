@@ -7,6 +7,7 @@ import _add from "../controllers/add";
 import _view from "../controllers/view";
 import _remove from "../controllers/remove";
 import _upload from "../controllers/upload";
+import _uploadCKeditor5 from "../controllers/ckeditorUpload";
 import _form from "../controllers/form";
 import _normalizeNavigationConfig from "../controllers/normalizeNavigationConfig";
 import { CreateUpdateConfig } from "../interfaces/adminpanelConfig";
@@ -20,6 +21,11 @@ export default function bindRoutes() {
    */
   let config = sails.config.adminpanel;
   let policies = config.policies || "";
+
+  /**
+   * Upload images CKeditor5
+   */
+   sails.router.bind(`${config.routePrefix}/ckeditor5/upload`, bindPolicies(policies, _uploadCKeditor5));
 
   /**
    * Edit form
@@ -88,7 +94,7 @@ export default function bindRoutes() {
   /**
    * Upload files
    */
-  sails.router.bind(baseRoute + "/upload", bindPolicies(policies, _upload));
+  sails.router.bind(baseRoute + "/upload", bindPolicies(policies, _upload));  
   /**
    * Create a default dashboard
    * @todo define information that should be shown here

@@ -15,6 +15,9 @@
     ClassicEditor
         .create(document.querySelector("#form-<%= key %>"), {
             licenseKey: '',
+            simpleUpload: {
+                uploadUrl: '/admin/ckeditor5/upload'
+            },
             removePlugins: <%- typeof field.config.options.removePlugins !== 'undefined' ? 
             JSON.stringify(field.config.options.removePlugins) : 
             JSON.stringify([])%>,
