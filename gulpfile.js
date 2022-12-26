@@ -40,15 +40,15 @@ const reset = () => {
 
 const copy_styles_files = () => {
   return merge([
-    gulp.src('../../node_modules/jsoneditor/src/scss/img/**/*.*')
+    gulp.src('./node_modules/jsoneditor/src/scss/img/**/*.*')
 			.pipe(gulp.dest('./assets/build/style/img')),
-    gulp.src('../../node_modules/line-awesome/dist/line-awesome/fonts/**/*.*')
+    gulp.src('./node_modules/line-awesome/dist/line-awesome/fonts/**/*.*')
 			.pipe(gulp.dest('./assets/build/fonts')),
-    gulp.src('../../node_modules/ace-builds/src-min-noconflict/**/*.*')
+    gulp.src('./node_modules/ace-builds/src-min-noconflict/**/*.*')
 			.pipe(gulp.dest('./assets/build/js/ace')),
-    gulp.src('../../node_modules/jsoneditor/dist/jsoneditor.min.js')
+    gulp.src('./node_modules/jsoneditor/dist/jsoneditor.min.js')
 			.pipe(gulp.dest('./assets/build/js/jsoneditor')),
-    gulp.src('../../node_modules/leaflet-draw/dist/images/**/*.*')
+    gulp.src('./node_modules/leaflet-draw/dist/images/**/*.*')
 			.pipe(gulp.dest('./assets/build/style/images')),
     gulp.src('./assets/src/ckeditor/**/*.*')
 			.pipe(gulp.dest('./assets/build/js/ckeditor'))
