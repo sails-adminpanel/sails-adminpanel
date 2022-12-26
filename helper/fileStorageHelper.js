@@ -4,6 +4,9 @@ exports.FileStorageHelper = void 0;
 const fs = require("fs");
 class FileStorageHelper {
     static _init() {
+        if (!fs.existsSync(`${process.cwd()}/.tmp`)) {
+            fs.mkdirSync(`${process.cwd()}/.tmp`);
+        }
         if (fs.existsSync(`${process.cwd()}/${this._filePath}`)) {
             let rawStorage = fs.readFileSync(`${process.cwd()}/${this._filePath}`, "utf-8");
             try {
