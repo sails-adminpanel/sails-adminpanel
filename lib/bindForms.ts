@@ -10,12 +10,15 @@ export default async function bindForms() {
         }
     }
 
-    // Seeding forms data
-    for (let form in sails.config.adminpanel.forms.data) {
-        for (let key in sails.config.adminpanel.forms.data[form]) {
-            if (await sails.config.adminpanel.forms.get(form, key) === undefined){
-                await sails.config.adminpanel.forms.set(form, key, sails.config.adminpanel.forms.data[form][key].value);
+    sails.after(["hook:orm:loaded"], async () => {
+        // Seeding forms data
+        for (let form in sails.config.adminpanel.forms.data) {
+            for (let key in sails.config.adminpanel.forms.data[form]) {
+                if (await sails.config.adminpanel.forms.get(form, key) === undefined){
+                    await sails.config.adminpanel.forms.set(form, key, sails.config.adminpanel.forms.data[form][key].value);
+                }
             }
         }
-    }
+    })
+
 }
