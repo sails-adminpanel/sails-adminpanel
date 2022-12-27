@@ -8,8 +8,8 @@
 <% if(Boolean(field.config.options.ckeditor5)){ %>
 <textarea <%= field.config.required && 'required' %> <%= field.config.disabled && 'disabled'%> name="<%= key %>" id="form-<%= key %>"><%=value%></textarea>
 <script src="/admin/assets/build/js/ckeditor5/ck5.js"></script>
-<% if (field.config.options.language) { %>
-<script src="/admin/assets/build/js/ckeditor5/translations/<%= field.config.options.language %>.js"></script>
+<% if (req.session.UserAP.locale !== 'en') { %>
+<script src="/admin/assets/build/js/ckeditor5/translations/<%= req.session.UserAP.locale %>.js"></script>
 <% } %>
 <script>
     ClassicEditor
@@ -26,10 +26,10 @@
                     styles: true
                 }]
             },
+            language: "<%= req.session.UserAP.locale !== 'undefined' ? req.session.UserAP.locale : 'en' -%>",
             removePlugins: <%- typeof field.config.options.removePlugins !== 'undefined' ? 
             JSON.stringify(field.config.options.removePlugins) : 
             JSON.stringify([])%>,
-            language: '<%= field.config.options.language %>',
             <%- typeof field.config.options.toolbar !== 'undefined' ?
             `toolbar: {
                 items: ${JSON.stringify(field.config.options.toolbar.items)}
