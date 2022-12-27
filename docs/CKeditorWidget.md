@@ -4,25 +4,25 @@ The WYSIWYG widget uses CKEditor. By default, the 4th version of the editor is u
 
 ```javascript
 module.exports.adminpanel = {
-    fields: {
-			title: "Title",
-			ckeditor5: {
-				type: "wysiwyg",
-				title: "CKedito 5",
-				options: { // required for CKeditor5
-					ckeditor5: boolean, // CKeditor5 enabled/disabled
-					removePlugins: [],
-					toolbar: { 
-						items: []
-					},
-					image: {
-						toolbar: []
-					},
-					table: {
-						contentToolbar: [}
-					}
+	fields: {
+		title: "Title",
+		ckeditor5: {
+			type: "wysiwyg",
+			title: "CKedito 5",
+			options: { // required for CKeditor5
+				ckeditor5: boolean, // CKeditor5 enabled/disabled
+				removePlugins: [],
+				toolbar: { 
+					items: []
+				},
+				image: {
+					toolbar: []
+				},
+				table: {
+					contentToolbar: []
 				}
 			}
+		}
 	}
 }
 ```
