@@ -1,4 +1,4 @@
-<% if(!field.config.options){ %>
+<% if(!field.config.options || !Boolean(field.config.options.ckeditor5)){ %>
 <textarea <%= field.config.required && 'required' %> <%= field.config.disabled && 'disabled'%> name="<%= key %>" id="form-<%= key %>"><%=value%></textarea>
 <script src="/admin/assets/build/js/ckeditor/ckeditor.js"></script>
 <script>
