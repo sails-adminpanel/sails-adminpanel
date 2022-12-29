@@ -11,6 +11,7 @@ Functionality:
 - [Translations](Translations.md)
 
 Widgets config:
+- [Wysiwyg](CKeditorWidget.md)
 - [FileUploader](FileUploaderWidget.md)
 - [Navigation](NavigationWidget.md)
 - [Schedule](ScheduleWidget.md)

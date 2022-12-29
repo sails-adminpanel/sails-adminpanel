@@ -7,6 +7,11 @@ export class FileStorageHelper {
     private static _isInitialized = false;
 
     public static _init(): void {
+                
+        if (!fs.existsSync(`${process.cwd()}/.tmp`)) {
+            fs.mkdirSync(`${process.cwd()}/.tmp`)
+        }
+
         if (fs.existsSync(`${process.cwd()}/${this._filePath}`)) {
             let rawStorage = fs.readFileSync(`${process.cwd()}/${this._filePath}`, "utf-8");
             try {
