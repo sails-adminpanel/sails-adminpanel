@@ -1,8 +1,92 @@
-<textarea 
-<%= field.config.required && 'required' %> 
-<%= field.config.disabled && 'disabled'%> 
-name="<%= key %>" 
-id="form-<%= key %>"><%=value%></textarea>
+<% if(!Boolean(field.config.options.ckeditor5)){ %>
+<textarea <%= field.config.required && 'required' %> <%= field.config.disabled && 'disabled'%> name="<%= key %>" id="form-<%= key %>"><%=value%></textarea>
+<script src="/admin/assets/build/js/ckeditor/ckeditor.js"></script>
 <script>
     CKEDITOR.replace('form-<%= key %>');
 </script>
+<% } %>
+<% if(Boolean(field.config.options.ckeditor5)){ %>
+<textarea <%= field.config.required && 'required' %> <%= field.config.disabled && 'disabled'%> name="<%= key %>" id="form-<%= key %>"><%=value%></textarea>
+<script src="/admin/assets/build/js/ckeditor5/ck5.js"></script>
+<% if (req.session.UserAP.locale !== 'en') { %>
+<script src="/admin/assets/build/js/ckeditor5/translations/<%= req.session.UserAP.locale %>.js"></script>
+<% } %>
+<script>
+    ClassicEditor
+        .create(document.querySelector("#form-<%= key %>"), {
+            licenseKey: '',
+            mediaEmbed: {
+                previewsInData: true
+            },
+            htmlSupport: {
+                allow: [{
+                    name: /.*/,
+                    attributes: true,
+                    classes: true,
+                    styles: true
+                }]
+            },
+            language: "<%= req.session.UserAP.locale !== 'undefined' ? req.session.UserAP.locale : 'en' -%>",
+            removePlugins: <%- typeof field.config.options.removePlugins !== 'undefined' ? 
+            JSON.stringify(field.config.options.removePlugins) : 
+            JSON.stringify([])%>,
+            <%- typeof field.config.options.toolbar !== 'undefined' ?
+            `toolbar: {
+                items: ${JSON.stringify(field.config.options.toolbar.items)}
+            },` : ''%>
+            <%- typeof field.config.options.image !== 'undefined' ?
+            `image: {
+                toolbar: ${JSON.stringify(field.config.options.image.toolbar)}
+            },` : ''%>
+            <%- typeof field.config.options.table !== 'undefined' ?
+            `table: {
+                contentToolbar: ${JSON.stringify(field.config.options.table.contentToolbar)}
+            },` : ''%>
+        })
+        .then(editor => {
+            window.editor_<%= key %> = editor;
+            console.log(editor_<%= key %>);
+            editor_<%= key %>.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+                return new UploadAdapter(loader);
+            };
+        })
+        .catch(error => {
+            console.error('Oops, something went wrong!');
+            console.error('Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:');
+            console.warn('Build id: u8zyzlfw7wwh-6mrum4n95juz');
+            console.error(error);
+        });
+
+    /*Custom upload*/
+    class UploadAdapter {
+        constructor(loader) {
+            this.loader = loader;
+        }
+
+        async upload() {
+            const data = new FormData();
+            let file = await this.loader.file
+            data.append("name", file.name);
+            data.append("image", file);
+
+            try {
+                let response = await fetch('<%=entity.uri%>/ckeditor5/upload', {
+                    method: 'POST',
+                    body: data,
+                })
+                let result = await response.json()
+                // Backstage returns data:
+                // {"code":0,"msg":"success","data":{"url":"/upload/struts2.jpeg"}}
+
+                // Method Returns data format: {Default: "URL"}
+                return {
+                    default: result.url,
+                };
+            } catch (e) {
+                console.log(e);
+            }
+
+        }
+    }
+</script>
+<% } %>

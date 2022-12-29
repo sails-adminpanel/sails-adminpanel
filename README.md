@@ -79,6 +79,10 @@ And your admin panel will be accessible under: `http://127.0.0.1:port/admin`
 
 `gulp prod` -- production mode
 
+## CKeditor5
+**Custom build file** -- `assets/src/scripts/ckeditor5/app.js`
+**gulp task** -- `gulp ckeditorBuild`
+
 ## Documentation
 
 Take a look into [docs](https://github.com/sails-adminpanel/sails-adminpanel/tree/master/docs) folder. There are a lot of docs about configuration and usage.
