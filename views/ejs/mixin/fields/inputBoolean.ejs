@@ -1,11 +1,19 @@
-
 <div class="checkbox-row">
     <% if (value) { %>
-        <input type="checkbox" id="form-<%= key %>" name="<%= key %>" value="<%= value && 1 || 0 %>" <%= field.config.disabled && 'disabled' || ''%> style="width: auto;" checked>
+        <input type="checkbox" id="form-<%= key %>" name="<%= key %>" value="1" <%= field.config.disabled && 'disabled' || ''%> style="width: auto;" checked>
     <% } else { %>
-        <input type="checkbox" id="form-<%= key %>" name="<%= key %>" value="<%= value && 1 || 0 %>" <%= field.config.disabled && 'disabled' || ''%> style="width: auto;">
+        <input type="checkbox" id="form-<%= key %>" name="<%= key %>" value="0" <%= field.config.disabled && 'disabled' || ''%> style="width: auto;">
     <% } %>
     <label for="form-<%= key %>"></label>
 </div>
 
-
+<script>
+    $('.checkbox-row #form-<%= key -%>').on('click', function(){
+        let val = $(this).val()
+        if(val === '0'){
+            $(this).val('1')
+        } else {
+            $(this).val('0')
+        }
+    })
+</script>
