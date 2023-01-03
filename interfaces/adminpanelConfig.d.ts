@@ -1,4 +1,4 @@
-type FieldsTypes = "string" | "password" | "date" | "datetime" | "time" | "integer" | "number" | "float" | "color" | "email" | "month" | "week" | "range" | "boolean" | "binary" | "text" | "longtext" | "mediumtext" | "ckeditor" | "wysiwyg" | "texteditor" | "word" | "jsoneditor" | "json" | "array" | "object" | "ace" | "html" | "xml" | "aceeditor" | "image" | "images" | "file" | "files" | "menu" | "navigation" | "schedule" | "worktime" | "association" | "association-many" | "select" | "select-many"
+type FieldsTypes = "string" | "password" | "date" | "datetime" | "time" | "integer" | "number" | "float" | "color" | "email" | "month" | "week" | "range" | "boolean" | "binary" | "text" | "longtext" | "mediumtext" | "ckeditor" | "wysiwyg" | "texteditor" | "word" | "jsoneditor" | "json" | "array" | "object" | "ace" | "html" | "xml" | "aceeditor" | "image" | "images" | "file" | "files" | "menu" | "navigation" | "schedule" | "worktime" | "association" | "association-many" | "select" | "select-many" | "table"
 
 export interface AdminpanelConfig {
     /** prepare to impl dashboard*/
