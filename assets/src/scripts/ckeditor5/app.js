@@ -47,6 +47,7 @@ import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformatio
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
 import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount.js';
 import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
+import Style from '@ckeditor/ckeditor5-style/src/style';
 
 class Editor extends ClassicEditor { }
 
@@ -95,13 +96,15 @@ Editor.builtinPlugins = [
 	TextTransformation,
 	Underline,
 	WordCount,
-	HtmlEmbed
+	HtmlEmbed,
+	Style
 ];
 
 // Editor configuration.
 Editor.defaultConfig = {
 	toolbar: {
 		items: [
+			'style',
 			'heading',
 			'|',
 			'bold',
