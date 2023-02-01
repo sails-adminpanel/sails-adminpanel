@@ -1,38 +1,113 @@
 import { QueryBuilder, WaterlinePromise, CRUDBuilder, Model, UpdateBuilder, Callback } from "waterline";
+import { OptionalAll, RequiredField } from "./toolsTS"
 
-
-type AddToCollectionMember<T> = WaterlinePromise<T> & {
-    members(childIds: string[] | number[]): WaterlinePromise<T>;
+type or<T> = {
+    or?: WhereCriteriaQuery<T>[]
 }
 
+type not<T> = {
+    "!": T
+}
+
+type lessThan<F> = {
+    "<": F
+}
+
+type lessThanOrEqual<F> = {
+    "<=": F
+}
+
+type greaterThan<F> = {
+    ">": F
+}
+
+type greaterThanOrEqual<F> = {
+    ">=": F
+}
+
+
+type nin<F> = {
+    nin: F[]
+}
+
+type _in<F> = {
+    in: F[]
+}
+
+
+type contains = {
+    contains: string
+}
+
+
+type startsWith = {
+    startsWith: string
+}
+
+
+type endsWith = {
+    endsWith: string
+}
+
+export type CriteriaQuery<T> = {
+    where?: WhereCriteriaQuery<T> | or<T>
+    limit?: number
+    skip?: number
+    sort?: string | {[key: string]: string} | {[key: string]: string}[]
+} | WhereCriteriaQuery<T>
+
+export type WhereCriteriaQuery<T> = {
+    [P in keyof T]?: T[P] | T[P][] | not<T[P]> | lessThan<T[P]> | lessThanOrEqual<T[P]> | greaterThan<T[P]> | greaterThanOrEqual<T[P]> | _in<T[P]> | nin<T[P]> | contains | startsWith | endsWith | not<T[P][]> | lessThan<T[P][]> | lessThanOrEqual<T[P][]> | greaterThan<T[P][]> | greaterThanOrEqual<T[P][]> | or<T>;
+}
+
+
 /**
- *  Custom types for Waterline Model
+ * Waterline model
+ * @template M Model object
+ * @template C Fields required for create new instance
  */
-export default interface WaterlineModel<T> {
-    create?(params: any): CRUDBuilder<T>;
-    create?(params: any[]): CRUDBuilder<T[]>;
-    createEach?(params: any[]): CRUDBuilder<T[]>;
+export default interface ORMModel<M, C extends keyof M> {
 
-    find?(criteria?: any): QueryBuilder<T[]>;
-    findOne?(criteria?: any): QueryBuilder<T>;
-    findOrCreate?(criteria?: any, values?: any): QueryBuilder<T>;
+    create?(params: RequiredField<OptionalAll<M>,C>): CRUDBuilder<M>
+    create?(params: RequiredField<OptionalAll<M>,C>[]): CRUDBuilder<M[]>;
+    createEach?(params: M[]): CRUDBuilder<M[]>;
 
-    update?(criteria: any, changes: any): UpdateBuilder<T[]>;
-    update?(criteria: any, changes: any[]): UpdateBuilder<T[]>;
-    updateOne?(criteria: any, changes: any[]): UpdateBuilder<T[]>;
+    find?(criteria?: CriteriaQuery<M>): QueryBuilder<M[]>;
+    findOne?(criteria?: CriteriaQuery<M>): QueryBuilder<M>;
 
-    addToCollection?(id: string | number, association: string): AddToCollectionMember<T[]>
+    // Direct findOne by primaryKey
+    findOne?(criteria?: number): QueryBuilder<M>;
+    findOne?(criteria?: string): QueryBuilder<M>;
 
-    destroy?(criteria: any): CRUDBuilder<T[]>;
-    destroy?(criteria: any[]): CRUDBuilder<T[]>;
-    destroyOne?(criteria: any[]): CRUDBuilder<T[]>;
+    findOrCreate?(criteria?: CriteriaQuery<M>, values?: OptionalAll<M>): QueryBuilder<M>;
 
-    count?(criteria?: any): WaterlinePromise<number>;
-    count?(criteria: any[]): WaterlinePromise<number>;
+    update?(criteria: CriteriaQuery<M>, changes: OptionalAll<M>): UpdateBuilder<M[]>;
+    // update?(criteria: CriteriaQuery<M>, changes: OptionalAll<M[]>): UpdateBuilder<M[]>;
+    updateOne?(criteria: CriteriaQuery<M>, changes: OptionalAll<M>): M;
+
+    destroy?(criteria: CriteriaQuery<M>): CRUDBuilder<M[]>;
+    destroy?(criteria: CriteriaQuery<M>[]): CRUDBuilder<M[]>;
+    destroyOne?(criteria: CriteriaQuery<M>[]): CRUDBuilder<M[]>;
+
+    count?(criteria?: CriteriaQuery<M>): WaterlinePromise<number>;
+    count?(criteria: CriteriaQuery<M>[]): WaterlinePromise<number>;
 
     query(sqlQuery: string, cb: Callback<any>): void;
     query(sqlQuery: string, data: any, cb: Callback<any>): void;
     native(cb: (err: Error, collection: any) => void): void;
 
-    stream?(criteria: any, writeEnd: any): NodeJS.WritableStream | Error;
+
+
+    // MODO: check stream ??
+    stream?(criteria: any, writeEnd: any): NodeJS.WritableStream | Error;   // .stream() await Something.stream(criteria) .eachRecord(async (record)=>{}); https://sailsjs.com/documentation/reference/waterline-orm/models/stream
+
+
+    // .addMoCollection() https://sailsjs.com/documentation/reference/waterline-orm/models/add-to-collection
+    // .createEach() https://sailsjs.com/documentation/reference/waterline-orm/models/create-each
+    // .getDatastore() https://sailsjs.com/documentation/reference/waterline-orm/models/get-datastore
+    // .removeFromCollection() https://sailsjs.com/documentation/reference/waterline-orm/models/remove-from-collection
+    // .replaceCollection() https://sailsjs.com/documentation/reference/waterline-orm/models/replace-collection
+    // .sum() https://sailsjs.com/documentation/reference/waterline-orm/models/sum
+    // .validate() https://sailsjs.com/documentation/reference/waterline-orm/models/validate
+    // .query() https://sailsjs.com/documentation/reference/waterline-orm/models/query
 }

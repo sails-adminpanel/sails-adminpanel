@@ -1,13 +1,14 @@
 import WaterlineModel from "../interfaces/waterlineModel";
 import WaterlineEntity from "../interfaces/waterlineORM";
 import UserAP from "./UserAP";
+import {OptionalAll} from "../interfaces/toolsTS";
 
 let attributes = {
 
     id: {
         type: 'number',
         autoIncrement: true
-    },
+    } as unknown as number,
     name: {
         type: "string",
         required: true,
@@ -25,7 +26,7 @@ let attributes = {
 };
 
 type attributes = typeof attributes & WaterlineEntity;
-interface GroupAP extends attributes {}
+interface GroupAP extends OptionalAll<attributes> {}
 export default GroupAP;
 
 let model = {
@@ -42,6 +43,6 @@ module.exports = {
 };
 
 declare global {
-    const GroupAP: typeof model & WaterlineModel<GroupAP>;
+    const GroupAP: typeof model & WaterlineModel<GroupAP, null>;
 }
 

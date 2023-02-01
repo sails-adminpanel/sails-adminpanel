@@ -1,10 +1,10 @@
-import ORMModel from "./ORMModel";
+import StrippedORMModel from "./StrippedORMModel";
 import {ModelConfig} from "./adminpanelConfig";
 
 export interface Entity {
     name: string
     config?: ModelConfig
-    model?: ORMModel
+    model?: StrippedORMModel
     uri: string
     type: string
 }

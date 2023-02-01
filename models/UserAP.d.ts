@@ -7,11 +7,9 @@
 import WaterlineModel from "../interfaces/waterlineModel";
 import WaterlineEntity from "../interfaces/waterlineORM";
 import GroupAP from "./GroupAP";
+import { OptionalAll } from "../interfaces/toolsTS";
 declare let attributes: {
-    id: {
-        type: string;
-        autoIncrement: boolean;
-    };
+    id: number;
     login: string;
     fullName: string;
     email: string;
@@ -26,7 +24,7 @@ declare let attributes: {
     groups: GroupAP[];
 };
 declare type attributes = typeof attributes & WaterlineEntity;
-interface UserAP extends attributes {
+interface UserAP extends OptionalAll<attributes> {
 }
 export default UserAP;
 declare let model: {
@@ -34,5 +32,5 @@ declare let model: {
     beforeUpdate: (values: any, next: any) => any;
 };
 declare global {
-    const UserAP: typeof model & WaterlineModel<UserAP>;
+    const UserAP: typeof model & WaterlineModel<UserAP, null>;
 }

@@ -50,12 +50,12 @@ export default async function(req, res) {
         }
 
         let isAdministrator = req.body.isAdmin === "on";
-        
-        let locale: typeof sails.config.adminpanel.translation
+
+        let locale: string
         if(typeof sails.config.adminpanel.translation !== "boolean") {
             locale = req.body.locale === 'default' ? sails.config.adminpanel.translation.defaultLocale : req.body.locale;
         }
-               
+
         let updatedUser;
         try {
             updatedUser = await UserAP.update({id: user.id}, {login: req.body.login, fullName: req.body.fullName,

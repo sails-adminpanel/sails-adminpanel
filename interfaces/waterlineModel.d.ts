@@ -1,27 +1,73 @@
 /// <reference types="node" />
 import { QueryBuilder, WaterlinePromise, CRUDBuilder, UpdateBuilder, Callback } from "waterline";
-declare type AddToCollectionMember<T> = WaterlinePromise<T> & {
-    members(childIds: string[] | number[]): WaterlinePromise<T>;
+import { OptionalAll, RequiredField } from "./toolsTS";
+declare type or<T> = {
+    or?: WhereCriteriaQuery<T>[];
+};
+declare type not<T> = {
+    "!": T;
+};
+declare type lessThan<F> = {
+    "<": F;
+};
+declare type lessThanOrEqual<F> = {
+    "<=": F;
+};
+declare type greaterThan<F> = {
+    ">": F;
+};
+declare type greaterThanOrEqual<F> = {
+    ">=": F;
+};
+declare type nin<F> = {
+    nin: F[];
+};
+declare type _in<F> = {
+    in: F[];
+};
+declare type contains = {
+    contains: string;
+};
+declare type startsWith = {
+    startsWith: string;
+};
+declare type endsWith = {
+    endsWith: string;
+};
+export declare type CriteriaQuery<T> = {
+    where?: WhereCriteriaQuery<T> | or<T>;
+    limit?: number;
+    skip?: number;
+    sort?: string | {
+        [key: string]: string;
+    } | {
+        [key: string]: string;
+    }[];
+} | WhereCriteriaQuery<T>;
+export declare type WhereCriteriaQuery<T> = {
+    [P in keyof T]?: T[P] | T[P][] | not<T[P]> | lessThan<T[P]> | lessThanOrEqual<T[P]> | greaterThan<T[P]> | greaterThanOrEqual<T[P]> | _in<T[P]> | nin<T[P]> | contains | startsWith | endsWith | not<T[P][]> | lessThan<T[P][]> | lessThanOrEqual<T[P][]> | greaterThan<T[P][]> | greaterThanOrEqual<T[P][]> | or<T>;
 };
 /**
- *  Custom types for Waterline Model
+ * Waterline model
+ * @template M Model object
+ * @template C Fields required for create new instance
  */
-export default interface WaterlineModel<T> {
-    create?(params: any): CRUDBuilder<T>;
-    create?(params: any[]): CRUDBuilder<T[]>;
-    createEach?(params: any[]): CRUDBuilder<T[]>;
-    find?(criteria?: any): QueryBuilder<T[]>;
-    findOne?(criteria?: any): QueryBuilder<T>;
-    findOrCreate?(criteria?: any, values?: any): QueryBuilder<T>;
-    update?(criteria: any, changes: any): UpdateBuilder<T[]>;
-    update?(criteria: any, changes: any[]): UpdateBuilder<T[]>;
-    updateOne?(criteria: any, changes: any[]): UpdateBuilder<T[]>;
-    addToCollection?(id: string | number, association: string): AddToCollectionMember<T[]>;
-    destroy?(criteria: any): CRUDBuilder<T[]>;
-    destroy?(criteria: any[]): CRUDBuilder<T[]>;
-    destroyOne?(criteria: any[]): CRUDBuilder<T[]>;
-    count?(criteria?: any): WaterlinePromise<number>;
-    count?(criteria: any[]): WaterlinePromise<number>;
+export default interface ORMModel<M, C extends keyof M> {
+    create?(params: RequiredField<OptionalAll<M>, C>): CRUDBuilder<M>;
+    create?(params: RequiredField<OptionalAll<M>, C>[]): CRUDBuilder<M[]>;
+    createEach?(params: M[]): CRUDBuilder<M[]>;
+    find?(criteria?: CriteriaQuery<M>): QueryBuilder<M[]>;
+    findOne?(criteria?: CriteriaQuery<M>): QueryBuilder<M>;
+    findOne?(criteria?: number): QueryBuilder<M>;
+    findOne?(criteria?: string): QueryBuilder<M>;
+    findOrCreate?(criteria?: CriteriaQuery<M>, values?: OptionalAll<M>): QueryBuilder<M>;
+    update?(criteria: CriteriaQuery<M>, changes: OptionalAll<M>): UpdateBuilder<M[]>;
+    updateOne?(criteria: CriteriaQuery<M>, changes: OptionalAll<M>): M;
+    destroy?(criteria: CriteriaQuery<M>): CRUDBuilder<M[]>;
+    destroy?(criteria: CriteriaQuery<M>[]): CRUDBuilder<M[]>;
+    destroyOne?(criteria: CriteriaQuery<M>[]): CRUDBuilder<M[]>;
+    count?(criteria?: CriteriaQuery<M>): WaterlinePromise<number>;
+    count?(criteria: CriteriaQuery<M>[]): WaterlinePromise<number>;
     query(sqlQuery: string, cb: Callback<any>): void;
     query(sqlQuery: string, data: any, cb: Callback<any>): void;
     native(cb: (err: Error, collection: any) => void): void;

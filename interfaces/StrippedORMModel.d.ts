@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import { Callback } from "waterline";
 /**
- * Описывает ORM представление
+ * As we generate adminpanel by models from config, we cannot pass model in generic
  */
 declare type CRUDBuilder = {
     fetch(): Promise<any>;
@@ -29,7 +29,7 @@ declare type QueryBuilder = {
     average(attribute: string): QueryBuilder;
     meta(options: any): QueryBuilder;
 };
-export default interface ORMModel {
+export default interface StrippedORMModel {
     create?(params: any): CRUDBuilder;
     create?(params: any[]): CRUDBuilder;
     find?(criteria?: any): QueryBuilder;
