@@ -1,7 +1,7 @@
 import {Callback} from "waterline";
 
 /**
- * Описывает ORM представление
+ * As we generate adminpanel by models from config, we cannot pass model in generic
  */
 
 type CRUDBuilder = {
@@ -25,7 +25,7 @@ type QueryBuilder = {
   meta(options: any): QueryBuilder;
 };
 
-export default interface ORMModel {
+export default interface StrippedORMModel {
   create?(params: any): CRUDBuilder;
   create?(params: any[]): CRUDBuilder;
 

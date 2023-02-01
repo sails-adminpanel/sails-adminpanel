@@ -1,6 +1,6 @@
 import { Entity } from "../interfaces/types";
 import { AdminpanelConfig, ModelConfig } from "../interfaces/adminpanelConfig";
-import ORMModel from "../interfaces/ORMModel";
+import StrippedORMModel from "../interfaces/StrippedORMModel";
 export declare class AdminUtil {
     /**
      * Default configuration for entity
@@ -52,7 +52,7 @@ export declare class AdminUtil {
      * @param {string} name
      * @returns {?Model}
      */
-    static getModel(name: string): ORMModel;
+    static getModel(name: string): StrippedORMModel;
     /**
      * Get entity type
      *
@@ -107,7 +107,7 @@ export declare class AdminUtil {
      * @param {Object} ModelConfig
      * @returns {?Model}
      */
-    static findModel(req: any, ModelConfig: any): ORMModel;
+    static findModel(req: any, ModelConfig: any): StrippedORMModel;
     /**
      * Will create entity object from request.
      *

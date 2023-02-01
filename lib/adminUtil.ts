@@ -1,6 +1,6 @@
 import {Entity} from "../interfaces/types";
 import {AdminpanelConfig, ModelConfig} from "../interfaces/adminpanelConfig";
-import ORMModel from "../interfaces/ORMModel";
+import StrippedORMModel from "../interfaces/StrippedORMModel";
 
 export class AdminUtil {
 
@@ -93,7 +93,7 @@ export class AdminUtil {
      * @param {string} name
      * @returns {?Model}
      */
-    public static getModel(name: string): ORMModel {
+    public static getModel(name: string): StrippedORMModel {
         //Getting model
         // console.log('admin > model > ', sails.models);
         let Model = sails.models[name.toLowerCase()];
@@ -211,7 +211,7 @@ export class AdminUtil {
      * @param {Object} ModelConfig
      * @returns {?Model}
      */
-    public static findModel(req, ModelConfig): ORMModel {
+    public static findModel(req, ModelConfig): StrippedORMModel {
         if (!this._isValidModelConfig(ModelConfig)) {
             return null;
         }

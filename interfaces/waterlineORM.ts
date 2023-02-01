@@ -1,7 +1,8 @@
 /**
- * Custom types for waterline ORM
+ * Описывает экземпляр класса
  */
 export default interface ORM {
-    id: number;
-    toJSON(): any;
+    createdAt?: Date | undefined
+    updatedAt?: Date | undefined
+    // toJSON(): any;
 }

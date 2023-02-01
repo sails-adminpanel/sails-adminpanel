@@ -7,6 +7,7 @@
 import WaterlineModel from "../interfaces/waterlineModel";
 import WaterlineEntity from "../interfaces/waterlineORM";
 import GroupAP from "./GroupAP";
+import {OptionalAll} from "../interfaces/toolsTS";
 
 let passwordHash = require('password-hash');
 
@@ -15,7 +16,7 @@ let attributes = {
     id: {
         type: 'number',
         autoIncrement: true
-    },
+    } as unknown as number,
     login: {
         type: 'string',
         required: true,
@@ -42,7 +43,7 @@ let attributes = {
 };
 
 type attributes = typeof attributes & WaterlineEntity;
-interface UserAP extends attributes {}
+interface UserAP extends OptionalAll<attributes> {}
 export default UserAP;
 
 let model = {
@@ -71,6 +72,6 @@ module.exports = {
 };
 
 declare global {
-    const UserAP: typeof model & WaterlineModel<UserAP>;
+    const UserAP: typeof model & WaterlineModel<UserAP, null>;
 }
 
