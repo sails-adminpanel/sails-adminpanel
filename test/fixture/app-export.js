@@ -68,6 +68,5 @@ try {
 
 
 module.exports = {
-  sails: sails,
   rc: rc('sails')
 }

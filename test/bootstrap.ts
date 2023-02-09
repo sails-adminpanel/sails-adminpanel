@@ -11,14 +11,14 @@ let sails: any
 before(function (done) {
 
   this.timeout(50000);
-  require("./fixture/app-export");
-  Sails().lift({},
-      function (err: any, _sails: any) {
-        if (err) return done(err);
-        sails = _sails;
-        return done();
-      }
-  );
+    const rc = require("./fixture/app-export").rc;
+    Sails().lift(rc,
+        function (err: any, _sails: any) {
+            if (err) return done(err);
+            sails = _sails;
+            return done();
+        }
+    );
 });
 
 after(function (done) {
