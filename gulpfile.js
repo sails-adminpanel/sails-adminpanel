@@ -225,6 +225,7 @@ const ckeditorBuild = () => {
 };
 
 const build = gulp.series(reset, copy_styles_files, scss, js, ckeditorBuild);
+//const build = gulp.series(reset, copy_styles_files, scss, js);
 
 const prod = gulp.series(reset, copy_styles_files, scssProd, jsProd, ckeditorBuild);
 

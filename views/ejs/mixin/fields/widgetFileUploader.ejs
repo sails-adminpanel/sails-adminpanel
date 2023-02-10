@@ -22,7 +22,7 @@ switch (type) {
     <script>
       const <%=key%>FileManager = new FileUploader({
         element: '<%=key%>-container',
-        type: 'files',
+        type: 'file',
         field: '<%=key%>',
         filesize: <%=filesize%>,
         url: '<%=entity.uri%>/upload',
@@ -42,7 +42,7 @@ switch (type) {
     <script>
       const <%=key%>FileManager = new FileUploader({
       element: '<%=key%>-container',
-      type: 'file',
+      type: 'files',
       field: '<%=key%>',
       filesize: <%=filesize%>,
       url: '<%=entity.uri%>/upload',
