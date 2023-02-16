@@ -1,0 +1,82 @@
+<%- include("head") %>
+<%- include("headContent") %>
+
+<div class="layout">
+    <%- JSON.stringify(migrationsInfo) %>
+    <div align="center">
+        <p><%= __("Run migrations") %>:</p>
+        <button id="migrationsUpButton" class="btn btn-success btn-sm">
+            <span><%= __("UP") %></span>
+        </button>
+        <button id="migrationsDownButton" class="btn btn-danger btn-sm">
+            <span><%= __("DOWN") %></span>
+        </button>
+    </div>
+    <div>
+        <% if (migrationsInfo.result) { %>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th><%= __("Migrations was run") %></th>
+                        <th><%= __("Status") %></th>
+                        <th><%= __("Last result") %></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <p><%= migrationsInfo.migrationsCount %></p>
+                        </td>
+                        <td>
+                            <p><%= migrationsInfo.status %></p>
+                        </td>
+                        <td>
+                            <p><%= migrationsInfo.result %></p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        <% } else { %>
+            <%= __("Migrations was not run yet") %></div>
+    <% } %>
+    <table class="table" id="informationBlock">
+        <thead>
+        <tr>
+            <th><%= __("Information block") %></th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+</div>
+<%- include("footer") %>
+
+<script>
+    $("#migrationsUpButton").on('click', function() {
+        $.get(`<%- sails.config.adminpanel.routePrefix %>/processMigrations`, {
+            action: "up"
+        })
+            .done(function (data) {
+                let status = data.success === true ? "success" : "failed"
+                $("#informationBlock").append(`<tr><td><p>Processed migrations 'up' method. Status: ${status}. Time: ${data.time} ms. Message: ${data.message}</p></td></tr>`)
+            })
+            .fail(function (err) {
+                console.log(err);
+                $("#informationBlock").append(`<tr><td><p>Failed to process migrations 'up' method, ${JSON.stringify(err, null, 2)}</p></td></tr>`)
+            })
+    })
+    $("#migrationsDownButton").on('click', function() {
+        $.get(`<%- sails.config.adminpanel.routePrefix %>/processMigrations`, {
+            action: "down"
+        })
+            .done(function (data) {
+                let status = data.success === true ? "success" : "failed"
+                $("#informationBlock").append(`<tr><td><p>Processed migrations 'down' method. Status: ${status}. Time: ${data.time} ms. Message: ${data.message}</p></td></tr>`)
+            })
+            .fail(function (err) {
+                console.log(err);
+                $("#informationBlock > tbody").append(`<tr><td><p>Failed to process migrations 'down' method, ${JSON.stringify(err, null, 2)}</p></td></tr>`)
+            })
+    })
+</script>

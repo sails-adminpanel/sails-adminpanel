@@ -3,7 +3,7 @@ import bindAuthorization from './bindAuthorization';
 import bindAccessRights from "./bindAccessRights";
 import bindDev from "./bindDev";
 import bindForms from "./bindForms";
-import {FileStorageHelper} from "../helper/fileStorageHelper";
+import MigrationsHelper from "../helper/migrationsHelper";
 
 export default async function () {
     // Binding list of function for rendering
@@ -29,6 +29,7 @@ export default async function () {
     }
 
     sails.on('lifted', async function() {
+        MigrationsHelper.processDatastoreAdapter();
         //binding all routes.
         require('./bindRoutes').default();
 
@@ -42,7 +43,7 @@ export default async function () {
 
     //binding authorization
     await bindAuthorization();
-    
+
     if (sails.hooks.i18n && sails.hooks.i18n.appendLocale) {
         sails.after(["hook:i18n:loaded"], async () => {
             bindTranslations();

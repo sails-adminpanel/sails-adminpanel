@@ -142,6 +142,21 @@ export interface AdminpanelConfig {
      * System field for store absolute root path adminpanel hookfolder
      */
     rootPath?:string
+
+    /**
+     * Migrations
+     */
+    migrations?: {
+        path?: string
+        config?: string | any
+    }
+
+    /**
+     * Global settings
+     */
+    globalSettings?: {
+        enableMigrations?: boolean
+    }
 }
 
 export interface ModelConfig {

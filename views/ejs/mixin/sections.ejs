@@ -1,4 +1,5 @@
 <% var sections = (adminpanel.configHelper.getConfig()).sections %>
+<% var globalSettings = (adminpanel.configHelper.getConfig()).globalSettings %>
 <% var routePrefix = (adminpanel.configHelper.getConfig()).routePrefix %>
 
 <% if (Array.isArray(sections)) { %>
@@ -7,6 +8,11 @@
         <li class="nav-item">
           <a class="nav-link" <% if (section && section === "adminpanel") { %> active <% } %> href="<%=routePrefix%>"><i class="las la-sliders-h"></i>  <%= __("Adminpanel") %></a>
         </li>
+        <% if (globalSettings.enableMigrations) { %>
+            <li class="nav-item">
+                <a class="nav-link" <% if (section && section === "migrations") { %> active <% } %> href="<%=routePrefix%>/migrations"><i class="las la-sliders-h"></i>  <%= __("Migrations") %></a>
+            </li>
+        <% } %>
         <% sections.forEach(function(itemSection) { %>
           <% if (itemSection.link && itemSection.title) { %>
           <li class="nav-item">
