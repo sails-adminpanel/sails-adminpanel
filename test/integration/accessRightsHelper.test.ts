@@ -16,12 +16,12 @@ describe('Access rights helper test', function () {
         let entitiesAmount = Object.keys(entities).length;
         let formsAmount = Object.keys(forms).length;
 
-        console.log(1,entities,forms)
+        //console.log(1,entities,forms)
 
-        
+
         let tokensAmount = AccessRightsHelper.getTokens().length;
-        console.log(2,AccessRightsHelper.getTokens());
-        
-        expect(tokensAmount).to.equal(4 * (entitiesAmount + formsAmount))
+        //console.log(2,AccessRightsHelper.getTokens());
+
+        expect(tokensAmount).to.equal(4 * (entitiesAmount + formsAmount) + 2); // 4 for every entity and form + 2 routes for migrations
     })
 })

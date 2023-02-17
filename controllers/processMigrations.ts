@@ -1,9 +1,17 @@
 import * as fs from "fs";
 import * as DBMigrate from 'db-migrate';
+import {AccessRightsHelper} from "../helper/accessRightsHelper";
 
 export default async function processMigrations(req, res) {
+    if (sails.config.adminpanel.auth) {
+        if (!req.session.UserAP) {
+            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+        } else if (!AccessRightsHelper.havePermission(`process-migrations`, req.session.UserAP)) {
+            return res.sendStatus(403);
+        }
+    }
 
-    if (!fs.existsSync(sails.config.adminpanel.migrations.path)) {
+    if (typeof sails.config.adminpanel.migrations === "boolean" || !fs.existsSync(sails.config.adminpanel.migrations.path)) {
         return res.notFound();
     }
 

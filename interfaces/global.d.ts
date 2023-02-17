@@ -8,6 +8,7 @@ declare global {
         services: any;
         config: _sailsConfig;
         log: any;
+        getDatastore: Function;
     }
     interface _sailsConfig extends sailsConfig {
         adminpanel: AdminpanelConfig;

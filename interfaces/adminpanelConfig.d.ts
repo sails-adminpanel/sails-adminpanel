@@ -147,9 +147,13 @@ export interface AdminpanelConfig {
      * Migrations
      */
     migrations?: {
-        path?: string
-        config?: string | any
-    }
+        path: string
+        config?: string | {
+            [key:string]: {
+                [key:string]: string
+            }
+        }
+    } | boolean
 
     /**
      * Global settings

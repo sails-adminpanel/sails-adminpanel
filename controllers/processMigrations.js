@@ -2,8 +2,17 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
 const DBMigrate = require("db-migrate");
+const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 async function processMigrations(req, res) {
-    if (!fs.existsSync(sails.config.adminpanel.migrations.path)) {
+    if (sails.config.adminpanel.auth) {
+        if (!req.session.UserAP) {
+            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+        }
+        else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`process-migrations`, req.session.UserAP)) {
+            return res.sendStatus(403);
+        }
+    }
+    if (typeof sails.config.adminpanel.migrations === "boolean" || !fs.existsSync(sails.config.adminpanel.migrations.path)) {
         return res.notFound();
     }
     let action = req.query.action;
@@ -40,7 +49,7 @@ async function processMigrations(req, res) {
         let dbmigrate = DBMigrate.getInstance(true, {
             cwd: sails.config.adminpanel.migrations.path,
             config: {
-                "default": sails.config.datastores.default.url // !TODO check that this will work, sails says "every model in your app uses a datastore named "default"
+                "default": sails.config.adminpanel.migrations.config
             }
         });
         try {
