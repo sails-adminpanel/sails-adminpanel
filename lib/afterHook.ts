@@ -6,6 +6,9 @@ import bindForms from "./bindForms";
 import MigrationsHelper from "../helper/migrationsHelper";
 
 export default async function () {
+    // check that current datastore is appropriate for migrations
+    MigrationsHelper.processDatastoreAdapter();
+
     // Binding list of function for rendering
     require('./bindResView').default();
 
@@ -29,7 +32,6 @@ export default async function () {
     }
 
     sails.on('lifted', async function() {
-        MigrationsHelper.processDatastoreAdapter();
         //binding all routes.
         require('./bindRoutes').default();
 
