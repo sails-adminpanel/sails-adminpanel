@@ -516,6 +516,17 @@ This configuration loads all sail models as they are. Just place  in `config\adm
         name: string
     }[]
     showVersion: boolean // Show adminpanel version on the bottom of navbar
+    migrations: { // Migrations configuration
+        path: string
+        config: string | {
+            [key:string]: {
+                [key:string]: string
+            }
+        }
+    } | boolean
+    globalSettings: { // Global project settings
+        enableMigrations: boolean
+    }
 }
 ```
 
