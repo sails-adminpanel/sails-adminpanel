@@ -8,7 +8,7 @@
         <li class="nav-item">
           <a class="nav-link" <% if (section && section === "adminpanel") { %> active <% } %> href="<%=routePrefix%>"><i class="las la-sliders-h"></i>  <%= __("Adminpanel") %></a>
         </li>
-        <% if (globalSettings.enableMigrations) { %>
+        <% if (process.env.ENABLE_MIGRATIONS && globalSettings.enableMigrations) { %>
             <li class="nav-item">
                 <a class="nav-link" <% if (section && section === "migrations") { %> active <% } %> href="<%=routePrefix%>/migrations"><i class="las la-sliders-h"></i>  <%= __("Migrations") %></a>
             </li>

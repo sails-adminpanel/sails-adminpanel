@@ -102,10 +102,10 @@ exports.up = function (db, callback) {
         "autoIncrement": true
     },
     "groupap_users": {
-        "type": "number"
+        "type": "bigint"
     },
     "userap_groups": {
-        "type": "number"
+        "type": "bigint"
     }
 },
     ifNotExists: true
