@@ -11,7 +11,7 @@ export default function migrations(req, res) {
     }
 
     if (typeof sails.config.adminpanel.migrations === "boolean" || !fs.existsSync(sails.config.adminpanel.migrations.path)) {
-        return res.notFound();
+        return res.status(404).send("Check migrations path in configuration");
     }
 
     let migrationsLastResult;

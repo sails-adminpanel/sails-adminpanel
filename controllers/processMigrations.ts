@@ -20,6 +20,11 @@ export default async function processMigrations(req, res) {
         return res.badRequest();
     }
 
+    // !TODO solve migrations down problem described in module-manager
+    if (action === "down") {
+        res.status(500).send("Migrations down is not available yet. Please check for updates")
+    }
+
     function runMigrations(dbmigrate, action = "up") {
         return new Promise((resolve, reject) => {
             // possible solution for custom migrations without return

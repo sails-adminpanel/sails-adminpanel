@@ -8,12 +8,12 @@
         <button id="migrationsUpButton" class="btn btn-success btn-sm">
             <span><%= __("UP") %></span>
         </button>
-        <button id="migrationsDownButton" class="btn btn-danger btn-sm">
+        <button id="migrationsDownButton" class="btn btn-danger btn-sm" hidden>
             <span><%= __("DOWN") %></span>
         </button>
     </div>
     <div>
-        <% if (migrationsInfo.result) { %>
+        <% if (migrationsInfo && migrationsInfo.result) { %>
             <table class="table">
                 <thead>
                     <tr>
