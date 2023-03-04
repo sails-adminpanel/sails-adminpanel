@@ -5,6 +5,7 @@ import bindAssets from "./bindAssets"
 import HookTools from "./hookTools";
 import {resolve} from "path";
 import afterHook from "./afterHook";
+import MigrationsHelper from "../helper/migrationsHelper";
 
 export default async function(sails: any, cb) {
 
@@ -40,6 +41,10 @@ export default async function(sails: any, cb) {
     // if (!sails.hooks.i18n.locales) sails.hooks.i18n.locales = []
     // sails.hooks.i18n.locales = [...sails.hooks.i18n.locales, ...sails.config.adminpanel.translation.locales]
     //     .filter(function(item, pos, self) { return self.indexOf(item) == pos })
+
+    if (process.env.AUTO_MIGRATIONS) {
+        await MigrationsHelper.processMigrations("up");
+    }
 
     // Bind assets
     await bindAssets();
