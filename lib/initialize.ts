@@ -43,7 +43,8 @@ export default async function(sails: any, cb) {
     //     .filter(function(item, pos, self) { return self.indexOf(item) == pos })
 
     if (process.env.AUTO_MIGRATIONS) {
-        await MigrationsHelper.processMigrations("up");
+        let result = await MigrationsHelper.processMigrations("up");
+        sails.log.info(`Adminpanel automigrations completed: ${result}`)
     }
 
     // Bind assets
