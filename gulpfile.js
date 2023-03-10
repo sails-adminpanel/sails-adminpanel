@@ -14,7 +14,10 @@ const webpack = require('webpack');
 const { styles } = require('@ckeditor/ckeditor5-dev-utils');
 const CKEditorWebpackPlugin = require('@ckeditor/ckeditor5-dev-webpack-plugin');
 
-
+const gulpPostcss = require('gulp-postcss');
+const tailwind = require('tailwindcss');
+const cssnano = require('cssnano');
+const autoprefixer = require('autoprefixer');
 
 const buildFolder = `./assets/build`;
 const srcFolder = `./assets/src`;
@@ -67,6 +70,20 @@ const scss = () => {
 				})
 				.on('error', sass.logError),
 		)
+    .pipe(
+      gulpPostcss(
+        [
+          tailwind('./tailwind.config.js'),
+          autoprefixer({
+            // grid: true,
+            overrideBrowserslist: ['Last 3 versions'],
+            cascade: false,
+          }),
+          cssnano,
+        ],
+        {},
+      ),
+    )
 		.pipe(rename({
 		  extname: '.min.css'
 		}))
@@ -233,3 +250,5 @@ gulp.task('default', build);
 gulp.task('prod', prod);
 //gulp.task('vue', vue)
 gulp.task('ckeditorBuild', ckeditorBuild);
+
+gulp.task('styles', scss)

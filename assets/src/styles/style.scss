@@ -1,15 +1,42 @@
-@import 'custom/importer.scss';
-@import 'custom/custom.scss';
-@import '~jsoneditor/src/scss/jsoneditor.scss';
-@import '~line-awesome/dist/line-awesome/scss/line-awesome.scss';
-@import '~datatables.net-dt/css/jquery.dataTables.min';
-@import 'clarity/src/main.scss';
-@import '../fileuploader/styles/styles';
-@import '../fileuploader/styles/basic';
-@import '../fileuploader/styles/dropzone';
-@import '../navigation//styles/styles';
-//@import '../fileuploader/styles/bootstrap'; //the source file is commented out
-// @import '../fileuploader/styles/jquery-ui.min';
-@import '~handsontable/dist/handsontable.full.min';
-@import '~leaflet/dist/leaflet';
-@import'~leaflet-draw/dist/leaflet.draw-src';
+//@import 'custom/importer.scss';
+//@import 'custom/custom.scss';
+//@import '~jsoneditor/src/scss/jsoneditor.scss';
+//@import '~line-awesome/dist/line-awesome/scss/line-awesome.scss';
+//@import '~datatables.net-dt/css/jquery.dataTables.min';
+////@import 'clarity/src/main.scss';
+//@import '../fileuploader/styles/styles';
+//@import '../fileuploader/styles/basic';
+//@import '../fileuploader/styles/dropzone';
+//@import '../navigation/styles/styles';
+////@import '../fileuploader/styles/bootstrap'; //the source file is commented out
+//// @import '../fileuploader/styles/jquery-ui.min';
+//@import '~handsontable/dist/handsontable.full.min';
+//@import '~leaflet/dist/leaflet';
+//@import'~leaflet-draw/dist/leaflet.draw-src';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body {
+    touch-action: manipulation;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overscroll-behavior-x: none;
+  }
+
+  .container {
+    @apply max-w-[1480px] px-[20px] pb-[30px]
+  }
+
+  a, button {
+    -webkit-tap-highlight-color: transparent;
+    @apply transition ease-in-out duration-300
+  }
+
+  svg {
+    @apply fill-current;
+  }
+}
