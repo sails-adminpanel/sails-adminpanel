@@ -18,13 +18,11 @@ module.exports = {
 		},
 		extend: {
 			colors: {
-				grey: '#636363',
-				red: {
-					def: 'rgba(238,45,45,0.94)',
-					light: 'rgba(238,45,45,0.53)'
-				}
+				fa_fa: '#fafafa'
 			},
 		},
 	},
 	plugins: [],
+	darkMode: 'class',
+
 }

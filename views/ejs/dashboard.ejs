@@ -2,6 +2,7 @@
 <%- include("headContent") %>
 
 <% if (Boolean((adminpanel.configHelper.getConfig()).dashboard)) { %>
+<div class="container mx-auto mt-8">
     <div class="layout">
         <div class="title">Управление виджетами</div>
         <div class="control__content">
@@ -89,6 +90,7 @@
             </div>
         </div>
     </div>
+</div>
 <% } else { %>
 
     HELLO

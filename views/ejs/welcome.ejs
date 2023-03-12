@@ -1,17 +1,17 @@
 <%- include("head") %>
 <%- include("headContent") %>
-
-   <div class="layout">
-      <% if ( Boolean((adminpanel.configHelper.getConfig()).welcome) && Boolean((adminpanel.configHelper.getConfig()).welcome.title) && Boolean((adminpanel.configHelper.getConfig()).welcome.text)) { %>
-         <div class="title"><%- (adminpanel.configHelper.getConfig()).welcome.title %></div>
-         <div class="control__content">
+<div class="container mx-auto mt-8">
+    <% if ( Boolean((adminpanel.configHelper.getConfig()).welcome) && Boolean((adminpanel.configHelper.getConfig()).welcome.title) && Boolean((adminpanel.configHelper.getConfig()).welcome.text)) { %>
+        <div class="text-3xl mb-8"><%- (adminpanel.configHelper.getConfig()).welcome.title %></div>
+        <div class="control__content">
             <%- (adminpanel.configHelper.getConfig()).welcome.text %>
-         </div>
-      <% } else { %>
-         <div class="title">Sails-adminpanel</div>
-         <div class="control__content">
-            <%= __("This is opensource project") %>: &nbsp;<a target="_blank" href="https://github.com/sails-adminpanel/sails-adminpanel">[GitHub]</a>
-         </div>
-      <% } %>
-   </div>
+        </div>
+    <% } else { %>
+        <div class="text-3xl mb-8">Sails-adminpanel</div>
+        <div class="control__content">
+            <%= __("This is opensource project") %>: &nbsp;<a target="_blank"
+                                                              href="https://github.com/sails-adminpanel/sails-adminpanel">[GitHub]</a>
+        </div>
+    <% } %>
+</div>
 <%- include("footer") %>

@@ -1,42 +1,79 @@
 //@import 'custom/importer.scss';
 //@import 'custom/custom.scss';
-//@import '~jsoneditor/src/scss/jsoneditor.scss';
-//@import '~line-awesome/dist/line-awesome/scss/line-awesome.scss';
-//@import '~datatables.net-dt/css/jquery.dataTables.min';
-////@import 'clarity/src/main.scss';
-//@import '../fileuploader/styles/styles';
-//@import '../fileuploader/styles/basic';
-//@import '../fileuploader/styles/dropzone';
-//@import '../navigation/styles/styles';
-////@import '../fileuploader/styles/bootstrap'; //the source file is commented out
-//// @import '../fileuploader/styles/jquery-ui.min';
-//@import '~handsontable/dist/handsontable.full.min';
-//@import '~leaflet/dist/leaflet';
-//@import'~leaflet-draw/dist/leaflet.draw-src';
+@import '~jsoneditor/src/scss/jsoneditor.scss';
+@import '~line-awesome/dist/line-awesome/scss/line-awesome.scss';
+@import '~datatables.net-dt/css/jquery.dataTables.min';
+//@import 'clarity/src/main.scss';
+@import '../fileuploader/styles/styles';
+@import '../fileuploader/styles/basic';
+@import '../fileuploader/styles/dropzone';
+@import '../navigation/styles/styles';
+//@import '../fileuploader/styles/bootstrap';
+// @import '../fileuploader/styles/jquery-ui.min';
+@import '~handsontable/dist/handsontable.full.min';
+@import '~leaflet/dist/leaflet';
+@import '~leaflet-draw/dist/leaflet.draw-src';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  html, body {
-    touch-action: manipulation;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    overscroll-behavior-x: none;
-  }
+	html, body {
+		touch-action: manipulation;
+		text-rendering: optimizeLegibility;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		overscroll-behavior-x: none;
+		height: 100%;
+	}
+	body{
+		@apply overflow-x-hidden;
+	}
+	.container {
+		@apply max-w-[1144px] px-5;
+	}
 
-  .container {
-    @apply max-w-[1480px] px-[20px] pb-[30px]
-  }
+	a, button {
+		-webkit-tap-highlight-color: transparent;
+		@apply transition;
+	}
 
-  a, button {
-    -webkit-tap-highlight-color: transparent;
-    @apply transition ease-in-out duration-300
-  }
+	svg {
+		@apply fill-current;
+	}
+}
+.logo{
+	font-size: 30px;
+	background: #004264;
+	color: #e9e9e9;
+	border-radius: 6px;
+	padding: 4px;
+}
 
-  svg {
-    @apply fill-current;
-  }
+.nav-link {
+	@apply text-sm font-medium text-neutral-500 relative relative after:content-[''] after:absolute
+	after:w-0 after:h-[3px] after:bottom-[-8px] after:left-0 after:bg-blue-700 hover:after:w-full hover:text-neutral-900 after:transition-all;
+	&.active {
+		@apply text-neutral-900 after:w-full;
+	}
+}
+
+.menu{
+	&__icon{
+		@apply relative after:absolute after:right-4 after:rotate-[-45deg] after:top-1/2 after:content-[''] after:h-0.5 after:w-2.5 after:bg-gray-700 dark:after:bg-gray-300
+		before:absolute before:right-[22px] before:rotate-[45deg] before:top-1/2 before:content-[''] before:h-0.5 before:w-2.5 before:bg-gray-700 dark:before:bg-gray-300 after:transition-all
+		before:transition-all after:rounded-sm before:rounded-sm;
+	}
+	&__has-sub--active{
+		.menu__icon{
+			@apply after:rotate-[45deg] before:rotate-[-45deg];
+		}
+	}
+}
+
+.menu__sub-list{
+	.active{
+		@apply bg-white dark:bg-blue-700 w-full block;
+	}
 }
