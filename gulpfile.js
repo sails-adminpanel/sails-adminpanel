@@ -292,4 +292,5 @@ gulp.task('prod', prod);
 //gulp.task('vue', vue)
 gulp.task('ckeditorBuild', ckeditorBuild);
 
+gulp.task('js', js);
 gulp.task('styles', gulp.series(scss, gulp.parallel(serve, watcher)))

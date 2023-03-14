@@ -4,7 +4,7 @@
         <% actions.forEach(function(action) { %>
             <% if (havePermission(action.accessRightsToken, req.session.UserAP)) { %>
                 <%# print data into list.ejs inline action %>
-                data += '<a href="<%= action.link %>/'+row[0]+'?id='+row[0]+'&entity=<%= entity.name %>" id="<%= action.id %>"><i class="las la-<%= action.icon %>"></i><%= __(action.title) %></a><br>';
+                data += '<a href="<%= action.link %>/'+row[0]+'?id='+row[0]+'&entity=<%= entity.name %>" id="<%= action.id %>" class="list-action"><i class="las la-<%= action.icon %>"></i><%= __(action.title) %></a><br>';
             <% } %>
         <% }) %>
     <% } %>

@@ -21,7 +21,7 @@
 <body>
 <div class="wrapper flex flex-col h-full">
     <div class="flex-none">
-        <header class="bg-gray-800 dark:bg-gray-900 h-[60px]">
+        <header class="bg-gray-800 dark:bg-neutral-900 h-[60px]">
             <div class="flex items-center h-full pl-5 justify-between">
                 <div class="branding flex-none">
                     <a href="" class="flex items-center gap-2">
@@ -29,7 +29,7 @@
                         <span class="text-fa_fa font-bold text-lg"><%= adminpanel.menuHelper.getBrandTitle() %></span>
                     </a>
                 </div>
-                <div class="flex gap-3 items-center container justify-end">
+                <div class="flex gap-3 items-center justify-end pr-16">
                     <% if (req.session.UserAP) { %>
                         <% if (req.session.adminPretender && req.session.adminPretender.id) { %>
                             <i class="las la-mask text-fa_fa"></i>&nbsp;

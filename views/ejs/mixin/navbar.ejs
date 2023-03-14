@@ -1,5 +1,5 @@
 <% var config = adminpanel.configHelper.getConfig() %>
-<aside class="bg-gray-100 dark:bg-gray-800 menu pt-2 flex flex-col">
+<aside class="bg-neutral-100 dark:bg-gray-900 menu pt-2 flex flex-col">
     <div class="menu__items flex flex-col gap-3 flex-1 h-full">
         <% adminpanel.menuHelper.getMenuItems().forEach(function(menuItem) { %>
             <% var active = ""; if (menuItem && menuItem.entityName && entity && entity.name) {
@@ -59,6 +59,6 @@
         <% }) %>
     </div>
     <% if (config.showVersion) { %>
-        <span class="flex-none text-center text-sm text-gray-600 mb-1">v<%= config.package.version %></span>
+        <span class="flex-none text-center text-sm text-gray-600 dark:text-gray-300 mb-1">v<%= config.package.version %></span>
     <% } %>
 </aside>

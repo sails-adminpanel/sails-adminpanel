@@ -1,6 +1,6 @@
 <%- include("head") %>
 <%- include("headContent") %>
-<div class="container mx-auto mt-8">
+<div class="content__body">
     <% if ( Boolean((adminpanel.configHelper.getConfig()).welcome) && Boolean((adminpanel.configHelper.getConfig()).welcome.title) && Boolean((adminpanel.configHelper.getConfig()).welcome.text)) { %>
         <div class="text-3xl mb-8"><%- (adminpanel.configHelper.getConfig()).welcome.title %></div>
         <div class="control__content">

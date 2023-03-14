@@ -26,6 +26,12 @@ window.GeoJsonEditor = GeoJsonEditor
 import('../navigation/js/jquery-sortable-lists.min.js')
 import('bootstrap/dist/js/bootstrap.js')
 
+//dark-mode
+const dark = localStorage.getItem('__dark-mode')
+const html = document.querySelector('html')
+if (dark === '1') {
+	html.classList.add('dark')
+}
 
 addEventListener('DOMContentLoaded', function () {
 	// aside menu
@@ -34,11 +40,17 @@ addEventListener('DOMContentLoaded', function () {
 		$(this).closest('.menu__item').find('.menu__sub-list').slideToggle()
 	})
 
-	//dark-mode
-	let dark = localStorage.getItem('__dark-mode')
-	if (dark === '1') {
-		$('html').addClass('dark')
-	}
+
+	//dark-mode toggle
+	$('.dark-mode').on('click', function (){
+		if(localStorage.getItem('__dark-mode') === '0' || !localStorage.getItem('__dark-mode')){
+			localStorage.setItem('__dark-mode', '1')
+		} else {
+			localStorage.setItem('__dark-mode', '0')
+		}
+		$('html').toggleClass('dark')
+	})
+
 
 	var url = window.location.pathname,
 		urlRegExp = new RegExp(url.replace(/\/$/, '') + "$"); // create regexp to match current url pathname and remove trailing slash if present as it could collide with the link in navigation in case trailing slash wasn't present there
@@ -51,15 +63,6 @@ addEventListener('DOMContentLoaded', function () {
 	});
 })
 
-//dark-mode toggle
-$('.dark-mode').on('click', function (){
-	let dark = localStorage.getItem('__dark-mode')
-	if(dark === '0'){
-		localStorage.setItem('__dark-mode', '1')
-	} else {
-		localStorage.setItem('__dark-mode', '0')
-	}
-	$('html').toggleClass('dark')
-})
+
 
 
