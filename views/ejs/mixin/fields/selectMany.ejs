@@ -12,7 +12,7 @@
     let label<%=key%>;
     <% if (!Array.isArray(isIn)) { %>
         <% for (let opt in isIn) { %>
-           
+
             <% if (adminpanel.viewHelper.isOptionSelected(opt, value)) { %>
                 selectedOptions<%=key%>.push("<%= opt %>");
             <% } %>
@@ -22,7 +22,7 @@
             <% } else { %>
                 label<%=key%> = "<%= __(isIn[opt]) %>"
             <% } %>
-            
+
             options<%=key%>.push({label: label<%=key%>, value: "<%= opt %>"})
         <% } %>
     <% } else { %>
@@ -41,12 +41,12 @@
 
         <% }) %>
     <% } %>
-                
+
     let <%=key%> = new SelectPure(".selectPure-<%= key %>", {
         options: options<%=key%>,
         autocomplete: true,
         value: selectedOptions<%=key%>,
-        icon: "la la-times",
+        icon: "las la-times",
         multiple: true,
         onChange: function(value) {
             $('#form-<%= key %>').val(value)

@@ -292,7 +292,7 @@ export class FileUploader {
             const id = fileEl.attr('id');
             //const file = fu.files[id];
             fu.selectedFile = fu.files[id]
-            fu.setModalFile();            
+            fu.setModalFile();
             $('#file-info-modal-' + fu.elName).show();
         });
 

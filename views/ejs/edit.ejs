@@ -4,130 +4,123 @@
 <% var data = record %>
 <% var config = adminpanel.configHelper.getConfig() %>
 
-<div class="horizontal layout">
-    <div class="flex">
+<div class="content__body">
+    <div class="flex gap-3 mt-4">
         <% var actionType = 'edit' %>
-       <%- include("mixin/globalActions", {actionType: actionType}) %>
+        <%- include("mixin/globalActions", {actionType: actionType}) %>
     </div>
-</div>
-<div class="layout">
-    <div class="nav-header">
+    <div class="flex gap-3">
         <a href="<%= entity.uri %>/">
-            <button raised class="btn">
+            <button class="btn btn-back">
                 <i class="las la-long-arrow-alt-left"></i>
                 <%= __("Back") %>
             </button>
         </a>
-        <div class="nav-header-wrap">
-            <!-- <button class="btn-nav">
-    Скрыть
-    <i class="las la-eye-slash"></i>
-</button> -->
-            <% if (entity.config.remove && havePermission(`delete-${entity.name}-model`, req.session.UserAP)) { %>
-                <a href="<%= entity.uri %>/remove/<%= record[idField] %>"
-                   onclick="return confirm('<%= __('Are you sure?') %>')">
-                    <button class="btn-nav">
-                        <%= __("Delete") %>
-                        <i class="las la-trash-alt"></i>
-                    </button>
-                </a>
-            <% } %>
-        </div>
+        <% if (entity.config.remove && havePermission(`delete-${entity.name}-model`, req.session.UserAP)) { %>
+            <a href="<%= entity.uri %>/remove/<%= record[idField] %>"
+               onclick="return confirm('<%= __('Are you sure?') %>')">
+                <button class="btn btn-red">
+                    <%= __("Delete") %>
+                    <i class="las la-trash-alt"></i>
+                </button>
+            </a>
+        <% } %>
     </div>
-    <form id="form" action="<%= entity.uri %>/edit/<%= record[idField] %>" method="POST" enctype="multipart/form-data">
+    <form id="form" action="<%= entity.uri %>/edit/<%= record[idField] %>" method="POST"
+          enctype="multipart/form-data">
 
         <%# global variables %>
         <script>
-            var jsonEditor = {};
-            var aceCounter = 0;
-            let editor = [];
-            let textarea = [];
-            var tables = {};
+			var jsonEditor = {};
+			var aceCounter = 0;
+			let editor = [];
+			let textarea = [];
+			var tables = {};
         </script>
-
-        <% Object.keys(fields).forEach(function(key) { %>
-            <% if ((!config.showORMtime) && (key === 'createdAt' || key === 'updatedAt')) return %>
-            <% var field = fields[key] %>
-            <% var value = adminpanel.viewHelper.getFieldValue(key, field, data) %>
-            <div  class="admin-panel__wrapper-<%= key %>">
-            <div  class="admin-panel__title">
-                <%= __(field.config.title) %>
-                <% if(fields[key].config.tooltip) { %>
-                    <a href="javascript:void(0)" role="tooltip" aria-haspopup="true"
-                       class="tooltip tooltip-md tooltip-top-right">
-                        <i class="las la-info-circle"></i>
-                        <span class="tooltip-content"><%= __(fields[key].config.tooltip) %></span>
-                    </a>
-                <% } %>
-            </div>
-            <% if (field.config.description) { %>
-                <div class="admin-panel__description">
-                    <%- __(field.config.description) %>
+        <div class="mt-14 flex flex-col gap-10 max-w-[1144px]">
+            <% Object.keys(fields).forEach(function(key) { %>
+                <% if ((!config.showORMtime) && (key === 'createdAt' || key === 'updatedAt')) return %>
+                <% var field = fields[key] %>
+                <% var value = adminpanel.viewHelper.getFieldValue(key, field, data) %>
+                <div class="flex flex-col gap-3">
+                    <div class="admin-panel__title flex gap-2">
+                        <label class="admin-panel__title"
+                               for="form-<%= key %>"><%= __(fields[key].config.title) %></label>
+                        <% if(fields[key].config.tooltip) { %>
+                            <div class="tooltip tooltip-right group cursor-pointer">
+                                <i class="las la-info-circle text-blue-400"></i>
+                                <span class="tooltip__content group-hover:visible group-hover:opacity-100"><%= __(fields[key].config.tooltip) %></span>
+                            </div>
+                        <% } %>
+                    </div>
+                    <% if (field.config.description) { %>
+                        <div class="admin-panel__description">
+                            <%- __(field.config.description) %>
+                        </div>
+                    <% } %>
+                    <div class="admin-panel__widget <%= field.config.disabled && 'disabled' %>">
+                        <%- include("mixin/fieldWidget", {field: field, value: value, key: key}) %>
+                    </div>
+                </div>
+            <% }) %>
+            <% if (adminpanel.configHelper.isCsrfEnabled()) { %>
+                <div>
+                    <input class="clr-input" type="hidden" name="_csrf" value="<%= _csrf %>"/>
                 </div>
             <% } %>
-            <div class="admin-panel__widget <%= field.config.disabled && 'disabled'%>">
-               <%- include("mixin/fieldWidget", {field: field, value: value, key: key}) %>
-            </div>
-            </div>
-        <% }) %>
-        <% if (adminpanel.configHelper.isCsrfEnabled()) { %>
-            <div>
-                <input class="clr-input" type="hidden" name="_csrf" value="<%= _csrf %>"/>
-            </div>
-        <% } %>
-        <p>
-            <button raised class="btn-save" id="submit" onclick="submitForm()">
-                <%= __("Save") %>
-            </button>
-        </p>
+            <p>
+                <button class="btn btn-green" id="submit" onclick="submitForm()">
+                    <%= __("Save") %>
+                </button>
+            </p>
+        </div>
     </form>
 </div>
-
 <script>
-    function submitForm() {
-        // Assign JSONEditor value to form textarea
-        for (var id in jsonEditor) {
-            try {
-                var json = jsonEditor[id].get();
-                $('#form-' + id).val(JSON.stringify(json));
-            } catch (e) {
-                alert('JSON is invalid.');
-                $('#form-' + id).show().focus().hide();
-                jsonEditor[id].focus();
-                return false;
-            }
-        }
-        ;
+	function submitForm() {
+		// Assign JSONEditor value to form textarea
+		for (var id in jsonEditor) {
+			try {
+				var json = jsonEditor[id].get();
+				$('#form-' + id).val(JSON.stringify(json));
+			} catch (e) {
+				alert('JSON is invalid.');
+				$('#form-' + id).show().focus().hide();
+				jsonEditor[id].focus();
+				return false;
+			}
+		}
+		;
 
-        for (var id in tables) {
-            try {
-                var schema = tables[id].getSchema();
-                var table = tables[id].getData();
-                table = table.filter(item => {
-                    return !([...new Set(item)].length === 1 && [...new Set(item)][0] === null);
-                });
-                if (schema && Object.keys(schema).length) {
-                    table = table.map((item) => {
-                        var newItem = {};
-                        var keys = Object.keys(schema);
-                        for (let i = 0; i < keys.length; i++) {
-                            newItem[keys[i]] = item[i];
-                        }
-                        return newItem;
-                    });
-                } else {
-                    table = table.map((item) => {
-                        return [null].concat(item);
-                    });
-                }
-                $('#form-' + id).val(JSON.stringify(table));
-            } catch (e) {
-                alert('Table is invalid!');
-                return false;
-            }
-        }
-        document.getElementById('form').submit();
-    }
+		for (var id in tables) {
+			try {
+				var schema = tables[id].getSchema();
+				var table = tables[id].getData();
+				table = table.filter(item => {
+					return !([...new Set(item)].length === 1 && [...new Set(item)][0] === null);
+				});
+				if (schema && Object.keys(schema).length) {
+					table = table.map((item) => {
+						var newItem = {};
+						var keys = Object.keys(schema);
+						for (let i = 0; i < keys.length; i++) {
+							newItem[keys[i]] = item[i];
+						}
+						return newItem;
+					});
+				} else {
+					table = table.map((item) => {
+						return [null].concat(item);
+					});
+				}
+				$('#form-' + id).val(JSON.stringify(table));
+			} catch (e) {
+				alert('Table is invalid!');
+				return false;
+			}
+		}
+		document.getElementById('form').submit();
+	}
 </script>
 
 <%- include("footer") %>

@@ -69,7 +69,7 @@ export class EditNavigation {
         $('#sortableList').on('click', '.changeEye', function() { menu.changeEye(this) });
 
         // add "Add item button"
-        $(`#form-${this.field}`).before('<button type="button" id="addBtn" class="btn">Add element</button>')
+        $(`#form-${this.field}`).before('<button type="button" id="addBtn" class="btn btn-add">Add element</button>')
 
         // handler for add button
         $('#addBtn').on('click', function() { menu.addItem() });
@@ -103,6 +103,7 @@ export class EditNavigation {
                                 '</div>' +
                             '</div>' +
                         '</div>' +
+						'<div class="modal-backdrop" aria-hidden="true"></div>' +
                     '</div>';
         $(`#form-${this.field}`).after(modal);
         $('#popUp').hide();
@@ -125,12 +126,12 @@ export class EditNavigation {
                 $('#popUp').modal('hide');
             }
         });
-        $('.modal').click(function(e) {
-            if ($(e.target).closest('.modal-body').length === 0) {
-                menu.clearPopup();
-                $('#popUp').modal('hide');
-            }
-        });
+        // $('.modal').click(function(e) {
+        //     if ($(e.target).closest('.modal-body').length === 0) {
+        //         menu.clearPopup();
+        //         $('#popUp').modal('hide');
+        //     }
+        // });
     }
 
     logConfig() {
