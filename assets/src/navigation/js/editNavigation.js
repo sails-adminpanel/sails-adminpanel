@@ -453,7 +453,7 @@ export class EditNavigation {
                     }
                 }
                 if (typeRecognition.required === "true" || this.disableDeletingProperty) {
-                    $(`#${key} > .deleteProp`).remove();
+                    $(`#${key} > .deleteProp`).css({'opacity': 0, 'visibility': 'hidden'});
                 }
                 if (this.disableAddingProperty) {
                     $("#propertyAdder").parent().parent().hide();

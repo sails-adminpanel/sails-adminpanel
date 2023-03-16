@@ -25,6 +25,7 @@
 		-moz-osx-font-smoothing: grayscale;
 		overscroll-behavior-x: none;
 		height: 100%;
+		-webkit-tap-highlight-color: transparent;
 	}
 
 	body {
@@ -36,7 +37,6 @@
 	}
 
 	a, button {
-		-webkit-tap-highlight-color: transparent;
 		@apply transition;
 	}
 
@@ -82,8 +82,29 @@
 }
 
 .content {
+	@apply bg-gray-50;
 	&__body {
-		@apply pt-8 pl-12 pr-16 pb-8 bg-gray-50;
+		@apply pt-8 pl-12 pr-16 pb-8 md:px-5 overflow-x-hidden;
+	}
+}
+
+.burger{
+	-webkit-tap-highlight-color: transparent;
+	&--active{
+
+	}
+}
+.aside{
+	-webkit-tap-highlight-color: transparent;
+	@media( max-width: 768px ){
+		height: 100vh;
+		width: 100%;
+		z-index: 9998;
+		left: -100%;
+		top: 60px;
+	}
+	&--active{
+		transform: translateX(100%);
 	}
 }
 
@@ -163,8 +184,11 @@ input[type="checkbox"] {
 }
 
 .admin-panel {
+	&__wrapper-title{
+		@apply flex items-end gap-2;
+	}
 	&__title {
-		@apply font-bold;
+		@apply font-bold sm:max-w-[150px];
 	}
 
 	&__widget {
@@ -177,7 +201,13 @@ input[type="checkbox"] {
 .tooltip {
 	@apply relative;
 	&__content {
-		@apply absolute left-6 bottom-0 text-white z-10 w-[500px] h-fit bg-gray-900/90 p-3 text-sm rounded after:right-[100%] after:bottom-[7px] after:border-[5px] after:border-[transparent_rgba(17,24,39,.9)_transparent_transparent] after:content-[''] after:absolute invisible opacity-0 transition-opacity;
+		@apply absolute left-6 bottom-0 text-white z-10 w-[30vw] h-fit bg-gray-900/90 p-3 pr-0 text-sm rounded after:right-[100%] after:bottom-[7px] after:border-[5px] after:border-[transparent_rgba(17,24,39,.9)_transparent_transparent] after:content-[''] after:absolute invisible opacity-0 transition-opacity;
+		span{
+			padding-right: 12px;
+			max-height: 400px;
+			overflow: auto;
+			display: block;
+		}
 	}
 }
 
@@ -187,7 +217,10 @@ input[type="checkbox"] {
 }
 
 .dataTables_filter {
-	@apply mb-2;
+	@apply mb-2 md:text-left #{!important};
+	label{
+		@apply flex gap-2 items-center;
+	}
 	input {
 		@apply focus:outline-none;
 	}
@@ -283,6 +316,8 @@ input[type="checkbox"] {
 	background-size: 1.5em 1.5em;
 	cursor: pointer;
 	justify-content: left;
+	min-height: 48px;
+	height: auto;
 }
 
 .select-pure__select--opened{
@@ -337,7 +372,7 @@ input[type="checkbox"] {
 }
 
 .select-pure__label{
-	@apply flex gap-2 h-full items-center;
+	@apply flex gap-2 h-full items-center flex-wrap max-w-[90%];
 }
 
 .select-pure__selected-label i {
@@ -547,7 +582,7 @@ input[type="checkbox"] {
 }
 
 .modal-body {
-	@apply text-sm max-h-[70vh] overflow-y-auto;
+	@apply text-sm max-h-[75vh] overflow-y-auto p-2;
 	.info{
 		@apply flex flex-col gap-2 mt-4;
 	}
@@ -565,21 +600,35 @@ input[type="checkbox"] {
 
 // Navigation
 .navigation-modal{
-	@apply w-fit;
+	@apply max-w-[500px];
+	.modal-body{
+		@apply max-w-[400px];
+		overflow: initial;
+	}
 }
 .navigation-item{
 	@apply max-w-[600px] w-full border rounded border-gray-400 min-h-[24px] mb-2 px-3 grid grid-cols-1 divide-y divide-gray-400 #{!important};
 	.navigation-list{
 		@apply py-2;
+		ul{
+			@apply ml-16;
+			li{
+				@apply border-b border-gray-400;
+			}
+		}
+	}
+	.s-l-opener{
+		@apply cursor-pointer;
 	}
 }
 
+
 .navigation-content{
-	@apply flex justify-between;
+	@apply flex gap-3;
 }
 
 .navigation-left{
-	@apply flex items-center gap-5;
+	@apply flex items-center gap-5 mr-auto;
 	i{
 		@apply text-blue-600 hover:text-blue-400 transition text-xl;
 	}
@@ -598,10 +647,10 @@ input[type="checkbox"] {
 	}
 }
 .navigation-wrapper{
-	@apply flex;
+	@apply flex items-center gap-4;
 }
 .navigation-wrap, .navigation-inner{
-	@apply grid grid-cols-[150px_minmax(150px,_450px)] gap-2 text-base py-2 items-center;
+	@apply grid grid-cols-[minmax(70px,_130px)_minmax(150px,_450px)] gap-2 text-base py-2 items-center;
 }
 
 .navigation-select{
@@ -610,17 +659,25 @@ input[type="checkbox"] {
 }
 
 .navigation-inner{
-	@apply flex-auto;
-	input{
+	input:not(input[type="checkbox"]){
 		@apply max-w-[450px] h-7 py-0 w-full;
 		@extend .text-input;
+	}
+	input[type="checkbox"]{
+		@apply opacity-100 static;
+	}
+	.select-pure__select{
+		@apply h-7 py-0 max-w-[450px] min-h-[28px];
+	}
+	.select-pure__options{
+		@apply top-8;
 	}
 }
 .navigation-wrap{
 	@apply flex-auto;
 }
 .navigation-block{
-	@apply flex;
+	@apply flex items-center gap-4;
 }
 
 //@media (max-width: 640px) {

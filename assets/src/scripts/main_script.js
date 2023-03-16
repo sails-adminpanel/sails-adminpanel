@@ -40,6 +40,11 @@ addEventListener('DOMContentLoaded', function () {
 		$(this).closest('.menu__item').find('.menu__sub-list').slideToggle()
 	})
 
+	//mobile-menu
+	$('.burger').on('click', function (){
+		$(this).toggleClass('burger--active')
+		$('.aside').toggleClass('aside--active')
+	})
 
 	//dark-mode toggle
 	$('.dark-mode').on('click', function (){
