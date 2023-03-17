@@ -23,6 +23,7 @@ specifiers:
   '@ckeditor/ckeditor5-media-embed': ^35.4.0
   '@ckeditor/ckeditor5-paragraph': ^35.4.0
   '@ckeditor/ckeditor5-paste-from-office': ^35.4.0
+  '@ckeditor/ckeditor5-remove-format': 35.4.0
   '@ckeditor/ckeditor5-source-editing': ^35.4.0
   '@ckeditor/ckeditor5-special-characters': ^35.4.0
   '@ckeditor/ckeditor5-style': ^35.4.0
@@ -118,6 +119,7 @@ devDependencies:
   '@ckeditor/ckeditor5-media-embed': 35.4.0
   '@ckeditor/ckeditor5-paragraph': 35.4.0
   '@ckeditor/ckeditor5-paste-from-office': 35.4.0
+  '@ckeditor/ckeditor5-remove-format': 35.4.0
   '@ckeditor/ckeditor5-source-editing': 35.4.0
   '@ckeditor/ckeditor5-special-characters': 35.4.0
   '@ckeditor/ckeditor5-style': 35.4.0
@@ -510,6 +512,13 @@ packages:
 
   /@ckeditor/ckeditor5-paste-from-office/35.4.0:
     resolution: {integrity: sha512-Uav1z9t52+qcu1axykcZ/NeH7JnURuZF9l0o+Pq/sNg3zjzVqB92V5cvFXg9hXeod8LzxlNLHy1BR8ZWTHeKHQ==}
+    engines: {node: '>=14.0.0', npm: '>=5.7.1'}
+    dependencies:
+      ckeditor5: 35.4.0
+    dev: true
+
+  /@ckeditor/ckeditor5-remove-format/35.4.0:
+    resolution: {integrity: sha512-M6A8f8EwPUd86OXgBaWnRw7u1ldVvaK7v+CprTRRnrOUasaeW1SvYgiYjqF9X5EYdhzrOoSSGC+B+ujkgm/ueQ==}
     engines: {node: '>=14.0.0', npm: '>=5.7.1'}
     dependencies:
       ckeditor5: 35.4.0
