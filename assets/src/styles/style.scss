@@ -70,9 +70,6 @@ html.dark{
 		color: rgb(241 245 249);
 		background-color: rgb(17 24 39);
 	}
-	input{
-		color-scheme: dark;
-	}
 }
 
 .logo {
@@ -167,7 +164,7 @@ select {
 }
 
 .text-input, .textarea, .select {
-	@apply px-3 py-2 rounded border border-gray-400 dark:border-gray-700 dark:focus:border-blue-600 outline-none focus:ring focus:ring-offset-0 focus:ring-blue-600  h-12 bg-white dark:bg-gray-900 transition;
+	@apply px-3 py-2 rounded border border-gray-400 dark:border-gray-700 dark:focus:border-blue-600 outline-none focus:ring focus:ring-offset-0 focus:ring-blue-600 h-12 bg-white dark:bg-gray-900 transition;
 }
 
 
@@ -242,6 +239,36 @@ input[type="checkbox"] {
 }
 
 // Widget styles
+
+.jsoneditor-search input{
+	color-scheme: light !important;
+}
+
+.handsontable th{
+	@apply dark:bg-gray-700 dark:text-slate-100;
+}
+
+.handsontable td{
+	@apply dark:bg-gray-900 dark:text-slate-100;
+}
+.handsontable textarea{
+	@apply dark:bg-gray-700 dark:text-slate-100;
+}
+.handsontable tbody th.ht__highlight, .handsontable thead th.ht__highlight{
+	@apply dark:bg-gray-900;
+}
+
+.htContextMenu table tbody tr td.current, .htContextMenu table tbody tr td.zeroclipboard-is-hover{
+	@apply dark:bg-gray-700;
+}
+
+.htContextMenu table tbody tr td.htDisabled:hover{
+	@apply dark:bg-gray-700;
+}
+.handsontable tbody th.ht__active_highlight, .handsontable thead th.ht__active_highlight{
+	@apply dark:text-slate-100;
+}
+
 .dropzone-fileuploader, .gallery-container-file-container{
 	@apply dark:bg-gray-900 dark:text-slate-100;
 }
@@ -362,7 +389,7 @@ input[type="checkbox"] {
 }
 
 .select-pure__select {
-	@apply px-3 py-2 rounded border border-gray-400 h-12 bg-white transition relative p-2;
+	@apply px-3 py-2 rounded border border-gray-400 dark:border-gray-700 h-12 bg-white dark:bg-gray-900 transition relative p-2;
 	background-image: url("data:image/svg+xml,%3csvg xmlns= 'http://www.w3.org/2000/svg' fill= 'none' viewBox= '0 0 20 20' %3e%3cpath stroke= '%236b7280' stroke-linecap= 'round' stroke-linejoin= 'round' stroke-width= '1.5' d= 'M6 8l4 4 4-4' /%3e%3c/svg%3e");
 	background-position: right 0.5rem center;
 	background-repeat: no-repeat;
@@ -398,6 +425,7 @@ input[type="checkbox"] {
 }
 
 .select-pure__option {
+	@apply dark:bg-gray-900 dark:text-slate-100 dark:border-gray-700;
 	background: #fff;
 	border-bottom: 1px solid #e4e4e4;
 	box-sizing: border-box;
@@ -407,6 +435,7 @@ input[type="checkbox"] {
 }
 
 .select-pure__option--selected {
+	@apply dark:text-slate-600;
 	color: #e4e4e4;
 	cursor: initial;
 	pointer-events: none;
@@ -440,6 +469,7 @@ input[type="checkbox"] {
 }
 
 .select-pure__autocomplete {
+	@apply dark:bg-gray-700 dark:text-slate-100 dark:border-gray-700;
 	background: #f9f9f8;
 	border-bottom: 1px solid #e4e4e4;
 	border-left: none;
@@ -455,7 +485,7 @@ input[type="checkbox"] {
 /* schedule */
 
 .schedule {
-	@apply mt-3 mr-8 h-full;
+	@apply mt-3 mr-8 h-full dark:bg-gray-900;
 }
 
 .schedule__wrap {
@@ -467,7 +497,7 @@ input[type="checkbox"] {
 }
 
 .schedule__content {
-	@apply border border-sky-800 mx-6;
+	@apply border border-sky-800 dark:border-gray-700 mx-6 dark:bg-gray-700;
 }
 
 .schedule__content input {
@@ -475,7 +505,7 @@ input[type="checkbox"] {
 }
 
 .schedule__content label {
-	@apply border-r-sky-800 text-sky-800 uppercase transition cursor-pointer hover:opacity-60;
+	@apply border-r-sky-800 text-sky-800 dark:text-slate-100 uppercase transition cursor-pointer hover:opacity-60;
 	font-size: 12px;
 	line-height: 12px;
 	letter-spacing: 1px;
@@ -485,7 +515,7 @@ input[type="checkbox"] {
 
 
 .schedule__form {
-	@apply flex flex-col h-full border border-sky-800 pl-4 pr-2 pt-3 pb-2 w-full max-w-[415px];
+	@apply flex flex-col h-full border border-sky-800 dark:border-gray-700 pl-4 pr-2 pt-3 pb-2 w-full max-w-[415px];
 }
 
 .schedule__content input:checked + label {
@@ -515,7 +545,7 @@ input[type="checkbox"] {
 }
 
 .schedule__nav span {
-	@apply text-blue-800;
+	@apply text-blue-800 dark:text-blue-400;
 	display: flex;
 	align-items: center;
 	font-size: 14px;
@@ -523,25 +553,25 @@ input[type="checkbox"] {
 }
 
 .schedule__nav i {
-	@apply text-gray-600;
+	@apply text-gray-600 dark:text-slate-100;
 	font-size: 16px;
 	margin-right: 13px;
 }
 
 .schedule__close {
-	@apply text-black;
+	@apply text-black dark:text-slate-100;
 	font-size: 12px;
 }
 
 .schedule__dots {
-	@apply text-black;
+	@apply text-black  dark:text-slate-100;
 	font-size: 16px;
 }
 
 .schedule__arrow {
 	font-size: 18px;
 	margin-right: 20px;
-	@apply text-black;
+	@apply text-black  dark:text-slate-100;
 }
 
 .schedule__bottom {
@@ -561,7 +591,7 @@ input[type="checkbox"] {
 .schedule__time label {
 	font-size: 13px;
 	line-height: 14px;
-	@apply text-black;
+	@apply text-black  dark:text-slate-100;
 	margin-right: 13px;
 }
 
@@ -578,6 +608,7 @@ input[type="checkbox"] {
 }
 
 .schedule__time input {
+	@apply dark:text-slate-100;
 	font-size: 13px;
 	width: 80px;
 	color: #000000;

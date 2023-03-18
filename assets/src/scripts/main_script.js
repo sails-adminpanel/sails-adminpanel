@@ -29,8 +29,11 @@ import('bootstrap/dist/js/bootstrap.js')
 //dark-mode
 const dark = localStorage.getItem('__dark-mode')
 const html = document.querySelector('html')
+const sheet = document.styleSheets[0];
+
 if (dark === '1') {
 	html.classList.add('dark')
+	sheet.insertRule(":root {color-scheme: dark;}");
 }
 
 addEventListener('DOMContentLoaded', function () {
@@ -50,8 +53,10 @@ addEventListener('DOMContentLoaded', function () {
 	$('.dark-mode').on('click', function (){
 		if(localStorage.getItem('__dark-mode') === '0' || !localStorage.getItem('__dark-mode')){
 			localStorage.setItem('__dark-mode', '1')
+			sheet.insertRule(":root {color-scheme: dark;}");
 		} else {
 			localStorage.setItem('__dark-mode', '0')
+			sheet.deleteRule(0)
 		}
 		$('html').toggleClass('dark')
 	})

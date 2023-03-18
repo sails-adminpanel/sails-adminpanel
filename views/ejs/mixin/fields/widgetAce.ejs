@@ -1,4 +1,3 @@
-
 <textarea
         <%= field.config.required && 'required' %>
         <%= field.config.disabled && 'disabled'%>
@@ -9,7 +8,13 @@
     $(`#form-<%= key %>`).hide();
     let ace_<%=key%> = ace.edit('ace-<%=key%>');
     ace_<%=key%>.setReadonly
-    ace_<%=key%>.setTheme("ace/theme/katzenmilch");
+
+	if (localStorage.getItem('__dark-mode') === '1') {
+		ace_<%=key%>.setTheme("ace/theme/one_dark");
+	} else {
+		ace_<%=key%>.setTheme("ace/theme/katzenmilch");
+    }
+
     ace_<%=key%>.session.setMode("ace/mode/html");
     ace_<%=key%>.session.on("change", function () {
         $('#form-<%=key%>').val(ace_<%=key%>.getValue());
