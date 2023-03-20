@@ -1,5 +1,6 @@
-<div class="grid md:block flex-[1_0_auto] grid-cols-[260px_1fr]">
+<%- include("mixin/sections") %>
+<div class="grid md:block grid-cols-[252px_8px_1fr] h-[calc(100%_-_96px)] content-resize">
     <%- include("mixin/navbar", {entity: entity}) %>
+    <div class="h-full bg-neutral-100 dark:bg-gray-900 w-2 cursor-col-resize left-resize"></div>
     <div class="content w-full overflow-auto md:pt-[60px] h-full">
-        <%- include("mixin/sections") %>
         <%- include("mixin/alerts") %>

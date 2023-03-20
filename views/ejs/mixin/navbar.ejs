@@ -24,15 +24,15 @@
 
                         <%# For multiple menuItem %>
                         <% if (menuItem.actions && menuItem.actions.length > 0) { %>
-                            <div class="menu__has-sub flex justify-between flex-1 <% if(active) { %>menu__has-sub--active<% } %>">
-                                <span class="group-hover:text-neutral-400 dark:text-gray-300 dark:group-hover:text-white transition font-medium"><%= menuItem.title %></span>
+                            <div class="menu__has-sub flex justify-between flex-1 overflow-hidden <% if(active) { %>menu__has-sub--active<% } %>">
+                                <span class="group-hover:text-neutral-400 dark:text-gray-300 dark:group-hover:text-white transition font-medium overflow-hidden text-ellipsis whitespace-nowrap mr-10"><%= menuItem.title %></span>
                                 <div class="menu__icon group-hover:after:bg-neutral-400 dark:group-hover:after:bg-white group-hover:before:bg-neutral-400 dark:group-hover:before:bg-white"></div>
                             </div>
                         <% } else { %>
 
                             <%# For single menuItem %>
                             <% if (havePermission(menuItem.accessRightsToken, req.session.UserAP)) { %>
-                                <a class="group-hover:text-neutral-400 dark:group-hover:text-white font-medium"
+                                <a class="group-hover:text-neutral-400 dark:group-hover:text-white font-medium overflow-hidden text-ellipsis whitespace-nowrap pr-5"
                                    href="<%= menuItem.link %>"><%= __(menuItem.title) %></a>
                             <% } %>
                         <% } %>
@@ -43,7 +43,7 @@
                                 <% menuItem.actions.forEach(function(action) { %>
                                     <% if (havePermission(action.accessRightsToken, req.session.UserAP)) { %>
                                         <li>
-                                            <a class="text-black dark:text-gray-300 hover:text-neutral-400 dark:hover:text-white py-1 pl-9"
+                                            <a class="text-black dark:text-gray-300 hover:text-neutral-400 dark:hover:text-white py-1 pl-9 text-ellipsis overflow-hidden whitespace-nowrap block w-full pr-3"
                                                href="<%= action.link %>">
                                                 <i class="las la-<%= action.icon %>"></i>
                                             <%= __(action.title) %>

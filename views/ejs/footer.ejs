@@ -1,7 +1,16 @@
 </div>
 </div>
 <script>
-
+	$('.left-resize').on('mousedown', function () {
+		$('.wrapper').on('mousemove', function (e) {
+			$('.content-resize').css({'grid-template-columns': `${e.pageX - $('body').offset().left}px 8px 1fr`})
+            $('body').css({'user-select': 'none'})
+		})
+		$('html').on('mouseup', function () {
+			$('.wrapper').unbind('mousemove');
+			$('body').css({'user-select': 'auto'})
+		});
+	})
 </script>
 </body>
 

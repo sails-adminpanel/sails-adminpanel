@@ -3,7 +3,7 @@
 <% var routePrefix = (adminpanel.configHelper.getConfig()).routePrefix %>
 
 <% if (Array.isArray(sections)) { %>
-  <nav class="px-12 md:px-5 h-9 border-b border-gray-300 bg-white dark:bg-gray-800 dark:border-slate-100">
+  <nav class="pl-6 md:px-5 h-9 border-b border-gray-300 bg-white dark:bg-gray-800 dark:border-slate-100">
     <ul class="flex h-full items-center gap-6">
         <li>
           <a class="nav-link" <% if (section && section === "adminpanel") { %> active <% } %> href="<%=routePrefix%>"><i class="las la-sliders-h"></i>  <%= __("Adminpanel") %></a>
