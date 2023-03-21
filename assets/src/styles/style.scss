@@ -85,10 +85,17 @@ html.dark{
 }
 
 .nav-link {
-	@apply text-sm font-medium text-neutral-500 dark:text-slate-100 relative relative after:content-[''] after:absolute
-	after:w-0 after:h-[3px] after:bottom-[-8px] after:left-0 after:bg-blue-700 dark:after:bg-blue-400 hover:after:w-full hover:text-neutral-900 dark:hover:text-slate-400 after:transition-all;
+	@apply h-full pt-2 text-sm font-medium text-neutral-500 dark:text-slate-100 relative relative after:content-[''] after:absolute
+	after:w-0 after:h-[3px] after:bottom-0 after:left-0 after:bg-blue-700 dark:after:bg-blue-400 hover:after:w-full hover:text-neutral-900 dark:hover:text-slate-400 after:transition-all overflow-hidden text-ellipsis whitespace-nowrap;
 	&.active {
 		@apply text-neutral-900 dark:text-slate-400 after:w-full;
+	}
+}
+
+.nav-button-prev, .nav-button-next{
+	@apply opacity-100 transition;
+	&[aria-disabled="true"]{
+		@apply opacity-0 invisible;
 	}
 }
 

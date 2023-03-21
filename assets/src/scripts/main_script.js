@@ -12,6 +12,11 @@ import {GeoJsonEditor} from '../geojson/geojson'
 
 import 'jquery-ui-dist/jquery-ui.js'
 
+import { register } from 'swiper/element/bundle';
+
+// register Swiper custom elements
+register();
+
 window.jQuery = window.$ = $
 window.Dropzone = Dropzone
 window.DataTable = DataTable
