@@ -36,11 +36,40 @@ if (dark === '1') {
 	sheet.insertRule(":root {color-scheme: dark;}");
 }
 
+//aside resize
+const left_offset = localStorage.getItem('__left_offset')
+const stylesheet = new CSSStyleSheet();
+if(left_offset){
+	stylesheet.replaceSync(`.content-resize { grid-template-columns: ${left_offset}px 8px 1fr; }`)
+}else {
+	stylesheet.replaceSync(`.content-resize { grid-template-columns: 252px 8px 1fr; }`)
+}
+document.adoptedStyleSheets = [stylesheet];
+
+
 addEventListener('DOMContentLoaded', function () {
 	// aside menu
 	$('.menu__has-sub').on('click', function () {
 		$(this).toggleClass('menu__has-sub--active')
 		$(this).closest('.menu__item').find('.menu__sub-list').slideToggle()
+	})
+	//aside resize
+	const content_resize = document.querySelector('.content-resize')
+	const body = $('body');
+	$('.left-resize').on('mousedown', function () {
+		$('.wrapper').on('mousemove', function (e) {
+			console.log(e.pageX)
+			console.log($(window).width())
+			if ($(window).width() / 2 >= e.pageX && e.pageX >= 252) {
+				localStorage.setItem('__left_offset', e.pageX)
+				content_resize.setAttribute('style', `grid-template-columns: ${e.pageX}px 8px 1fr`)
+				body.addClass('user-select-none')
+			}
+		})
+		$('html').on('mouseup', function () {
+			$('.wrapper').unbind('mousemove');
+			body.removeClass('user-select-none')
+		});
 	})
 
 	//mobile-menu

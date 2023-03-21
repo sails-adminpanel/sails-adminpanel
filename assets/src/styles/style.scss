@@ -72,6 +72,10 @@ html.dark{
 	}
 }
 
+.user-select-none{
+	@apply select-none;
+}
+
 .logo {
 	font-size: 30px;
 	background: #004264;

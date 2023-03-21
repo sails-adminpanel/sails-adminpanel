@@ -1,16 +1,29 @@
 </div>
 </div>
 <script>
-	$('.left-resize').on('mousedown', function () {
-		$('.wrapper').on('mousemove', function (e) {
-			$('.content-resize').css({'grid-template-columns': `${e.pageX - $('body').offset().left}px 8px 1fr`})
-            $('body').css({'user-select': 'none'})
-		})
-		$('html').on('mouseup', function () {
-			$('.wrapper').unbind('mousemove');
-			$('body').css({'user-select': 'auto'})
-		});
-	})
+    // const left_offset = localStorage.getItem('__left_offset')
+    // const content_resize = document.querySelector('.content-resize')
+    // if(left_offset){
+	// 	content_resize.setAttribute('style', `grid-template-columns: ${left_offset}px 8px 1fr`)
+    // }
+    //
+	// let body = $('body');
+    //
+	// $('.left-resize').on('mousedown', function () {
+	// 	$('.wrapper').on('mousemove', function (e) {
+	// 		console.log(e.pageX)
+	// 		console.log($(window).width())
+	// 		if ($(window).width() / 2 >= e.pageX) {
+	// 			localStorage.setItem('__left_offset', e.pageX)
+	// 			content_resize.setAttribute('style', `grid-template-columns: ${e.pageX}px 8px 1fr`)
+	// 			body.addClass('user-select-none')
+	// 		}
+	// 	})
+	// 	$('html').on('mouseup', function () {
+	// 		$('.wrapper').unbind('mousemove');
+	// 		body.removeClass('user-select-none')
+	// 	});
+	// })
 </script>
 </body>
 
