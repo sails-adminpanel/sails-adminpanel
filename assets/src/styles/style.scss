@@ -1,14 +1,9 @@
-//@import 'custom/importer.scss';
-//@import 'custom/custom.scss';
 @import '~jsoneditor/src/scss/jsoneditor.scss';
 @import '~line-awesome/dist/line-awesome/scss/line-awesome.scss';
 @import '~datatables.net-dt/css/jquery.dataTables.min';
-//@import 'clarity/src/main.scss';
 @import '../fileuploader/styles/styles';
 @import '../fileuploader/styles/basic';
 @import '../fileuploader/styles/dropzone';
-//@import '../fileuploader/styles/bootstrap';
-//@import '../fileuploader/styles/jquery-ui.min';
 @import '~handsontable/dist/handsontable.full.min';
 @import '~leaflet/dist/leaflet';
 @import '~leaflet-draw/dist/leaflet.draw-src';
@@ -46,6 +41,7 @@
 }
 
 html.dark{
+	color-scheme: dark;
 	--ck-color-base-background: rgb(17 24 39);
 	--ck-color-text: rgb(241 245 249);
 	--ck-color-base-border: rgb(55 65 81);
@@ -56,12 +52,14 @@ html.dark{
 	--ck-color-button-default-active-background: rgb(31 41 55);
 	--ck-color-button-on-hover-background: rgb(31 41 55);
 	--ck-color-split-button-hover-background: rgb(55 65 81);
+	--ck-color-base-foreground: rgb(55 65 81);
 	--ck-color-split-button-hover-border: rgb(31 41 55);
 	--ck-color-toolbar-background: rgb(31 41 55);
 	--ck-color-tooltip-background: rgb(255 255 255);
 	--ck-color-tooltip-text: rgb(0 0 0);
 	--ck-color-image-caption-background: rgb(17 24 39);
 	--ck-color-image-caption-text:  rgb(241 245 249);
+	--ck-html-embed-source-disabled-color:  rgb(241 245 249);
 	--ck-color-engine-placeholder-text:  rgb(241 245 249);
 	.ck-content .table table th{
 		background-color: rgb(55 65 81);
@@ -86,7 +84,7 @@ html.dark{
 
 .nav-link {
 	@apply h-full pt-2 text-sm font-medium text-neutral-500 dark:text-slate-100 relative relative after:content-[''] after:absolute
-	after:w-0 after:h-[3px] after:bottom-0 after:left-0 after:bg-blue-700 dark:after:bg-blue-400 hover:after:w-full hover:text-neutral-900 dark:hover:text-slate-400 after:transition-all;
+	after:w-0 after:h-[3px] after:bottom-0 after:left-0 after:bg-blue-700 dark:after:bg-blue-400 hover:after:w-full hover:text-neutral-900 dark:hover:text-slate-400 after:transition-all whitespace-nowrap;
 	&.active {
 		@apply text-neutral-900 dark:text-slate-400 after:w-full;
 	}
@@ -323,7 +321,7 @@ input[type="checkbox"] {
 	}
 
 	.dataTables_scrollBody {
-		@apply bg-white dark:bg-gray-800;
+		@apply bg-white dark:bg-gray-800 resize-y;
 		table {
 			@apply border-collapse;
 			tbody {
@@ -382,6 +380,7 @@ input[type="checkbox"] {
 // CKeditor
 .ck-editor__editable {
 	min-height: 250px;
+	resize: vertical;
 	ol, ul{
 		margin-left: 2.666rem;
 	}

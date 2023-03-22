@@ -34,11 +34,9 @@ import('bootstrap/dist/js/bootstrap.js')
 //dark-mode
 const dark = localStorage.getItem('__dark-mode')
 const html = document.querySelector('html')
-const sheet = document.styleSheets[0];
 
 if (dark === '1') {
 	html.classList.add('dark')
-	sheet.insertRule(":root {color-scheme: dark;}");
 }
 
 //aside resize
@@ -63,8 +61,6 @@ addEventListener('DOMContentLoaded', function () {
 	const body = $('body');
 	$('.left-resize').on('mousedown', function () {
 		$('.wrapper').on('mousemove', function (e) {
-			console.log(e.pageX)
-			console.log($(window).width())
 			if ($(window).width() / 2 >= e.pageX && e.pageX >= 252) {
 				localStorage.setItem('__left_offset', e.pageX)
 				content_resize.setAttribute('style', `grid-template-columns: ${e.pageX}px 8px 1fr`)
@@ -87,10 +83,8 @@ addEventListener('DOMContentLoaded', function () {
 	$('.dark-mode').on('click', function (){
 		if(localStorage.getItem('__dark-mode') === '0' || !localStorage.getItem('__dark-mode')){
 			localStorage.setItem('__dark-mode', '1')
-			sheet.insertRule(":root {color-scheme: dark;}");
 		} else {
 			localStorage.setItem('__dark-mode', '0')
-			sheet.deleteRule(0)
 		}
 		$('html').toggleClass('dark')
 	})

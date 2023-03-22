@@ -293,4 +293,5 @@ gulp.task('prod', prod);
 gulp.task('ckeditorBuild', ckeditorBuild);
 
 gulp.task('js', js);
+gulp.task('styles-prod', scssProd);
 gulp.task('styles', gulp.series(scss, gulp.parallel(serve, watcher)))

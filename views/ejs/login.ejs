@@ -9,17 +9,17 @@
     <!-- Main CSS -->
     <link rel="stylesheet" href="/admin/assets/build/style/style.min.css"/>
     <style>
-        .alerts{
-            padding-left: 24px !important;
-        }
+		.alerts {
+			padding-left: 24px !important;
+		}
     </style>
 </head>
 
 <body>
 
-<div class="bg-gray-50">
-    <div class="flex min-h-screen items-center justify-center bg-gradient-to-tr from-purple-400 via-pink-500 to-red-500">
-        <form class="rounded-2xl flex-col dark:bg-slate-900/70 bg-white flex w-4/12 lg:w-6/12 md:w-7/12 xs:w-11/12 shadow-2xl"
+<div class="bg-gray-50 dark:bg-slate-800 dark:text-slate-100">
+    <div class="flex min-h-screen items-center justify-center bg-gradient-to-tr from-purple-400 dark:from-slate-700 via-pink-500 dark:via-slate-900 to-red-500 dark:to-slate-800">
+        <form class="rounded-2xl flex-col dark:bg-slate-900/70 bg-white dark:bg-slate-900/70 flex w-4/12 lg:w-6/12 md:w-7/12 xs:w-11/12 shadow-2xl"
               method="post" action="/admin/model/userap/login">
             <%- include("mixin/alerts") %>
             <div class="flex-1 p-6">
@@ -59,10 +59,21 @@
                     </div>
                 </div>
                 <p>
-                    <button class="inline-flex justify-center items-baseline gap-1 whitespace-nowrap focus:outline-none transition-colors cursor-pointer rounded border py-2 px-3 text-white bg-blue-500 font-medium border-green-500 hover:bg-blue-700" type="submit"><%= __("Log in") %></button>
+                    <button class="inline-flex justify-center items-baseline gap-1 whitespace-nowrap focus:outline-none transition-colors cursor-pointer rounded border py-2 px-3 text-white bg-blue-500 dark:bg-blue-700 dark:hover:text-slate-300 font-medium border-green-500 dark:border-gray-900 hover:bg-blue-700 dark:hover:bg-blue-900"
+                            type="submit"><%= __("Log in") %></button>
                 </p>
             </div>
         </form>
     </div>
+</div>
+<script>
+	//dark-mode
+	const dark = localStorage.getItem('__dark-mode')
+	const html = document.querySelector('html')
+
+	if (dark === '1') {
+		html.classList.add('dark')
+	}
+</script>
 </body>
 </html>

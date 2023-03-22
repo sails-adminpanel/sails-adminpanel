@@ -1,5 +1,5 @@
 <% var config = adminpanel.configHelper.getConfig() %>
-<aside class="bg-neutral-100 dark:bg-gray-900 menu pt-2 flex flex-col md:fixed aside md:transition-transform">
+<aside class="bg-neutral-100 dark:bg-gray-900 menu pt-2 flex flex-col md:fixed aside md:transition-transform overflow-y-auto">
     <div class="menu__items flex flex-col gap-3 flex-1 h-full">
         <% adminpanel.menuHelper.getMenuItems().forEach(function(menuItem) { %>
             <% var active = ""; if (menuItem && menuItem.entityName && entity && entity.name) {
