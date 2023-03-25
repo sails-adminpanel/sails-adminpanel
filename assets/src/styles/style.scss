@@ -24,7 +24,7 @@
 	}
 
 	body {
-		@apply overflow-x-hidden dark:text-slate-100;
+		@apply overflow-x-hidden dark:text-slate-100 bg-gray-50 dark:bg-gray-800;
 	}
 
 	.container {
@@ -135,7 +135,7 @@ html.dark{
 	@media( max-width: 768px ){
 		height: 100vh;
 		width: 100%;
-		z-index: 9998;
+		z-index: 1001;
 		left: -100%;
 		top: 60px;
 	}
@@ -669,7 +669,7 @@ input[type="checkbox"] {
 
 // Modal
 .modal{
-	@apply fixed w-screen h-screen top-0 left-0 z-[999999];
+	@apply fixed w-screen h-screen top-0 left-0 z-[1002];
 }
 
 .modal-dialog{
