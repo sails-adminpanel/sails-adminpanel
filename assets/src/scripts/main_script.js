@@ -12,7 +12,7 @@ import {GeoJsonEditor} from '../geojson/geojson'
 
 import 'jquery-ui-dist/jquery-ui.js'
 
-import { register } from 'swiper/element/bundle';
+import {register} from 'swiper/element/bundle';
 
 // register Swiper custom elements
 register();
@@ -42,9 +42,9 @@ if (dark === '1') {
 //aside resize
 const left_offset = localStorage.getItem('__left_offset')
 const stylesheet = new CSSStyleSheet();
-if(left_offset){
+if (left_offset) {
 	stylesheet.replaceSync(`.content-resize { grid-template-columns: ${left_offset}px 8px 1fr; }`)
-}else {
+} else {
 	stylesheet.replaceSync(`.content-resize { grid-template-columns: 252px 8px 1fr; }`)
 }
 document.adoptedStyleSheets = [stylesheet];
@@ -72,16 +72,24 @@ addEventListener('DOMContentLoaded', function () {
 			body.removeClass('user-select-none')
 		});
 	})
+	$(window).on('resize', function () {
+		let aside = document.querySelector('.aside')
+		if (aside.offsetWidth > $(window).width() / 2) {
+			content_resize.setAttribute('style', `grid-template-columns: 252px 8px 1fr`)
+			localStorage.setItem('__left_offset', '252')
+		}
+	})
 
 	//mobile-menu
-	$('.burger').on('click', function (){
+	$('.burger').on('click', function () {
 		$(this).toggleClass('burger--active')
 		$('.aside').toggleClass('aside--active')
+		$('body').toggleClass('body-hidden')
 	})
 
 	//dark-mode toggle
-	$('.dark-mode').on('click', function (){
-		if(localStorage.getItem('__dark-mode') === '0' || !localStorage.getItem('__dark-mode')){
+	$('.dark-mode').on('click', function () {
+		if (localStorage.getItem('__dark-mode') === '0' || !localStorage.getItem('__dark-mode')) {
 			localStorage.setItem('__dark-mode', '1')
 		} else {
 			localStorage.setItem('__dark-mode', '0')

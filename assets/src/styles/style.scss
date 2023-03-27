@@ -39,7 +39,9 @@
 		@apply fill-current;
 	}
 }
-
+.body-hidden{
+	overflow: hidden;
+}
 html.dark{
 	color-scheme: dark;
 	--ck-color-base-background: rgb(17 24 39);
@@ -133,7 +135,7 @@ html.dark{
 .aside{
 	-webkit-tap-highlight-color: transparent;
 	@media( max-width: 768px ){
-		height: 100vh;
+		height: calc(100% - 60px);
 		width: 100%;
 		z-index: 1001;
 		left: -100%;
@@ -190,7 +192,7 @@ select {
 	@apply max-w-[250px] w-full;
 }
 
-input[type="checkbox"] {
+.checkbox input[type="checkbox"] {
 	position: absolute;
 	left: 0;
 	cursor: pointer;
@@ -778,75 +780,3 @@ input[type="checkbox"] {
 .navigation-block{
 	@apply flex items-center gap-4;
 }
-
-
-//@media (max-width: 640px) {
-//	.schedule {
-//		width: 100%;
-//	}
-//
-//	.schedule__bottom .checkbox {
-//		display: flex;
-//		justify-content: flex-end;
-//		flex: 1 !important;
-//	}
-//
-//	.schedule__wrap {
-//		flex-direction: column;
-//		align-items: flex-start;
-//		position: relative;
-//	}
-//
-//	.schedule__content {
-//		margin-left: 0;
-//		margin-right: 0;
-//	}
-//
-//	.schedule__dots {
-//		margin-bottom: 5px;
-//	}
-//
-//	.schedule__wrap .schedule__close {
-//		position: absolute;
-//		right: 0;
-//		top: 0;
-//	}
-//
-//	.schedule__form {
-//		padding: 5px 10px;
-//	}
-//
-//	.schedule__nav {
-//		margin-left: 0;
-//	}
-//
-//	.schedule__time {
-//		align-items: flex-end;
-//	}
-//
-//	.schedule__time--date {
-//		flex-direction: column;
-//		align-items: flex-start;
-//		position: relative;
-//	}
-//
-//	.schedule__time--date span {
-//		margin-top: 0 !important;
-//		margin-bottom: 20px !important;
-//		width: 100%;
-//	}
-//
-//	.schedule__time--date .schedule__close {
-//		position: absolute;
-//		right: -10px;
-//		top: -5px;
-//	}
-//
-//	.schedule__content label {
-//		padding: 7px 9px;
-//	}
-//
-//	.schedule-wrapper {
-//		width: 100%;
-//	}
-//}
