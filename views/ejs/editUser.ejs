@@ -19,68 +19,75 @@
     <form id="editUserForm" action="<%= entity.uri %>/edit/<%= user.id %>" method="POST">
         <div class="mt-14 flex flex-col gap-10 max-w-[1144px]">
             <h2 class="font-bold text-xl"><%= __("User settings") %></h2>
-            <div class="flex flex-col gap-3">
-                <label class="admin-panel__title" for="userLogin"><%= __("Login") %></label>
-                <div class="widget_narrow">
-                    <input class="text-input w-full" type="text" id="userLogin" name="login" value="<%= user.login %>">
-                </div>
-            </div>
+            <div class="flex gap-16 lg:flex-wrap">
+                <div class="basis-1/2 lg:basis-full flex flex-col justify-between">
+                    <div class="flex flex-col gap-3">
+                        <label class="admin-panel__title" for="userLogin"><%= __("Login") %></label>
+                        <div class="widget_narrow">
+                            <input class="text-input w-full" type="text" id="userLogin" name="login"
+                                   value="<%= user.login %>">
+                        </div>
+                    </div>
 
-            <div class="flex flex-col gap-3">
-                <label class="admin-panel__title" for="fullName"><%= __("Full name") %></label>
-                <div class="widget_narrow">
-                    <input class="text-input w-full" type="text" id="fullName" name="fullName"
-                           value="<%= user.fullName %>">
-                </div>
-            </div>
+                    <div class="flex flex-col gap-3">
+                        <label class="admin-panel__title" for="fullName"><%= __("Full name") %></label>
+                        <div class="widget_narrow">
+                            <input class="text-input w-full" type="text" id="fullName" name="fullName"
+                                   value="<%= user.fullName %>">
+                        </div>
+                    </div>
 
-            <div class="flex flex-col gap-3">
-                <label class="admin-panel__title" for="email"><%= __("E-mail") %></label>
-                <div class="widget_narrow">
-                    <input class="text-input w-full" type="email" id="email" name="email" value="<%= user.email %>">
-                </div>
-            </div>
-
-            <div class="flex flex-col gap-3">
-                <label class="admin-panel__title" for="timezone"><%= __("Timezone") %></label>
-                <div class="widget_narrow">
-                    <span class="timezone"></span>
-                    <input class="text-input" type="text" id="timezone" name="timezone" hidden>
-                </div>
-            </div>
-
-            <% if (req.session.UserAP.isAdministrator) { %>
-                <div class="flex flex-col gap-3">
-                    <label class="admin-panel__title" for="date"><%= __("Profile expires") %></label>
-                    <div class="widget_narrow">
-                        <input class="text-input" type="date" id="date" name="date" value="<%= user.expires %>">
+                    <div class="flex flex-col gap-3">
+                        <label class="admin-panel__title" for="email"><%= __("E-mail") %></label>
+                        <div class="widget_narrow">
+                            <input class="text-input w-full" type="email" id="email" name="email"
+                                   value="<%= user.email %>">
+                        </div>
                     </div>
                 </div>
-            <% } %>
-
-            <% if (sails.config.adminpanel.translation) { %>
-                <div class="flex flex-col gap-3">
-                    <label class="admin-panel__title" for="locale"><%= __("Locale") %></label>
-                    <div class="widget_narrow">
-                        <span class="locale"></span>
-                        <input class="text-input w-full" type="text" id="locale" name="locale" hidden>
+                <div class="basis-1/2 lg:basis-full flex flex-col justify-between">
+                    <div class="flex flex-col gap-3">
+                        <label class="admin-panel__title" for="timezone"><%= __("Timezone") %></label>
+                        <div class="widget_narrow">
+                            <span class="timezone"></span>
+                            <input class="text-input" type="text" id="timezone" name="timezone" hidden>
+                        </div>
                     </div>
-                </div>
-            <% } %>
 
-            <% if (req.session.UserAP.isAdministrator) { %>
-                <div class="flex flex-col gap-3">
-                    <label class="admin-panel__title" for="isAdmin"><%= __("Is Administrator") %></label>
-                    <div class="checkbox relative">
-                        <% if (user.isAdministrator) { %>
-                            <input type="checkbox" id="isAdmin" name="isAdmin" checked>
-                        <% } else { %>
-                            <input type="checkbox" id="isAdmin" name="isAdmin">
-                        <% } %>
-                        <span class="check"></span>
-                    </div>
+                    <% if (req.session.UserAP.isAdministrator) { %>
+                        <div class="flex flex-col gap-3">
+                            <label class="admin-panel__title" for="date"><%= __("Profile expires") %></label>
+                            <div class="widget_narrow">
+                                <input class="text-input" type="date" id="date" name="date" value="<%= user.expires %>">
+                            </div>
+                        </div>
+                    <% } %>
+
+                    <% if (sails.config.adminpanel.translation) { %>
+                        <div class="flex flex-col gap-3">
+                            <label class="admin-panel__title" for="locale"><%= __("Locale") %></label>
+                            <div class="widget_narrow">
+                                <span class="locale"></span>
+                                <input class="text-input w-full" type="text" id="locale" name="locale" hidden>
+                            </div>
+                        </div>
+                    <% } %>
+
+                    <% if (req.session.UserAP.isAdministrator) { %>
+                        <div class="flex flex-col gap-3">
+                            <label class="admin-panel__title" for="isAdmin"><%= __("Is Administrator") %></label>
+                            <div class="checkbox relative">
+                                <% if (user.isAdministrator) { %>
+                                    <input type="checkbox" id="isAdmin" name="isAdmin" checked>
+                                <% } else { %>
+                                    <input type="checkbox" id="isAdmin" name="isAdmin">
+                                <% } %>
+                                <span class="check"></span>
+                            </div>
+                        </div>
+                    <% } %>
                 </div>
-            <% } %>
+            </div>
 
             <% if (req.session.UserAP.isAdministrator && !user.isAdministrator) { %>
                 <div class="flex flex-col gap-3">
@@ -92,13 +99,18 @@
             <% } %>
             <div class="flex flex-col gap-3">
                 <div class="admin-panel__wrapper-title">
-                    <label class="admin-panel__title"><%= __("Password") %></label>
+                    <label class="admin-panel__title text-2xl"><%= __("Password") %></label>
                     <div class="tooltip tooltip-right group cursor-pointer">
-                        <i class="las la-info-circle text-blue-400"></i>
+                        <i class="las la-info-circle text-blue-400 text-2xl"></i>
                         <div class="tooltip__content group-hover:visible group-hover:opacity-100">
                             <span><%= __("Leave this field empty if you don't want to change the password") %></span>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="flex flex-col gap-3">
+                <div class="admin-panel__wrapper-title">
+                    <label class="admin-panel__title"><%= __("Password") %></label>
                 </div>
                 <div class="widget_narrow">
                     <input class="text-input" type="password" id="userPassword" name="userPassword"
