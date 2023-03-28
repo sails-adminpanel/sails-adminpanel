@@ -18,6 +18,6 @@ function migrations(req, res) {
     if (fs.existsSync(`${process.cwd()}/.tmp/migrations_run.json`)) {
         migrationsLastResult = require(`${process.cwd()}/.tmp/migrations_run.json`);
     }
-    return res.viewAdmin('migrations', { entity: "entity", migrationsInfo: migrationsLastResult });
+    return res.viewAdmin('migrations', { entity: "entity", section: 'migrations', migrationsInfo: migrationsLastResult });
 }
 exports.default = migrations;

@@ -19,5 +19,5 @@ export default function migrations(req, res) {
         migrationsLastResult = require(`${process.cwd()}/.tmp/migrations_run.json`);
     }
 
-    return res.viewAdmin('migrations', { entity: "entity", migrationsInfo: migrationsLastResult });
+    return res.viewAdmin('migrations', { entity: "entity", section: 'migrations', migrationsInfo: migrationsLastResult });
 }

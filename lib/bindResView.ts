@@ -67,6 +67,7 @@ export default function bindResView() {
             locals.havePermission = AccessRightsHelper.havePermission;
             locals.enoughPermissions = AccessRightsHelper.enoughPermissions;
 
+
             if (locals.section === undefined) locals.section = 'adminpanel';
 
             return res.view(ViewsHelper.getViewPath(specifiedPath), locals, cb_view);

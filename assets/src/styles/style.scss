@@ -77,7 +77,7 @@ html.dark{
 }
 
 .logo {
-	font-size: 30px;
+	font-size: 23px;
 	background: #004264;
 	color: #e9e9e9;
 	border-radius: 6px;
@@ -101,8 +101,8 @@ html.dark{
 
 .menu {
 	&__icon {
-		@apply relative after:absolute after:right-4 after:rotate-[-45deg] after:top-1/2 after:content-[''] after:h-0.5 after:w-2.5 after:bg-gray-700 dark:after:bg-gray-300
-		before:absolute before:right-[22px] before:rotate-[45deg] before:top-1/2 before:content-[''] before:h-0.5 before:w-2.5 before:bg-gray-700 dark:before:bg-gray-300 after:transition-all
+		@apply relative after:absolute after:right-4 after:rotate-[-45deg] after:top-1/2 after:content-[''] after:h-[1px] after:w-2 after:bg-gray-700 dark:after:bg-gray-300
+		before:absolute before:right-[21px] before:rotate-[45deg] before:top-1/2 before:content-[''] before:h-[1px] before:w-2 before:bg-gray-700 dark:before:bg-gray-300 after:transition-all
 		before:transition-all after:rounded-sm before:rounded-sm;
 	}
 
@@ -135,11 +135,11 @@ html.dark{
 .aside{
 	-webkit-tap-highlight-color: transparent;
 	@media( max-width: 768px ){
-		height: calc(100% - 60px);
+		height: calc(100% - 40px);
 		width: 100%;
 		z-index: 1001;
 		left: -100%;
-		top: 60px;
+		top: 40px;
 	}
 	&--active{
 		transform: translateX(100%);

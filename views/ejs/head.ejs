@@ -21,12 +21,12 @@
 
 <body>
 <div class="wrapper h-full md:flex md:flex-col">
-        <header class="bg-gray-800 dark:bg-neutral-900 h-[60px] md:fixed md:w-full md:z-[1001]">
+        <header class="bg-gray-800 dark:bg-neutral-900 h-[40px] md:fixed md:w-full md:z-[1001]">
             <div class="flex items-center h-full pl-5 justify-between">
                 <div class="flex-none flex items-center">
                     <a href="" class="flex items-center gap-2">
                         <i class="las la-rocket logo"></i>
-                        <span class="text-fa_fa font-bold text-lg sm:hidden"><%= adminpanel.menuHelper.getBrandTitle() %></span>
+                        <span class="text-fa_fa font-bold text-ls sm:hidden"><%= adminpanel.menuHelper.getBrandTitle() %></span>
                     </a>
                     <div class="group burger w-8 h-5 relative ml-9 cursor-pointer hidden md:block">
                         <div class="absolute w-full h-0.5 rounded bg-white transition group-[.burger--active]:rotate-45 group-[.burger--active]:top-2.5"></div>
@@ -39,13 +39,13 @@
                         <% if (req.session.adminPretender && req.session.adminPretender.id) { %>
                             <i class="las la-mask text-fa_fa"></i>&nbsp;
                         <% } %>
-                        <a href="#" class="md:hidden">
+                        <a href="#" class="md:hidden relative top-[1px]">
                             <span class="text-fa_fa font-bold"><%= req.session.UserAP.fullName %></span>
-                            <i class="las la-user text-fa_fa"></i>
+                            <i class="las la-user text-fa_fa text-[24px]"></i>
                         </a>
                         <a href="/admin/model/userap/logout"
                            class="flex justify-center items-center hover:underline hover:opacity-[0.6] hover:text-blue-800">
-                            <i class="las la-door-open text-fa_fa text-[20px]"></i>
+                            <i class="las la-door-open text-fa_fa text-[24px]"></i>
                         </a>
                     <% } %>
                     <span class="dark-mode inline-flex justify-center items-center w-6 h-6 text-fa_fa hover:text-blue-400 cursor-pointer transition-colors ml-2">
