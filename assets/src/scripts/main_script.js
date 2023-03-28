@@ -52,7 +52,7 @@ document.adoptedStyleSheets = [stylesheet];
 
 addEventListener('DOMContentLoaded', function () {
 	// aside menu
-	$('.menu__has-sub').on('click', function () {
+	$(document).on('click', '.menu__has-sub', function () {
 		$(this).toggleClass('menu__has-sub--active')
 		$(this).closest('.menu__item').find('.menu__sub-list').slideToggle()
 	})
@@ -81,14 +81,14 @@ addEventListener('DOMContentLoaded', function () {
 	})
 
 	//mobile-menu
-	$('.burger').on('click', function () {
+	$(document).on('click', '.burger', function () {
 		$(this).toggleClass('burger--active')
 		$('.aside').toggleClass('aside--active')
 		$('body').toggleClass('body-hidden')
 	})
 
 	//dark-mode toggle
-	$('.dark-mode').on('click', function () {
+	$(document).on('click', '.dark-mode', function () {
 		if (localStorage.getItem('__dark-mode') === '0' || !localStorage.getItem('__dark-mode')) {
 			localStorage.setItem('__dark-mode', '1')
 		} else {
