@@ -58,7 +58,8 @@ addEventListener('DOMContentLoaded', function () {
 	})
 	//aside resize
 	const content_resize = document.querySelector('.content-resize')
-	const body = $('body');
+	const body = document.body;
+	const aside = document.querySelector('.aside')
 	$('.left-resize').on('mousedown', function () {
 		$('.wrapper').on('mousemove', function (e) {
 			if ($(window).width() / 2 >= e.pageX && e.pageX >= 252) {
@@ -73,7 +74,6 @@ addEventListener('DOMContentLoaded', function () {
 		});
 	})
 	$(window).on('resize', function () {
-		let aside = document.querySelector('.aside')
 		if (aside.offsetWidth > $(window).width() / 2) {
 			content_resize.setAttribute('style', `grid-template-columns: 252px 8px 1fr`)
 			localStorage.setItem('__left_offset', '252')
@@ -81,10 +81,18 @@ addEventListener('DOMContentLoaded', function () {
 	})
 
 	//mobile-menu
-	$(document).on('click', '.burger', function () {
-		$(this).toggleClass('burger--active')
-		$('.aside').toggleClass('aside--active')
-		$('body').toggleClass('body-hidden')
+	// $(document).on('click', '.burger', function () {
+	// 	$(this).toggleClass('burger--active')
+	// 	$('.aside').toggleClass('aside--active')
+	// 	$('body').toggleClass('body-hidden')
+	// })
+
+	const burger = document.querySelector('.burger')
+
+	burger.addEventListener('click', function (){
+		burger.classList.toggle('burger--active')
+		aside.classList.toggle('aside--active')
+		body.classList.toggle('body-hidden')
 	})
 
 	//dark-mode toggle
