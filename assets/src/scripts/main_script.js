@@ -41,13 +41,19 @@ if (dark === '1') {
 
 //aside resize
 const left_offset = localStorage.getItem('__left_offset')
-const stylesheet = new CSSStyleSheet();
+
+let stylesheet = document.createElement("style");
+stylesheet.type = 'text/css';
+
 if (left_offset) {
-	stylesheet.replaceSync(`.content-resize { grid-template-columns: ${left_offset}px 8px 1fr; }`)
+	stylesheet.innerText = `.content-resize { grid-template-columns: ${left_offset}px 8px 1fr; }`
+	//stylesheet.replaceSync(`.content-resize { grid-template-columns: ${left_offset}px 8px 1fr; }`)
 } else {
-	stylesheet.replaceSync(`.content-resize { grid-template-columns: 252px 8px 1fr; }`)
+	stylesheet.innerText =`.content-resize { grid-template-columns: 252px 8px 1fr; }`
+	//stylesheet.replaceSync(`.content-resize { grid-template-columns: 252px 8px 1fr; }`)
 }
-document.adoptedStyleSheets = [stylesheet];
+document.head.appendChild(stylesheet);
+//document.adoptedStyleSheets = [stylesheet];
 
 
 addEventListener('DOMContentLoaded', function () {
