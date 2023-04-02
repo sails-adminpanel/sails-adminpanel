@@ -2,6 +2,26 @@
 <%- include("headContent") %>
 <% var config = adminpanel.configHelper.getConfig() %>
 
+<script>
+    var formStateProx = {
+        hasError: false
+    };
+    var formState = new Proxy(formStateProx, {
+        set: function (target, key, value) {
+            let submitButton = document.getElementById("submit");
+            if(submitButton && key === "hasError") {
+                if (value === true) {
+                    submitButton.setAttribute("disabled", true);
+                } else {
+                    submitButton.removeAttribute("disabled");
+                }
+            } 
+            target[key] = value;
+            return true;
+        }
+    });
+</script>
+
 <div class="content__body">
     <div class="flex gap-3 mt-4">
         <% var actionType = 'add' %>
@@ -68,6 +88,15 @@
     </form>
 </div>
 <script>
+
+    function checkInitSubmitFormStatus() {
+        let submitButton = document.getElementById("submit");
+        if(formState.hasError) {
+            submitButton.setAttribute("disabled", true);
+        }
+    }
+    checkInitSubmitFormStatus();
+
 	function submitForm() {
 		// Assign JSONEditor value to form textarea
 		for (var id in jsonEditor) {
@@ -80,8 +109,7 @@
 				jsonEditor[id].focus();
 				return false;
 			}
-		}
-		;
+		};
 
 		for (var id in tables) {
 			try {
