@@ -1,4 +1,4 @@
-<% var data = typeof value === 'object' ? JSON.stringify(value) : (value || '') %>
+<% var data = typeof value === 'object' ? JSON.stringify(value) : field.config.options.default ? JSON.stringify(field.config.options.default) : ''  %>
 <textarea
     <%= field.config.required && 'required' %>
     <%= field.config.disabled && 'disabled'%>
@@ -14,7 +14,8 @@ jsonEditor['<%= key %>'] = new JSONEditor(
         {...<%- JSON.stringify(field.config.options) %>,
             onValidationError: function(errors) {
                 formState.hasError = Boolean(errors.length);
-            }
+            },
+            language: '<%- req.session.UserAP.locale %>'
         }
     <%}else{%>
         {modes: ['code', 'form', 'text', 'tree', 'view'], mode: "tree"}
