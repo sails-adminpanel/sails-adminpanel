@@ -1,4 +1,4 @@
-<% var data = typeof value === 'object' ? JSON.stringify(value) : field.config.options.default ? JSON.stringify(field.config.options.default) : ''  %>
+<% var data = typeof value === 'object' ? JSON.stringify(value) : field.config.options?.default ? JSON.stringify(field.config.options.default) : ''  %>
 <textarea
     <%= field.config.required && 'required' %>
     <%= field.config.disabled && 'disabled'%>
