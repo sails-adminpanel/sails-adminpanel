@@ -47,6 +47,8 @@
             <input type="range" class="w-1/2"
                     <%= field.config.required && 'required' %>
                     <%= field.config.disabled && 'disabled' %>
+                    <%= field.config.options?.min && ' min='+field.config.options.min %>
+                    <%= field.config.options?.max && ' max='+field.config.options.max %>
                    value="<%= value || '' %>"
                    name="<%= key %>"
                    oninput="this.nextElementSibling.value = this.value"/>
