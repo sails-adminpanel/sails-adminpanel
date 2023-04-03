@@ -148,14 +148,23 @@ html.dark{
 
 .btn {
 	@apply inline-flex justify-center items-baseline gap-1 whitespace-nowrap focus:outline-none transition-colors cursor-pointer rounded border py-2 px-3 text-[12px];
+	&[disabled="true"]{
+		@apply cursor-not-allowed opacity-40;
+	}
 }
 
 .btn-add, .btn-back {
 	@apply uppercase text-sky-600 dark:text-slate-100 font-bold border-sky-600 dark:border-blue-700 dark:bg-blue-700 hover:text-white dark:hover:text-slate-300 hover:bg-sky-600 dark:hover:bg-blue-800;
+	&[disabled="true"]{
+		@apply hover:text-sky-600 hover:dark:text-slate-100;
+	}
 }
 
 .btn-green {
 	@apply uppercase text-green-600 font-bold border-green-600 hover:text-white hover:bg-green-600;
+	&[disabled="true"]{
+		@apply hover:text-green-600 hover:bg-transparent;
+	}
 }
 
 .btn-red, {
