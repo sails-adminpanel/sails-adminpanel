@@ -1,76 +1,82 @@
 <%- include("head") %>
 <%- include("headContent") %>
-
-<form id="addGroupForm" action="<%= entity.uri %>/add" method="POST">
-    <div class="layout">
-        <div class="nav-header">
-            <a href="<%= entity.uri %>/">
-                <i class="las la-long-arrow-alt-left"></i>
-                <%= __("Back") %>
-            </a>
-        </div>
-
-        <h2><%= __("Group settings") %></h2>
-
-        <div class="admin-panel__widget">
-            <label class="admin-panel__title" for="name"><%= __("Group name") %></label>
-            <div class="widget_narrow" >
-                <input class="clr-input" type="text" id="name" name="name">
-            </div>
-        </div>
-
-        <div class="admin-panel__widget">
-            <label class="admin-panel__title" for="description"><%= __("Group description") %></label>
-            <div class="widget_narrow" >
-                <textarea class="clr-textarea" id="description" name="description"></textarea>
-            </div>
-        </div>
-
-        <% if (users.length) { %>
-            <label class="admin-panel__title" for="members"><%= __("Members") %></label>
-            <% for (let user of users) { %>
-                <div class="clr-checkbox-inline">
-                    <label for="user-checkbox-<%= user.id %>"><%= user.fullName %></label>
-                    <input type="checkbox" id="user-checkbox-<%= user.id %>" name="user-checkbox-<%= user.id %>">
-                </div>
-            <% } %>
-        <% } %>
-
-        <% if (Object.keys(groupedTokens).length) { %>
-            <% for (let [department, tokens] of Object.entries(groupedTokens)) { %>
-                <h2><%= department %></h2>
-                <div class="clr-row">
-                    <div class="clr-col-sm-12 clr-col-md-6">
-                        <div class="admin-panel__widget">
-                            <% for (let token of tokens) { %>
-                                <div class="clr-checkbox-inline">
-                                    <label for="token-checkbox-<%= token.id %>"><%= token.name %></label>
-                                    <a href="javascript:void(0)" role="tooltip" aria-haspopup="true" class="tooltip tooltip-md tooltip-top-right">
-                                        <i class="las la-info-circle"></i>
-                                        <span class="tooltip-content"><%= token.description %></span>
-                                    </a>
-                                    <input type="checkbox" id="token-checkbox-<%= token.id %>" name="token-checkbox-<%= token.id %>">
-                                </div>
-                            <% } %>
-                        </div>
-                    </div>
-                </div>
-            <% } %>
-        <% } %>
-
-        <div>
-            <input class="clr-input" type="hidden" name="_csrf" value="<%= _csrf %>" />
-        </div>
-
-        <button raised="" class="btn-save" id="submit" onclick="submitForm()">
-            <%= __("Save") %>
+<div class="content__body">
+    <a href="<%= entity.uri %>/">
+        <button class="btn btn-back">
+            <i class="las la-long-arrow-alt-left"></i>
+            <%= __("Back") %>
         </button>
-    </div>
-</form>
+    </a>
+    <form id="addGroupForm" action="<%= entity.uri %>/add" method="POST">
+        <div class="mt-14 flex flex-col gap-10 max-w-[1144px]">
+            <h2 class="font-bold text-xl"><%= __("Group settings") %></h2>
+            <div class="flex flex-col gap-3">
+                <label class="admin-panel__title" for="name"><%= __("Group name") %></label>
+                <div class="widget_narrow">
+                    <input class="text-input w-full" type="text" id="name" name="name">
+                </div>
+            </div>
+            <div class="flex flex-col gap-3">
+                <label class="admin-panel__title" for="description"><%= __("Group description") %></label>
+                <div class="widget_narrow">
+                    <textarea class="textarea" id="description" name="description"></textarea>
+                </div>
+            </div>
 
+            <% if (users.length) { %>
+                <h2 class="text-xl font-bold"><%= __("Members") %></h2>
+                <div class="flex flex gap-3 items-center">
+                    <% for (let user of users) { %>
+                        <label class="admin-panel__title"
+                               for="user-checkbox-<%= user.id %>"><%= user.fullName %></label>
+                        <div class="checkbox relative">
+                            <input type="checkbox" id="user-checkbox-<%= user.id %>"
+                                   name="user-checkbox-<%= user.id %>">
+                            <span class="check"></span>
+                        </div>
+                    <% } %>
+                </div>
+            <% } %>
+
+            <% if (Object.keys(groupedTokens).length) { %>
+                <% for (let [department, tokens] of Object.entries(groupedTokens)) { %>
+                    <h2 class="text-xl font-bold mt-4"><%= department %></h2>
+                    <% for (let token of tokens) { %>
+                        <div class="flex gap-3 items-center">
+                            <div class="flex gap-3">
+                                <label class="admin-panel__title opacity-70" for="token-checkbox-<%= token.id %>"><%= token.name %></label>
+                                <div class="tooltip tooltip-right group cursor-pointer">
+                                    <i class="las la-info-circle"></i>
+                                    <div class="tooltip__content group-hover:visible group-hover:opacity-100">
+                                        <span><%= token.description %></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="checkbox relative">
+                                <input type="checkbox" id="token-checkbox-<%= token.id %>"
+                                       name="token-checkbox-<%= token.id %>">
+                                <span class="check"></span>
+                            </div>
+                        </div>
+                    <% } %>
+                <% } %>
+            <% } %>
+
+            <div>
+                <input class="clr-input" type="hidden" name="_csrf" value="<%= _csrf %>"/>
+            </div>
+
+            <p>
+                <button class="btn btn-green" id="submit" onclick="submitForm()">
+                    <%= __("Save") %>
+                </button>
+            </p>
+        </div>
+    </form>
+</div>
 <script>
-    function submitForm() {
-        // check all fields
-        $("#addGroupForm").submit();
-    }
+	function submitForm() {
+		// check all fields
+		$("#addGroupForm").submit();
+	}
 </script>

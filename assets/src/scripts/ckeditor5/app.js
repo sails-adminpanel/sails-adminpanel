@@ -48,6 +48,7 @@ import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
 import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount.js';
 import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
 import Style from '@ckeditor/ckeditor5-style/src/style';
+import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 
 class Editor extends ClassicEditor { }
 
@@ -97,7 +98,8 @@ Editor.builtinPlugins = [
 	Underline,
 	WordCount,
 	HtmlEmbed,
-	Style
+	Style,
+	RemoveFormat
 ];
 
 // Editor configuration.
@@ -112,6 +114,8 @@ Editor.defaultConfig = {
 			'link',
 			'bulletedList',
 			'numberedList',
+			'|',
+			'removeFormat',
 			'|',
 			'outdent',
 			'indent',
@@ -159,4 +163,4 @@ Editor.defaultConfig = {
 	}
 };
 
-export default Editor; 
+export default Editor;

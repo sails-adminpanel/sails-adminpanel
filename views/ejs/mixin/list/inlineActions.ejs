@@ -1,11 +1,16 @@
 <% if (adminpanel.menuHelper.hasInlineActions(entity.config, 'list')) { %>
     <% var actions = adminpanel.menuHelper.getInlineActions(entity.config, 'list') %>
     <% if (actions && actions.length > 0) { %>
+        data += '<div class="inline-flex relative group justify-center [&:has(>.tb-sub-peer:empty)]:hidden">'
+        data += '<span class="list-action cursor-pointer"><i class="las la-hand-point-down"></i><%= __('Actions') %></span><div class="menu__icon group-hover:after:rotate-45 group-hover:before:rotate-[-45deg] w-3 ml-3 after:right-0 before:right-[5px]"></div>'
+        data += '<div class="flex flex-col gap-2 items-start absolute left-0 top-[100%] bg-white dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-700 px-3 py-2 z-10 opacity-0 invisible transition group-hover:opacity-100 group-hover:visible tb-sub-peer">'
         <% actions.forEach(function(action) { %>
             <% if (havePermission(action.accessRightsToken, req.session.UserAP)) { %>
                 <%# print data into list.ejs inline action %>
-                data += '<a href="<%= action.link %>/'+row[0]+'?id='+row[0]+'&entity=<%= entity.name %>" id="<%= action.id %>"><i class="las la-<%= action.icon %>"></i><%= __(action.title) %></a><br>';
+                data += '<div><a href="<%= action.link %>/'+row[0]+'?id='+row[0]+'&entity=<%= entity.name %>" id="<%= action.id %>" class="list-action"><i class="las la-<%= action.icon %>"></i><%= __(action.title) %></a></div>';
             <% } %>
         <% }) %>
+        data += '</div>'
+        data += '</div>'
     <% } %>
 <% } %>

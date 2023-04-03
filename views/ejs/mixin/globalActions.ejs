@@ -4,13 +4,13 @@
         <% actions.forEach(function(action) { %>
             <% if (havePermission(action.accessRightsToken, req.session.UserAP)) { %>
                 <a href="<%= action.link %>" id="<%= action.id %>">
-                    <button class="btn btn-success">
+                    <button class="btn btn-add">
                         <i class="las la-<%= action.icon %>"></i>
-                        &nbsp;<%= action.title %>
+                        <%= action.title %>
                     </button>
                 </a>
             <% } %>
         <% }) %>
     <% } %>
-<% }%>
+<% } %>
 

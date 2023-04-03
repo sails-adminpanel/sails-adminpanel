@@ -1,3 +1,5 @@
+import _migrations from "../controllers/migrations";
+import _processMigrations from "../controllers/processMigrations";
 import _dashboard from "../controllers/dashboard";
 import _welcome from "../controllers/welcome";
 import _list from "../controllers/list";
@@ -21,6 +23,14 @@ export default function bindRoutes() {
    */
   let config = sails.config.adminpanel;
   let policies = config.policies || "";
+
+  /**
+   * Migrations
+   * */
+  if (config.globalSettings.enableMigrations) {
+    sails.router.bind(`${config.routePrefix}/migrations`, bindPolicies(policies, _migrations));
+    sails.router.bind(`${config.routePrefix}/processMigrations`, bindPolicies(policies,_processMigrations));
+  }
 
   /**
    * Edit form

@@ -37,6 +37,7 @@ export class FileUploader {
         this.files = [];
         this.el = $('#' + this.elName);
 
+        this.selectedFile = null
 
         if (this.type === 'images') {
             const ci = config.images;
@@ -255,7 +256,8 @@ export class FileUploader {
         this.setListeners();
     }
 
-    setModalFile(file) {
+    setModalFile() {
+        let file = this.selectedFile;
         // set data in modal
         $('.modal-header').text(file.name);
         const body = '.modal-body #';
@@ -278,38 +280,44 @@ export class FileUploader {
         $(body + 'year-' + this.elName).val(file.year);
         $(body + 'author-' + this.elName).val(file.author);
 
-        // save changes
-        $('#file-uploader-save-' + this.elName).click(() => {
-            file.title = $(body + 'title-' + this.elName).val();
-            file.description = $(body + 'desc-' + this.elName).val();
-            file.year = $(body + 'year-' + this.elName).val();
-            file.author = $(body + 'author-' + this.elName).val();
-            this.saveData();
-            $('#file-info-modal-' + this.elName).hide();
-        });
-        // save changes
-        $('#file-uploader-close-' + this.elName).click(() => {
-            $('#file-info-modal-' + this.elName).hide();
-        });
     }
 
     setListeners() {
         // make click for modal
         const fu = this;
+        const body = '.modal-body #';
+
         $('.' + this.fileContainer + ' > .item-image').click(function() {
             const fileEl = $(this).find('img');
             const id = fileEl.attr('id');
-            const file = fu.files[id];
-            fu.setModalFile(file);
+            //const file = fu.files[id];
+            fu.selectedFile = fu.files[id]
+            fu.setModalFile();
             $('#file-info-modal-' + fu.elName).show();
         });
 
         $('.' + this.fileContainer + ' > .item-file').click(function() {
             const fileEl = $(this).find('img');
             const id = fileEl.attr('id');
-            const file = fu.files[id];
-            fu.setModalFile(file);
+            //const file = fu.files[id];
+            fu.selectedFile = fu.files[id]
+            fu.setModalFile();
             $('#file-info-modal-' + fu.elName).show();
+        });
+
+
+          // save changes
+          $('#file-uploader-save-' + this.elName).click(() => {
+            this.selectedFile.title = $(body + 'title-' + this.elName).val();
+            this.selectedFile.description = $(body + 'desc-' + this.elName).val();
+            this.selectedFile.year = $(body + 'year-' + this.elName).val();
+            this.selectedFile.author = $(body + 'author-' + this.elName).val();
+            this.saveData();
+            $('#file-info-modal-' + this.elName).hide();
+        });
+        // save changes
+        $('#file-uploader-close-' + this.elName).click(() => {
+            $('#file-info-modal-' + this.elName).hide();
         });
 
 

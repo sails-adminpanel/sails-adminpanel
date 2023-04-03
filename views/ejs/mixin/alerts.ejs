@@ -1,7 +1,7 @@
-<div class="alerts">
+<div class="alerts pl-12 md:pl-3 pr-16 max-w-[1144px]">
     <% if (adminpanel.viewHelper.hasMessages(req, 'adminError')) { %>
         <% req.session.messages.adminError.forEach(function(msg) { %>
-            <div class="alert alert-danger"><div class="alert-items"><div class="alert-item static"><div class="alert-icon-wrapper"><i class="las la-exclamation-triangle"></i></div><span class="alert-text">
+            <div class="alert bg-red-600 rounded font-medium mt-8"><div class="alert-items"><div class="alert-item flex gap-2 p-2 text-white"><div class="alert-icon-wrapper"><i class="las la-exclamation-triangle text-sm"></i></div><span class="alert-text">
                 <%= __(msg) %>
             </span></div></div></div>
             <% req.session.messages.adminError = req.session.messages.adminError.filter(function(elem){return elem !== msg}) %>
@@ -10,7 +10,7 @@
 
     <% if (adminpanel.viewHelper.hasMessages(req, 'adminSuccess')) { %>
         <% req.session.messages.adminSuccess.forEach(function(msg) { %>
-            <div class="alert alert-success"><div class="alert-items"><div class="alert-item static"><div class="alert-icon-wrapper"><i class="las la-thumbs-up"></i></div><span class="alert-text">
+            <div class="alert bg-green-600 rounded font-medium mt-8"><div class="alert-items"><div class="alert-item flex gap-2 p-2 text-white"><div class="alert-icon-wrapper"><i class="las la-thumbs-up text-sm"></i></div><span class="alert-text">
                 <%= __(msg) %>
             </span></div></div></div>
             <% req.session.messages.adminSuccess = req.session.messages.adminSuccess.filter(function(elem){return elem !== msg}) %>

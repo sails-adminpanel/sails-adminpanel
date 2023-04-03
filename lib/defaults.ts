@@ -107,7 +107,13 @@ const adminpanelConfig: AdminpanelConfig = {
     sections: [],
     package: packageJson,
     showVersion: true,
-    timezones: timezones
+    timezones: timezones,
+    migrations: {
+        path: `${process.cwd()}/migrations`
+    },
+    globalSettings: {
+        enableMigrations: false
+    }
 }
 
 export const content = {

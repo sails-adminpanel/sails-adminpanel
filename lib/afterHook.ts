@@ -3,9 +3,12 @@ import bindAuthorization from './bindAuthorization';
 import bindAccessRights from "./bindAccessRights";
 import bindDev from "./bindDev";
 import bindForms from "./bindForms";
-import {FileStorageHelper} from "../helper/fileStorageHelper";
+import MigrationsHelper from "../helper/migrationsHelper";
 
 export default async function () {
+    // check that current datastore is appropriate for migrations
+    MigrationsHelper.processDatastoreAdapter();
+
     // Binding list of function for rendering
     require('./bindResView').default();
 
@@ -42,7 +45,7 @@ export default async function () {
 
     //binding authorization
     await bindAuthorization();
-    
+
     if (sails.hooks.i18n && sails.hooks.i18n.appendLocale) {
         sails.after(["hook:i18n:loaded"], async () => {
             bindTranslations();

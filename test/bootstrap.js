@@ -9,8 +9,8 @@ process.env.HTTP_TEST_LOCALHOST = "http://127.0.0.1:42772";
 let sails;
 before(function (done) {
     this.timeout(50000);
-    require("./fixture/app-export");
-    Sails().lift({}, function (err, _sails) {
+    const rc = require("./fixture/app-export").rc;
+    Sails().lift(rc, function (err, _sails) {
         if (err)
             return done(err);
         sails = _sails;
