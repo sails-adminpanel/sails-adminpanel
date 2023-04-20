@@ -8,7 +8,7 @@ const tilde = require('node-sass-tilde-importer');
 const sass = gulpSass(dartSass);
 const webpackStream = require('webpack-stream');
 const merge = require('merge-stream');
-//const { VueLoaderPlugin  } = require('vue-loader')
+const { VueLoaderPlugin  } = require('vue-loader')
 const Fpath = require('path');
 const webpack = require('webpack');
 const {styles} = require('@ckeditor/ckeditor5-dev-utils');
@@ -171,40 +171,40 @@ const jsProd = () => {
 		.pipe(gulp.dest(path.build.js));
 };
 
-// const vue = () => {
-// 	return gulp.src(`${srcFolder}/scripts/vue/app.js`, { sourcemaps: true })
-// 		.pipe(webpackStream({
-// 			mode: 'development',
-// 			entry: `${srcFolder}/scripts/vue/app.js`,
-// 			output: {
-// 				path: Fpath.resolve('./assets/build/js/'),
-// 				filename: 'vue-app.js'
-// 			},
-// 			module: {
-// 				rules: [
-// 					{
-// 						test: /\.vue$/,
-// 						loader: 'vue-loader'
-// 					},
-// 					{
-// 						test: /\.css$/,
-// 						use: [
-// 						  'vue-style-loader',
-// 						  'css-loader',
-// 						]
-// 					  }
-// 				]
-// 			},
-// 			plugins: [
-// 				new VueLoaderPlugin(),
-// 				new webpack.DefinePlugin({
-// 					__VUE_PROD_DEVTOOLS__: true,
-// 					__VUE_OPTIONS_API__: true
-// 				  })
-// 			]
-// 		}))
-// 		.pipe(gulp.dest(`${path.build.js}/vue/`))
-// }
+const vue = () => {
+	return gulp.src(`${srcFolder}/widgets/app.js`, { sourcemaps: true })
+		.pipe(webpackStream({
+			mode: 'development',
+			entry: `${srcFolder}/widgets/app.js`,
+			output: {
+				path: Fpath.resolve('./assets/build/js/'),
+				filename: 'vue-widgets.js'
+			},
+			module: {
+				rules: [
+					{
+						test: /\.vue$/,
+						loader: 'vue-loader'
+					},
+					{
+						test: /\.css$/,
+						use: [
+						  'vue-style-loader',
+						  'css-loader',
+						]
+					  }
+				]
+			},
+			plugins: [
+				new VueLoaderPlugin(),
+				new webpack.DefinePlugin({
+					__VUE_PROD_DEVTOOLS__: true,
+					__VUE_OPTIONS_API__: true
+				  })
+			]
+		}))
+		.pipe(gulp.dest(`${path.build.js}/`))
+}
 
 const ckeditorBuild = () => {
 	return gulp.src(`${srcFolder}/scripts/ckeditor5/app.js`, {sourcemaps: true})
@@ -289,7 +289,7 @@ const prod = gulp.series(reset, copy_styles_files, scssProd, jsProd, ckeditorBui
 
 gulp.task('default', build);
 gulp.task('prod', prod);
-//gulp.task('vue', vue)
+gulp.task('vue', vue)
 gulp.task('ckeditorBuild', ckeditorBuild);
 
 gulp.task('js', js);
