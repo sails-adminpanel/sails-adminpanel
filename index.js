@@ -1,6 +1,7 @@
 'use strict';
 let { MenuHelper } = require('./helper/menuHelper');
 let { AccessRightsHelper } = require('./helper/accessRightsHelper');
+let { MigrationsHelper } = require('./helper/migrationsHelper');
 
 module.exports = function (sails) {
 
@@ -48,12 +49,12 @@ module.exports = function (sails) {
         },
 
         registerAccessToken: AccessRightsHelper.registerToken,
-
         getAllAccessTokens: AccessRightsHelper.getTokens,
-
         havePermission: AccessRightsHelper.havePermission,
+        enoughPermissions: AccessRightsHelper.enoughPermissions,
 
-        enoughPermissions: AccessRightsHelper.enoughPermissions
+        addToProcessMigrationsQueue: MigrationsHelper.addToProcessMigrationsQueue,
+        processSpecificDirectoryMigrations: MigrationsHelper.processSpecificDirectoryMigrations
 
     };
 };

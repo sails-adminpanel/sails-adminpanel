@@ -15,8 +15,12 @@ export default async function processMigrations(req, res) {
         return res.badRequest();
     }
 
+    if (typeof sails.config.adminpanel.migrations === "boolean" || !sails.config.adminpanel.migrations.path) {
+        throw "Migrations directory is not defined";
+    }
+
     try {
-        let result = await MigrationsHelper.processMigrations(action);
+        let result = await MigrationsHelper.processSpecificDirectoryMigrations(sails.config.adminpanel.migrations.path, action);
         return res.send(result);
     } catch (e) {
         return res.serverError(e)

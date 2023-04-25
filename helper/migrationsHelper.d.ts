@@ -1,7 +1,10 @@
 export default class MigrationsHelper {
+    private static queue;
+    private static migrationsIsRunning;
     static processDatastoreAdapter(): void;
     private static runMigrations;
-    static processMigrations(action: any): Promise<{
+    static addToProcessMigrationsQueue(migrationsDirectory: string): Promise<void>;
+    static processSpecificDirectoryMigrations(migrationsDirectory: string, action: "up" | "down", isInternal?: boolean): Promise<{
         success: boolean;
         time: number;
         message: string;

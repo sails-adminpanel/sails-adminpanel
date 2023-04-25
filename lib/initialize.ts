@@ -42,9 +42,13 @@ export default async function(sails: any, cb) {
     // sails.hooks.i18n.locales = [...sails.hooks.i18n.locales, ...sails.config.adminpanel.translation.locales]
     //     .filter(function(item, pos, self) { return self.indexOf(item) == pos })
 
+    // run adminpanel migrations
+    await MigrationsHelper.addToProcessMigrationsQueue(`${sails.config.adminpanel.rootPath}/migrations`);
+
+    // run project migrations
     if (process.env.AUTO_MIGRATIONS) {
-        let result = await MigrationsHelper.processMigrations("up");
-        sails.log.info(`Adminpanel automigrations completed: ${result}`)
+        let result = await MigrationsHelper.processSpecificDirectoryMigrations(sails.config.adminpanel.migrations.path, "up");
+        sails.log.info(`Automigrations completed: ${result}`)
     }
 
     // Bind assets
