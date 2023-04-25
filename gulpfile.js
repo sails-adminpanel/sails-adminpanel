@@ -281,6 +281,10 @@ function watcher() {
 	gulp.watch(path.src.scss, gulp.series(scss, reload))
 }
 
+function vueWatcher(){
+	gulp.watch(`${srcFolder}/widgets/**/*.*`, gulp.series(vue, reload))
+	gulp.watch(path.src.scss, gulp.series(scss, reload))
+}
 
 const build = gulp.series(reset, copy_styles_files, scss, js, ckeditorBuild);
 //const build = gulp.series(reset, copy_styles_files, scss, js);
@@ -289,9 +293,10 @@ const prod = gulp.series(reset, copy_styles_files, scssProd, jsProd, ckeditorBui
 
 gulp.task('default', build);
 gulp.task('prod', prod);
-gulp.task('vue', vue)
 gulp.task('ckeditorBuild', ckeditorBuild);
 
 gulp.task('js', js);
 gulp.task('styles-prod', scssProd);
 gulp.task('styles', gulp.series(scss, gulp.parallel(serve, watcher)))
+
+gulp.task('vue', gulp.series(vue, gulp.parallel(serve, vueWatcher)))

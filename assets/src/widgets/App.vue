@@ -1,30 +1,38 @@
 <template>
-	<div class="wrapper">
-		<div id="test"></div>
-		<div id="test2"></div>
-		<div id="test3"></div>
-		<div id="test4"></div>
-	</div>
+	<grid-layout
+		v-model:layout="layout"
+		:col-num="12"
+		:row-height="30"
+		@resize="resize"
+		@move="move"
+		@moved="moved"
+	>
+		<template #item="{ item }">
+			{{ item.i }}
+		</template>
+	</grid-layout>
 </template>
-
 <script>
-import { defineComponent } from "vue";
-export default defineComponent( {
-	name: "App"
+
+import {defineComponent} from "vue";
+
+export default defineComponent({
+	name: 'App',
+	data() {
+		return {
+			layout: [
+				{x: 0, y: 0, w: 2, h: 2, i: 0},
+				{x: 2, y: 0, w: 2, h: 4, i: 1},
+				{x: 4, y: 0, w: 2, h: 5, i: 2},
+				{x: 6, y: 0, w: 2, h: 3, i: 3},
+				{x: 8, y: 0, w: 2, h: 3, i: 4},
+				{x: 8, y: 0, w: 2, h: 3, i: 5},
+				{x: 0, y: 5, w: 2, h: 5, i: 6},
+				{x: 2, y: 5, w: 2, h: 5, i: 7},
+				{x: 4, y: 5, w: 2, h: 5, i: 8},
+				{x: 6, y: 3, w: 2, h: 4, i: 9}
+			]
+		}
+	}
 })
 </script>
-
-<style scoped>
-.wrapper{
-	margin: 80px auto 0 auto;
-	width: 600px;
-	display: grid;
-	grid-template-columns: repeat(4, 1fr);
-}
-#test, #test2,
-#test3, #test4{
-	width: 40px;
-	height: 40px;
-	border: 1px solid black;
-}
-</style>

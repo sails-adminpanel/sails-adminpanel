@@ -789,3 +789,8 @@ select {
 .navigation-block{
 	@apply flex items-center gap-4;
 }
+
+// Dashboard
+.test{
+	@apply bg-gray-900;
+}
