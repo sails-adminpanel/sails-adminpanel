@@ -19,7 +19,7 @@ async function processMigrations(req, res) {
         throw "Migrations directory is not defined";
     }
     try {
-        let result = await migrationsHelper_1.default.processSpecificDirectoryMigrations(sails.config.adminpanel.migrations.path, action);
+        let result = await migrationsHelper_1.MigrationsHelper.processSpecificDirectoryMigrations(sails.config.adminpanel.migrations.path, action);
         return res.send(result);
     }
     catch (e) {

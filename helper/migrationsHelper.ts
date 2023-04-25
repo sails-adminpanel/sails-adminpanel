@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as DBMigrate from 'db-migrate';
 
-export default class MigrationsHelper {
+export class MigrationsHelper {
     private static queue = [];
     private static migrationsIsRunning = false;
 

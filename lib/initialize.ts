@@ -5,7 +5,7 @@ import bindAssets from "./bindAssets"
 import HookTools from "./hookTools";
 import {resolve} from "path";
 import afterHook from "./afterHook";
-import MigrationsHelper from "../helper/migrationsHelper";
+import { MigrationsHelper } from "../helper/migrationsHelper";
 
 export default async function(sails: any, cb) {
 

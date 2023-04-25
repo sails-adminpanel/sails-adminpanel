@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MigrationsHelper = void 0;
 const fs = require("fs");
 const DBMigrate = require("db-migrate");
 class MigrationsHelper {
@@ -126,6 +127,6 @@ class MigrationsHelper {
         }
     }
 }
-exports.default = MigrationsHelper;
+exports.MigrationsHelper = MigrationsHelper;
 MigrationsHelper.queue = [];
 MigrationsHelper.migrationsIsRunning = false;

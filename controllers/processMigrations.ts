@@ -1,5 +1,5 @@
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
-import MigrationsHelper from "../helper/migrationsHelper";
+import {MigrationsHelper} from "../helper/migrationsHelper";
 
 export default async function processMigrations(req, res) {
     if (sails.config.adminpanel.auth) {

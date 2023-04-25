@@ -1,4 +1,4 @@
-export default class MigrationsHelper {
+export declare class MigrationsHelper {
     private static queue;
     private static migrationsIsRunning;
     static processDatastoreAdapter(): void;
