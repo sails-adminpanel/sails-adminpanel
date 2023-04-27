@@ -20,9 +20,9 @@ export default async function processMigrations(req, res) {
     }
 
     try {
-        let result = await MigrationsHelper.processSpecificDirectoryMigrations(sails.config.adminpanel.migrations.path, action);
-        return res.send(result);
+        await MigrationsHelper.addToProcessMigrationsQueue(sails.config.adminpanel.migrations.path, action);
+        return res.send(200);
     } catch (e) {
-        return res.serverError(e)
+        return res.serverError(e);
     }
 };

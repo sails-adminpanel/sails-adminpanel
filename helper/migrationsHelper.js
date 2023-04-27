@@ -34,97 +34,46 @@ class MigrationsHelper {
             }
         });
     }
-    static async addToProcessMigrationsQueue(migrationsDirectory) {
-        this.queue.push(migrationsDirectory);
-        if (!this.migrationsIsRunning) {
-            this.migrationsIsRunning = true;
-            let firstToProcess = this.queue.shift();
-            await this.processSpecificDirectoryMigrations(firstToProcess, "up", true);
-            this.migrationsIsRunning = false;
-        }
-        else {
-            let timerId = setInterval(async () => {
-                if (this.queue.length) {
-                    if (!this.migrationsIsRunning) {
-                        this.migrationsIsRunning = true;
-                        let firstToProcess = this.queue.shift();
-                        await this.processSpecificDirectoryMigrations(firstToProcess, "up", true);
-                        this.migrationsIsRunning = false;
-                    }
-                }
-                else {
-                    clearInterval(timerId);
-                }
-            }, 3000);
-        }
-    }
-    static async processSpecificDirectoryMigrations(migrationsDirectory, action, isInternal = false) {
+    static async addToProcessMigrationsQueue(migrationsDirectory, action) {
         if (typeof migrationsDirectory === "boolean" || !fs.existsSync(migrationsDirectory)) {
             throw `Migrations path does not exist: ${migrationsDirectory}`;
+        }
+        if (!fs.readdirSync(migrationsDirectory).length) {
+            throw `Migrations directory is empty: ${migrationsDirectory}`;
+        }
+        this.queue.push({ directory: migrationsDirectory, action: action });
+        await this.runMigrationsQueue();
+    }
+    static async runMigrationsQueue() {
+        if (this.queue.length) {
+            if (!this.migrationsIsRunning) {
+                let firstToProcess = this.queue.shift();
+                await this.processSpecificDirectoryMigrations(firstToProcess.directory, firstToProcess.action);
+                await this.runMigrationsQueue();
+            }
+        }
+    }
+    static async processSpecificDirectoryMigrations(migrationsDirectory, action) {
+        this.migrationsIsRunning = true;
+        if (typeof sails.config.adminpanel.migrations === "boolean" || !sails.config.adminpanel.migrations.config) {
+            throw "Migrations config is not defined";
         }
         // !TODO solve migrations down problem described in module-manager
         if (action === "down") {
             throw "Migrations down is not available yet. Please check for updates";
         }
-        if (isInternal) {
-            let dbmigrate = DBMigrate.getInstance(true, {
-                cwd: migrationsDirectory,
-                config: {
-                    "default": `${sails.config.adminpanel.rootPath}/database.json`
-                }
-            });
-            try {
-                await this.runMigrations(dbmigrate, action);
-                sails.log.info(`Migrations ${action} was successfully run, path: ${migrationsDirectory}`);
-            }
-            catch (e) {
-                sails.log.error(`Error trying to run migrations ${action}, path: ${migrationsDirectory}`);
-            }
+        let dbmigrate = DBMigrate.getInstance(true, {
+            cwd: migrationsDirectory,
+            config: sails.config.adminpanel.migrations.config
+        });
+        try {
+            await this.runMigrations(dbmigrate, action);
+            sails.log.info(`Migrations ${action} was successfully run, path: ${migrationsDirectory}`);
         }
-        else {
-            if (typeof sails.config.adminpanel.migrations === "boolean" || !sails.config.adminpanel.migrations.config) {
-                throw "Migrations config is not defined";
-            }
-            let migrationsLastResult;
-            if (fs.existsSync(`${process.cwd()}/.tmp/migrations_run.json`)) {
-                migrationsLastResult = require(`${process.cwd()}/.tmp/migrations_run.json`);
-            }
-            let migrationsDir = fs.readdirSync(migrationsDirectory);
-            if (migrationsDir.length === migrationsLastResult.migrationsCount) {
-                return { success: true, time: 0, message: "No unprocessed migrations found, exited without running" };
-            }
-            else { // if migrations num changed, run migrations
-                let dbmigrate = DBMigrate.getInstance(true, {
-                    cwd: migrationsDirectory,
-                    config: {
-                        "default": sails.config.adminpanel.migrations.config
-                    }
-                });
-                try {
-                    let startTime = Date.now();
-                    let result = await this.runMigrations(dbmigrate, action);
-                    let finishTime = Date.now();
-                    console.log(`Migrations run result: ${JSON.stringify(result)}`);
-                    migrationsLastResult = {
-                        status: "success",
-                        migrationsCount: migrationsDir.length,
-                        result: `Migrations ${action} method was run successfully`
-                    };
-                    fs.writeFileSync(`${process.cwd()}/.tmp/migrations_run.json`, JSON.stringify(migrationsLastResult, null, 2));
-                    return { success: true, time: finishTime - startTime, message: `Migrations ${action} method was run successfully` };
-                }
-                catch (e) {
-                    sails.log.error(`Migrations error: ${e}`);
-                    migrationsLastResult = {
-                        status: "failed",
-                        migrationsCount: migrationsDir.length,
-                        result: `Error while processing migrations ${action} method: ${JSON.stringify(e)}`
-                    };
-                    fs.writeFileSync(`${process.cwd()}/.tmp/migrations_run.json`, JSON.stringify(migrationsLastResult, null, 2));
-                    return { success: false, time: 0, message: `Error while processing migrations ${action} method: ${JSON.stringify(e)}` };
-                }
-            }
+        catch (e) {
+            throw `Error trying to run migrations ${action}, path: ${migrationsDirectory}`;
         }
+        this.migrationsIsRunning = false;
     }
 }
 exports.MigrationsHelper = MigrationsHelper;

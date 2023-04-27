@@ -51,11 +51,7 @@ module.exports = function (sails) {
         registerAccessToken: AccessRightsHelper.registerToken,
         getAllAccessTokens: AccessRightsHelper.getTokens,
         havePermission: AccessRightsHelper.havePermission,
-        enoughPermissions: AccessRightsHelper.enoughPermissions,
-
-        addToProcessMigrationsQueue: MigrationsHelper.addToProcessMigrationsQueue,
-        processSpecificDirectoryMigrations: MigrationsHelper.processSpecificDirectoryMigrations
-
+        enoughPermissions: AccessRightsHelper.enoughPermissions
     };
 };
 

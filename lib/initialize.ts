@@ -43,12 +43,18 @@ export default async function(sails: any, cb) {
     //     .filter(function(item, pos, self) { return self.indexOf(item) == pos })
 
     // run adminpanel migrations
-    await MigrationsHelper.addToProcessMigrationsQueue(`${sails.config.adminpanel.rootPath}/migrations`);
+    if (process.env.NODE_ENV === "production") {
+        await MigrationsHelper.addToProcessMigrationsQueue(`${sails.config.adminpanel.rootPath}/migrations`, "up");
+    }
 
     // run project migrations
     if (process.env.AUTO_MIGRATIONS) {
-        let result = await MigrationsHelper.processSpecificDirectoryMigrations(sails.config.adminpanel.migrations.path, "up");
-        sails.log.info(`Automigrations completed: ${result}`)
+        try {
+            await MigrationsHelper.addToProcessMigrationsQueue(sails.config.adminpanel.migrations.path, "up");
+            sails.log.info(`Automigrations completed`)
+        } catch (e) {
+            sails.log.error(`Error trying to run automigrations, path: ${sails.config.adminpanel.migrations.path}`);
+        }
     }
 
     // Bind assets
