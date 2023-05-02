@@ -9,6 +9,7 @@ import Handsontable from 'handsontable';
 import L from 'leaflet'
 import 'leaflet-draw'
 import {GeoJsonEditor} from '../geojson/geojson'
+import { AdminPopUp } from '../pop-up/admin-pop-up'
 
 import 'jquery-ui-dist/jquery-ui.js'
 
@@ -27,6 +28,7 @@ window.SelectPure = SelectPure
 window.Handsontable = Handsontable
 window.L = L
 window.GeoJsonEditor = GeoJsonEditor
+window.AdminPopUp = AdminPopUp
 
 import('../navigation/js/jquery-sortable-lists.min.js')
 import('bootstrap/dist/js/bootstrap.js')
