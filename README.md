@@ -16,7 +16,7 @@ In nearest future: Customization dashboard | Custom widgets | Wizards
 
 ___sails v0.x is not supported___
 
-TODO: 
+TODO:
 1. Check csrf to fileUpload
 2. Docs finish
 3. Add disabled fields to all widgets
@@ -95,7 +95,7 @@ Clarity docs https://vmware.github.io/clarity/documentation/v0.13/
 
 for build styles - sass --watch clarity/src:assets/styles/
 
-# JSON-schema config 
+# JSON-schema config
 
 `npx ts-json-schema-generator -p ./interfaces/adminpanelConfig.d.ts > adminpanel-config.schema.json`
 

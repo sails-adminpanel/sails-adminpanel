@@ -112,7 +112,7 @@ fieldName: {
     title: "Field title", // You can overwrite field title
     type: "string", //you can overwrite default field type in admin panel
     required: true, // you can mark field required or not
-    tooltip: 'tooltip for field', // You can define tooltip for field 
+    tooltip: 'tooltip for field', // You can define tooltip for field
     editor: true, // you can add WYSTYG editor for the field in admin panel
 }
 ```
@@ -134,7 +134,7 @@ module.exports.adminpanel = {
                 createdAt: false, // Will hide createdAt field in all actions
                 avatar: {
                     displayModifier: function (img) { // Only for list view  look callback.md for get more info
-                        return `<img src="${img}">`              
+                        return `<img src="${img}">`
                     }
                 },
                 bio: {
@@ -256,7 +256,7 @@ module.exports.adminpanel = {
 ```
 
 ## Select many
-You need configure you field as json 
+You need configure you field as json
 
 Your model:
 ```javascript
@@ -270,7 +270,7 @@ module.exports = {
 ```
 
 Your admin panel configuration:
-You need configure isIn option for you filed as plain object {} or array of strings 
+You need configure isIn option for you filed as plain object {} or array of strings
 
 ```javascript
 module.exports.adminpanel = {
@@ -339,7 +339,7 @@ This configuration loads all sail models as they are. Just place  in `config\adm
      };
    });
  });
- 
+
  module.exports.adminpanel = { models: models } ;
 ```
 

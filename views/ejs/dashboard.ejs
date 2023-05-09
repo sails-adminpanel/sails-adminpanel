@@ -2,10 +2,12 @@
 <%- include("headContent") %>
 
 <% if (Boolean((adminpanel.configHelper.getConfig()).dashboard)) { %>
-    <script src="/admin/assets/build/js/vue-widgets.js" defer></script>
-<div class="content__body">
-    <div id="widgets"></div>
-</div>
+    <% if(Boolean((adminpanel.configHelper.getConfig()).globalSettings.enableWidgets)){ -%>
+        <script src="/admin/assets/build/js/vue-widgets.js" defer></script>
+        <div class="content__body">
+            <div id="widgets"></div>
+        </div>
+    <% } -%>
 <% } else { %>
     HELLO
 <% } %>
