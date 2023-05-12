@@ -17,13 +17,16 @@ async function widgetSwitchController(req, res) {
         }
     }
     let widget = widgetHandler_1.WidgetHandler.getById(widgetId);
+    if (widget === undefined) {
+        return res.notFound();
+    }
     /** get state */
     if (req.method.toUpperCase() === 'GET') {
-        return widget.getState();
+        return widget.getState(req, res);
     }
     /** Switch state  */
     else if (req.method.toUpperCase() === 'POST') {
-        return widget.switchIt();
+        return widget.switchIt(req, res);
     }
 }
 exports.widgetSwitchController = widgetSwitchController;

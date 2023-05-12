@@ -1,6 +1,6 @@
 export default abstract class BaseWidget {
     /** Widget unique ID */
-    abstract readonly id: string;
+    abstract readonly ID: string;
     /** Widget Name */
     abstract readonly name: string;
     /** Widget decription */

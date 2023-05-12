@@ -1,26 +1,36 @@
-
-import SwitchrBase from "./abstractSwitch";
+import SwitcherBase from "./abstractSwitch";
 import InfoBase from "./abstractInfo";
-import { AccessRightsHelper } from "../../helper/accessRightsHelper";
+import {AccessRightsHelper} from "../../helper/accessRightsHelper";
 
-type WidgetType = (SwitchrBase | InfoBase);
+type WidgetType = (SwitcherBase | InfoBase);
 
 export class WidgetHandler {
-  private static widgets: WidgetType[] = [];
+	private static widgets: WidgetType[] = [];
 
-  public static add(widget: WidgetType): void {
-    AccessRightsHelper.registerToken({id: `widget-${widget.id}`, name: widget.name, description: widget.description, department: widget.department});
-    this.widgets.push(widget);
-  }
+	public static add(widget: WidgetType): void {
+		AccessRightsHelper.registerToken({
+			id: `widget-${widget.ID}`,
+			name: widget.name,
+			description: widget.description,
+			department: widget.department
+		});
+		this.widgets.push(widget);
+	}
 
-  public static getById(id: string): WidgetType | undefined {
-    return this.widgets.find(widget => widget.ID === id);
-  }
+	public static getById(id: string): WidgetType | undefined {
+		if (this.widgets.length) {
+			return this.widgets.find(widget => widget.ID === id);
+		} else {
+			return undefined
+		}
+	}
 
-  public static removeById(id: string): void {
-    const index = this.widgets.findIndex(widget => widget.id === id);
-    if (index !== -1) {
-      this.widgets.splice(index, 1);
-    }
-  }
+	public static removeById(id: string): void {
+		if (this.widgets.length) {
+			const index = this.widgets.findIndex(widget => widget.ID === id);
+			if (index !== -1) {
+				this.widgets.splice(index, 1);
+			}
+		}
+	}
 }

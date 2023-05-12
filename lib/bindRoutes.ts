@@ -1,5 +1,4 @@
 import _migrations from "../controllers/migrations";
-import  _widgets from  "../controllers/widgets"
 import _processMigrations from "../controllers/processMigrations";
 import _dashboard from "../controllers/dashboard";
 import _welcome from "../controllers/welcome";
@@ -15,6 +14,7 @@ import _form from "../controllers/form";
 import _normalizeNavigationConfig from "../controllers/normalizeNavigationConfig";
 import {CreateUpdateConfig} from "../interfaces/adminpanelConfig";
 import bindPolicies from "../lib/bindPolicies"
+import {widgetSwitchController} from "../controllers/widgets/switch"
 
 export default function bindRoutes() {
 
@@ -26,19 +26,10 @@ export default function bindRoutes() {
 	let policies = config.policies || "";
 
 	/**
-	 * Widgets
+	 * Widgets Switch
 	 */
-	if (config.globalSettings.enableWidgets) {
-		sails.router.bind(`${config.routePrefix}/widgets-get-all`, bindPolicies(policies, _widgets));
-		if(config.widgets.switchers.length){
-			for (const switcher of config.widgets.switchers) {
-				if(switcher.controller){
-					let switcherController = require(switcher.controller)
-					sails.router.bind(`${config.routePrefix}/${switcher.api}`,  bindPolicies(policies, switcherController.default))
-				}
-			}
-		}
-	}
+	sails.router.bind(`${config.routePrefix}/widgets-get/:widgetId`, bindPolicies(policies, widgetSwitchController));
+
 
 	/**
 	 * Migrations

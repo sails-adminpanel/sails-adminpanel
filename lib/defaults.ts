@@ -105,7 +105,6 @@ const adminpanelConfig: AdminpanelConfig = {
      * List of sections in head
      */
     sections: [],
-	widgets: null,
     package: packageJson,
     showVersion: true,
     timezones: timezones,
@@ -113,8 +112,7 @@ const adminpanelConfig: AdminpanelConfig = {
         path: `${process.cwd()}/migrations`
     },
     globalSettings: {
-        enableMigrations: false,
-		enableWidgets: true
+        enableMigrations: false
     }
 }
 

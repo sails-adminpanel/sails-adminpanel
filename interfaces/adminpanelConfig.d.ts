@@ -155,15 +155,6 @@ export interface AdminpanelConfig {
         }
     } | boolean
 
-	/**
-	 * Widgets Link
-	 */
-	widgets?: {
-		links?: LinkWidgetsConfig[]
-		switchers?: SwitcherWidgetsConfig[]
-	}
-
-
     /**
      * Global settings
      */
@@ -377,29 +368,4 @@ export interface HrefConfig {
      * For menu items only
      * */
     subItems?: HrefConfig[]
-}
-
-export interface LinkWidgetsConfig {
-	id: string
-	title: string
-	link: string
-	icon?: string
-	size?: {
-		w: number
-		h: number
-	}
-	color?: string
-}
-
-export interface SwitcherWidgetsConfig {
-	api: string
-	controller: string
-	id: string
-	title: string
-	size?: {
-		w: number
-		h: number
-	}
-	color?: string
-	icon?: string
 }
