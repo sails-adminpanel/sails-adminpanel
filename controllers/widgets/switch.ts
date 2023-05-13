@@ -23,11 +23,13 @@ export async function widgetSwitchController(req, res) {
 
 	/** get state */
 	if (req.method.toUpperCase() === 'GET') {
-		return widget.getState(req, res);
+		let state = await widget.getState();
+		return req.send({state: state})
 	}
 
 	/** Switch state  */
 	else if (req.method.toUpperCase() === 'POST') {
-		return widget.switchIt(req, res);
+		let state = await widget.switchIt();
+		return req.send({state: state})
 	}
 }
