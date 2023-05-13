@@ -33,4 +33,51 @@ export class WidgetHandler {
 			}
 		}
 	}
+
+	public static getAll(): Promise<any[]> | Promise<boolean> {
+		let widgets = []
+		let config = sails.config.adminpanel;
+		if (this.widgets.length) {
+			for (const widget of this.widgets) {
+				switch (widget.widgetType) {
+					case 'switcher':
+						widgets.push({
+							id: widget.ID,
+							type: widget.widgetType,
+							api: `${config.routePrefix}/widgets-switch/${widget.ID}`,
+							description: widget.description,
+							icon: widget.icon,
+							name: widget.name,
+							backgroundCSS: widget.backgroundCSS ?? null,
+							size: widget.size ?? null
+						})
+						break;
+					case 'info':
+						widgets.push({
+							id: widget.ID,
+							type: widget.widgetType,
+							api: `${config.routePrefix}/widgets-info/${widget.ID}`,
+							description: widget.description,
+							icon: widget.icon,
+							name: widget.name,
+							backgroundCSS: widget.backgroundCSS ?? null,
+							size: widget.size ?? null
+						})
+						break;
+					default:
+						return;
+				}
+			}
+			return Promise.resolve(widgets)
+		} else {
+			return Promise.resolve(false)
+		}
+
+	}
+}
+
+export async function getAllWidgets(req, res) {
+	if (req.method.toUpperCase() === 'GET') {
+	 	return res.json({widgets: await WidgetHandler.getAll()})
+	}
 }

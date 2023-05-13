@@ -3,7 +3,7 @@ export default abstract class BaseWidget {
     abstract readonly ID: string;
     /** Widget Name */
     abstract readonly name: string;
-    /** Widget decription */
+    /** Widget description */
     abstract readonly description: string;
     /** Widget icon */
     abstract readonly icon: string;

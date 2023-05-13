@@ -1,8 +1,8 @@
 <template>
 	<grid-layout
 		v-model:layout="layout"
-		:col-num="12"
-		:row-height="30"
+		:col-num="8"
+		:row-height="136"
 	>
 		<template #default="{ gridItemProps }">
 			<grid-item
@@ -19,7 +19,7 @@
 				@moved="moved"
 			>
 				<div class="widj-wrapper">
-					{{ item.i }}
+					{{ item.i + 1 }}
 					<button v-if="item.i === 2" class="btn-click" @click="initPopup">Click Me</button>
 				</div>
 			</grid-item>
@@ -30,6 +30,7 @@
 		<content-b @next="initPopup" v-if="index === 2" @closePopup="manualClosePopup(1)"></content-b>
 		<content-c v-if="index === 3"></content-c>
 	</pop-up>
+	<pre>{{ widgets }}</pre>
 </template>
 <script>
 import {defineComponent} from "vue";
@@ -37,6 +38,7 @@ import PopUp from "./PopUp.vue";
 import ContentA from "./ContentA.vue";
 import ContentB from "./ContentB.vue";
 import ContentC from "./ContentC.vue";
+import ky from "ky";
 
 export default defineComponent({
 	name: 'App',
@@ -44,22 +46,37 @@ export default defineComponent({
 	data() {
 		return {
 			layout: [
-				{x: 0, y: 0, w: 2, h: 2, i: 0},
-				{x: 2, y: 0, w: 2, h: 4, i: 1},
-				{x: 4, y: 0, w: 2, h: 5, i: 2},
-				{x: 6, y: 0, w: 2, h: 3, i: 3},
-				{x: 8, y: 0, w: 2, h: 3, i: 4},
-				{x: 8, y: 0, w: 2, h: 3, i: 5},
-				{x: 0, y: 5, w: 2, h: 5, i: 6},
-				{x: 2, y: 5, w: 2, h: 5, i: 7},
-				{x: 4, y: 5, w: 2, h: 5, i: 8},
-				{x: 6, y: 3, w: 2, h: 4, i: 9}
+				{x: 0, y: 0, w: 1, h: 1, i: 0},
+				{x: 1, y: 0, w: 1, h: 1, i: 1},
+				{x: 2, y: 0, w: 1, h: 1, i: 2},
+				{x: 3, y: 0, w: 1, h: 1, i: 3},
+				{x: 4, y: 0, w: 1, h: 1, i: 4},
+				{x: 5, y: 0, w: 1, h: 1, i: 5},
+				{x: 6, y: 0, w: 1, h: 1, i: 6},
+				{x: 7, y: 0, w: 1, h: 1, i: 7},
+				// {x: 8, y: 0, w: 1, h: 1, i: 8},
+				// {x: 9, y: 0, w: 1, h: 1, i: 9},
+				// {x: 10, y: 0, w: 1, h: 1, i: 10},
+				// {x: 11, y: 0, w: 1, h: 1, i: 11}
 			],
+			//layout: [],
+			widgets: null,
 			modalCount: 0
 		}
 	},
+	mounted() {
+		this.getWidgets()
+	},
 	methods: {
-		manualClosePopup(index){
+		async getWidgets() {
+			try {
+				const res = await ky.get('/admin/widgets-get-all').json()
+				this.widgets = res.widgets
+			} catch (e) {
+				console.log(e)
+			}
+		},
+		manualClosePopup(index) {
 			this.$refs.child[index].closePopup()
 		},
 		initPopup() {
@@ -75,12 +92,16 @@ export default defineComponent({
 			console.log('moved', itemIdx);
 		},
 		resize(itemIdx) {
-			console.log('moved', itemIdx);
+			console.log('resized', itemIdx);
 		}
 	}
 })
 </script>
 <style>
+#widgets{
+	max-width: 1300px;
+	width: 100%;
+}
 .widj-wrapper {
 	display: flex;
 	flex-direction: column;

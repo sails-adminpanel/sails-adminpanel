@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.widgetSwitchController = void 0;
+exports.widgetInfoController = void 0;
 const accessRightsHelper_1 = require("../../helper/accessRightsHelper");
 const widgetHandler_1 = require("../../lib/widgets/widgetHandler");
-async function widgetSwitchController(req, res) {
+async function widgetInfoController(req, res) {
     let widgetId = req.param('widgetId');
     if (!widgetId) {
         return res.notFound();
@@ -22,13 +22,8 @@ async function widgetSwitchController(req, res) {
     }
     /** get state */
     if (req.method.toUpperCase() === 'GET') {
-        let state = await widget.getState();
-        return res.json({ state: state });
-    }
-    /** Switch state  */
-    else if (req.method.toUpperCase() === 'POST') {
-        let state = await widget.switchIt();
-        return res.json({ state: state });
+        let text = await widget.getInfo();
+        return res.json({ text: text });
     }
 }
-exports.widgetSwitchController = widgetSwitchController;
+exports.widgetInfoController = widgetInfoController;

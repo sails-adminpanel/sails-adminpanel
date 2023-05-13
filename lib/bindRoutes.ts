@@ -15,6 +15,8 @@ import _normalizeNavigationConfig from "../controllers/normalizeNavigationConfig
 import {CreateUpdateConfig} from "../interfaces/adminpanelConfig";
 import bindPolicies from "../lib/bindPolicies"
 import {widgetSwitchController} from "../controllers/widgets/switch"
+import {getAllWidgets} from "./widgets/widgetHandler";
+import {widgetInfoController} from '../controllers/widgets/Info'
 
 export default function bindRoutes() {
 
@@ -26,10 +28,20 @@ export default function bindRoutes() {
 	let policies = config.policies || "";
 
 	/**
+	 * Widgets All
+	 */
+	sails.router.bind(`${config.routePrefix}/widgets-get-all`, bindPolicies(policies, getAllWidgets))
+
+
+	/**
 	 * Widgets Switch
 	 */
-	sails.router.bind(`${config.routePrefix}/widgets-get/:widgetId`, bindPolicies(policies, widgetSwitchController));
+	sails.router.bind(`${config.routePrefix}/widgets-switch/:widgetId`, bindPolicies(policies, widgetSwitchController));
 
+	/**
+	 * Widgets Info
+	 */
+	sails.router.bind(`${config.routePrefix}/widgets-info/:widgetId`, bindPolicies(policies, widgetInfoController))
 
 	/**
 	 * Migrations

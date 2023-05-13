@@ -1,8 +1,8 @@
 import {AccessRightsHelper} from "../../helper/accessRightsHelper";
-import SwitchBase from "../../lib/widgets/abstractSwitch";
 import {WidgetHandler} from "../../lib/widgets/widgetHandler";
+import InfoBase from "../../lib/widgets/abstractInfo";
 
-export async function widgetSwitchController(req, res) {
+export async function widgetInfoController(req, res) {
 	let widgetId = req.param('widgetId');
 	if (!widgetId) {
 		return res.notFound();
@@ -16,20 +16,14 @@ export async function widgetSwitchController(req, res) {
 		}
 	}
 
-	let widget = WidgetHandler.getById(widgetId) as SwitchBase;
+	let widget = WidgetHandler.getById(widgetId) as InfoBase;
 	if(widget === undefined){
-		return res.notFound()
+		return  res.notFound()
 	}
 
 	/** get state */
 	if (req.method.toUpperCase() === 'GET') {
-		let state = await widget.getState();
-		return res.json({state: state})
-	}
-
-	/** Switch state  */
-	else if (req.method.toUpperCase() === 'POST') {
-		let state = await widget.switchIt();
-		return res.json({state: state})
+		let text = await widget.getInfo();
+		return res.json({text: text})
 	}
 }
