@@ -23,7 +23,7 @@ async function widgetInfoController(req, res) {
     /** get state */
     if (req.method.toUpperCase() === 'GET') {
         let text = await widget.getInfo();
-        return res.json({ text: text });
+        return res.send(text);
     }
 }
 exports.widgetInfoController = widgetInfoController;

@@ -193,7 +193,10 @@ const vue = () => {
 						  'css-loader',
 						]
 					  }
-				]
+				],
+			},
+			experiments: {
+				topLevelAwait: true
 			},
 			plugins: [
 				new VueLoaderPlugin(),

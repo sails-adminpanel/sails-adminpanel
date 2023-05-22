@@ -791,6 +791,5 @@ select {
 }
 
 // Dashboard
-.test{
-	@apply bg-gray-900;
-}
+@import "widgets";
+@import "ch_switcher";

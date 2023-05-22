@@ -10,7 +10,7 @@ export default abstract class BaseWidget {
 	public abstract readonly description: string;
 
 	/** Widget icon */
-	public abstract readonly icon: string;
+	public readonly icon: string | null = null;
 
 	/** For group access rights by department */
 	public abstract readonly department: string;

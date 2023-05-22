@@ -1,0 +1,157 @@
+.admin-widgets {
+	&__head {
+		@apply flex justify-between mb-8;
+	}
+
+	&__head-left {
+		h1 {
+			@apply text-xl font-medium;
+		}
+	}
+
+	&__head-right {
+		@apply flex items-center;
+	}
+
+	&__head-switcher {
+		@apply mr-8;
+	}
+
+	&__head-info {
+		@apply w-[30px] h-[30px] rounded-full bg-gray-300 flex justify-center items-center font-medium text-xl cursor-pointer mr-12;
+	}
+
+	&__head-add {
+		@apply cursor-pointer;
+	}
+
+	&__wrapper {
+		@apply flex flex-col justify-center items-center w-full h-full rounded transition;
+		&--info {
+
+		}
+
+		&--switcher {
+			@apply cursor-pointer hover:brightness-110;
+		}
+
+		&--switching {
+			@apply brightness-75 hover:brightness-75;
+		}
+	}
+
+	&__title {
+		@apply text-amber-50 flex flex-col justify-between gap-2.5 p-3 w-full h-full;
+	}
+
+	&__bottom {
+		@apply flex items-end justify-between gap-5;
+	}
+
+	&__icon {
+		@apply text-xl;
+	}
+
+	&__name {
+		@apply font-bold;
+	}
+
+	&__desc {
+		@apply text-sm;
+	}
+
+	&__state {
+		@apply text-lg font-bold;
+	}
+
+	&__flexible {
+		@apply w-full h-full;
+		&--flex {
+			animation: tilt-shaking 0.3s ease-in-out;
+		}
+	}
+}
+
+@keyframes tilt-shaking {
+	0% {
+		transform: translate(0, 0) rotate(0deg);
+	}
+	25% {
+		transform: translate(5px, 5px) rotate(5deg);
+	}
+	50% {
+		transform: translate(0, 0) rotate(0);
+	}
+	75% {
+		transform: translate(-5px, 5px) rotate(-5deg);
+	}
+	100% {
+		transform: translate(0, 0) rotate(0deg);
+	}
+}
+
+#widgets {
+	max-width: 1140px;
+	width: 100%;
+}
+
+.vue-grid-item {
+	touch-action: auto;
+	box-sizing: border-box;
+	transition: all .2s ease;
+	transition-property: left, top, right;
+	background-color: #f2f2f2;
+}
+
+.vue-grid-item.no-touch {
+	touch-action: none;
+}
+
+.vue-grid-item.css-transforms {
+	transition-property: transform;
+	left: 0;
+	right: auto;
+}
+
+.vue-grid-item.resizing {
+	opacity: .6;
+	z-index: 3;
+}
+
+.vue-grid-item.vue-draggable-dragging {
+	transition: none;
+	z-index: 3;
+}
+
+.vue-grid-item.vue-grid-placeholder {
+	background: red;
+	opacity: .2;
+	transition-duration: .1s;
+	z-index: 2;
+	user-select: none;
+}
+
+.vue-grid-item > .vue-resizable-handle {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	z-index: 20;
+	bottom: 0;
+	right: 0;
+	background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pg08c3ZnIGlkPSJVbnRpdGxlZC1QYWdlJTIwMSIgdmlld0JveD0iMCAwIDYgNiIgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6I2ZmZmZmZjAwIiB2ZXJzaW9uPSIxLjEiDQl4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4bWw6c3BhY2U9InByZXNlcnZlIg0JeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSI2cHgiIGhlaWdodD0iNnB4Ig0+DQk8ZyBvcGFjaXR5PSIwLjMwMiI+DQkJPHBhdGggZD0iTSA2IDYgTCAwIDYgTCAwIDQuMiBMIDQgNC4yIEwgNC4yIDQuMiBMIDQuMiAwIEwgNiAwIEwgNiA2IEwgNiA2IFoiIGZpbGw9IiMwMDAwMDAiLz4NCTwvZz4NPC9zdmc+);
+	background-position: bottom right;
+	background-repeat: no-repeat;
+	padding: 0 3px 3px 0;
+	background-origin: content-box;
+	box-sizing: border-box;
+	cursor: se-resize;
+}
+
+.vue-grid-item.disable-user-select {
+	user-select: none;
+}
+
+.vue-grid-layout {
+	position: relative;
+	transition: height .2s ease;
+}

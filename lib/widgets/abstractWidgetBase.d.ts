@@ -6,7 +6,7 @@ export default abstract class BaseWidget {
     /** Widget description */
     abstract readonly description: string;
     /** Widget icon */
-    abstract readonly icon: string;
+    readonly icon: string | null;
     /** For group access rights by department */
     abstract readonly department: string;
     abstract readonly widgetType: 
