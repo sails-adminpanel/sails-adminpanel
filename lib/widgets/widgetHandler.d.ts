@@ -1,6 +1,8 @@
 import SwitcherBase from "./abstractSwitch";
 import InfoBase from "./abstractInfo";
-declare type WidgetType = (SwitcherBase | InfoBase);
+import ActionBase from "./abstractAction";
+import LinkBase from "./abstractLink";
+declare type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase);
 export declare class WidgetHandler {
     private static widgets;
     static add(widget: WidgetType): void;

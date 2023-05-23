@@ -9,6 +9,7 @@
 				<span class="admin-widgets__name">{{ name }}</span>
 				<p class="admin-widgets__desc">{{ description }}</p>
 			</div>
+			<div style="cursor: pointer" @click="removeItem">close</div>
 			<div class="admin-widgets__bottom">
 				<div v-if="type === 'info'">
 					{{ info }}
@@ -36,6 +37,7 @@ import ky from "ky";
 export default defineComponent({
 	name: 'Widget',
 	props: ['widgets', 'i', 'draggable'],
+	emits: ['removeItem'],
 	data() {
 		return {
 			name: null,
@@ -53,42 +55,62 @@ export default defineComponent({
 		this.getDescription()
 		this.getIcon()
 		this.getType()
-		if(this.type === 'info') this.getInfo()
-		if(this.type === 'switcher') this.getState()
+		if (this.type === 'info') this.getInfo()
+		if (this.type === 'switcher') this.getState()
 	},
 	computed: {
-		getClass(){
-			if(this.type === 'info' && !this.draggable){
+		getClass() {
+			if (this.type === 'info' && !this.draggable) {
 				return 'admin-widgets__wrapper--info'
-			} else if(this.type === 'switcher' && !this.draggable){
+			} else if (this.type === 'switcher' || this.type === 'action' && !this.draggable) {
 				return 'admin-widgets__wrapper--switcher'
 			}
 		}
 	},
 	methods: {
-		getType(){
+		removeItem(){
+			this.$emit('removeItem', this.i)
+		},
+		getType() {
 			this.type = this.widgets[this.i].type
 		},
-		async getInfo(){
+		async getInfo() {
 			let api = this.widgets[this.i].api
 			this.info = await ky(api).text()
 		},
-		async getState(){
+		async getState() {
 			let api = this.widgets[this.i].api
 			let res = await ky(api).json()
 			this.state = res.state
 		},
-		async switching(){
-			if(this.type !== 'switcher' || this.draggable) return
+		async switching() {
+			if (this.type === 'info' || this.type === 'link' || this.draggable) return
 
 			let widget = this.$refs[`admin-widget_${this.i}`]
 
 			widget.classList.add('admin-widgets__wrapper--switching')
 
 			let api = this.widgets[this.i].api
-			let res = await ky.post(api).json()
-			this.state = res.state
-
+			switch (this.type) {
+				case ('switcher'):
+					try {
+						let res = await ky.post(api).json()
+						this.state = res.state
+					} catch (e) {
+						console.log(e)
+					}
+					break;
+				case ('action'):
+					try{
+						let res = await ky.post(api).json()
+						console.log(res)
+					}catch (e){
+						console.log(e)
+					}
+					break;
+				default:
+					return;
+			}
 			widget.classList.remove('admin-widgets__wrapper--switching')
 		},
 		getName() {

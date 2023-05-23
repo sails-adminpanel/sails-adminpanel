@@ -22,7 +22,7 @@ export default abstract class BaseWidget {
 		/** Binary state switching */
 		"switcher" |
 		/** Run task */
-		"task" |
+		"action" |
 		/** Change location, or open in new tab */
 		"link" |
 

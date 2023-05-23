@@ -1,4 +1,7 @@
 .admin-widgets {
+	&__init{
+		@apply flex items-center justify-center px-12 py-16 text-gray-600 text-lg;
+	}
 	&__head {
 		@apply flex justify-between mb-8;
 	}
@@ -22,7 +25,10 @@
 	}
 
 	&__head-add {
-		@apply cursor-pointer;
+		@apply cursor-pointer hover:text-green-700 transition;
+		.icon-add{
+			@apply text-3xl;
+		}
 	}
 
 	&__wrapper {
@@ -36,7 +42,7 @@
 		}
 
 		&--switching {
-			@apply brightness-75 hover:brightness-75;
+			@apply brightness-75 hover:brightness-75 pointer-events-none;
 		}
 	}
 

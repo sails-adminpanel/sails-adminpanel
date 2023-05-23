@@ -36,6 +36,9 @@ const path = {
 		fonts: `${srcFolder}/fonts/ready/*.{woff,woff2}`,
 		ejs: './views/**/*.*'
 	},
+	watch:{
+		scss: `${srcFolder}/styles/**/*.scss`
+	},
 	clean: buildFolder,
 	srcfolder: srcFolder,
 };
@@ -286,7 +289,7 @@ function watcher() {
 
 function vueWatcher(){
 	gulp.watch(`${srcFolder}/widgets/**/*.*`, gulp.series(vue, reload))
-	gulp.watch(path.src.scss, gulp.series(scss, reload))
+	gulp.watch(path.watch.scss, gulp.series(scss, reload))
 }
 
 const build = gulp.series(reset, copy_styles_files, scss, js, ckeditorBuild);

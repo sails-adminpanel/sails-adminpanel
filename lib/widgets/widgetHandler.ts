@@ -1,8 +1,10 @@
 import SwitcherBase from "./abstractSwitch";
 import InfoBase from "./abstractInfo";
+import ActionBase from "./abstractAction";
+import LinkBase from "./abstractLink";
 import {AccessRightsHelper} from "../../helper/accessRightsHelper";
 
-type WidgetType = (SwitcherBase | InfoBase);
+type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase);
 
 export class WidgetHandler {
 	private static widgets: WidgetType[] = [];
@@ -39,45 +41,61 @@ export class WidgetHandler {
 		let config = sails.config.adminpanel;
 		if (this.widgets.length) {
 			for (const widget of this.widgets) {
-				switch (widget.widgetType) {
-					case 'switcher':
+				if (widget instanceof SwitcherBase) {
+					widgets.push({
+						id: widget.ID,
+						type: widget.widgetType,
+						api: `${config.routePrefix}/widgets-switch/${widget.ID}`,
+						description: widget.description,
+						icon: widget.icon,
+						name: widget.name,
+						backgroundCSS: widget.backgroundCSS ?? null,
+						size: widget.size ?? null
+					})
+				} else if (widget instanceof InfoBase) {
+					widgets.push({
+						id: widget.ID,
+						type: widget.widgetType,
+						api: `${config.routePrefix}/widgets-info/${widget.ID}`,
+						description: widget.description,
+						icon: widget.icon,
+						name: widget.name,
+						backgroundCSS: widget.backgroundCSS ?? null,
+						size: widget.size ?? null
+					})
+				} else if (widget instanceof ActionBase) {
+					widgets.push({
+						id: widget.ID,
+						type: widget.widgetType,
+						api: `${config.routePrefix}/widgets-action/${widget.ID}`,
+						description: widget.description,
+						icon: widget.icon,
+						name: widget.name,
+						backgroundCSS: widget.backgroundCSS ?? null,
+						size: widget.size ?? null
+					})
+				} else if(widget instanceof LinkBase){
+					for (const link of widget.links) {
 						widgets.push({
-							id: widget.ID,
-							type: widget.widgetType,
-							api: `${config.routePrefix}/widgets-switch/${widget.ID}`,
-							description: widget.description,
-							icon: widget.icon,
-							name: widget.name,
-							backgroundCSS: widget.backgroundCSS ?? null,
-							size: widget.size ?? null
+							name: link.name,
+							description: link.description,
+							link: link.link,
+							icon: link.icon,
+							backgroundCSS: link.backgroundCSS
 						})
-						break;
-					case 'info':
-						widgets.push({
-							id: widget.ID,
-							type: widget.widgetType,
-							api: `${config.routePrefix}/widgets-info/${widget.ID}`,
-							description: widget.description,
-							icon: widget.icon,
-							name: widget.name,
-							backgroundCSS: widget.backgroundCSS ?? null,
-							size: widget.size ?? null
-						})
-						break;
-					default:
-						return;
+					}
+				}
+				else {
+					return
 				}
 			}
-			return Promise.resolve(widgets)
-		} else {
-			return Promise.resolve(false)
 		}
-
+		return Promise.resolve(widgets)
 	}
 }
 
 export async function getAllWidgets(req, res) {
 	if (req.method.toUpperCase() === 'GET') {
-	 	return res.json({widgets: await WidgetHandler.getAll()})
+		return res.json({widgets: await WidgetHandler.getAll()})
 	}
 }

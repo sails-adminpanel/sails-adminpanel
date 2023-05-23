@@ -22,8 +22,13 @@ async function widgetInfoController(req, res) {
     }
     /** get state */
     if (req.method.toUpperCase() === 'GET') {
-        let text = await widget.getInfo();
-        return res.send(text);
+        try {
+            let text = await widget.getInfo();
+            return res.send(text);
+        }
+        catch (e) {
+            return res.error(e);
+        }
     }
 }
 exports.widgetInfoController = widgetInfoController;

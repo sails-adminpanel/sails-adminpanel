@@ -1,8 +1,8 @@
 import {AccessRightsHelper} from "../../helper/accessRightsHelper";
+import ActionBase from "../../lib/widgets/abstractAction";
 import {WidgetHandler} from "../../lib/widgets/widgetHandler";
-import InfoBase from "../../lib/widgets/abstractInfo";
 
-export async function widgetInfoController(req, res) {
+export async function widgetActionController(req, res) {
 	let widgetId = req.param('widgetId');
 	if (!widgetId) {
 		return res.notFound();
@@ -16,18 +16,18 @@ export async function widgetInfoController(req, res) {
 		}
 	}
 
-	let widget = WidgetHandler.getById(widgetId) as InfoBase;
-	if (widget === undefined) {
+	let widget = WidgetHandler.getById(widgetId) as ActionBase;
+	if(widget === undefined){
 		return res.notFound()
 	}
 
-	/** get state */
-	if (req.method.toUpperCase() === 'GET') {
-		try {
-			let text = await widget.getInfo();
-			return res.send(text)
-		} catch (e) {
-			return res.error(e)
+	/** Switch state  */
+	else if (req.method.toUpperCase() === 'POST') {
+		let state = await widget.action();
+		if(state){
+			return res.json({ok: state})
+		}else {
+			return res.error('Error')
 		}
 	}
 }

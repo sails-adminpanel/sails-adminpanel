@@ -17,6 +17,7 @@ import bindPolicies from "../lib/bindPolicies"
 import {widgetSwitchController} from "../controllers/widgets/switch"
 import {getAllWidgets} from "./widgets/widgetHandler";
 import {widgetInfoController} from '../controllers/widgets/Info'
+import {widgetActionController} from '../controllers/widgets/Action'
 
 export default function bindRoutes() {
 
@@ -42,6 +43,11 @@ export default function bindRoutes() {
 	 * Widgets Info
 	 */
 	sails.router.bind(`${config.routePrefix}/widgets-info/:widgetId`, bindPolicies(policies, widgetInfoController))
+
+	/**
+	 * Widgets Action
+	 */
+	sails.router.bind(`${config.routePrefix}/widgets-action/:widgetId`, bindPolicies(policies, widgetActionController))
 
 	/**
 	 * Migrations
