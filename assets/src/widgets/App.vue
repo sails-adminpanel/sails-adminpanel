@@ -41,7 +41,7 @@
 						@moved="moved"
 					>
 						<div class="admin-widgets__flexible">
-							<widget :widgets="widgets" :i="item.i" :draggable="draggable"
+							<widget :widgets="widgets" :i="item.i" :draggable="draggable" :ID="item.id"
 									@mousedown="mouseDownEditSwitch"
 									@mouseup="mouseDownEditSwitch"
 									@removeItem="removeFromLayout"
@@ -89,11 +89,11 @@ export default defineComponent({
 		setTimeout(() => {
 			document.getElementById('widgets').style.width = '99%'
 		}, 100)
+		console.log(this.layout)
 	},
 	methods: {
-		removeFromLayout(i){
-			console.log(i)
-			this.layout.splice(i, 1)
+		removeFromLayout(id){
+			this.layout = this.layout.filter(e => e.id !== id)
 		},
 		editSwitch() {
 			this.flexWidget()

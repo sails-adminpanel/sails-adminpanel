@@ -1,7 +1,9 @@
 .admin-widgets {
-	&__init{
+	@apply relative;
+	&__init {
 		@apply flex items-center justify-center px-12 py-16 text-gray-600 text-lg;
 	}
+
 	&__head {
 		@apply flex justify-between mb-8;
 	}
@@ -26,7 +28,7 @@
 
 	&__head-add {
 		@apply cursor-pointer hover:text-green-700 transition;
-		.icon-add{
+		.icon-add {
 			@apply text-3xl;
 		}
 	}
@@ -74,7 +76,15 @@
 		@apply w-full h-full;
 		&--flex {
 			animation: tilt-shaking 0.3s ease-in-out;
+
+			.admin-widgets__close {
+				@apply opacity-100 visible;
+			}
 		}
+	}
+
+	&__close {
+		@apply cursor-pointer text-red-500 text-xl absolute top-2 right-3 opacity-0 invisible transition;
 	}
 }
 

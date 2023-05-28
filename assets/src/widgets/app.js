@@ -27,7 +27,8 @@ async function setLayout() {
 			y: 0,
 			w: w,
 			h: h,
-			i: +widgetsKey
+			i: +widgetsKey,
+			id: `${widget.id}_${widgetsKey}`
 		})
 
 	}

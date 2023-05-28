@@ -9,7 +9,6 @@
 				<span class="admin-widgets__name">{{ name }}</span>
 				<p class="admin-widgets__desc">{{ description }}</p>
 			</div>
-			<div style="cursor: pointer" @click="removeItem">close</div>
 			<div class="admin-widgets__bottom">
 				<div v-if="type === 'info'">
 					{{ info }}
@@ -27,6 +26,9 @@
 				</span>
 			</div>
 		</div>
+		<div class="admin-widgets__close" @click="removeItem(ID)">
+			<i class="las la-times"></i>
+		</div>
 	</div>
 </template>
 
@@ -36,7 +38,7 @@ import ky from "ky";
 
 export default defineComponent({
 	name: 'Widget',
-	props: ['widgets', 'i', 'draggable'],
+	props: ['widgets', 'i', 'draggable', 'ID'],
 	emits: ['removeItem'],
 	data() {
 		return {
@@ -68,8 +70,8 @@ export default defineComponent({
 		}
 	},
 	methods: {
-		removeItem(){
-			this.$emit('removeItem', this.i)
+		removeItem(ID){
+			this.$emit('removeItem', ID)
 		},
 		getType() {
 			this.type = this.widgets[this.i].type
