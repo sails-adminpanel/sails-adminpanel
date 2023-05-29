@@ -75,14 +75,18 @@ export class WidgetHandler {
 						size: widget.size ?? null
 					})
 				} else if(widget instanceof LinkBase){
+					let id_key = 0
 					for (const link of widget.links) {
 						widgets.push({
 							name: link.name,
+							id: `${widget.ID}_${id_key}`,
+							type: 'link',
 							description: link.description,
 							link: link.link,
 							icon: link.icon,
 							backgroundCSS: link.backgroundCSS
 						})
+						id_key++;
 					}
 				}
 				else {

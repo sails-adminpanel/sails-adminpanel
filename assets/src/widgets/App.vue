@@ -41,7 +41,7 @@
 						@moved="moved"
 					>
 						<div class="admin-widgets__flexible">
-							<widget :widgets="widgets" :i="item.i" :draggable="draggable" :ID="item.id"
+							<widget :widgets="widgets" :draggable="draggable" :ID="item.id"
 									@mousedown="mouseDownEditSwitch"
 									@mouseup="mouseDownEditSwitch"
 									@removeItem="removeFromLayout"
@@ -53,13 +53,15 @@
 		</div>
 		<div class="admin-widgets__widgets" v-else>
 			<div class="admin-widgets__init">
-				<p>You don't have any widgets selected yet. You can add them by clicking on the plus sign at the top right.</p>
+				<p>You don't have any widgets selected yet. You can add them by clicking on the plus sign at the top
+					right.</p>
 			</div>
 		</div>
 	</div>
 	<pop-up @reset="closePopup" v-for="index in modalCount" :key="index" ref="child">
-		<content-a @next="initPopup" v-if="index === 1"></content-a>
-		<content-b @next="initPopup" v-if="index === 2" @closePopup="manualClosePopup(1)"></content-b>
+		<add-widgets @addWidgets="addWidgets" v-if="index === 1" :initWidgets="widgets"></add-widgets>
+		<content-a @next="initPopup" v-if="index === 2"></content-a>
+		<content-b @next="initPopup" v-if="index === 3" @closePopup="manualClosePopup(1)"></content-b>
 		<content-c v-if="index === 3"></content-c>
 	</pop-up>
 </template>
@@ -70,13 +72,16 @@ import ContentA from "./ContentA.vue";
 import ContentB from "./ContentB.vue";
 import ContentC from "./ContentC.vue";
 import Widget from "./Widget.vue";
+import AddWidgets from "./AddWidgets.vue";
+import widget from "./Widget.vue";
 
 export default defineComponent({
 	name: 'App',
-	components: {PopUp, ContentA, ContentB, ContentC, Widget},
+	components: {PopUp, ContentA, ContentB, ContentC, Widget, AddWidgets},
 	data() {
 		return {
 			layout: window.widgetsInit.layout,
+			// layout: [],
 			widgets: window.widgetsInit.widgets,
 			modalCount: 0,
 			resizable: false,
@@ -89,11 +94,34 @@ export default defineComponent({
 		setTimeout(() => {
 			document.getElementById('widgets').style.width = '99%'
 		}, 100)
-		console.log(this.layout)
 	},
 	methods: {
-		removeFromLayout(id){
+		addWidgets(id) {
+			let layoutItem = this.layout.find(e => e.id === id)
+			if (layoutItem) {
+				this.layout = this.layout.filter(e => e.id !== id)
+			} else {
+				let widget = this.widgets.find(e => e.id === id)
+				let w = widget.size ? widget.size.w : 1
+				let h = widget.size ? widget.size.h : 1
+
+				let x = +this.layout.length === 0 ? 0 : ((this.layout[+this.layout.length - 1].x + this.layout[+this.layout.length - 1].w) > 8 || (this.layout[+this.layout.length - 1].x + this.layout[+this.layout.length - 1].w + w) > 8 ? 0 : (this.layout[+this.layout.length - 1].x + this.layout[+this.layout.length - 1].w))
+
+				this.layout.push({
+					x: x,
+					y: 0,
+					w: w,
+					h: h,
+					i: +this.layout.length + 1,
+					id: widget.id
+				})
+			}
+			localStorage.setItem('widgets', JSON.stringify(this.widgets))
+		},
+		removeFromLayout(id) {
 			this.layout = this.layout.filter(e => e.id !== id)
+			let item = this.widgets.find(e => e.id === id)
+			if (item) item.added = !item.added
 		},
 		editSwitch() {
 			this.flexWidget()
@@ -125,6 +153,7 @@ export default defineComponent({
 		},
 		initPopup() {
 			this.modalCount++
+			if (this.draggable) this.editSwitch()
 		},
 		closePopup() {
 			this.modalCount--

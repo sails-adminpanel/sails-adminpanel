@@ -6,42 +6,58 @@ import ky from "ky";
 
 window.widgetsInit = {}
 
+// get widgets and a layout from localStorage
 const localLayout = JSON.parse(localStorage.getItem('widgets_layout'))
+const localWidgets = JSON.parse((localStorage.getItem('widgets')))
 
-
-async function setLayout() {
+async function init() {
 	const res = await ky.get('/admin/widgets-get-all').json()
 	let widgets = res.widgets
-	let layout = []
 
+	let initWidgets = []
+
+	// compare the received widgets with the local ones
 	for (let widgetsKey in widgets) {
 		let widget = widgets[widgetsKey]
+		let findItem = null
 
-		let w = widget.size ? widget.size.w : 1
-		let h = widget.size ? widget.size.h : 1
+		if(localWidgets) findItem = localWidgets.find(e => e.id === widget.id)
 
-		let x = +widgetsKey === 0 ? 0 : ((layout[+widgetsKey - 1].x + layout[+widgetsKey - 1].w) > 8 || (layout[+widgetsKey - 1].x + layout[+widgetsKey - 1].w + w) > 8 ? 0 : (layout[+widgetsKey - 1].x + layout[+widgetsKey - 1].w))
-
-		layout.push({
-			x: x,
-			y: 0,
-			w: w,
-			h: h,
-			i: +widgetsKey,
-			id: `${widget.id}_${widgetsKey}`
-		})
-
+		if (findItem) {
+			initWidgets.push(findItem)
+		} else {
+			initWidgets.push(widget)
+		}
 	}
-	return {layout: layout, widgets: widgets}
+	return {widgets: initWidgets}
 }
 
-setLayout().then(res => {
+init().then(res => {
 	let winInnerWidth = +localStorage.getItem('win_innerWidth')
-	let layout = null
+	let layout = []
+
+	// if the window size has not changed, set layout from localStorage
 	if (window.innerWidth === winInnerWidth && localLayout !== null) {
-		layout = localLayout
+		//layout = localLayout
 	} else {
-		layout = res.layout
+		// creating a layout from the added widgets
+		let filtered = res.widgets.filter(e => e.added)
+		for (let resKey in filtered) {
+			let widget = filtered[resKey]
+			let w = widget.size ? widget.size.w : 1
+			let h = widget.size ? widget.size.h : 1
+
+			let x = +resKey === 0 ? 0 : ((layout[+resKey - 1].x + layout[+resKey - 1].w) > 8 || (layout[+resKey - 1].x + layout[+resKey - 1].w + w) > 8 ? 0 : (layout[+resKey - 1].x + layout[+resKey - 1].w))
+
+			layout.push({
+				x: x,
+				y: 0,
+				w: w,
+				h: h,
+				i: +resKey,
+				id: widget.id
+			})
+		}
 	}
 	window.widgetsInit = {
 		layout: layout,

@@ -46,6 +46,9 @@
 		&--switching {
 			@apply brightness-75 hover:brightness-75 pointer-events-none;
 		}
+		&--link{
+			@apply cursor-pointer;
+		}
 	}
 
 	&__title {
@@ -116,7 +119,6 @@
 	box-sizing: border-box;
 	transition: all .2s ease;
 	transition-property: left, top, right;
-	background-color: #f2f2f2;
 }
 
 .vue-grid-item.no-touch {
@@ -170,4 +172,57 @@
 .vue-grid-layout {
 	position: relative;
 	transition: height .2s ease;
+}
+
+.add-widgets-pop-up{
+	@apply text-neutral-700;
+	&__head{
+		h2{
+			@apply text-xl;
+		}
+	}
+	&__head-nav{
+		@apply flex justify-between mt-12 items-center;
+		.text-input{
+			@apply h-8;
+		}
+	}
+	&__nav{
+		@apply flex gap-7;
+	}
+	&__nav-item{
+		@apply cursor-pointer transition;
+		&--active{
+			@apply font-medium text-black;
+		}
+	}
+	&__body{
+		margin-top: 71px;
+	}
+	&__widgets{
+		@apply flex flex-col gap-16;
+	}
+	&__widgets-item{
+		h3{
+			@apply text-xl;
+		}
+	}
+	&__widgets-array{
+		@apply flex gap-6 mt-8;
+	}
+	&__widgets-array-item{
+		@apply w-[200px] h-[225px] bg-slate-200 rounded p-3.5 flex flex-col justify-between;
+	}
+	&__widgets-array-item-icon{
+		@apply text-2xl;
+	}
+	&__widgets-array-item-top{
+		@apply flex flex-col gap-4;
+	}
+	&__widgets-array-item-btn{
+		@apply h-[40px] bg-sky-600 text-white rounded flex items-center justify-center cursor-pointer hover:bg-sky-700 transition;
+	}
+	&__widgets-array-item-btn-added{
+		@apply h-[40px] text-amber-600 rounded border border-amber-600 flex items-center justify-center cursor-pointer hover:bg-amber-600 hover:text-white transition;
+	}
 }

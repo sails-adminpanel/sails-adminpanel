@@ -8,8 +8,8 @@
 export default {
 	name: "PopUp",
 	emits: ['reset'],
-	data(){
-		return{
+	data() {
+		return {
 			visible: false,
 			popup: null
 		}
@@ -25,18 +25,22 @@ export default {
 		})
 	},
 	methods: {
-		closePopup(){
+		closePopup() {
 			this.popup.closeModal()
 		}
 	}
 }
 </script>
 
-<style scoped>
-.modal-content{
-	padding: 50px;
-	display: flex;
-	flex-direction: column;
-	gap: 30px;
+<style>
+.modal-content {
+	padding: 31px 41px;
+	overflow: auto;
+	height: 100vh;
+}
+
+.close-admin-modal-pu {
+	top: 30px;
+	right: 33px
 }
 </style>
