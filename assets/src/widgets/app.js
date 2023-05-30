@@ -11,11 +11,10 @@ let {widgetsDB} = await ky.get('/admin/widgets-get-all-db').json()
 
 widgetsDB = widgetsDB ?? []
 
-//console.log(widgetsDB)
+
 async function init() {
 	const res = await ky.get('/admin/widgets-get-all').json()
 	let widgets = res.widgets
-
 	let initWidgets = []
 
 
@@ -26,26 +25,34 @@ async function init() {
 		if (widgetsDB.length) {
 			findItem = widgetsDB.find(e => e.id === widget.id)
 		}
-		if (findItem) {
-			initWidgets.push(findItem)
+		if (findItem && findItem.added) {
+			initWidgets.push({...widget, added: true})
 		} else {
 			initWidgets.push(widget)
 		}
 	}
+	//console.log(initWidgets)
 	return {widgets: initWidgets}
 }
 
 init().then(res => {
 	let layout = []
 	let filtered = res.widgets.filter(e => e.added)
-
+	console.log(filtered)
 	if (localLayout !== null) {
 		for (let resKey in filtered) {
 			let widget = filtered[resKey]
 			let findItem = localLayout.find(e => e.id === widget.id)
 
 			if (findItem) {
-				layout.push(findItem)
+				layout.push({
+					x: findItem.x,
+					y: findItem.y,
+					w: widget.size ? widget.size.w : 1,
+					h: widget.size ? widget.size.h : 1,
+					i: findItem.key,
+					id: widget.id
+				})
 			} else {
 				let w = widget.size ? widget.size.w : 1
 				let h = widget.size ? widget.size.h : 1
