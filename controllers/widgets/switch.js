@@ -27,7 +27,7 @@ async function widgetSwitchController(req, res) {
             return res.json({ state: state });
         }
         catch (e) {
-            return res.error(e);
+            return res.serverError(e);
         }
     }
     /** Switch state  */
@@ -37,7 +37,7 @@ async function widgetSwitchController(req, res) {
             return res.json({ state: state });
         }
         catch (e) {
-            return res.error(e);
+            return res.serverError(e);
         }
     }
 }

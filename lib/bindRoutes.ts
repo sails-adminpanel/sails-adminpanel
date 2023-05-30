@@ -16,6 +16,7 @@ import {CreateUpdateConfig} from "../interfaces/adminpanelConfig";
 import bindPolicies from "../lib/bindPolicies"
 import {widgetSwitchController} from "../controllers/widgets/switch"
 import {getAllWidgets} from "./widgets/widgetHandler";
+import {widgetsDB} from "./widgets/widgetHandler";
 import {widgetInfoController} from '../controllers/widgets/Info'
 import {widgetActionController} from '../controllers/widgets/Action'
 
@@ -32,6 +33,11 @@ export default function bindRoutes() {
 	 * Widgets All
 	 */
 	sails.router.bind(`${config.routePrefix}/widgets-get-all`, bindPolicies(policies, getAllWidgets))
+
+	/**
+	 * Widgets All from DB
+	 */
+	sails.router.bind(`${config.routePrefix}/widgets-get-all-db`, bindPolicies(policies, widgetsDB))
 
 
 	/**

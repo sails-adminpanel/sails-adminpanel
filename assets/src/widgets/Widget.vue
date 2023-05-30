@@ -26,9 +26,6 @@
 				</span>
 				</div>
 			</div>
-			<div class="admin-widgets__close" @click="removeItem(ID)">
-				<i class="las la-times"></i>
-			</div>
 		</div>
 </template>
 
@@ -39,7 +36,6 @@ import ky from "ky";
 export default defineComponent({
 	name: 'Widget',
 	props: ['widgets', 'draggable', 'ID'],
-	emits: ['removeItem'],
 	data() {
 		return {
 			name: null,
@@ -72,9 +68,6 @@ export default defineComponent({
 		}
 	},
 	methods: {
-		removeItem(ID) {
-			this.$emit('removeItem', ID)
-		},
 		getType() {
 			this.type = this.widgets.find(e => e.id === this.ID).type
 		},

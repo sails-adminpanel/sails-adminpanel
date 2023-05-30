@@ -38,7 +38,8 @@ let attributes = {
     groups: {
         collection: "groupap",
         via: "users"
-    } as unknown as GroupAP[]
+    } as unknown as GroupAP[],
+	widgets: 'json' as unknown as any
 
 };
 

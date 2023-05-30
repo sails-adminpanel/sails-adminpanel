@@ -27,7 +27,8 @@ let attributes = {
     groups: {
         collection: "groupap",
         via: "users"
-    }
+    },
+    widgets: 'json'
 };
 let model = {
     beforeCreate: (values, next) => {

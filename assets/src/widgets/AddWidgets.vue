@@ -1,5 +1,5 @@
 <template>
-	<div class="add-widgets-pop-up">
+	<div class="add-widgets-pop-up" :class="block ? 'add-widgets-pop-up__block' : ''">
 		<div class="add-widgets-pop-up__head">
 			<h2>Widget Settings</h2>
 		</div>
@@ -54,7 +54,7 @@
 <script>
 export default {
 	name: "AddWidgets",
-	props: ['initWidgets'],
+	props: ['initWidgets', 'block'],
 	emits: ['addWidgets'],
 	data() {
 		return {

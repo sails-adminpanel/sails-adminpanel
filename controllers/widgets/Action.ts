@@ -27,7 +27,7 @@ export async function widgetActionController(req, res) {
 		if(state){
 			return res.json({ok: state})
 		}else {
-			return res.error('Error')
+			return res.serverError('Error')
 		}
 	}
 }

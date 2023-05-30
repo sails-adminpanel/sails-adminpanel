@@ -24,7 +24,8 @@
 				:isDraggable="draggable"
 				:responsive="true"
 				:cols="{ lg: 8, md: 6, sm: 4, xs: 2, xxs: 2 }"
-				:breakpoints="{ lg: 1024, md: 768, sm: 425, xs: 320, xxs: 0 }"
+				:breakpoints="{ lg: 1024, md: 768, sm: 475, xs: 320, xxs: 0 }"
+				:key="keyRender"
 			>
 				<template #default="{ gridItemProps }">
 					<grid-item
@@ -44,7 +45,6 @@
 							<widget :widgets="widgets" :draggable="draggable" :ID="item.id"
 									@mousedown="mouseDownEditSwitch"
 									@mouseup="mouseDownEditSwitch"
-									@removeItem="removeFromLayout"
 							></widget>
 						</div>
 					</grid-item>
@@ -59,10 +59,10 @@
 		</div>
 	</div>
 	<pop-up @reset="closePopup" v-for="index in modalCount" :key="index" ref="child">
-		<add-widgets @addWidgets="addWidgets" v-if="index === 1" :initWidgets="widgets"></add-widgets>
-		<content-a @next="initPopup" v-if="index === 2"></content-a>
-		<content-b @next="initPopup" v-if="index === 3" @closePopup="manualClosePopup(1)"></content-b>
-		<content-c v-if="index === 3"></content-c>
+		<add-widgets @addWidgets="addWidgets" v-if="index === 1" :initWidgets="widgets" :block="block"></add-widgets>
+<!--		<content-a @next="initPopup" v-if="index === 2"></content-a>-->
+<!--		<content-b @next="initPopup" v-if="index === 3" @closePopup="manualClosePopup(1)"></content-b>-->
+<!--		<content-c v-if="index === 3"></content-c>-->
 	</pop-up>
 </template>
 <script>
@@ -71,9 +71,9 @@ import PopUp from "./PopUp.vue";
 import ContentA from "./ContentA.vue";
 import ContentB from "./ContentB.vue";
 import ContentC from "./ContentC.vue";
-import Widget from "./Widget.vue";
 import AddWidgets from "./AddWidgets.vue";
-import widget from "./Widget.vue";
+import Widget from "./Widget.vue";
+import ky from "ky";
 
 export default defineComponent({
 	name: 'App',
@@ -81,22 +81,26 @@ export default defineComponent({
 	data() {
 		return {
 			layout: window.widgetsInit.layout,
-			// layout: [],
 			widgets: window.widgetsInit.widgets,
 			modalCount: 0,
 			resizable: false,
 			draggable: false,
 			startTime: 0,
-			endTime: 0
+			endTime: 0,
+			keyRender: 0,
+			block: false
 		}
 	},
 	mounted() {
 		setTimeout(() => {
-			document.getElementById('widgets').style.width = '99%'
+			document.getElementById('widgets').style.width = '100%'
 		}, 100)
+		//console.log(window.widgetsInit.layout)
 	},
 	methods: {
-		addWidgets(id) {
+		async addWidgets(id) {
+			document.getElementById('widgets').style.width = '99%'
+			this.block = !this.block
 			let layoutItem = this.layout.find(e => e.id === id)
 			if (layoutItem) {
 				this.layout = this.layout.filter(e => e.id !== id)
@@ -107,21 +111,43 @@ export default defineComponent({
 
 				let x = +this.layout.length === 0 ? 0 : ((this.layout[+this.layout.length - 1].x + this.layout[+this.layout.length - 1].w) > 8 || (this.layout[+this.layout.length - 1].x + this.layout[+this.layout.length - 1].w + w) > 8 ? 0 : (this.layout[+this.layout.length - 1].x + this.layout[+this.layout.length - 1].w))
 
+				let y = 0
+
 				this.layout.push({
 					x: x,
-					y: 0,
+					y: y,
 					w: w,
 					h: h,
 					i: +this.layout.length + 1,
 					id: widget.id
 				})
 			}
-			localStorage.setItem('widgets', JSON.stringify(this.widgets))
+			localStorage.setItem('widgets_layout', JSON.stringify(this.layout))
+			try {
+				let res = await ky.post('/admin/widgets-get-all-db', {json: {widgets: this.widgets}}).json()
+				this.block = !this.block
+				console.log(res)
+			} catch (e) {
+				console.log(e)
+			}
+			this.keyRender++
+			setTimeout(() => {
+				document.getElementById('widgets').style.width = '100%'
+			}, 100)
 		},
-		removeFromLayout(id) {
+		async removeFromLayout(id) {
+			this.block = !this.block
 			this.layout = this.layout.filter(e => e.id !== id)
 			let item = this.widgets.find(e => e.id === id)
 			if (item) item.added = !item.added
+			localStorage.setItem('widgets_layout', JSON.stringify(this.layout))
+			try {
+				let res = await ky.post('/admin/widgets-get-all-db', {json: {widgets: this.widgets}}).json()
+				this.block = !this.block
+				console.log(res)
+			} catch (e) {
+				console.log(e)
+			}
 		},
 		editSwitch() {
 			this.flexWidget()
@@ -161,7 +187,6 @@ export default defineComponent({
 		move(itemIdx) {
 		},
 		moved(itemIdx) {
-			localStorage.setItem('win_innerWidth', window.innerWidth.toString())
 			localStorage.setItem('widgets_layout', JSON.stringify(this.layout))
 		},
 		resize(itemIdx) {

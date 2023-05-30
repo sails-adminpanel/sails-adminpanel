@@ -6,23 +6,26 @@ import ky from "ky";
 
 window.widgetsInit = {}
 
-// get widgets and a layout from localStorage
 const localLayout = JSON.parse(localStorage.getItem('widgets_layout'))
-const localWidgets = JSON.parse((localStorage.getItem('widgets')))
+let {widgetsDB} = await ky.get('/admin/widgets-get-all-db').json()
 
+widgetsDB = widgetsDB ?? []
+
+//console.log(widgetsDB)
 async function init() {
 	const res = await ky.get('/admin/widgets-get-all').json()
 	let widgets = res.widgets
 
 	let initWidgets = []
 
-	// compare the received widgets with the local ones
+
 	for (let widgetsKey in widgets) {
 		let widget = widgets[widgetsKey]
 		let findItem = null
 
-		if(localWidgets) findItem = localWidgets.find(e => e.id === widget.id)
-
+		if (widgetsDB.length) {
+			findItem = widgetsDB.find(e => e.id === widget.id)
+		}
 		if (findItem) {
 			initWidgets.push(findItem)
 		} else {
@@ -33,15 +36,35 @@ async function init() {
 }
 
 init().then(res => {
-	let winInnerWidth = +localStorage.getItem('win_innerWidth')
 	let layout = []
+	let filtered = res.widgets.filter(e => e.added)
 
-	// if the window size has not changed, set layout from localStorage
-	if (window.innerWidth === winInnerWidth && localLayout !== null) {
-		//layout = localLayout
+	if (localLayout !== null) {
+		for (let resKey in filtered) {
+			let widget = filtered[resKey]
+			let findItem = localLayout.find(e => e.id === widget.id)
+
+			if (findItem) {
+				layout.push(findItem)
+			} else {
+				let w = widget.size ? widget.size.w : 1
+				let h = widget.size ? widget.size.h : 1
+
+				let x = +resKey === 0 ? 0 : ((layout[+resKey - 1].x + layout[+resKey - 1].w) > 8 || (layout[+resKey - 1].x + layout[+resKey - 1].w + w) > 8 ? 0 : (layout[+resKey - 1].x + layout[+resKey - 1].w))
+
+				layout.push({
+					x: x,
+					y: 0,
+					w: w,
+					h: h,
+					i: +resKey,
+					id: widget.id
+				})
+			}
+		}
+
 	} else {
 		// creating a layout from the added widgets
-		let filtered = res.widgets.filter(e => e.added)
 		for (let resKey in filtered) {
 			let widget = filtered[resKey]
 			let w = widget.size ? widget.size.w : 1
@@ -59,6 +82,7 @@ init().then(res => {
 			})
 		}
 	}
+
 	window.widgetsInit = {
 		layout: layout,
 		widgets: res.widgets

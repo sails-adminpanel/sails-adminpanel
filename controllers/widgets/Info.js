@@ -27,7 +27,7 @@ async function widgetInfoController(req, res) {
             return res.send(text);
         }
         catch (e) {
-            return res.error(e);
+            return res.serverError(e);
         }
     }
 }

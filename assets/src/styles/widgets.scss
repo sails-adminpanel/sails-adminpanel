@@ -85,10 +85,6 @@
 			}
 		}
 	}
-
-	&__close {
-		@apply cursor-pointer text-red-500 text-xl absolute top-2 right-3 opacity-0 invisible transition;
-	}
 }
 
 @keyframes tilt-shaking {
@@ -111,7 +107,7 @@
 
 #widgets {
 	max-width: 1140px;
-	width: 100%;
+	width: 99%;
 }
 
 .vue-grid-item {
@@ -176,19 +172,22 @@
 
 .add-widgets-pop-up{
 	@apply text-neutral-700;
+	&__block{
+		@apply pointer-events-none;
+	}
 	&__head{
 		h2{
 			@apply text-xl;
 		}
 	}
 	&__head-nav{
-		@apply flex justify-between mt-12 items-center;
+		@apply flex justify-between mt-12 items-center flex-wrap gap-5;
 		.text-input{
 			@apply h-8;
 		}
 	}
 	&__nav{
-		@apply flex gap-7;
+		@apply flex gap-7 flex-wrap;
 	}
 	&__nav-item{
 		@apply cursor-pointer transition;
@@ -204,11 +203,11 @@
 	}
 	&__widgets-item{
 		h3{
-			@apply text-xl;
+			@apply text-xl sm:text-center;
 		}
 	}
 	&__widgets-array{
-		@apply flex gap-6 mt-8;
+		@apply flex gap-6 mt-8 flex-wrap sm:justify-center;
 	}
 	&__widgets-array-item{
 		@apply w-[200px] h-[225px] bg-slate-200 rounded p-3.5 flex flex-col justify-between;

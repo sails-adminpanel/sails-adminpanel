@@ -174,7 +174,7 @@ const jsProd = () => {
 		.pipe(gulp.dest(path.build.js));
 };
 
-const vue = () => {
+const vueWidgets = () => {
 	return gulp.src(`${srcFolder}/widgets/app.js`, { sourcemaps: true })
 		.pipe(webpackStream({
 			mode: 'development',
@@ -207,6 +207,44 @@ const vue = () => {
 					__VUE_PROD_DEVTOOLS__: true,
 					__VUE_OPTIONS_API__: true
 				  })
+			]
+		}))
+		.pipe(gulp.dest(`${path.build.js}/`))
+}
+
+const vueWidgetsProd = () => {
+	return gulp.src(`${srcFolder}/widgets/app.js`, { sourcemaps: true })
+		.pipe(webpackStream({
+			mode: 'production',
+			entry: `${srcFolder}/widgets/app.js`,
+			output: {
+				path: Fpath.resolve('./assets/build/js/'),
+				filename: 'vue-widgets.js'
+			},
+			module: {
+				rules: [
+					{
+						test: /\.vue$/,
+						loader: 'vue-loader'
+					},
+					{
+						test: /\.css$/,
+						use: [
+							'vue-style-loader',
+							'css-loader',
+						]
+					}
+				],
+			},
+			experiments: {
+				topLevelAwait: true
+			},
+			plugins: [
+				new VueLoaderPlugin(),
+				new webpack.DefinePlugin({
+					__VUE_PROD_DEVTOOLS__: false,
+					__VUE_OPTIONS_API__: true
+				})
 			]
 		}))
 		.pipe(gulp.dest(`${path.build.js}/`))
@@ -287,15 +325,15 @@ function watcher() {
 	gulp.watch(path.src.scss, gulp.series(scss, reload))
 }
 
-function vueWatcher(){
-	gulp.watch(`${srcFolder}/widgets/**/*.*`, gulp.series(vue, reload))
+function vueWidgetsWatcher(){
+	gulp.watch(`${srcFolder}/widgets/**/*.*`, gulp.series(vueWidgets, reload))
 	gulp.watch(path.watch.scss, gulp.series(scss, reload))
 }
 
 const build = gulp.series(reset, copy_styles_files, scss, js, ckeditorBuild);
 //const build = gulp.series(reset, copy_styles_files, scss, js);
 
-const prod = gulp.series(reset, copy_styles_files, scssProd, jsProd, ckeditorBuild);
+const prod = gulp.series(reset, copy_styles_files, scssProd, jsProd, ckeditorBuild, vueWidgetsProd);
 
 gulp.task('default', build);
 gulp.task('prod', prod);
@@ -306,4 +344,4 @@ gulp.task('jsProd', jsProd);
 gulp.task('styles-prod', scssProd);
 gulp.task('styles', gulp.series(scss, gulp.parallel(serve, watcher)))
 
-gulp.task('vue', gulp.series(vue, gulp.parallel(serve, vueWatcher)))
+gulp.task('vue', gulp.series(vueWidgets, gulp.parallel(serve, vueWidgetsWatcher)))

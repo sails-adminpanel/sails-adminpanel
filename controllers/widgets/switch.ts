@@ -27,7 +27,7 @@ export async function widgetSwitchController(req, res) {
 			let state = await widget.getState();
 			return res.json({state: state})
 		} catch (e){
-			return res.error(e)
+			return res.serverError(e)
 		}
 	}
 
@@ -37,7 +37,7 @@ export async function widgetSwitchController(req, res) {
 			let state = await widget.switchIt();
 			return res.json({state: state})
 		} catch (e){
-			return res.error(e)
+			return res.serverError(e)
 		}
 	}
 }

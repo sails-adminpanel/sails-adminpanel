@@ -27,7 +27,7 @@ export async function widgetInfoController(req, res) {
 			let text = await widget.getInfo();
 			return res.send(text)
 		} catch (e) {
-			return res.error(e)
+			return res.serverError(e)
 		}
 	}
 }
