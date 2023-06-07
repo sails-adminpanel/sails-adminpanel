@@ -15,10 +15,15 @@ jsonEditor['<%= key %>'] = new JSONEditor(
             onValidationError: function(errors) {
                 formState.hasError = Boolean(errors.length);
             },
-            language: '<%- req.session.UserAP.locale %>'
+            language: '<%- req.session.UserAP.locale %>',
+            onChange: function() {
+                $('#form-<%= key %>').val(JSON.stringify(jsonEditor['<%= key %>'].get()));
+            }
         }
     <%}else{%>
-        {modes: ['code', 'form', 'text', 'tree', 'view'], mode: "tree"}
+        {modes: ['code', 'form', 'text', 'tree', 'view'], mode: "tree", onChange: function() {
+                $('#form-<%= key %>').val(JSON.stringify(jsonEditor['<%= key %>'].get()));
+            }}
     <% } %>
     ,<%- data %>
 )
