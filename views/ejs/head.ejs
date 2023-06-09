@@ -21,7 +21,7 @@
 
 <body>
 <div class="wrapper h-full md:flex md:flex-col">
-        <header class="bg-gray-800 dark:bg-neutral-900 h-[40px] md:fixed md:w-full md:z-[1001]">
+        <header class="bg-gray-800 dark:bg-neutral-900 h-[50px] md:fixed md:w-full md:z-[1001]">
             <div class="flex items-center h-full pl-5 justify-between">
                 <div class="flex-none flex items-center">
                     <a href="" class="flex items-center gap-2">
@@ -39,7 +39,7 @@
                         <% if (req.session.adminPretender && req.session.adminPretender.id) { %>
                             <i class="las la-mask text-fa_fa"></i>&nbsp;
                         <% } %>
-                        <a href="#" class="md:hidden relative top-[1px]">
+                        <a href="#" class="md:hidden relative top-[1px] hover:opacity-[0.6]">
                             <span class="text-fa_fa font-bold"><%= req.session.UserAP.fullName %></span>
                             <i class="las la-user text-fa_fa text-[24px]"></i>
                         </a>
