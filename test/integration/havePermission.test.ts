@@ -20,6 +20,4 @@ describe('Have permission test', function () {
                     });
             });
     })
-
-
 })

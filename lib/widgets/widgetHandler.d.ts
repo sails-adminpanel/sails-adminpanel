@@ -3,7 +3,7 @@ import InfoBase from "./abstractInfo";
 import ActionBase from "./abstractAction";
 import LinkBase from "./abstractLink";
 import UserAP from "../../models/UserAP";
-declare type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase);
+type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase);
 export declare class WidgetHandler {
     private static widgets;
     static add(widget: WidgetType): void;
