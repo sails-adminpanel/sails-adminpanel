@@ -29,6 +29,12 @@
     let options<%=key%> = <%- JSON.stringify(field.config.options) %>;
     tables['<%= key %>'] = new Handsontable(container<%=key%>, {
         data: data<%=key%>,
-        ...options<%=key%>
+        ...options<%=key%>,
+		afterChange: function (change, source) {
+			if (source === 'loadData') {
+				return; //don't save this change
+			}
+			$('#form-<%= key %>').val(JSON.stringify(this.getSourceData()));
+		}
     });
 </script>
