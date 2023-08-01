@@ -2,7 +2,7 @@
         <%= field.config.required && 'required' %>
         <%= field.config.disabled && 'disabled'%>
         name="<%= key %>"
-        id="form-<%= key %>" hidden><%- JSON.stringify(value) %></textarea>
+        id="form-<%= key %>"><%- JSON.stringify(value) %></textarea>
 <div id="handsontable-<%= key %>"></div>
 
 <% if (field.config.options.language) { %>
@@ -29,6 +29,12 @@
     let options<%=key%> = <%- JSON.stringify(field.config.options) %>;
     tables['<%= key %>'] = new Handsontable(container<%=key%>, {
         data: data<%=key%>,
-        ...options<%=key%>
+        ...options<%=key%>,
+		afterChange: function (change, source) {
+			if (source === 'loadData') {
+				return; //don't save this change
+			}
+			$('#form-<%= key %>').val(JSON.stringify(this.getSourceData()));
+        }
     });
 </script>
