@@ -2,7 +2,7 @@
         <%= field.config.required && 'required' %>
         <%= field.config.disabled && 'disabled'%>
         name="<%= key %>"
-        id="form-<%= key %>" hidden=""><%- JSON.stringify(value) %></textarea>
+        id="form-<%= key %>" hidden><%- value ? JSON.stringify(value) : [] %></textarea>
 <div id="handsontable-<%= key %>"></div>
 
 <% if (field.config.options.language) { %>
@@ -14,6 +14,7 @@
 <script>
 
     let data<%=key%> = document.getElementById('form-<%= key %>').value;
+
     if (data<%=key%>) {
         data<%=key%> = JSON.parse(data<%=key%>)
     } else {
@@ -34,6 +35,9 @@
 			if (source === 'loadData') {
 				return; //don't save this change
 			}
+			$('#form-<%= key %>').val(JSON.stringify(this.getSourceData()));
+        },
+		afterRemoveRow(index, amount, physicalRows){
 			$('#form-<%= key %>').val(JSON.stringify(this.getSourceData()));
         }
     });
