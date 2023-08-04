@@ -83,6 +83,20 @@ And your admin panel will be accessible under: `http://127.0.0.1:port/admin`
 **Custom build file** -- `assets/src/scripts/ckeditor5/app.js`
 **gulp task** -- `gulp ckeditorBuild`
 
+## Migrations
+```javascript
+if ((process.env.NODE_ENV === "production" && process.env.DATASTORE === "postgres") || process.env.ADMINPANEL_MIGRATIONS_FORCE === "TRUE")  {
+    if (process.env.ADMINPANEL_MIGRATIONS_SKIP !== "TRUE") {
+        await MigrationsHelper.addToProcessMigrationsQueue(`${sails.config.adminpanel.rootPath}/migrations`, "up");
+    }
+}
+```
+
+Adminpanel migrations will run if some conditions will be done.
+Set `process.env.NODE_ENV = "production"` and `process.env.DATASTORE = "postgres"`
+or use `process.env.ADMINPANEL_MIGRATIONS_FORCE = "TRUE"`. But if you want to forbid
+migrations and cancel all these conditions use `process.env.ADMINPANEL_MIGRATIONS_SKIP = "TRUE"`
+
 ## Documentation
 
 Take a look into [docs](https://github.com/sails-adminpanel/sails-adminpanel/tree/master/docs) folder. There are a lot of docs about configuration and usage.

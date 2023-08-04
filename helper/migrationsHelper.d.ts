@@ -1,9 +1,9 @@
-export default class MigrationsHelper {
+export declare class MigrationsHelper {
+    private static queue;
+    private static migrationsIsRunning;
     static processDatastoreAdapter(): void;
     private static runMigrations;
-    static processMigrations(action: any): Promise<{
-        success: boolean;
-        time: number;
-        message: string;
-    }>;
+    static addToProcessMigrationsQueue(migrationsDirectory: string, action: "up" | "down"): Promise<void>;
+    private static runMigrationsQueue;
+    static processSpecificDirectoryMigrations(migrationsDirectory: string, action: "up" | "down"): Promise<void>;
 }

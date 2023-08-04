@@ -1,7 +1,6 @@
 <%- include("head") %>
 <%- include("headContent") %>
 <div class="content__body">
-    <%- JSON.stringify(migrationsInfo) %>
     <div class="text-center">
         <p class="text-xl font-medium mb-3"><%= __("Run migrations") %>:</p>
         <button id="migrationsUpButton" class="btn btn-success btn-sm">
@@ -10,34 +9,6 @@
         <button id="migrationsDownButton" class="btn btn-danger btn-sm" hidden>
             <span><%= __("DOWN") %></span>
         </button>
-    </div>
-    <div class="mt-12">
-        <% if (migrationsInfo && migrationsInfo.result) { %>
-            <table class="table-auto w-full">
-                <thead class="text-left">
-                <tr>
-                    <th class="w-1/3 p-2 border border-gray-400"><%= __("Migrations was run") %></th>
-                    <th class="w-1/3 p-2 border border-gray-400"><%= __("Status") %></th>
-                    <th class="w-1/3 p-2 border border-gray-400"><%= __("Last result") %></th>
-                </tr>
-                </thead>
-                <tbody class="text-left">
-                <tr>
-                    <td class="w-1/3 p-2 border border-gray-400">
-                        <p><%= migrationsInfo.migrationsCount %></p>
-                    </td>
-                    <td class="w-1/3 p-2 border border-gray-400">
-                        <p><%= migrationsInfo.status %></p>
-                    </td>
-                    <td class="w-1/3 p-2 border border-gray-400">
-                        <p><%= migrationsInfo.result %></p>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        <% } else { %>
-            <%= __("Migrations was not run yet") %>
-        <% } %>
     </div>
 
     <table class="table mt-12" id="informationBlock">
@@ -58,12 +29,11 @@
 			action: "up"
 		})
 			.done(function (data) {
-				let status = data.success === true ? "success" : "failed"
-				$("#informationBlock").append(`<tr><td><p>Processed migrations 'up' method. Status: ${status}. Time: ${data.time} ms. Message: ${data.message}</p></td></tr>`)
+				$("#informationBlock").append(`<tr><td><p>Migrations 'up' method processed successfully</p></td></tr>`)
 			})
 			.fail(function (err) {
 				console.log(err);
-				$("#informationBlock").append(`<tr><td><p>Failed to process migrations 'up' method, ${JSON.stringify(err, null, 2)}</p></td></tr>`)
+				$("#informationBlock").append(`<tr><td><p>Error trying to process migrations 'up' method: ${err.responseText}</p></td></tr>`)
 			})
 	})
 	$("#migrationsDownButton").on('click', function () {
@@ -72,11 +42,11 @@
 		})
 			.done(function (data) {
 				let status = data.success === true ? "success" : "failed"
-				$("#informationBlock").append(`<tr><td><p>Processed migrations 'down' method. Status: ${status}. Time: ${data.time} ms. Message: ${data.message}</p></td></tr>`)
+				$("#informationBlock").append(`<tr><td><p>Migrations 'down' method processed successfully</p></td></tr>`)
 			})
 			.fail(function (err) {
 				console.log(err);
-				$("#informationBlock > tbody").append(`<tr><td><p>Failed to process migrations 'down' method, ${JSON.stringify(err, null, 2)}</p></td></tr>`)
+				$("#informationBlock > tbody").append(`<tr><td><p>Error trying to process migrations 'down' method: ${err.responseText}</p></td></tr>`)
 			})
 	})
 </script>

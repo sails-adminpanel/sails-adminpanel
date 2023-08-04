@@ -14,10 +14,5 @@ export default function migrations(req, res) {
         return res.status(404).send("Check migrations path in configuration");
     }
 
-    let migrationsLastResult;
-    if (fs.existsSync(`${process.cwd()}/.tmp/migrations_run.json`)) {
-        migrationsLastResult = require(`${process.cwd()}/.tmp/migrations_run.json`);
-    }
-
-    return res.viewAdmin('migrations', { entity: "entity", section: 'migrations', migrationsInfo: migrationsLastResult });
+    return res.viewAdmin('migrations', { entity: "entity", section: 'migrations' });
 }

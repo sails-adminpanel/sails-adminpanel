@@ -5,7 +5,7 @@ import bindAssets from "./bindAssets"
 import HookTools from "./hookTools";
 import {resolve} from "path";
 import afterHook from "./afterHook";
-import MigrationsHelper from "../helper/migrationsHelper";
+import { MigrationsHelper } from "../helper/migrationsHelper";
 
 export default async function(sails: any, cb) {
 
@@ -42,9 +42,21 @@ export default async function(sails: any, cb) {
     // sails.hooks.i18n.locales = [...sails.hooks.i18n.locales, ...sails.config.adminpanel.translation.locales]
     //     .filter(function(item, pos, self) { return self.indexOf(item) == pos })
 
+    // run adminpanel migrations
+    if ((process.env.NODE_ENV === "production" && process.env.DATASTORE === "postgres") || process.env.ADMINPANEL_MIGRATIONS_FORCE === "TRUE")  {
+        if (process.env.ADMINPANEL_MIGRATIONS_SKIP !== "TRUE") {
+            await MigrationsHelper.addToProcessMigrationsQueue(`${sails.config.adminpanel.rootPath}/migrations`, "up");
+        }
+    }
+
+    // run project migrations
     if (process.env.AUTO_MIGRATIONS) {
-        let result = await MigrationsHelper.processMigrations("up");
-        sails.log.info(`Adminpanel automigrations completed: ${result}`)
+        try {
+            await MigrationsHelper.addToProcessMigrationsQueue(sails.config.adminpanel.migrations.path, "up");
+            sails.log.info(`Automigrations completed`)
+        } catch (e) {
+            sails.log.error(`Error trying to run automigrations, path: ${sails.config.adminpanel.migrations.path}`);
+        }
     }
 
     // Bind assets

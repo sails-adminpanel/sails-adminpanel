@@ -115,6 +115,79 @@ addEventListener('DOMContentLoaded', function () {
 	});
 })
 
+const formStateProx = {
+	hasError: false
+};
+window.formState = new Proxy(formStateProx, {
+	set: function (target, key, value) {
+		let submitButton = document.getElementById("submit");
+		let text = document.getElementById('error-btn-submit-text')
+		if(submitButton && key === "hasError") {
+			if (value === true) {
+				text.setAttribute('style', 'display:block');
+				submitButton.setAttribute("disabled", true);
+			} else {
+				text.setAttribute('style', 'display:none');
+				submitButton.removeAttribute("disabled");
+			}
+		}
+		target[key] = value;
+		return true;
+	}
+});
 
+
+
+function checkInitSubmitFormStatus() {
+	let submitButton = document.getElementById("submit");
+	if(formState.hasError) {
+		submitButton.setAttribute("disabled", true);
+	}
+}
+checkInitSubmitFormStatus();
+
+function submitForm() {
+	// Assign JSONEditor value to form textarea
+	for (var id in jsonEditor) {
+		try {
+			var json = jsonEditor[id].get();
+			$('#form-' + id).val(JSON.stringify(json));
+		} catch (e) {
+			alert('JSON is invalid.');
+			$('#form-' + id).show().focus().hide();
+			jsonEditor[id].focus();
+			return false;
+		}
+	};
+
+	for (var id in tables) {
+		try {
+			var schema = tables[id].getSchema();
+			var table = tables[id].getData();
+			table = table.filter(item => {
+				return !([...new Set(item)].length === 1 && [...new Set(item)][0] === null);
+			});
+			if (schema && Object.keys(schema).length) {
+				table = table.map((item) => {
+					var newItem = {};
+					var keys = Object.keys(schema);
+					for (let i = 0; i < keys.length; i++) {
+						newItem[keys[i]] = item[i];
+					}
+					return newItem;
+				});
+			} else {
+				table = table.map((item) => {
+					return [null].concat(item);
+				});
+			}
+			$('#form-' + id).val(JSON.stringify(table));
+		} catch (e) {
+			alert('Table is invalid!');
+			return false;
+		}
+	}
+	document.getElementById('form').submit();
+}
 
 

@@ -2,7 +2,7 @@
         <%= field.config.required && 'required' %>
         <%= field.config.disabled && 'disabled'%>
         name="<%= key %>"
-        id="form-<%= key %>" hidden><%- JSON.stringify(value) %></textarea>
+        id="form-<%= key %>" hidden><%- value ? JSON.stringify(value) : [] %></textarea>
 <div id="handsontable-<%= key %>"></div>
 
 <% if (field.config.options.language) { %>
@@ -13,22 +13,32 @@
 
 <script>
 
-    let data<%=key%> = document.getElementById('form-<%= key %>').value;
-    if (data<%=key%>) {
-        data<%=key%> = JSON.parse(data<%=key%>)
-    } else {
-        data<%=key%> = []
-    }
+	let data<%=key%> = document.getElementById('form-<%= key %>').value;
 
-    let container<%=key%> = document.getElementById('handsontable-<%= key %>');
+	if (data<%=key%>) {
+		data<%=key%> = JSON.parse(data<%=key%>)
+	} else {
+		data<%=key%> = []
+	}
+
+	let container<%=key%> = document.getElementById('handsontable-<%= key %>');
 
     <% if (!field.config.options.language && sails.config.adminpanel.translation && sails.config.adminpanel.translation.defaultLocale) { %>
-        <% field.config.options.language = `${ sails.config.adminpanel.translation.defaultLocale.toLowerCase()}-${sails.config.adminpanel.translation.defaultLocale.toUpperCase()}` %>
+    <% field.config.options.language = `${ sails.config.adminpanel.translation.defaultLocale.toLowerCase()}-${sails.config.adminpanel.translation.defaultLocale.toUpperCase()}` %>
     <% } %>
 
-    let options<%=key%> = <%- JSON.stringify(field.config.options) %>;
-    tables['<%= key %>'] = new Handsontable(container<%=key%>, {
-        data: data<%=key%>,
-        ...options<%=key%>
-    });
+	let options<%=key%> = <%- JSON.stringify(field.config.options) %>;
+	tables['<%= key %>'] = new Handsontable(container<%=key%>, {
+		data: data<%=key%>,
+		...options<%=key%>,
+		afterChange: function (change, source) {
+			if (source === 'loadData') {
+				return; //don't save this change
+			}
+			$('#form-<%= key %>').val(JSON.stringify(this.getSourceData()));
+		},
+		afterRemoveRow(index, amount, physicalRows){
+			$('#form-<%= key %>').val(JSON.stringify(this.getSourceData()));
+		}
+	});
 </script>
