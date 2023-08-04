@@ -41,12 +41,17 @@ export default async function edit(req, res) {
 
     fields = await FieldsHelper.loadAssociations(fields);
 
+    // Save
     if (req.method.toUpperCase() === 'POST') {
         let reqData = RequestProcessor.processRequest(req, fields);
         let params = {};
         params[entity.config.identifierField || req._sails.config.adminpanel.identifierField] = req.param('id');
 
         for (let prop in reqData) {
+            if(fields[prop].model.type === 'boolean') {
+                reqData[prop] = Boolean(reqData[prop]);
+            }
+
             if (Number.isNaN(reqData[prop]) || reqData[prop] === undefined || reqData[prop] === null) {
                 delete reqData[prop]
             }
