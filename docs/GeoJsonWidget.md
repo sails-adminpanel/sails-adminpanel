@@ -1,7 +1,26 @@
 # Navigation widget
 
 GeoJson editor is a widget, that allows you to create and edit GeoJson data.
-Currenlty supporting only one polygon
 
+## Example
 
-It uses leaflet just set type 'geo-polygon'
+To create a polygon, use this configuration
+
+```javascript
+fieldName: {
+    type: 'geo-polygon'
+}
+```
+
+To create a marker, use this configuration
+
+```javascript
+fieldName: {
+    type: 'geo-marker'
+}
+```
+
+In the model specifies the attribute
+```javascript
+type: "json"
+```

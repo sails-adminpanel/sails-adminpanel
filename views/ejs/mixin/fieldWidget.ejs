@@ -84,6 +84,12 @@
    <%- include("fields/widgetGeoPolygonEditor") %>
 <% } %>
 
+<%# GeoJsonEditor %>
+<% var widgetGeoJsonEditor = ['geo-marker'] %>
+<% if (widgetGeoJsonEditor.includes(type)) { %>
+   <%- include("fields/widgetGeoMarkerEditor") %>
+<% } %>
+
 <%# Select-pure %>
 <% if (type === 'association') { %>
    <%- include("fields/inputAssociation") %>
