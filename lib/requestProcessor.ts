@@ -98,15 +98,17 @@ export class RequestProcessor {
      * @returns {Object} List of processed values from request
      */
     public static processRequest(req, fields) {
-        let booleanFields = {};
-        for (let key of Object.keys(fields)) {
-            if (fields[key].config.type === 'boolean') {
-                booleanFields[key] = fields[key];
-            }
-        }
+        // let booleanFields = {};
+
+        // for (let key of Object.keys(fields)) {
+        //     if (fields[key].config.type === 'boolean') {
+        //         booleanFields[key] = Boolean(data[key]);
+        //     }
+        // }
 
         let data = req.allParams();
         let postParams = {};
+        // Only fileds data
         for (let key of Object.keys(data)) {
             if (Boolean(fields[key])) {
                 postParams[key] = data[key]
@@ -116,14 +118,10 @@ export class RequestProcessor {
         for (let key in postParams) {
             let field = fields[key];
             if (field.model.type == 'boolean') {
-                if (postParams[key] === '0') {
-                    postParams[key] = false;
-                }
-                postParams[key] = Boolean(postParams[key]);
+                postParams[key] = ['true', '1', 'yes', "TRUE"].includes(postParams[key].toString().toLowerCase());
+                continue;
             }
-            //if (field.model.type == 'integer') {
-            //    postParams[key] = parseInt(val) || null;
-            //}
+            
             if (field.model.type == 'number') {
                 postParams[key] = parseFloat(postParams[key]);
             }
@@ -145,13 +143,13 @@ export class RequestProcessor {
             }
         }
 
-        // Hook for setting boolean vars to false.
-        // HTTP wouldn't send data here
-        for (let key in booleanFields) {
-            if (!postParams[key]) {
-                postParams[key] = false;
-            }
-        }
+        // // Hook for setting boolean vars to false.
+        // // HTTP wouldn't send data here
+        // for (let key in booleanFields) {
+        //     if (!postParams[key]) {
+        //         postParams[key] = false;
+        //     }
+        // }
 
         return postParams;
     }
