@@ -105,13 +105,14 @@ addEventListener('DOMContentLoaded', function () {
 		$('html').toggleClass('dark')
 	})
 
-
-	var url = window.location.pathname,
-		urlRegExp = new RegExp(url.replace(/\/$/, '') + "$"); // create regexp to match current url pathname and remove trailing slash if present as it could collide with the link in navigation in case trailing slash wasn't present there
-// now grab every link from the navigation
+	// active elem aside
+	const url = window.location.href.substring(window.location.href.lastIndexOf('/') + 1)
 	$('.aside a').each(function () {
-		// and test its normalized href against the url pathname regexp
-		if (urlRegExp.test(this.href.replace(/\/$/, ''))) {
+		let link = this.href.substring(this.href.lastIndexOf('/') + 1)
+
+		if (url === link && window.location.href.indexOf('form') >= 0) {
+			$(this).closest('.menu__item ').addClass('bg-white dark:bg-blue-700')
+		} else if(url === link){
 			$(this).addClass('active');
 		}
 	});
