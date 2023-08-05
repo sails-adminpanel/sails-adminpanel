@@ -49,7 +49,7 @@ if (left_offset) {
 	stylesheet.innerText = `.content-resize { grid-template-columns: ${left_offset}px 8px 1fr; }`
 	//stylesheet.replaceSync(`.content-resize { grid-template-columns: ${left_offset}px 8px 1fr; }`)
 } else {
-	stylesheet.innerText =`.content-resize { grid-template-columns: 252px 8px 1fr; }`
+	stylesheet.innerText = `.content-resize { grid-template-columns: 252px 8px 1fr; }`
 	//stylesheet.replaceSync(`.content-resize { grid-template-columns: 252px 8px 1fr; }`)
 }
 document.head.appendChild(stylesheet);
@@ -104,12 +104,14 @@ addEventListener('DOMContentLoaded', function () {
 	})
 
 
-	var url = window.location.pathname,
-		urlRegExp = new RegExp(url.replace(/\/$/, '') + "$"); // create regexp to match current url pathname and remove trailing slash if present as it could collide with the link in navigation in case trailing slash wasn't present there
-// now grab every link from the navigation
+	// active elem aside
+	const url = window.location.href.substring(window.location.href.lastIndexOf('/') + 1)
 	$('.aside a').each(function () {
-		// and test its normalized href against the url pathname regexp
-		if (urlRegExp.test(this.href.replace(/\/$/, ''))) {
+		let link = this.href.substring(this.href.lastIndexOf('/') + 1)
+
+		if (url === link && window.location.href.indexOf('form') >= 0) {
+			$(this).closest('.menu__item ').addClass('bg-white dark:bg-blue-700')
+		} else if (url === link) {
 			$(this).addClass('active');
 		}
 	});
@@ -122,7 +124,7 @@ window.formState = new Proxy(formStateProx, {
 	set: function (target, key, value) {
 		let submitButton = document.getElementById("submit");
 		let text = document.getElementById('error-btn-submit-text')
-		if(submitButton && key === "hasError") {
+		if (submitButton && key === "hasError") {
 			if (value === true) {
 				text.setAttribute('style', 'display:block');
 				submitButton.setAttribute("disabled", true);
@@ -137,13 +139,13 @@ window.formState = new Proxy(formStateProx, {
 });
 
 
-
 function checkInitSubmitFormStatus() {
 	let submitButton = document.getElementById("submit");
-	if(formState.hasError) {
+	if (formState.hasError) {
 		submitButton.setAttribute("disabled", true);
 	}
 }
+
 checkInitSubmitFormStatus();
 
 function submitForm() {
@@ -158,7 +160,8 @@ function submitForm() {
 			jsonEditor[id].focus();
 			return false;
 		}
-	};
+	}
+	;
 
 	for (var id in tables) {
 		try {
