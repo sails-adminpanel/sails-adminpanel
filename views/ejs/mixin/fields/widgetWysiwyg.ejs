@@ -27,8 +27,8 @@
                 }]
             },
             language: "<%= req.session.UserAP.locale !== 'undefined' ? req.session.UserAP.locale : 'en' -%>",
-            removePlugins: <%- typeof field.config.options.removePlugins !== 'undefined' ? 
-            JSON.stringify(field.config.options.removePlugins) : 
+            removePlugins: <%- typeof field.config.options.removePlugins !== 'undefined' ?
+            JSON.stringify(field.config.options.removePlugins) :
             JSON.stringify([])%>,
             <%- typeof field.config.options.toolbar !== 'undefined' ?
             `toolbar: {
@@ -45,7 +45,6 @@
         })
         .then(editor => {
             window.editor_<%= key %> = editor;
-            console.log(editor_<%= key %>);
             editor_<%= key %>.plugins.get('FileRepository').createUploadAdapter = (loader) => {
                 return new UploadAdapter(loader);
             };
