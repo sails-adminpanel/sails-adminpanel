@@ -43,7 +43,7 @@ export default async function(sails: any, cb) {
     //     .filter(function(item, pos, self) { return self.indexOf(item) == pos })
 
     // run adminpanel migrations
-    if ((process.env.NODE_ENV === "production" && process.env.DATASTORE === "postgres") || process.env.ADMINPANEL_MIGRATIONS_FORCE === "TRUE")  {
+    if ((process.env.NODE_ENV === "production" && process.env.DATASTORE === "postgres" && process.env.ADMINPANEL_MIGRATIONS_ENABLE === "TRUE") || process.env.ADMINPANEL_MIGRATIONS_FORCE === "TRUE")  {
         if (process.env.ADMINPANEL_MIGRATIONS_SKIP !== "TRUE") {
             await MigrationsHelper.addToProcessMigrationsQueue(`${sails.config.adminpanel.rootPath}/migrations`, "up");
         }
