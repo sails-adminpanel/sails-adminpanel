@@ -58,5 +58,10 @@ export default async function () {
         bindTranslations();
     })
 
+    /**
+     * AfterHook emit
+     * This call is used so that other hooks can know that the admin panel is present in the panel and has been loaded, and can activate their logic.
+     */
+    sails.emit('Adminpanel:afterHook:loaded');
     return
 };

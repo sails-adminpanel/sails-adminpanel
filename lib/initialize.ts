@@ -9,6 +9,8 @@ import { MigrationsHelper } from "../helper/migrationsHelper";
 
 export default async function(sails: any, cb) {
 
+
+
     /**
      * List of hooks that required for adminpanel to work
      */
@@ -24,6 +26,13 @@ export default async function(sails: any, cb) {
     if (!sails.config.adminpanel) {
         return cb();
     }
+
+    /**
+     * Initilization emit
+     * This call is used so that other hooks can know that the admin panel is present in the panel, and can activate their logic. 
+     */
+
+    sails.emit('Adminpanel:initialization');
 
     //Check views engine and check if folder with templates exist
     if (!fs.existsSync(ViewsHelper.getPathToEngine(sails.config.views.extension))) {
