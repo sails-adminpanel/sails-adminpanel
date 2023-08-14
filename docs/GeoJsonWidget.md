@@ -1,4 +1,4 @@
-# Navigation widget
+# GeoJson widget
 
 GeoJson editor is a widget, that allows you to create and edit GeoJson data.
 

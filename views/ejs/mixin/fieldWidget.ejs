@@ -8,99 +8,99 @@
 <%# Here applied select for string + isIn%>
 <% var inputTextTypes = ['string', 'password', 'date', 'datetime', 'time',  'integer', 'number', 'float','color','email','month', 'week', 'range'] %>
 <% if (inputTextTypes.includes(type)) { %>
-   <%- include("fields/inputText", {type: type, isIn: isIn}) %>
+    <%- include("fields/inputText", {type: type, isIn: isIn}) %>
 <% } %>
 
 <%# select %>
 <% var selectTypes = ['select'] %>
 <% if (selectTypes.includes(type)) { %>
-   <%- include("fields/select", {type: type, isIn: isIn}) %>
+    <%- include("fields/select", {type: type, isIn: isIn}) %>
 <% } %>
 
 <%# select-many %>
 <% var selectManyTypes = ['select-many'] %>
 <% if (selectManyTypes.includes(type)) { %>
-   <%- include("fields/selectMany", {type: type, isIn: isIn}) %>
+    <%- include("fields/selectMany", {type: type, isIn: isIn}) %>
 <% } %>
 
 <%# boolean %>
 <% if (type === 'boolean' || type === 'binary') { %>
-   <%- include("fields/inputBoolean") %>
+    <%- include("fields/inputBoolean") %>
 <% } %>
 
 
 <%# textarea %>
 <% var inputTextAreaTypes = ['text', 'longtext', 'mediumtext' ] %>
 <% if (inputTextAreaTypes.includes(type)) { %>
-   <%- include("fields/inputTextarea") %>
+    <%- include("fields/inputTextarea") %>
 <% } %>
 
 <%# wysiwyg %>
 <% var widgetWysiwygTypes = ['ckeditor', 'wysiwyg', 'texteditor', 'word'] %>
 <% if (widgetWysiwygTypes.includes(type)) { %>
-   <%- include("fields/widgetWysiwyg") %>
+    <%- include("fields/widgetWysiwyg") %>
 <% } %>
 
 <%# jsoneditor %>
 <% var widgetJsonEditorTypes = ['jsoneditor', 'json', 'array', 'object'] %>
 <% if (widgetJsonEditorTypes.includes(type)) { %>
-      <%- include("fields/widgetJsonEditor") %>
+    <%- include("fields/widgetJsonEditor") %>
 <% } %>
 
 <%# ace %>
 <% var widgetAceTypes = ['ace', 'html', 'xml', 'aceeditor'] %>
 <% if (widgetAceTypes.includes(type)) { %>
-   <%- include("fields/widgetAce") %>
+    <%- include("fields/widgetAce") %>
 <% } %>
 
 
 <%# FileUploader %>
 <% var widgetFileUploader = ['image','images', 'file', 'files'] %>
 <% if (widgetFileUploader.includes(type)) { %>
-   <%- include("fields/widgetFileUploader", {type: type}) %>
+    <%- include("fields/widgetFileUploader", {type: type}) %>
 <% } %>
 
 <%# EditNavigation %>
 <% var widgetEditNavigation = ['menu','navigation'] %>
 <% if (widgetEditNavigation.includes(type)) { %>
-   <%- include("fields/widgetEditNavigation") %>
+    <%- include("fields/widgetEditNavigation") %>
 <% } %>
 
 <%# EditSchedule %>
 <% var widgetEditSchedule = ['schedule','worktime'] %>
 <% if (widgetEditSchedule.includes(type)) { %>
-   <%- include("fields/widgetEditSchedule") %>
+    <%- include("fields/widgetEditSchedule") %>
 <% } %>
 
 <%# GeoJsonEditor %>
 <% var widgetGeoJsonEditor = ['geojson'] %>
 <% if (widgetGeoJsonEditor.includes(type)) { %>
-   <%- include("fields/widgetGeoJsonEditor") %>
+    <%- include("fields/widgetGeoJsonEditor") %>
 <% } %>
 
 <%# GeoJsonEditor %>
 <% var widgetGeoJsonEditor = ['geo-polygon'] %>
 <% if (widgetGeoJsonEditor.includes(type)) { %>
-   <%- include("fields/widgetGeoPolygonEditor") %>
+    <%- include("fields/widgetGeoPolygonEditor") %>
 <% } %>
 
 <%# GeoJsonEditor %>
 <% var widgetGeoJsonEditor = ['geo-marker'] %>
 <% if (widgetGeoJsonEditor.includes(type)) { %>
-   <%- include("fields/widgetGeoMarkerEditor") %>
+    <%- include("fields/widgetGeoMarkerEditor") %>
 <% } %>
 
 <%# Select-pure %>
 <% if (type === 'association') { %>
-   <%- include("fields/inputAssociation") %>
+    <%- include("fields/inputAssociation") %>
 <% } %>
 
 <%# Select-pure with multiple choice %>
 <% if (type === 'association-many') { %>
-   <%- include("fields/inputAssociationMany") %>
+    <%- include("fields/inputAssociationMany") %>
 <% } %>
 
 <%# Handsontable  + quilljs%>
 <% if (type === 'table') { %>
-   <%- include("fields/widgetHandsontable") %>
+    <%- include("fields/widgetHandsontable") %>
 <% } %>

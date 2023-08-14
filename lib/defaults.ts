@@ -3,6 +3,8 @@ import {AdminpanelConfig} from "../interfaces/adminpanelConfig";
 import {FileStorageHelper} from "../helper/fileStorageHelper";
 const packageJson = require('../package.json');
 const timezones = require('./timezones.json');
+import * as path from "path";
+
 /**
  * Default admin config
  */
@@ -109,7 +111,8 @@ const adminpanelConfig: AdminpanelConfig = {
     showVersion: true,
     timezones: timezones,
     migrations: {
-        path: `${process.cwd()}/migrations`
+        path: `${process.cwd()}/migrations`,
+        config: path.resolve(__dirname + "./../database.json")
     },
     globalSettings: {
         enableMigrations: false

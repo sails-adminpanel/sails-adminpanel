@@ -3,7 +3,7 @@ import bindAuthorization from './bindAuthorization';
 import bindAccessRights from "./bindAccessRights";
 import bindDev from "./bindDev";
 import bindForms from "./bindForms";
-import MigrationsHelper from "../helper/migrationsHelper";
+import { MigrationsHelper } from "../helper/migrationsHelper";
 
 export default async function () {
     // check that current datastore is appropriate for migrations
@@ -58,5 +58,10 @@ export default async function () {
         bindTranslations();
     })
 
+    /**
+     * AfterHook emit
+     * This call is used so that other hooks can know that the admin panel is present in the panel and has been loaded, and can activate their logic.
+     */
+    sails.emit('Adminpanel:afterHook:loaded');
     return
 };

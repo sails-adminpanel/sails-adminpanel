@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MigrationsHelper = void 0;
 const fs = require("fs");
 const DBMigrate = require("db-migrate");
 class MigrationsHelper {
@@ -32,53 +33,48 @@ class MigrationsHelper {
             }
         });
     }
-    static async processMigrations(action) {
-        if (typeof sails.config.adminpanel.migrations === "boolean" || !fs.existsSync(sails.config.adminpanel.migrations.path)) {
-            throw "Migrations config is not defined or migrations path does not exist";
+    static async addToProcessMigrationsQueue(migrationsDirectory, action) {
+        if (typeof migrationsDirectory === "boolean" || !fs.existsSync(migrationsDirectory)) {
+            throw `Migrations path does not exist: ${migrationsDirectory}`;
+        }
+        if (!fs.readdirSync(migrationsDirectory).length) {
+            throw `Migrations directory is empty: ${migrationsDirectory}`;
+        }
+        this.queue.push({ directory: migrationsDirectory, action: action });
+        await this.runMigrationsQueue();
+    }
+    static async runMigrationsQueue() {
+        if (this.queue.length) {
+            if (!this.migrationsIsRunning) {
+                let firstToProcess = this.queue.shift();
+                await this.processSpecificDirectoryMigrations(firstToProcess.directory, firstToProcess.action);
+                await this.runMigrationsQueue();
+            }
+        }
+    }
+    static async processSpecificDirectoryMigrations(migrationsDirectory, action) {
+        this.migrationsIsRunning = true;
+        if (typeof sails.config.adminpanel.migrations === "boolean" || !sails.config.adminpanel.migrations.config) {
+            throw "Migrations config is not defined";
         }
         // !TODO solve migrations down problem described in module-manager
         if (action === "down") {
             throw "Migrations down is not available yet. Please check for updates";
         }
-        let migrationsLastResult;
-        if (fs.existsSync(`${process.cwd()}/.tmp/migrations_run.json`)) {
-            migrationsLastResult = require(`${process.cwd()}/.tmp/migrations_run.json`);
+        let dbmigrate = DBMigrate.getInstance(true, {
+            cwd: migrationsDirectory,
+            config: sails.config.adminpanel.migrations.config
+        });
+        try {
+            await this.runMigrations(dbmigrate, action);
+            sails.log.info(`Migrations ${action} was successfully run, path: ${migrationsDirectory}`);
         }
-        let migrationsDir = fs.readdirSync(sails.config.adminpanel.migrations.path);
-        if (migrationsDir.length === migrationsLastResult.migrationsCount) {
-            return { success: true, time: 0, message: "No unprocessed migrations found, exited without running" };
+        catch (e) {
+            throw `Error trying to run migrations ${action}, path: ${migrationsDirectory}`;
         }
-        else { // if migrations num changed, run migrations
-            let dbmigrate = DBMigrate.getInstance(true, {
-                cwd: sails.config.adminpanel.migrations.path,
-                config: {
-                    "default": sails.config.adminpanel.migrations.config
-                }
-            });
-            try {
-                let startTime = Date.now();
-                let result = await this.runMigrations(dbmigrate, action);
-                let finishTime = Date.now();
-                console.log(`Migrations run result: ${JSON.stringify(result)}`);
-                migrationsLastResult = {
-                    status: "success",
-                    migrationsCount: migrationsDir.length,
-                    result: `Migrations ${action} method was run successfully`
-                };
-                fs.writeFileSync(`${process.cwd()}/.tmp/migrations_run.json`, JSON.stringify(migrationsLastResult, null, 2));
-                return { success: true, time: finishTime - startTime, message: `Migrations ${action} method was run successfully` };
-            }
-            catch (e) {
-                sails.log.error(`Migrations error: ${e}`);
-                migrationsLastResult = {
-                    status: "failed",
-                    migrationsCount: migrationsDir.length,
-                    result: `Error while processing migrations ${action} method: ${JSON.stringify(e)}`
-                };
-                fs.writeFileSync(`${process.cwd()}/.tmp/migrations_run.json`, JSON.stringify(migrationsLastResult, null, 2));
-                return { success: false, time: 0, message: `Error while processing migrations ${action} method: ${JSON.stringify(e)}` };
-            }
-        }
+        this.migrationsIsRunning = false;
     }
 }
-exports.default = MigrationsHelper;
+MigrationsHelper.queue = [];
+MigrationsHelper.migrationsIsRunning = false;
+exports.MigrationsHelper = MigrationsHelper;
