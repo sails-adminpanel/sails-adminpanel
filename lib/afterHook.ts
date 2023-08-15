@@ -27,7 +27,7 @@ export default async function () {
         delete sails.config.adminpanel.instances;
     }
 
-    if (process.env.DEV && process.env.NODE_ENV !== 'production') {
+    if ((process.env.DEV && process.env.NODE_ENV !== 'production') || process.env.ADMINPANEL_FORCE_BIND_DEV === "TRUE") {
         bindDev(sails.config.adminpanel)
     }
 
