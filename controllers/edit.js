@@ -56,7 +56,7 @@ async function edit(req, res) {
                     reqData[prop] = JSON.parse(reqData[prop]);
                 }
                 catch (e) {
-                    // Why it here? 
+                    // Why it here?
                     if (typeof reqData[prop] === "string" && reqData[prop].replace(/(\r\n|\n|\r|\s{2,})/gm, "")) {
                         sails.log.error(JSON.stringify(reqData[prop]), e);
                     }

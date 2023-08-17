@@ -105,7 +105,7 @@ export class RequestProcessor {
         //         booleanFields[key] = Boolean(data[key]);
         //     }
         // }
-
+		console.log(req.body)
         let data = req.allParams();
         let postParams = {};
         // Only fileds data
@@ -118,10 +118,10 @@ export class RequestProcessor {
         for (let key in postParams) {
             let field = fields[key];
             if (field.model.type == 'boolean') {
-                postParams[key] = ['true', '1', 'yes', "TRUE"].includes(postParams[key].toString().toLowerCase());
-                continue;
+                postParams[key] = ['true', '1', 'yes', "TRUE", "on"].includes(postParams[key].toString().toLowerCase());
+				continue;
             }
-            
+
             if (field.model.type == 'number') {
                 postParams[key] = parseFloat(postParams[key]);
             }

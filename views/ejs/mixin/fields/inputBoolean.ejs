@@ -1,19 +1,22 @@
 <div class="checkbox relative">
     <% if (value) { %>
-        <input type="checkbox" id="form-<%= key %>" name="<%= key %>" value="1" <%= field.config.disabled && 'disabled' || ''%> checked>
+        <input type="checkbox" id="fake-form-<%= key %>" name="fake-<%= key %>" value="1" <%= field.config.disabled && 'disabled' || ''%> checked>
     <% } else { %>
-        <input type="checkbox" id="form-<%= key %>" name="<%= key %>" value="0" <%= field.config.disabled && 'disabled' || ''%>>
+        <input type="checkbox" id="fake-form-<%= key %>" name="fake-<%= key %>" value="0" <%= field.config.disabled && 'disabled' || ''%>>
     <% } %>
+
     <span class="check"></span>
 </div>
-
+<input type="hidden" id="form-<%= key %>" name="<%= key %>" value="<%= value %>">
 <script>
-    $('.checkbox #form-<%= key -%>').on('click', function(){
+    $('.checkbox #fake-form-<%= key -%>').on('change', function(){
         let val = $(this).val()
         if(val === '0'){
             $(this).val('1')
+			$('#form-<%= key %>').val('1')
         } else {
             $(this).val('0')
+			$('#form-<%= key %>').val('0')
         }
     })
 </script>
