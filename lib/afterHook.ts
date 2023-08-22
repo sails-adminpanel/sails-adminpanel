@@ -27,7 +27,7 @@ export default async function () {
         delete sails.config.adminpanel.instances;
     }
 
-    if (process.env.DEV && process.env.NODE_ENV !== 'production') {
+    if ((process.env.DEV && process.env.NODE_ENV !== 'production') || process.env.ADMINPANEL_FORCE_BIND_DEV === "TRUE") {
         bindDev(sails.config.adminpanel)
     }
 
@@ -58,5 +58,10 @@ export default async function () {
         bindTranslations();
     })
 
+    /**
+     * AfterHook emit
+     * This call is used so that other hooks can know that the admin panel is present in the panel and has been loaded, and can activate their logic.
+     */
+    sails.emit('Adminpanel:afterHook:loaded');
     return
 };
