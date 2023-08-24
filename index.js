@@ -1,7 +1,6 @@
 'use strict';
 let { MenuHelper } = require('./helper/menuHelper');
 let { AccessRightsHelper } = require('./helper/accessRightsHelper');
-let { MigrationsHelper } = require('./helper/migrationsHelper');
 
 module.exports = function (sails) {
 
@@ -12,7 +11,7 @@ module.exports = function (sails) {
         /**
          * Creating default settings for hook
          */
-        defaults: require('./lib/defaults').content,
+        defaults: require('./lib/defaults').getDefaultConfig(),
 
         configure: require('./lib/configure').default(),
 
