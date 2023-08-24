@@ -1,6 +1,6 @@
 import { AdminpanelConfig } from "../interfaces/adminpanelConfig";
 export declare class ConfigHelper {
-    static addModelConfig(): void;
+    static addModelConfig(modelConfig: any): void;
     static getConfig(): AdminpanelConfig;
     /**
      * Checks if given field is identifier of model

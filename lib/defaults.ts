@@ -128,6 +128,8 @@ export function getDefaultConfig() {
     return adminpanelConfig;
 }
 
-export function defaultAdminpanelConfig() {
-    return adminpanelConfig;
+export function defaults() {
+    return {
+        adminpanel: adminpanelConfig
+    }
 }

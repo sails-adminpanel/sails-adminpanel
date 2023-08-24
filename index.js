@@ -1,6 +1,8 @@
 'use strict';
-let { MenuHelper } = require('./helper/menuHelper');
-let { AccessRightsHelper } = require('./helper/accessRightsHelper');
+const { MenuHelper } = require('./helper/menuHelper');
+const { ConfigHelper } = require('./helper/configHelper');
+
+const { AccessRightsHelper } = require('./helper/accessRightsHelper');
 
 module.exports = function (sails) {
 
@@ -11,7 +13,7 @@ module.exports = function (sails) {
         /**
          * Creating default settings for hook
          */
-        defaults: require('./lib/defaults').getDefaultConfig(),
+        defaults: require('./lib/defaults').defaults(),
 
         configure: require('./lib/configure').default(),
 
@@ -46,7 +48,7 @@ module.exports = function (sails) {
                 title: label || key,
             });
         },
-
+        addModelConfig: ConfigHelper.addModelConfig,
         registerAccessToken: AccessRightsHelper.registerToken,
         getAllAccessTokens: AccessRightsHelper.getTokens,
         havePermission: AccessRightsHelper.havePermission,
