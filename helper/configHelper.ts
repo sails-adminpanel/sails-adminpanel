@@ -1,6 +1,19 @@
 import { AdminpanelConfig } from "../interfaces/adminpanelConfig";
-
+import { getDefaultConfig, setDefaultConfig } from "../lib/defaults";
 export class ConfigHelper {
+
+    public static addModelConfig(modelConfig): void {
+        if(sails !== undefined && sails.config?.adminpanel !== undefined){
+            const config = sails.config?.adminpanel
+            const models = {...config.models}
+            config.models = {...models, ...modelConfig}    
+        } else {
+            const config = getDefaultConfig()
+            const models = {...config.models}
+            config.models = {...models, ...modelConfig}
+            setDefaultConfig(config)
+        }
+    }
 
     public static getConfig(): AdminpanelConfig {
         return sails.config.adminpanel;

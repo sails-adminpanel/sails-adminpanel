@@ -1,7 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ConfigHelper = void 0;
+const defaults_1 = require("../lib/defaults");
 class ConfigHelper {
+    static addModelConfig(modelConfig) {
+        if (sails !== undefined && sails.config?.adminpanel !== undefined) {
+            const config = sails.config?.adminpanel;
+            const models = { ...config.models };
+            config.models = { ...models, ...modelConfig };
+        }
+        else {
+            const config = (0, defaults_1.getDefaultConfig)();
+            const models = { ...config.models };
+            config.models = { ...models, ...modelConfig };
+            (0, defaults_1.setDefaultConfig)(config);
+        }
+    }
     static getConfig() {
         return sails.config.adminpanel;
     }
