@@ -8,6 +8,7 @@ import WaterlineModel from "../interfaces/waterlineModel";
 import WaterlineEntity from "../interfaces/waterlineORM";
 import GroupAP from "./GroupAP";
 import { OptionalAll } from "../interfaces/toolsTS";
+import { WidgetConfig } from "../lib/widgets/widgetHandler";
 declare let attributes: {
     id: number;
     login: string;
@@ -22,7 +23,7 @@ declare let attributes: {
     isActive: boolean;
     isAdministrator: boolean;
     groups: GroupAP[];
-    widgets: any;
+    widgets: WidgetConfig[];
 };
 type attributes = typeof attributes & WaterlineEntity;
 interface UserAP extends OptionalAll<attributes> {

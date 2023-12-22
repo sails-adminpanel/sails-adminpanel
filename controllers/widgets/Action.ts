@@ -21,13 +21,12 @@ export async function widgetActionController(req, res) {
 		return res.notFound()
 	}
 
-	/** Switch state  */
 	else if (req.method.toUpperCase() === 'POST') {
-		let state = await widget.action();
-		if(state){
-			return res.json({ok: state})
-		}else {
-			return res.serverError('Error')
+		try {
+			await widget.action();
+			return res.json({ok: true})
+		} catch (error) {
+			return res.json(error)
 		}
 	}
 }

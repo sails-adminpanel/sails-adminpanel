@@ -9,5 +9,5 @@ export default abstract class ActionBase extends BaseWidget {
 		w: number
 	} | null = null
 
-	public abstract action(): Promise<boolean>
+	public abstract action(): Promise<void>
 }

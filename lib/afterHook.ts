@@ -4,6 +4,7 @@ import bindAccessRights from "./bindAccessRights";
 import bindDev from "./bindDev";
 import bindForms from "./bindForms";
 import { MigrationsHelper } from "../helper/migrationsHelper";
+import bindDashboardWidgets from "./bindDashboardWidgets";
 
 export default async function () {
     // check that current datastore is appropriate for migrations
@@ -39,6 +40,7 @@ export default async function () {
     })
 
     bindForms();
+    bindDashboardWidgets();
 
     //bind access rights
     bindAccessRights();

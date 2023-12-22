@@ -1,9 +1,10 @@
+import { LineAwesomeIcon } from "../../interfaces/lineAwesome";
 import BaseWidget from "./abstractWidgetBase";
 
 export interface Links {
 	name: string
 	description: string
-	icon: string | null
+	icon?: LineAwesomeIcon
 	link: string
 	backgroundCSS: string | null
 }

@@ -2,10 +2,24 @@ import SwitcherBase from "./abstractSwitch";
 import InfoBase from "./abstractInfo";
 import ActionBase from "./abstractAction";
 import LinkBase from "./abstractLink";
-import {AccessRightsHelper} from "../../helper/accessRightsHelper";
+import { AccessRightsHelper } from "../../helper/accessRightsHelper";
 import UserAP from "../../models/UserAP";
+import { LineAwesomeIcon } from "../../interfaces/lineAwesome";
 
 type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase);
+
+export interface WidgetConfig {
+	id: string;
+	type: string;
+	api?: string;
+	link?: string;
+	description: string;
+	icon: LineAwesomeIcon;
+	name: string;
+	backgroundCSS: string;
+	size?: { h: number; w: number; };
+	added?: boolean;
+};
 
 export class WidgetHandler {
 	private static widgets: WidgetType[] = [];
@@ -37,8 +51,8 @@ export class WidgetHandler {
 		}
 	}
 
-	public static getAll(user: UserAP): Promise<any[]> | Promise<boolean> {
-		let widgets = []
+	public static getAll(user: UserAP): Promise<WidgetConfig[]> {
+		let widgets: WidgetConfig[] = []
 		let config = sails.config.adminpanel;
 		if (this.widgets.length) {
 			let id_key = 0
@@ -46,7 +60,7 @@ export class WidgetHandler {
 				if (widget instanceof SwitcherBase) {
 					if (AccessRightsHelper.havePermission(`widget-${widget.ID}`, user)) {
 						widgets.push({
-							id: `${widget.ID}_${id_key}`,
+							id: `${widget.ID}__${id_key}`,
 							type: widget.widgetType,
 							api: `${config.routePrefix}/widgets-switch/${widget.ID}`,
 							description: widget.description,
@@ -59,7 +73,7 @@ export class WidgetHandler {
 				} else if (widget instanceof InfoBase) {
 					if (AccessRightsHelper.havePermission(`widget-${widget.ID}`, user)) {
 						widgets.push({
-							id: `${widget.ID}_${id_key}`,
+							id: `${widget.ID}__${id_key}`,
 							type: widget.widgetType,
 							api: `${config.routePrefix}/widgets-info/${widget.ID}`,
 							description: widget.description,
@@ -72,7 +86,7 @@ export class WidgetHandler {
 				} else if (widget instanceof ActionBase) {
 					if (AccessRightsHelper.havePermission(`widget-${widget.ID}`, user)) {
 						widgets.push({
-							id: `${widget.ID}_${id_key}`,
+							id: `${widget.ID}__${id_key}`,
 							type: widget.widgetType,
 							api: `${config.routePrefix}/widgets-action/${widget.ID}`,
 							description: widget.description,
@@ -88,7 +102,7 @@ export class WidgetHandler {
 						for (const link of widget.links) {
 							widgets.push({
 								name: link.name,
-								id: `${widget.ID}_${links_id_key}`,
+								id: `${widget.ID}__${links_id_key}`,
 								type: 'link',
 								description: link.description,
 								link: link.link,
@@ -99,36 +113,50 @@ export class WidgetHandler {
 						}
 					}
 				} else {
-					return
+					return Promise.resolve([])
 				}
 			}
 		}
 		return Promise.resolve(widgets)
 	}
 
-	public static async getWidgetsDB(id: number, auth: boolean) {
-		if(!auth){
-			let widgets = await UserAP.findOne({login: sails.config.adminpanel.administrator.login})
-			return widgets.widgets
-		}else{
-			let widgets = await UserAP.findOne({id: id})
-			return widgets.widgets
+	public static async getWidgetsDB(id: number, auth: boolean): Promise<WidgetConfig[]> {
+		let user: UserAP;
+		let widgets: WidgetConfig[];
+		if (!auth) {
+			user = await UserAP.findOne({ login: sails.config.adminpanel.administrator.login })
+		} else {
+			user = await UserAP.findOne({ id: id })
 		}
+
+		if (!Boolean(user.widgets)) {
+			if (sails.config.adminpanel.dashboard && typeof sails.config.adminpanel.dashboard !== "boolean" && sails.config.adminpanel.dashboard.defaultWidgets) {
+				let defaultWidgets = sails.config.adminpanel.dashboard.defaultWidgets;
+				widgets = await this.getAll(user);
+				widgets.forEach(widget => {
+					if (defaultWidgets.includes(widget.id.split("__")[0])) {
+						widget.added = true;
+					}
+				})
+			}
+		}
+		console.log(widgets,123)
+		return widgets
 	}
 
-	public static async setWidgetsDB(id: number, widgets: any, auth: boolean) {
-		if(!auth){
-			let updatedUser = await UserAP.updateOne({login: sails.config.adminpanel.administrator.login}, {widgets: widgets})
+	public static async setWidgetsDB(id: number, widgets: WidgetConfig[], auth: boolean): Promise<number> {
+		if (!auth) {
+			let updatedUser = await UserAP.updateOne({ login: sails.config.adminpanel.administrator.login }, { widgets: widgets })
 			return updatedUser.id
-		} else{
-			let updatedUser = await UserAP.updateOne({id: id}, {widgets: widgets})
+		} else {
+			let updatedUser = await UserAP.updateOne({ id: id }, { widgets: widgets })
 			return updatedUser.id
 		}
 
 	}
 }
 
-
+// TODO: move to folder controlles
 export async function getAllWidgets(req, res) {
 	if (sails.config.adminpanel.auth) {
 		if (!req.session.UserAP) {
@@ -140,13 +168,14 @@ export async function getAllWidgets(req, res) {
 
 	if (req.method.toUpperCase() === 'GET') {
 		try {
-			return res.json({widgets: await WidgetHandler.getAll(req.session.UserAP)})
+			return res.json({ widgets: await WidgetHandler.getAll(req.session.UserAP) })
 		} catch (e) {
 			return res.serverError(e)
 		}
 	}
 }
 
+// TODO: move in controller folder
 export async function widgetsDB(req, res) {
 	let id: number = 0
 	let auth = sails.config.adminpanel.auth
@@ -161,7 +190,8 @@ export async function widgetsDB(req, res) {
 
 	if (req.method.toUpperCase() === 'GET') {
 		try {
-			return res.json({widgetsDB: await WidgetHandler.getWidgetsDB(id, auth)})
+			let widgets = await WidgetHandler.getWidgetsDB(id, auth);
+			return res.json({ widgetsDB: widgets })
 		} catch (e) {
 			return res.serverError(e)
 		}

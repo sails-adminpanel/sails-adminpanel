@@ -7,5 +7,5 @@ export default abstract class ActionBase extends BaseWidget {
         h: number;
         w: number;
     } | null;
-    abstract action(): Promise<boolean>;
+    abstract action(): Promise<void>;
 }

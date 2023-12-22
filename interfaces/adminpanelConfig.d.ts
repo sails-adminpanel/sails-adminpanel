@@ -1,3 +1,4 @@
+import LineAwesomeIcon from "./lineAwesome"
 type FieldsTypes = 
 "string" | 
 "password" | 
@@ -49,9 +50,18 @@ type FieldsTypes =
  */
 "geo-polygon"
 
+interface DashboardConfig {
+    autoloadWidgetsPath: string
+    /**
+     * Adds widgets by default, taking into account user rights
+     * This is an array of widgetIds that will be added
+     */
+    defaultWidgets: string[]
+}
+
 export interface AdminpanelConfig {
     /** prepare to impl dashboard*/
-    dashboard?: any
+    dashboard?: boolean | DashboardConfig
     theme?: string
     /**
      * Enable or disable auth for adminpanel
@@ -271,7 +281,7 @@ export interface ModelConfig {
     /**
      * Entity icon
      * */
-    icon?: string
+    icon?: LineAwesomeIcon
     /**
      * Force set primary key
      * */
@@ -413,7 +423,7 @@ export interface HrefConfig {
     id: string
     title: string
     link: string
-    icon?: string
+    icon?: LineAwesomeIcon
     /**
      * Only for view, controller still uses his own access rights token
      * */
