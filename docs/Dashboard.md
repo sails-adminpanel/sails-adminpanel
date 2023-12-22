@@ -1,5 +1,7 @@
 # Dashboard
 
+> init from version: 2.6.0
+
 to enable dashboard need configure it 
 
 if dashboard disabled you can configure welcome message
