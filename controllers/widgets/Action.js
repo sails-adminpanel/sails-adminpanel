@@ -20,14 +20,13 @@ async function widgetActionController(req, res) {
     if (widget === undefined) {
         return res.notFound();
     }
-    /** Switch state  */
     else if (req.method.toUpperCase() === 'POST') {
-        let state = await widget.action();
-        if (state) {
-            return res.json({ ok: state });
+        try {
+            await widget.action();
+            return res.json({ ok: true });
         }
-        else {
-            return res.serverError('Error');
+        catch (error) {
+            return res.json(error);
         }
     }
 }

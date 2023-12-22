@@ -49,9 +49,13 @@ type FieldsTypes =
  */
 "geo-polygon"
 
+interface DashboardConfig {
+    autoloadWidgetsPath: string
+}
+
 export interface AdminpanelConfig {
     /** prepare to impl dashboard*/
-    dashboard?: any
+    dashboard?: boolean | DashboardConfig
     theme?: string
     /**
      * Enable or disable auth for adminpanel
