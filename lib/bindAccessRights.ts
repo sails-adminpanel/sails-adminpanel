@@ -52,4 +52,8 @@ export default function bindAccessRights() {
 
     AccessRightsHelper.registerToken({id: `process-migrations`, name: "Process migrations",
         description: "Access to '/processMigrations' route", department: "Routes"});
+
+	// Widgets
+	AccessRightsHelper.registerToken({id: `widgets`, name: "Widgets",
+		description: "Access to widgets", department: "Widgets"});
 }

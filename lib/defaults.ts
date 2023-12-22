@@ -8,7 +8,7 @@ import * as path from "path";
 /**
  * Default admin config
  */
-const adminpanelConfig: AdminpanelConfig = {
+var adminpanelConfig: AdminpanelConfig = {
 
     /**
      * Default url prefix for admin panel
@@ -119,6 +119,17 @@ const adminpanelConfig: AdminpanelConfig = {
     }
 }
 
-export const content = {
-    adminpanel: adminpanelConfig
-};
+
+export function setDefaultConfig(config: AdminpanelConfig) {
+    adminpanelConfig = config;
+}
+
+export function getDefaultConfig() {
+    return adminpanelConfig;
+}
+
+export function defaults() {
+    return {
+        adminpanel: adminpanelConfig
+    }
+}

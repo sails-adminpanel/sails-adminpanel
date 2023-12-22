@@ -36,11 +36,15 @@ async function edit(req, res) {
     let fields = fieldsHelper_1.FieldsHelper.getFields(req, entity, 'edit');
     let reloadNeeded = false;
     fields = await fieldsHelper_1.FieldsHelper.loadAssociations(fields);
+    // Save
     if (req.method.toUpperCase() === 'POST') {
         let reqData = requestProcessor_1.RequestProcessor.processRequest(req, fields);
         let params = {};
         params[entity.config.identifierField || req._sails.config.adminpanel.identifierField] = req.param('id');
         for (let prop in reqData) {
+            if (fields[prop].model.type === 'boolean') {
+                reqData[prop] = Boolean(reqData[prop]);
+            }
             if (Number.isNaN(reqData[prop]) || reqData[prop] === undefined || reqData[prop] === null) {
                 delete reqData[prop];
             }
@@ -52,7 +56,7 @@ async function edit(req, res) {
                     reqData[prop] = JSON.parse(reqData[prop]);
                 }
                 catch (e) {
-                    // Why it here? 
+                    // Why it here?
                     if (typeof reqData[prop] === "string" && reqData[prop].replace(/(\r\n|\n|\r|\s{2,})/gm, "")) {
                         sails.log.error(JSON.stringify(reqData[prop]), e);
                     }

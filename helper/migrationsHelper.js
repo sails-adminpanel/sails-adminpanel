@@ -5,9 +5,8 @@ const fs = require("fs");
 const DBMigrate = require("db-migrate");
 class MigrationsHelper {
     static processDatastoreAdapter() {
-        let datastore = sails.getDatastore();
-        if (process.env.ENABLE_MIGRATIONS === "true" && sails.config.adminpanel.migrations !== false
-            && typeof sails.config.adminpanel.migrations !== "boolean") {
+        if (process.env.ENABLE_MIGRATIONS === "true" && sails.config.adminpanel.migrations !== false && typeof sails.config.adminpanel.migrations !== "boolean") {
+            let datastore = sails.getDatastore();
             if (datastore.config.adapter === 'sails-postgresql') {
                 sails.config.adminpanel.globalSettings.enableMigrations = true;
                 if (!sails.config.adminpanel.migrations.config) {
@@ -76,6 +75,6 @@ class MigrationsHelper {
         this.migrationsIsRunning = false;
     }
 }
+exports.MigrationsHelper = MigrationsHelper;
 MigrationsHelper.queue = [];
 MigrationsHelper.migrationsIsRunning = false;
-exports.MigrationsHelper = MigrationsHelper;

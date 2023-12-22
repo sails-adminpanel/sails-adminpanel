@@ -125,6 +125,11 @@ export interface AdminpanelConfig {
      * Forms
      * */
     forms?: {
+        /**
+         * You can add forms directly to adminpanel configuration or put them in files with
+         * `.json` extension which should be named as form slug. Put your forms in your
+         * directory and write down path to it in `path` field.
+         */
         path?: string
         /**
          * TODO: (wizards) rewrite to data -> setup
@@ -209,6 +214,7 @@ export interface AdminpanelConfig {
      */
     globalSettings?: {
         enableMigrations?: boolean
+		enableWidgets?: boolean
     }
 }
 

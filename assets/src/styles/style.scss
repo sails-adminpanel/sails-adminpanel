@@ -789,3 +789,7 @@ select {
 .navigation-block{
 	@apply flex items-center gap-4;
 }
+
+// Dashboard
+@import "widgets";
+@import "ch_switcher";

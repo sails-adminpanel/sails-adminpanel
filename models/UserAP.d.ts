@@ -22,6 +22,7 @@ declare let attributes: {
     isActive: boolean;
     isAdministrator: boolean;
     groups: GroupAP[];
+    widgets: any;
 };
 type attributes = typeof attributes & WaterlineEntity;
 interface UserAP extends OptionalAll<attributes> {
