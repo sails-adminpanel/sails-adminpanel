@@ -1,4 +1,4 @@
-import LineAwesomeIcons from "./lineAwesome"
+import LineAwesomeIcon from "./lineAwesome"
 type FieldsTypes = 
 "string" | 
 "password" | 
@@ -281,7 +281,7 @@ export interface ModelConfig {
     /**
      * Entity icon
      * */
-    icon?: LineAwesomeIcons
+    icon?: LineAwesomeIcon
     /**
      * Force set primary key
      * */
@@ -423,7 +423,7 @@ export interface HrefConfig {
     id: string
     title: string
     link: string
-    icon?: LineAwesomeIcons
+    icon?: LineAwesomeIcon
     /**
      * Only for view, controller still uses his own access rights token
      * */

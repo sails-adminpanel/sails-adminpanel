@@ -1,4 +1,4 @@
-import { LineAwesomeIcons } from "../../interfaces/lineAwesome";
+import { LineAwesomeIcon } from "../../interfaces/lineAwesome";
 export default abstract class BaseWidget {
     /** Widget unique ID */
     abstract readonly ID: string;
@@ -7,7 +7,7 @@ export default abstract class BaseWidget {
     /** Widget description */
     abstract readonly description: string;
     /** Widget icon */
-    abstract readonly icon?: LineAwesomeIcons;
+    abstract readonly icon?: LineAwesomeIcon;
     /** For group access rights by department */
     abstract readonly department: string;
     abstract readonly widgetType: 

@@ -1,4 +1,4 @@
-export type LineAwesomeIcons = "lg" |
+export type LineAwesomeIcon = "lg" |
 "xs" |
 "2x" |
 "3x" |

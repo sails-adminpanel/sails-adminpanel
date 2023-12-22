@@ -4,18 +4,20 @@ import ActionBase from "./abstractAction";
 import LinkBase from "./abstractLink";
 import {AccessRightsHelper} from "../../helper/accessRightsHelper";
 import UserAP from "../../models/UserAP";
+import { LineAwesomeIcon } from "../../interfaces/lineAwesome";
 
 type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase);
 
 export interface WidgetConfig {
 	id: string;
 	type: string;
-	api: string;
+	api?: string;
+	link?: string;
 	description: string;
-	icon: string;
+	icon: LineAwesomeIcon;
 	name: string;
 	backgroundCSS: string;
-	size: null | string;
+	size?: { h: number; w: number; };
 	added?: boolean;
 };
 
@@ -49,8 +51,8 @@ export class WidgetHandler {
 		}
 	}
 
-	public static getAll(user: UserAP): Promise<any[]> | Promise<boolean> {
-		let widgets = []
+	public static getAll(user: UserAP): Promise<WidgetConfig[]> | Promise<boolean> {
+		let widgets: WidgetConfig[] = []
 		let config = sails.config.adminpanel;
 		if (this.widgets.length) {
 			let id_key = 0
@@ -118,21 +120,21 @@ export class WidgetHandler {
 		return Promise.resolve(widgets)
 	}
 
-	public static async getWidgetsDB(id: number, auth: boolean) {
+	public static async getWidgetsDB(id: number, auth: boolean): Promise<WidgetConfig[]> {
 		if(!auth){
 			let widgets = await UserAP.findOne({login: sails.config.adminpanel.administrator.login})
 			return widgets.widgets
-		}else{
+		} else {
 			let widgets = await UserAP.findOne({id: id})
 			return widgets.widgets
 		}
 	}
 
-	public static async setWidgetsDB(id: number, widgets: WidgetConfig[], auth: boolean) {
+	public static async setWidgetsDB(id: number, widgets: WidgetConfig[], auth: boolean): Promise<number> {
 		if(!auth){
 			let updatedUser = await UserAP.updateOne({login: sails.config.adminpanel.administrator.login}, {widgets: widgets})
 			return updatedUser.id
-		} else{
+		} else {
 			let updatedUser = await UserAP.updateOne({id: id}, {widgets: widgets})
 			return updatedUser.id
 		}
@@ -174,7 +176,11 @@ export async function widgetsDB(req, res) {
 
 	if (req.method.toUpperCase() === 'GET') {
 		try {
-			return res.json({widgetsDB: await WidgetHandler.getWidgetsDB(id, auth)})
+			let widgets = await WidgetHandler.getWidgetsDB(id, auth);
+			if(sails.config.adminpanel.dashboard && typeof sails.config.adminpanel.dashboard !== "boolean" && sails.config.adminpanel.dashboard.defaultWidgets) {
+				// 
+			}
+			return res.json({widgetsDB: widgets})
 		} catch (e) {
 			return res.serverError(e)
 		}
