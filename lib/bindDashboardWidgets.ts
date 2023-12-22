@@ -1,4 +1,4 @@
-import { WidgetHandler } from 'sails-adminpanel/lib/widgets/widgetHandler'
+import { WidgetHandler } from './widgets/widgetHandler'
 import * as fs from "fs";
 import * as path from "path"
 export default async function bindDashboardWidgets() {
