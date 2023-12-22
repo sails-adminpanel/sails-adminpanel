@@ -8,6 +8,7 @@ import WaterlineModel from "../interfaces/waterlineModel";
 import WaterlineEntity from "../interfaces/waterlineORM";
 import GroupAP from "./GroupAP";
 import {OptionalAll} from "../interfaces/toolsTS";
+import { WidgetConfig } from "../lib/widgets/widgetHandler";
 
 let passwordHash = require('password-hash');
 
@@ -39,7 +40,7 @@ let attributes = {
         collection: "groupap",
         via: "users"
     } as unknown as GroupAP[],
-	widgets: 'json' as unknown as any
+	widgets: 'json' as unknown as WidgetConfig[]
 
 };
 

@@ -1,5 +1,5 @@
 import BaseWidget from "./abstractWidgetBase";
-export default abstract class SwitchBase extends BaseWidget{
+export default abstract class SwitchBase extends BaseWidget {
     /** Widget background css (color, Image) */
     public readonly backgroundCSS: string | null = null;
 

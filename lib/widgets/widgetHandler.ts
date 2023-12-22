@@ -7,6 +7,18 @@ import UserAP from "../../models/UserAP";
 
 type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase);
 
+export interface WidgetConfig {
+	id: string;
+	type: string;
+	api: string;
+	description: string;
+	icon: string;
+	name: string;
+	backgroundCSS: string;
+	size: null | string;
+	added?: boolean;
+};
+
 export class WidgetHandler {
 	private static widgets: WidgetType[] = [];
 
@@ -116,7 +128,7 @@ export class WidgetHandler {
 		}
 	}
 
-	public static async setWidgetsDB(id: number, widgets: any, auth: boolean) {
+	public static async setWidgetsDB(id: number, widgets: WidgetConfig[], auth: boolean) {
 		if(!auth){
 			let updatedUser = await UserAP.updateOne({login: sails.config.adminpanel.administrator.login}, {widgets: widgets})
 			return updatedUser.id
@@ -128,7 +140,7 @@ export class WidgetHandler {
 	}
 }
 
-
+// TODO: move to folder controlles
 export async function getAllWidgets(req, res) {
 	if (sails.config.adminpanel.auth) {
 		if (!req.session.UserAP) {
@@ -147,6 +159,7 @@ export async function getAllWidgets(req, res) {
 	}
 }
 
+// TODO: move in controller folder
 export async function widgetsDB(req, res) {
 	let id: number = 0
 	let auth = sails.config.adminpanel.auth

@@ -1,3 +1,4 @@
+import LineAwesomeIcons from "./lineAwesome"
 type FieldsTypes = 
 "string" | 
 "password" | 
@@ -51,6 +52,11 @@ type FieldsTypes =
 
 interface DashboardConfig {
     autoloadWidgetsPath: string
+    /**
+     * Adds widgets by default, taking into account user rights
+     * This is an array of widgetIds that will be added
+     */
+    defaultWidgets: string[]
 }
 
 export interface AdminpanelConfig {
@@ -275,7 +281,7 @@ export interface ModelConfig {
     /**
      * Entity icon
      * */
-    icon?: string
+    icon?: LineAwesomeIcons
     /**
      * Force set primary key
      * */
@@ -417,7 +423,7 @@ export interface HrefConfig {
     id: string
     title: string
     link: string
-    icon?: string
+    icon?: LineAwesomeIcons
     /**
      * Only for view, controller still uses his own access rights token
      * */
