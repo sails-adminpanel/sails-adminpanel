@@ -314,7 +314,7 @@ interface BaseFieldConfig {
     /**
      * Function that makes data modification on list view
      * */
-    displayModifier?: Function
+    displayModifier?: (v: any) => string
     /**
      * Force set primary key
      * */
