@@ -26,11 +26,11 @@ exports.up = function (db, callback) {
         "primaryKey": true
     },
     "name": {
-        "type": "string",
+        "type": "text",
         "unique": true
     },
     "description": {
-        "type": "string"
+        "type": "text"
     },
     "tokens": {
         "type": "json"
@@ -52,29 +52,29 @@ exports.up = function (db, callback) {
         "primaryKey": true
     },
     "login": {
-        "type": "string",
+        "type": "text",
         "unique": true
     },
     "fullName": {
-        "type": "string"
+        "type": "text"
     },
     "email": {
-        "type": "string"
+        "type": "text"
     },
     "passwordHashed": {
-        "type": "string"
+        "type": "text"
     },
     "password": {
-        "type": "string"
+        "type": "text"
     },
     "timezone": {
-        "type": "string"
+        "type": "text"
     },
     "expires": {
-        "type": "string"
+        "type": "text"
     },
     "locale": {
-        "type": "string"
+        "type": "text"
     },
     "isDeleted": {
         "type": "boolean"
@@ -98,7 +98,6 @@ exports.up = function (db, callback) {
     columns: {
     "id": {
         "type": "int",
-        "notNull": true,
         "autoIncrement": true
     },
     "groupap_users": {

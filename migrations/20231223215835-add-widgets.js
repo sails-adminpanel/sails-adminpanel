@@ -18,17 +18,7 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function (db, callback) {
   async.series([
-    (cb) => db.changeColumn('groupap', 'name', {"type":"text","unique":true}, cb),
-(cb) => db.changeColumn('groupap', 'description', {"type":"text"}, cb),
-(cb) => db.changeColumn('userap', 'login', {"type":"text","unique":true}, cb),
-(cb) => db.changeColumn('userap', 'fullName', {"type":"text"}, cb),
-(cb) => db.changeColumn('userap', 'email', {"type":"text"}, cb),
-(cb) => db.changeColumn('userap', 'passwordHashed', {"type":"text"}, cb),
-(cb) => db.changeColumn('userap', 'password', {"type":"text"}, cb),
-(cb) => db.changeColumn('userap', 'timezone', {"type":"text"}, cb),
-(cb) => db.changeColumn('userap', 'expires', {"type":"text"}, cb),
-(cb) => db.changeColumn('userap', 'locale', {"type":"text"}, cb),
-(cb) => db.addColumn('userap', 'widgets', {"type":"json"}, cb),
+    (cb) => db.addColumn('userap', 'widgets', {"type":"json"}, cb),
 
   ], callback);
 }
