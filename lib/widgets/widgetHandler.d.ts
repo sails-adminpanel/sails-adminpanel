@@ -4,7 +4,7 @@ import ActionBase from "./abstractAction";
 import LinkBase from "./abstractLink";
 import UserAP from "../../models/UserAP";
 import { LineAwesomeIcon } from "../../interfaces/lineAwesome";
-type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase);
+declare type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase);
 export interface WidgetConfig {
     id: string;
     type: string;

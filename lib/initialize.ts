@@ -6,6 +6,7 @@ import HookTools from "./hookTools";
 import {resolve} from "path";
 import afterHook from "./afterHook";
 import { MigrationsHelper } from "../helper/migrationsHelper";
+import bindInstallStepper from "./bindInstallStepper";
 
 export default async function(sails: any, cb) {
 
@@ -29,7 +30,7 @@ export default async function(sails: any, cb) {
 
     /**
      * Initilization emit
-     * This call is used so that other hooks can know that the admin panel is present in the panel, and can activate their logic. 
+     * This call is used so that other hooks can know that the admin panel is present in the panel, and can activate their logic.
      */
 
     sails.emit('Adminpanel:initialization');
@@ -46,6 +47,9 @@ export default async function(sails: any, cb) {
 
     HookTools.waitForHooks("adminpanel", requiredHooks, afterHook);
     await HookTools.bindModels(resolve(__dirname, "../models"));
+
+    // add install stepper policy to check unfilled settings
+    bindInstallStepper();
 
     // if (!sails.hooks.i18n.locales) sails.hooks.i18n.locales = []
     // sails.hooks.i18n.locales = [...sails.hooks.i18n.locales, ...sails.config.adminpanel.translation.locales]

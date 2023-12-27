@@ -3,6 +3,7 @@ const { MenuHelper } = require('./helper/menuHelper');
 const { ConfigHelper } = require('./helper/configHelper');
 
 const { AccessRightsHelper } = require('./helper/accessRightsHelper');
+const {InstallStepper} = require("./lib/installStepper/installStepper");
 
 module.exports = function (sails) {
 
@@ -52,7 +53,8 @@ module.exports = function (sails) {
         registerAccessToken: AccessRightsHelper.registerToken,
         getAllAccessTokens: AccessRightsHelper.getTokens,
         havePermission: AccessRightsHelper.havePermission,
-        enoughPermissions: AccessRightsHelper.enoughPermissions
+        enoughPermissions: AccessRightsHelper.enoughPermissions,
+        getInstallStepper: () => InstallStepper
     };
 };
 
