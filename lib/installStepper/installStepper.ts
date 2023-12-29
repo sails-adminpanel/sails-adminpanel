@@ -13,8 +13,9 @@ export class InstallStepper {
         return this.steps;
     }
 
+    // TODO добавить в доку как добавлять степы и в принципе как это все работает
+
     public static async processStep(stepId: string, data: any) {
-        // TODO нужно ли ловить ошибку? Или лучше пускай throw летит наружу? Тест как раз ждет ошибки наружу
         try {
             /** As we sort steps by sortOrder, we should check that previous steps were processed */
             const stepIndex = this.steps.findIndex(item => item.id === stepId)
@@ -34,6 +35,7 @@ export class InstallStepper {
 
         } catch (e) {
             sails.log.error(`Error processing step: ${e}`);
+            throw new Error(e);
         }
     }
 

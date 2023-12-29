@@ -99,7 +99,7 @@ describe('Install Stepper Test', function () {
             await installStepper_1.InstallStepper.processStep(step1.id, dataToProcess);
         }
         catch (error) {
-            chai_1.expect(error.message).to.equal('Simulated process error');
+            chai_1.expect(error.message).to.equal('Error: Simulated process error');
         }
     });
     it('should skip steps correctly', () => {

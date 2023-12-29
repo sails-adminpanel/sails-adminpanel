@@ -11,7 +11,13 @@ export declare class WidgetHelper {
                 title: string;
                 description?: string;
                 required?: string;
-                options?: Function;
+                options?: (() => Promise<{
+                    label: string;
+                    value: string;
+                }[]>) | {
+                    label: string;
+                    value: string;
+                }[];
             };
         };
         visibleElement?: string | false;

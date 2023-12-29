@@ -1,54 +1,62 @@
+import sails from "@42pub/typed-sails";
 import LineAwesomeIcon from "./lineAwesome"
-type FieldsTypes = 
-"string" | 
-"password" | 
-"date" | 
-"datetime" | 
-"time" | 
-"integer" | 
-"number" | 
-"float" | 
-"color" | 
+type FieldsTypes =
+"string" |
+"password" |
+"date" |
+"datetime" |
+"time" |
+"integer" |
+"number" |
+"float" |
+"color" |
 "email" |
-"month" | 
-"week" | 
-"range" | 
-"boolean" | 
-"binary" | 
-"text" | 
-"longtext" | 
-"mediumtext" | 
-"ckeditor" | 
-"wysiwyg" | 
-"texteditor" | 
-"word" | 
-"jsoneditor" | 
-"json" | 
-"array" | 
-"object" | 
-"ace" | 
-"html" | 
-"xml" | 
-"aceeditor" | 
-"image" | 
-"images" | 
-"file" | 
-"files" | 
-"menu" | 
-"navigation" | 
-"schedule" | 
-"worktime" | 
-"association" | 
-"association-many" | 
-"select" | 
-"select-many" | 
-"table" | 
-"geojson" | 
+"month" |
+"week" |
+"range" |
+"boolean" |
+"binary" |
+"text" |
+"longtext" |
+"mediumtext" |
+"ckeditor" |
+"wysiwyg" |
+"texteditor" |
+"word" |
+"jsoneditor" |
+"json" |
+"array" |
+"object" |
+"ace" |
+"html" |
+"xml" |
+"aceeditor" |
+"image" |
+"images" |
+"file" |
+"files" |
+"menu" |
+"navigation" |
+"schedule" |
+"worktime" |
+"association" |
+"association-many" |
+"select" |
+"select-many" |
+"table" |
+"geojson" |
 
 /**
- * it need for only polygon data
+ * it will be needed only for polygon data
  */
 "geo-polygon"
+
+type ReqType = sails.Request;
+type ResType = sails.Response;
+type PolicyMiddleware = (req: ReqType, res: ResType, proceed: () => void) => Promise<void>
+
+type SetFunction = (slug: string, key: string, data: any) => Promise<void>;
+type GetFunction = (slug: string, key: string) => Promise<any>;
 
 interface DashboardConfig {
     autoloadWidgetsPath: string
@@ -104,7 +112,7 @@ export interface AdminpanelConfig {
     /**
      * Policies that will be executed before going to every page
      * */
-    policies?: string | string[] | Function | Function[]
+    policies?: string | string[] | PolicyMiddleware | PolicyMiddleware[]
     styles?: string[]
     scripts?: {
         header?: string[]
@@ -151,16 +159,16 @@ export interface AdminpanelConfig {
         /**
          * Custom getter
          * */
-        get?: Function
+        get?: GetFunction
         /**
          * Custom setter
          * */
-        set?: Function
+        set?: SetFunction
     }
     /**
      * Wizards
      * */
-    wizards?: {
+    installStepper?: {
         path: string
         data: {
             [key:string]: FieldsModels
@@ -168,11 +176,11 @@ export interface AdminpanelConfig {
         /**
          * Custom getter
          * */
-        get?: Function
+        get?: GetFunction
         /**
          * Custom setter
          * */
-        set?: Function
+        set?: SetFunction
     }
     /**
      * Prime administrator login credentials
@@ -350,7 +358,7 @@ interface NavigationOptionsField {
      * */
     disableDeletingProperty?: boolean
     /**
-     * add list of properties that can be chosen
+     * add list of properties that can be chosen; also you can link the list from different models
      * */
     propertyList?: {
         [key: string]: {
@@ -358,7 +366,7 @@ interface NavigationOptionsField {
             title: string
             description?: string
             required?: string
-            options?: Function
+            options?: (() => Promise<{label: string; value: string}[]>) | {label: string; value: string}[]
         }
     }
     /**
@@ -412,7 +420,7 @@ export interface CreateUpdateConfig {
      *
      * Function(reqData) {return reqData}
      * */
-    entityModifier?: Function
+    entityModifier?: (reqData: T) => T
     /**
      * You can change standard controller for any entity by this property
      * */

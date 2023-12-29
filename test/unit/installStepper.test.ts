@@ -114,7 +114,7 @@ describe('Install Stepper Test', function () {
         try {
             await InstallStepper.processStep(step1.id, dataToProcess);
         } catch (error) {
-            expect(error.message).to.equal('Simulated process error');
+            expect(error.message).to.equal('Error: Simulated process error');
         }
     });
 
