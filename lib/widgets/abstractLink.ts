@@ -11,6 +11,8 @@ export interface Links {
 
 export default abstract class LinkBase extends BaseWidget {
 
+	public readonly widgetType = "link"
+
 	readonly abstract links: Links[]
 
 	/** Get info */

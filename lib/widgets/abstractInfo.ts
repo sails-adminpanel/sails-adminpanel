@@ -1,7 +1,10 @@
 import BaseWidget from "./abstractWidgetBase";
-export default abstract class InfoBase extends BaseWidget{
-    /** Widget background css (color, Image) */
-    public readonly backgroundCSS: string;
+export default abstract class InfoBase extends BaseWidget {
+	
+	public readonly widgetType = "info"
+	
+	/** Widget background css (color, Image) */
+	public readonly backgroundCSS: string;
 
 	/** Widget size */
 	public readonly size: {
@@ -9,6 +12,6 @@ export default abstract class InfoBase extends BaseWidget{
 		w: number
 	} | null = null
 
-    /** Get info */
-    public abstract getInfo(): Promise<string>
+	/** Get info */
+	public abstract getInfo(): Promise<string>
 }
