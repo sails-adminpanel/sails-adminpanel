@@ -4,13 +4,13 @@ import {AccessRightsHelper} from "../helper/accessRightsHelper";
 export default async function remove(req, res) {
     //Checking id of the record
     if (!req.param('id')) {
-        req._sails.log.error(new Error('Admin panel: No id for record provided'));
+        sails.log.error(new Error('Admin panel: No id for record provided'));
         return res.notFound();
     }
 
     let entity = AdminUtil.findEntityObject(req);
     if (!entity.model) {
-        req._sails.log.error(new Error('Admin panel: no model found'));
+        sails.log.error(new Error('Admin panel: no model found'));
         return res.notFound();
     }
 
@@ -56,7 +56,7 @@ export default async function remove(req, res) {
 
     let destroyedRecord;
     try {
-        destroyedRecord = await entity.model.destroyOne(record[entity.config.identifierField || req._sails.config.adminpanel.identifierField]);
+        destroyedRecord = await entity.model.destroyOne(record[entity.config.identifierField || sails.config.adminpanel.identifierField]);
     } catch (e) {
         sails.log.error('adminpanel > error', e);
     }

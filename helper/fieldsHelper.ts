@@ -1,3 +1,5 @@
+import { ActionType } from "../interfaces/adminpanelConfig";
+import { Entity } from "../interfaces/types";
 import { AdminUtil } from "../lib/adminUtil";
 
 export class FieldsHelper {
@@ -252,7 +254,7 @@ export class FieldsHelper {
      * @param {string=} [type] Type of action that config should be loaded for. Example: list, edit, add, remove, view. Defaut: list
      * @returns {Object} Empty object or pbject with list of properties
      */
-    public static getFields(req, entity, type) {
+    public static getFields(req: ReqType, entity: Entity, type: ActionType) {
         if (!entity.model || !entity.model.attributes) {
             return {};
         }
@@ -294,7 +296,7 @@ export class FieldsHelper {
                 modelField.type = 'association-many';
             }
 
-            if (type === 'add' && key === req._sails.config.adminpanel.identifierField) {
+            if (type === 'add' && key === sails.config.adminpanel.identifierField) {
                 return;
             }
             //Getting config form configuration file

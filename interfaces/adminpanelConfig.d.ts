@@ -58,6 +58,8 @@ type PolicyMiddleware = (req: ReqType, res: ResType, proceed: () => void) => Pro
 type SetFunction = (slug: string, key: string, data: any) => Promise<void>;
 type GetFunction = (slug: string, key: string) => Promise<any>;
 
+export type ActionType = "list" |  "edit" | "add" | "remove" | "view"
+
 interface DashboardConfig {
     autoloadWidgetsPath: string
     /**
@@ -258,12 +260,25 @@ export interface ModelConfig {
          * Configuration for models' fields that will be displayed on 'list' page
          * */
         fields?: FieldsModels
+
         /**
          * Actions configuration that will be displayed
          * */
         actions?: {
             global?: HrefConfig[]
             inline?: HrefConfig[]
+        }
+
+        /**
+         * Allows you to filter records by criteria,
+         * by default the first one will be selected if filters are specified.  
+         */
+        filter?: {
+            [key: string]: {
+                name: string
+                //TODO: use criteria types like generic T
+                criteria: any
+            }
         }
     } | boolean
     /**

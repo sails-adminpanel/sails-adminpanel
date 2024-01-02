@@ -29,8 +29,8 @@ async function view(req, res) {
         record = await entity.model.findOne(req.param('id')).populateAll();
     }
     catch (e) {
-        req._sails.log.error('Admin edit error: ');
-        req._sails.log.error(e);
+        sails.log.error('Admin edit error: ');
+        sails.log.error(e);
         return res.serverError();
     }
     res.viewAdmin({
