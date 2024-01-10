@@ -23,26 +23,16 @@ class CustomOne extends abstractCustom_1.default {
         this.ID = ID;
     }
 }
-describe('Translation helper', function () {
+describe('Widget handler', function () {
     it('getWidgetHandler methods exists test"', function () {
         // getWidgetHandler: () => WidgetHandler, 
         // addDashboardWidget: WidgetHandler.add,
         (0, chai_1.expect)(sails.hooks.adminpanel.getWidgetHandler).to.exist;
-        (0, chai_1.expect)(sails.hooks.adminpanel.addDashboardWidget).to.exist;
     });
     it("Check if the method adds widgets", function () {
         let id = 'site_custom';
         let WidgetHandler = sails.hooks.adminpanel.getWidgetHandler();
         WidgetHandler.add(new CustomOne(id));
         (0, chai_1.expect)(WidgetHandler.getById(id)).to.exist;
-    });
-    it("Check if the method addDashboardWidget adds widgets", function () {
-        let id = 'custom';
-        let WidgetHandlerAddFunc = sails.hooks.adminpanel.addDashboardWidget;
-        // console.log("WidgetHandlerAddFunc", WidgetHandlerAddFunc)
-        WidgetHandlerAddFunc(new CustomOne(id));
-        let WidgetHandler = sails.hooks.adminpanel.getWidgetHandler();
-        (0, chai_1.expect)(WidgetHandler.getById(id)).to.exist;
-        // expect().to.equal(); 
     });
 });

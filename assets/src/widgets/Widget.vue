@@ -32,6 +32,7 @@
 <script>
 import {defineComponent} from "vue";
 import ky from "ky";
+import {getDefaultColorByID} from "./colorPallete"
 
 export default defineComponent({
 	name: 'Widget',
@@ -63,7 +64,6 @@ export default defineComponent({
 		if (this.type === "custom"){
 			let currentWidget = this.widgets.find(e => e.id === this.ID)
 			this.runScript(currentWidget, this.constructorOption)
-
 			/** Hide title, icon, description */
 			if(currentWidget.hideAdminPanelUI){
 				this.icon = ""
@@ -127,6 +127,14 @@ export default defineComponent({
 						console.log(e)
 					}
 					break;
+				case ('custom'):
+					try {
+						let res = await ky.post(api).json()
+						console.log(res)
+					} catch (e) {
+						console.log(e)
+					}
+					break;
 				default:
 					return;
 			}
@@ -139,7 +147,7 @@ export default defineComponent({
 			this.description = this.widgets.find(e => e.id === this.ID).description
 		},
 		getBackground() {
-			let bg = this.widgets.find(e => e.id === this.ID).backgroundCSS ?? 'rgba(45, 121, 210, 0.6)'
+			let bg = this.widgets.find(e => e.id === this.ID).backgroundCSS ?? getDefaultColorByID(this.ID)
 			this.backgroundColor = `background-color: ${bg}`
 		},
 		getIcon() {
@@ -168,9 +176,8 @@ export default defineComponent({
     			script.onload = () => {
       				const containerElement = document.getElementById(this.ID);
       				// const colorChanger = new ColorName(containerElement, constructorOption);
-					// Instantiate an object of the dynamically created class
-
 					if(window[this.constructorName]){
+						// Instantiate an object of the dynamically created class
 						const obj = new window[this.constructorName](containerElement, constructorOption);
 					} else {
 						console.error(`Widget with ID:${this.ID} has no constructorName from ${api}:${this.constructorName}`)
