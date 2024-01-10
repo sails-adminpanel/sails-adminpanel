@@ -37,7 +37,7 @@ class FileStorageHelper {
         fs.writeFileSync(this._filePath, JSON.stringify(this._storage));
     }
 }
-exports.FileStorageHelper = FileStorageHelper;
 FileStorageHelper._storage = {};
 FileStorageHelper._filePath = ".tmp/adminpanel_file_storage.json";
 FileStorageHelper._isInitialized = false;
+exports.FileStorageHelper = FileStorageHelper;

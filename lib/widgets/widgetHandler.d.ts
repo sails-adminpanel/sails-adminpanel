@@ -2,8 +2,9 @@ import SwitcherBase from "./abstractSwitch";
 import InfoBase from "./abstractInfo";
 import ActionBase from "./abstractAction";
 import LinkBase from "./abstractLink";
+import CustomBase from "./abstractCustom";
 import UserAP from "../../models/UserAP";
-type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase);
+type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase | CustomBase);
 export declare class WidgetHandler {
     private static widgets;
     static add(widget: WidgetType): void;

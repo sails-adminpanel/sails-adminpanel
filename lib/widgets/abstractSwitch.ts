@@ -1,13 +1,8 @@
 import BaseWidget from "./abstractWidgetBase";
 export default abstract class SwitchBase extends BaseWidget{
     /** Widget background css (color, Image) */
-    public readonly backgroundCSS: string | null = null;
+    public abstract readonly backgroundCSS: string | null;
 
-	/** Widget size */
-	public readonly size: {
-		h: number
-		w: number
-	} | null = null
 
     /** Get current state */
     public abstract getState(): Promise<boolean>

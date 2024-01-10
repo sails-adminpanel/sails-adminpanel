@@ -2,6 +2,7 @@
 let { MenuHelper } = require('./helper/menuHelper');
 let { AccessRightsHelper } = require('./helper/accessRightsHelper');
 let { MigrationsHelper } = require('./helper/migrationsHelper');
+let { WidgetHandler } = require("./lib/widgets/widgetHandler")
 
 module.exports = function (sails) {
 
@@ -47,6 +48,8 @@ module.exports = function (sails) {
                 title: label || key,
             });
         },
+
+        getWidgetHandler: () => WidgetHandler, 
 
         registerAccessToken: AccessRightsHelper.registerToken,
         getAllAccessTokens: AccessRightsHelper.getTokens,

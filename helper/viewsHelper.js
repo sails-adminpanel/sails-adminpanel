@@ -89,8 +89,8 @@ class ViewsHelper {
         return value;
     }
 }
-exports.ViewsHelper = ViewsHelper;
 /**
  * Base path for all views.
  */
 ViewsHelper.BASE_VIEWS_PATH = path.join(__dirname, '../views/');
+exports.ViewsHelper = ViewsHelper;
