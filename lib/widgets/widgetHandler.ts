@@ -5,6 +5,7 @@ import LinkBase from "./abstractLink";
 import { AccessRightsHelper } from "../../helper/accessRightsHelper";
 import UserAP from "../../models/UserAP";
 import { LineAwesomeIcon } from "../../interfaces/lineAwesome";
+import CustomBase from "./abstractCustom";
 
 type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase | CustomBase);
 

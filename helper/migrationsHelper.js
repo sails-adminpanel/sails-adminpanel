@@ -75,6 +75,6 @@ class MigrationsHelper {
         this.migrationsIsRunning = false;
     }
 }
+exports.MigrationsHelper = MigrationsHelper;
 MigrationsHelper.queue = [];
 MigrationsHelper.migrationsIsRunning = false;
-exports.MigrationsHelper = MigrationsHelper;

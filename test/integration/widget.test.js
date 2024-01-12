@@ -27,12 +27,12 @@ describe('Widget handler', function () {
     it('getWidgetHandler methods exists test"', function () {
         // getWidgetHandler: () => WidgetHandler, 
         // addDashboardWidget: WidgetHandler.add,
-        (0, chai_1.expect)(sails.hooks.adminpanel.getWidgetHandler).to.exist;
+        chai_1.expect(sails.hooks.adminpanel.getWidgetHandler).to.exist;
     });
     it("Check if the method adds widgets", function () {
         let id = 'site_custom';
         let WidgetHandler = sails.hooks.adminpanel.getWidgetHandler();
         WidgetHandler.add(new CustomOne(id));
-        (0, chai_1.expect)(WidgetHandler.getById(id)).to.exist;
+        chai_1.expect(WidgetHandler.getById(id)).to.exist;
     });
 });
