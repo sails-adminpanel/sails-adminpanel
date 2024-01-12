@@ -2,6 +2,7 @@ import SwitcherBase from "./abstractSwitch";
 import InfoBase from "./abstractInfo";
 import ActionBase from "./abstractAction";
 import LinkBase from "./abstractLink";
+import CustomBase from "./abstractCustom";
 import UserAP from "../../models/UserAP";
 import { LineAwesomeIcon } from "../../interfaces/lineAwesome";
 type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase);

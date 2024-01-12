@@ -5,12 +5,7 @@ export default abstract class ActionBase extends BaseWidget {
 	public readonly widgetType = "action"
 	
 	/** Widget background css (color, Image) */
-	public readonly backgroundCSS: string | null = null;
-	/** Widget size */
-	public readonly size: {
-		h: number
-		w: number
-	} | null = null
+	public abstract readonly backgroundCSS: string | null;
 
 	public abstract action(): Promise<void>
 }

@@ -17,6 +17,11 @@ export default abstract class BaseWidget {
 	/** For group access rights by department */
 	public abstract readonly department: string;
 
+	/** Widget size */
+	public abstract readonly size: {
+		h: number
+		w: number
+	} | null;
 
 	public abstract readonly widgetType:
 		/** An informational widget type that only shows the state */

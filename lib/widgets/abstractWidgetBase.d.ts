@@ -10,6 +10,11 @@ export default abstract class BaseWidget {
     abstract readonly icon?: LineAwesomeIcon;
     /** For group access rights by department */
     abstract readonly department: string;
+    /** Widget size */
+    abstract readonly size: {
+        h: number;
+        w: number;
+    } | null;
     abstract readonly widgetType: 
     /** An informational widget type that only shows the state */
     "info" | 
