@@ -60,7 +60,7 @@ describe('Install Stepper Test', function () {
         installStepper_1.InstallStepper.addStep(step1);
         installStepper_1.InstallStepper.addStep(step2);
         const steps = installStepper_1.InstallStepper.getSteps();
-        chai_1.expect(steps).to.deep.equal([step1, step2]);
+        (0, chai_1.expect)(steps).to.deep.equal([step1, step2]);
     });
     it('should process steps in order', async () => {
         const step1 = new SkippedTestStep();
@@ -69,8 +69,8 @@ describe('Install Stepper Test', function () {
         installStepper_1.InstallStepper.addStep(step2);
         await installStepper_1.InstallStepper.processStep(step1.id, dataToProcess);
         await installStepper_1.InstallStepper.processStep(step2.id, dataToProcess);
-        chai_1.expect(step1.isProcessed).to.equal(true);
-        chai_1.expect(step2.isProcessed).to.equal(true);
+        (0, chai_1.expect)(step1.isProcessed).to.equal(true);
+        (0, chai_1.expect)(step2.isProcessed).to.equal(true);
     });
     it('should handle check returning false', async () => {
         const step1 = new SkippedTestStep();
@@ -84,9 +84,9 @@ describe('Install Stepper Test', function () {
             await installStepper_1.InstallStepper.processStep(step2.id, dataToProcess);
         }
         catch (error) {
-            chai_1.expect(error.message).to.equal('Previous step was not processed');
+            (0, chai_1.expect)(error.message).to.equal('Previous step was not processed');
         }
-        chai_1.expect(step1.isProcessed).to.equal(false);
+        (0, chai_1.expect)(step1.isProcessed).to.equal(false);
     });
     it('should handle errors during processing', async () => {
         const step1 = new SkippedTestStep();
@@ -99,14 +99,14 @@ describe('Install Stepper Test', function () {
             await installStepper_1.InstallStepper.processStep(step1.id, dataToProcess);
         }
         catch (error) {
-            chai_1.expect(error.message).to.equal('Error: Simulated process error');
+            (0, chai_1.expect)(error.message).to.equal('Error: Simulated process error');
         }
     });
     it('should skip steps correctly', () => {
         const step1 = new SkippedTestStep();
         installStepper_1.InstallStepper.addStep(step1);
         installStepper_1.InstallStepper.skipStep(step1.id);
-        chai_1.expect(step1.canBeSkipped).to.equal(true);
+        (0, chai_1.expect)(step1.canBeSkipped).to.equal(true);
     });
     it('should handle step not found', async () => {
         const stepId = 'nonexistentStep';
@@ -114,7 +114,7 @@ describe('Install Stepper Test', function () {
             await installStepper_1.InstallStepper.processStep(stepId, dataToProcess);
         }
         catch (error) {
-            chai_1.expect(error.message).to.equal(`Step [${stepId}] not found`);
+            (0, chai_1.expect)(error.message).to.equal(`Step [${stepId}] not found`);
         }
     });
     it('should handle errors from check and process methods', async () => {
@@ -128,7 +128,7 @@ describe('Install Stepper Test', function () {
             await installStepper_1.InstallStepper.processStep(step1.id, dataToProcess);
         }
         catch (error) {
-            chai_1.expect(error.message).to.equal('Simulated check error');
+            (0, chai_1.expect)(error.message).to.equal('Simulated check error');
         }
     });
     it('should correctly identify unprocessed steps', () => {
@@ -137,14 +137,14 @@ describe('Install Stepper Test', function () {
         installStepper_1.InstallStepper.addStep(step1);
         installStepper_1.InstallStepper.addStep(step2);
         // Assuming all steps are unprocessed initially
-        chai_1.expect(installStepper_1.InstallStepper.hasUnprocessedSteps()).to.equal(true);
+        (0, chai_1.expect)(installStepper_1.InstallStepper.hasUnprocessedSteps()).to.equal(true);
         // Processing one step
         step1.isProcessed = true;
         // Now, only the second step is unprocessed
-        chai_1.expect(installStepper_1.InstallStepper.hasUnprocessedSteps()).to.equal(true);
+        (0, chai_1.expect)(installStepper_1.InstallStepper.hasUnprocessedSteps()).to.equal(true);
         // Processing the second step
         step2.isProcessed = true;
         // Now, no steps are unprocessed
-        chai_1.expect(installStepper_1.InstallStepper.hasUnprocessedSteps()).to.equal(false);
+        (0, chai_1.expect)(installStepper_1.InstallStepper.hasUnprocessedSteps()).to.equal(false);
     });
 });

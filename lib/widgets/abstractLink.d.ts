@@ -8,6 +8,7 @@ export interface Links {
     backgroundCSS: string | null;
 }
 export default abstract class LinkBase extends BaseWidget {
+    readonly widgetType = "link";
     readonly abstract links: Links[];
     /** Get info */
     abstract getLinks(): Promise<Links[]>;

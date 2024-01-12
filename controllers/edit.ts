@@ -31,8 +31,8 @@ export default async function edit(req, res) {
 	try {
 		record = await entity.model.findOne(req.param('id')).populateAll();
 	} catch (e) {
-		req._sails.log.error('Admin edit error: ');
-		req._sails.log.error(e);
+		sails.log.error('Admin edit error: ');
+		sails.log.error(e);
 		return res.serverError();
 	}
 
@@ -45,7 +45,7 @@ export default async function edit(req, res) {
 	if (req.method.toUpperCase() === 'POST') {
 		let reqData = RequestProcessor.processRequest(req, fields);
 		let params = {};
-		params[entity.config.identifierField || req._sails.config.adminpanel.identifierField] = req.param('id');
+		params[entity.config.identifierField || sails.config.adminpanel.identifierField] = req.param('id');
 
 
 		for (let prop in reqData) {
@@ -103,7 +103,7 @@ export default async function edit(req, res) {
 			req.session.messages.adminSuccess.push('Your record was updated !');
 			return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
 		} catch (e) {
-			req._sails.log.error(e);
+			sails.log.error(e);
 			req.session.messages.adminError.push(e.message || 'Something went wrong...');
 			return e;
 		}
@@ -113,8 +113,8 @@ export default async function edit(req, res) {
 	//     try {
 	//         record = await entity.model.findOne(req.param('id')).populateAll();
 	//     } catch (e) {
-	//         req._sails.log.error('Admin edit error: ');
-	//         req._sails.log.error(e);
+	//         sails.log.error('Admin edit error: ');
+	//         sails.log.error(e);
 	//         return res.serverError();
 	//     }
 	// }

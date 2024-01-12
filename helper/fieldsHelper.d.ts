@@ -1,3 +1,5 @@
+import { ActionType } from "../interfaces/adminpanelConfig";
+import { Entity } from "../interfaces/types";
 export declare class FieldsHelper {
     /**
      * Will normalize a field configuration that will be loaded from config file.
@@ -121,5 +123,5 @@ export declare class FieldsHelper {
      * @param {string=} [type] Type of action that config should be loaded for. Example: list, edit, add, remove, view. Defaut: list
      * @returns {Object} Empty object or pbject with list of properties
      */
-    static getFields(req: any, entity: any, type: any): {};
+    static getFields(req: ReqType, entity: Entity, type: ActionType): {};
 }

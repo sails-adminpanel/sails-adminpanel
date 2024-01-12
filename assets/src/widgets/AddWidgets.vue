@@ -74,6 +74,10 @@ export default {
 				links: {
 					items: [],
 					title: null
+				},
+				customs: {
+					items: [],
+					title: null
 				}
 			},
 			head: [],
@@ -144,6 +148,15 @@ export default {
 					title: 'Fast links'
 				})
 			}
+			if (widget.type === 'custom') {
+				this.widgets.customs.items.push(widget)
+				if (this.head.find(e => e.type === 'custom')) continue
+				this.widgets.customs.title = 'Customs'
+				this.head.push({
+					type: 'custom',
+					title: 'Custom'
+				})
+			}
 		}
 	},
 	methods: {
@@ -154,7 +167,8 @@ export default {
 			}
 			this.$emit('addWidgets', id)
 		}
-	}
+	},
+
 }
 </script>
 
