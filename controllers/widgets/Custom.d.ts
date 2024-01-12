@@ -1,1 +1,1 @@
-export declare function widgetCustomController(req: any, res: any): Promise<any>;
+export declare function widgetCustomController(req: any, res: any): unknown;

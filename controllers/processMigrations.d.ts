@@ -1,1 +1,1 @@
-export default function processMigrations(req: any, res: any): Promise<any>;
+export default function processMigrations(req: any, res: any): unknown;

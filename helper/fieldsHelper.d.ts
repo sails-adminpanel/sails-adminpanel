@@ -89,7 +89,7 @@ export declare class FieldsHelper {
      * @param {Object} fields
      * @param {function=} [cb]
      */
-    static loadAssociations(fields: any): Promise<any>;
+    static loadAssociations(fields: any): unknown;
     /**
      * Create list of populated models
      *

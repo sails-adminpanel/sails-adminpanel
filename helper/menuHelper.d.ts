@@ -6,7 +6,7 @@ export declare class MenuHelper {
      *
      * @returns {boolean}
      */
-    static hasBrand(): boolean;
+    static hasBrand(): any;
     /**
      * Get menu brand link
      *

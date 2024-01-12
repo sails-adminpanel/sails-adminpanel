@@ -1,1 +1,1 @@
-export default function addGroup(req: any, res: any): Promise<any>;
+export default function addGroup(req: any, res: any): unknown;

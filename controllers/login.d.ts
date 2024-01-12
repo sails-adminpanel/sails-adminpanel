@@ -1,1 +1,1 @@
-export default function login(req: any, res: any): Promise<any>;
+export default function login(req: any, res: any): unknown;

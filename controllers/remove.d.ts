@@ -1,1 +1,1 @@
-export default function remove(req: any, res: any): Promise<any>;
+export default function remove(req: any, res: any): unknown;

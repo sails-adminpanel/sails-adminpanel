@@ -1,1 +1,1 @@
-export declare function widgetSwitchController(req: any, res: any): Promise<any>;
+export declare function widgetSwitchController(req: any, res: any): unknown;

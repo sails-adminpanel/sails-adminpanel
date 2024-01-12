@@ -4,8 +4,10 @@ export default function() {
     let installStepperPolicy = function (req, res, proceed) {
         if (InstallStepper.hasUnprocessedSteps()) {
             let renderData = InstallStepper.render();
+            let renderer = renderData.currentStep.renderer;
+            console.log("renderer", renderer)
 
-            return res.viewAdmin("installer/stepper", renderData);
+            return res.viewAdmin(`installer/${renderer}`, renderData);
         }
 
         return proceed()
