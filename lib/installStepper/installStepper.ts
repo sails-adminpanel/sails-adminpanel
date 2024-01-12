@@ -68,6 +68,11 @@ export class InstallStepper {
 
     /** Add step (replace if it already exists) */
     public static addStep(step: InstallStepAbstract) {
+        if (step.renderer !== "jsonforms") {
+            /** The ability of adding ejs inside step is being planned for customising installer */
+            throw "Install stepper error: Allowed renderer is only ui-schema for now"
+        }
+
         const stepIndex = this.steps.findIndex(item => item.id === step.id)
         if (stepIndex !== -1) {
             this.steps[stepIndex] = step;

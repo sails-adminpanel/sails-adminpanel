@@ -8,8 +8,11 @@ export default abstract class InstallStepAbstract {
     abstract scriptsUrl: string;
     abstract stylesUrl: string;
     abstract ejsPath: string;
+    abstract renderer: "ejs" | "jsonforms";
     isSkipped: boolean;
     isProcessed: boolean;
+    /** Data that will be given to browser */
+    payload: any;
     /** Action that will be run when saving data to storage */
     abstract process(data: any): Promise<void>;
     /** Action that will be run when skipping the step */
