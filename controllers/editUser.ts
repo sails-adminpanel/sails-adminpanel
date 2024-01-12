@@ -22,8 +22,8 @@ export default async function(req, res) {
     try {
         user = await UserAP.findOne(req.param('id')).populate("groups");
     } catch(e) {
-        req._sails.log.error('Admin edit error: ');
-        req._sails.log.error(e);
+        sails.log.error('Admin edit error: ');
+        sails.log.error(e);
         return res.serverError();
     }
 
@@ -78,8 +78,8 @@ export default async function(req, res) {
         try {
             user = await UserAP.findOne(req.param('id')).populate("groups");
         } catch (e) {
-            req._sails.log.error('Admin edit error: ');
-            req._sails.log.error(e);
+            sails.log.error('Admin edit error: ');
+            sails.log.error(e);
             return res.serverError();
         }
 
