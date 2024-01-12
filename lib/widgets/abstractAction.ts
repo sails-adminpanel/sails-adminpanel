@@ -1,6 +1,9 @@
 import BaseWidget from "./abstractWidgetBase";
 
 export default abstract class ActionBase extends BaseWidget {
+
+	public readonly widgetType = "action"
+	
 	/** Widget background css (color, Image) */
 	public readonly backgroundCSS: string | null = null;
 	/** Widget size */
