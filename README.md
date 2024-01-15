@@ -33,7 +33,7 @@ To install this hook you will need to run:
     npm install sails-adminpanel
 
 > Currently, we have to patch sails framework, so you install our patches for using
-all functionality. Without these patches i18n will not work. [Read how to install patch](https://www.npmjs.com/package/dark-sails)
+all functionality. Without these patches i18n will not work. [Read how to install patch](https://www.npmjs.com/package/muddy-water)
 
 Then you will need to create a config file for admin panel generator into `config/adminpanel.js`
 

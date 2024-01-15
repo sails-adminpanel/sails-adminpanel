@@ -5,7 +5,7 @@
   "description": "Sails test application",
   "keywords": [],
   "dependencies": {
-    "dark-sails": "^1.0.0",
+    "muddy-water": "^1.0.0",
     "include-all": "^1.0.8",
     "sails-adminpanel": "file:../..",
     "patch-package": "^6.4.7",
@@ -18,7 +18,7 @@
   "scripts": {
     "debug": "node debug app.js",
     "start": "node app.js",
-    "postinstall": "patch-package --patch-dir=node_modules/dark-sails --error-on-fail=false"
+    "postinstall": "patch-package --patch-dir=node_modules/muddy-water --error-on-fail=false"
   },
   "main": "app.js",
   "author": "42pub",
