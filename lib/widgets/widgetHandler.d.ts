@@ -4,7 +4,27 @@ import ActionBase from "./abstractAction";
 import LinkBase from "./abstractLink";
 import CustomBase from "./abstractCustom";
 import UserAP from "../../models/UserAP";
+import { LineAwesomeIcon } from "../../interfaces/lineAwesome";
 type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase | CustomBase);
+export interface WidgetConfig {
+    id: string;
+    type: string;
+    api?: string;
+    link?: string;
+    description: string;
+    icon: LineAwesomeIcon;
+    name: string;
+    scriptUrl?: string;
+    constructorName?: string;
+    constructorOption?: string;
+    backgroundCSS: string;
+    size?: {
+        h: number;
+        w: number;
+    };
+    added?: boolean;
+    hideAdminPanelUI?: boolean;
+}
 export declare class WidgetHandler {
     private static widgets;
     static add(widget: WidgetType): void;

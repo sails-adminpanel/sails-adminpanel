@@ -17,9 +17,13 @@ export interface WidgetConfig {
 	description: string;
 	icon: LineAwesomeIcon;
 	name: string;
+	scriptUrl?: string;
+	constructorName?: string;
+	constructorOption?: string;
 	backgroundCSS: string;
 	size?: { h: number; w: number; };
 	added?: boolean;
+	hideAdminPanelUI?:boolean
 };
 
 export class WidgetHandler {
@@ -125,8 +129,8 @@ export class WidgetHandler {
 							backgroundCSS: widget.backgroundCSS ?? null,
 							size: widget.size ?? null,
 							scriptUrl: widget.scriptUrl,
-     						constructorName: widget.constructorName,
-    						constructorOption:  widget.constructorOption,
+							constructorName: widget.constructorName,
+							constructorOption:  widget.constructorOption,
 							hideAdminPanelUI: widget.hideAdminPanelUI
 						})
 					}
