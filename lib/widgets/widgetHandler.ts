@@ -2,11 +2,12 @@ import SwitcherBase from "./abstractSwitch";
 import InfoBase from "./abstractInfo";
 import ActionBase from "./abstractAction";
 import LinkBase from "./abstractLink";
-import { AccessRightsHelper } from "../../helper/accessRightsHelper";
+import CustomBase from "./abstractCustom";
+import {AccessRightsHelper} from "../../helper/accessRightsHelper";
 import UserAP from "../../models/UserAP";
 import { LineAwesomeIcon } from "../../interfaces/lineAwesome";
 
-type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase);
+type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase | CustomBase);
 
 export interface WidgetConfig {
 	id: string;
@@ -111,6 +112,23 @@ export class WidgetHandler {
 							})
 							links_id_key++;
 						}
+					}
+				} else if (widget instanceof CustomBase) {
+					if (AccessRightsHelper.havePermission(`widget-${widget.ID}`, user)) {
+						widgets.push({
+							id: `${widget.ID}_${id_key}`,
+							type: widget.widgetType,
+							api: `${config.routePrefix}/widgets-custom/${widget.ID}`,
+							description: widget.description,
+							icon: widget.icon,
+							name: widget.name,
+							backgroundCSS: widget.backgroundCSS ?? null,
+							size: widget.size ?? null,
+							scriptUrl: widget.scriptUrl,
+     						constructorName: widget.constructorName,
+    						constructorOption:  widget.constructorOption,
+							hideAdminPanelUI: widget.hideAdminPanelUI
+						})
 					}
 				} else {
 					return Promise.resolve([])

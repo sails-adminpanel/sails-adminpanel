@@ -1,5 +1,5 @@
 <template>
-		<div class="admin-widgets__wrapper" :class="getClass"
+		<div :id="ID" class="admin-widgets__wrapper" :class="getClass"
 			 :style="backgroundColor"
 			 @click="widgetAction"
 			 :ref="`admin-widget_${ID}`"
@@ -32,6 +32,7 @@
 <script>
 import {defineComponent} from "vue";
 import ky from "ky";
+import {getDefaultColorByID} from "./colorPallete"
 
 export default defineComponent({
 	name: 'Widget',
@@ -44,7 +45,10 @@ export default defineComponent({
 			icon: null,
 			backgroundColor: null,
 			type: null,
-			state: null
+			state: null,
+			arr: [],
+			constructorOption: null,
+			constructorName: null
 		}
 	},
 	mounted() {
@@ -53,8 +57,20 @@ export default defineComponent({
 		this.getDescription()
 		this.getIcon()
 		this.getType()
+		this.getConstructorOption()
+		this.getConstructorName()
 		if (this.type === 'info') this.getInfo()
 		if (this.type === 'switcher') this.getState()
+		if (this.type === "custom"){
+			let currentWidget = this.widgets.find(e => e.id === this.ID)
+			this.runScript(currentWidget, this.constructorOption)
+			/** Hide title, icon, description */
+			if(currentWidget.hideAdminPanelUI){
+				this.icon = ""
+				this.name = "";
+				this.description = "";
+			}
+		}
 	},
 	computed: {
 		getClass() {
@@ -111,6 +127,14 @@ export default defineComponent({
 						console.log(e)
 					}
 					break;
+				case ('custom'):
+					try {
+						let res = await ky.post(api).json()
+						console.log(res)
+					} catch (e) {
+						console.log(e)
+					}
+					break;
 				default:
 					return;
 			}
@@ -123,13 +147,46 @@ export default defineComponent({
 			this.description = this.widgets.find(e => e.id === this.ID).description
 		},
 		getBackground() {
-			let bg = this.widgets.find(e => e.id === this.ID).backgroundCSS ?? 'rgba(45, 121, 210, 0.6)'
+			let bg = this.widgets.find(e => e.id === this.ID).backgroundCSS ?? getDefaultColorByID(this.ID)
 			this.backgroundColor = `background-color: ${bg}`
 		},
 		getIcon() {
 			this.icon = this.widgets.find(e => e.id === this.ID).icon ?? 'box'
 		},
-	}
+		getConstructorOption() {
+			this.constructorOption = this.widgets.find(e => e.id === this.ID).constructorOption
+		},
+		getConstructorName() {
+			this.constructorName = this.widgets.find(e => e.id === this.ID).constructorName 
+		},
+		runScript(currentWidget, constructorOption){
+			// console.log(this.widgets.find(e => e.id === this.ID))
+
+			let filePath = currentWidget.scriptUrl
+			let api = filePath 
+			// console.log(`API: ${api}`)
+
+			const existingScript = document.querySelector(`script[src="${api}"]`);
+			
+			if(existingScript){
+				existingScript.parentNode.removeChild(existingScript);
+			}
+			const script = document.createElement('script');
+    			script.src = api;
+    			script.onload = () => {
+      				const containerElement = document.getElementById(this.ID);
+      				// const colorChanger = new ColorName(containerElement, constructorOption);
+					if(window[this.constructorName]){
+						// Instantiate an object of the dynamically created class
+						const obj = new window[this.constructorName](containerElement, constructorOption);
+					} else {
+						console.error(`Widget with ID:${this.ID} has no constructorName from ${api}:${this.constructorName}`)
+					}
+    			};
+    		document.body.appendChild(script);
+		},
+	},
+
 })
 </script>
 

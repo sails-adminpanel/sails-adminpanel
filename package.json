@@ -124,7 +124,8 @@
 		"test:js": "mocha test/bootstrap.js './test/{,!(fixture)/**}/*.test.js' --exit",
 		"test:init": "npm i && cd ./test/fixture && npm i --no-package-lock --prefix ./ && cd -",
 		"test:init-win": "npm i && cd test\\fixture && rmdir /s/Q node_modules && npm i --no-package-lock",
-		"build:css": "sass assets/styles:clarity/src"
+		"build:css": "sass assets/styles:clarity/src",
+		"bulid:js": "npx gulp js && npx gulp jsProd"
 	},
 	"version": "2.6.1"
 }

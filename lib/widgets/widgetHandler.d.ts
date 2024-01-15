@@ -2,24 +2,9 @@ import SwitcherBase from "./abstractSwitch";
 import InfoBase from "./abstractInfo";
 import ActionBase from "./abstractAction";
 import LinkBase from "./abstractLink";
+import CustomBase from "./abstractCustom";
 import UserAP from "../../models/UserAP";
-import { LineAwesomeIcon } from "../../interfaces/lineAwesome";
-type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase);
-export interface WidgetConfig {
-    id: string;
-    type: string;
-    api?: string;
-    link?: string;
-    description: string;
-    icon: LineAwesomeIcon;
-    name: string;
-    backgroundCSS: string;
-    size?: {
-        h: number;
-        w: number;
-    };
-    added?: boolean;
-}
+type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase | CustomBase);
 export declare class WidgetHandler {
     private static widgets;
     static add(widget: WidgetType): void;

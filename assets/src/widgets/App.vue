@@ -95,7 +95,9 @@ export default defineComponent({
 		setTimeout(() => {
 			document.getElementById('widgets').style.width = '100%'
 		}, 100)
-		//console.log(window.widgetsInit.layout)
+		console.log(window)
+		console.log(window.widgetsInit)
+		console.log(window.widgetsInit.layout)
 	},
 	methods: {
 		async addWidgets(id) {
