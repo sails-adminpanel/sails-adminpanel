@@ -1,8 +1,8 @@
 'use strict';
 let { MenuHelper } = require('./helper/menuHelper');
 let { AccessRightsHelper } = require('./helper/accessRightsHelper');
-let { MigrationsHelper } = require('./helper/migrationsHelper');
 let { WidgetHandler } = require("./lib/widgets/widgetHandler")
+const { ConfigHelper } = require('./helper/configHelper');
 
 module.exports = function (sails) {
 
@@ -50,7 +50,7 @@ module.exports = function (sails) {
         },
 
         getWidgetHandler: () => WidgetHandler, 
-
+        addModelConfig: ConfigHelper.addModelConfig,
         registerAccessToken: AccessRightsHelper.registerToken,
         getAllAccessTokens: AccessRightsHelper.getTokens,
         havePermission: AccessRightsHelper.havePermission,
