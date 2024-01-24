@@ -30,7 +30,7 @@ export declare class RequestProcessor {
      * @param {Object} fields List of fileds config
      * @param {Function=} [cb]
      */
-    static processFiles(req: any, fields: any): unknown;
+    static processFiles(req: any, fields: any): Promise<any>;
     /**
      * Will try to find all fields that should be used in model
      *

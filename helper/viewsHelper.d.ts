@@ -38,7 +38,7 @@ export declare class ViewsHelper {
      * @param {string|number|Array} value
      * @returns {boolean}
      */
-    static isOptionSelected(option: any, value: any): any;
+    static isOptionSelected(option: any, value: any): boolean;
     /**
      * Get's field value for view screen
      *

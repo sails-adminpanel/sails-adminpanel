@@ -1,1 +1,1 @@
-export declare function widgetInfoController(req: any, res: any): unknown;
+export declare function widgetInfoController(req: any, res: any): Promise<any>;

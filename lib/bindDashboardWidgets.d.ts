@@ -1,1 +1,1 @@
-export default function bindDashboardWidgets(): any;
+export default function bindDashboardWidgets(): Promise<void>;

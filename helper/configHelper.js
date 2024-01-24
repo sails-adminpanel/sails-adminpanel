@@ -10,10 +10,10 @@ class ConfigHelper {
             config.models = { ...models, ...modelConfig };
         }
         else {
-            const config = defaults_1.getDefaultConfig();
+            const config = (0, defaults_1.getDefaultConfig)();
             const models = { ...config.models };
             config.models = { ...models, ...modelConfig };
-            defaults_1.setDefaultConfig(config);
+            (0, defaults_1.setDefaultConfig)(config);
         }
     }
     static getConfig() {

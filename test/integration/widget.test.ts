@@ -1,8 +1,10 @@
 import "mocha";
 import {expect} from "chai";
 import CustomBase from '../../lib/widgets/abstractCustom';
+import { LineAwesomeIcon } from "../../interfaces/lineAwesome";
 
 class CustomOne extends CustomBase {
+    public icon?: LineAwesomeIcon = "dog";
     constructor(ID) {
         super();
         this.ID = ID;
@@ -10,7 +12,6 @@ class CustomOne extends CustomBase {
     readonly ID: string;
     readonly department: string = 'test';
     readonly description: string = 'Widget Custom One';
-    readonly icon: string = 'dog';
     readonly name: string = 'Site Custom';
     readonly widgetType = 'custom';
     readonly backgroundCSS = '#da4fcf'

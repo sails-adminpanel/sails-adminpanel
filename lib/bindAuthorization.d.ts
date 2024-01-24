@@ -1,1 +1,1 @@
-export default function bindAuthorization(): any;
+export default function bindAuthorization(): Promise<void>;
