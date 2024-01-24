@@ -72,5 +72,19 @@
 	"Schedule Editor": "Schedule Editor",
 	"select": "select",
 	"geojson": "geojson",
-	"Your record was created !": "Your record was created !"
+	"Your record was created !": "Your record was created !",
+	"test": "test",
+	"createdAt": "createdAt",
+	"updatedAt": "updatedAt",
+	"title": "title",
+	"title_2": "title_2",
+	"test_ck5_1": "test_ck5_1",
+	"sort": "sort",
+	"sort_test": "sort_test",
+	"datatable": "datatable",
+	"image": "image",
+	"gallery": "gallery",
+	"datetime": "datetime",
+	"date": "date",
+	"schedule": "schedule"
 }

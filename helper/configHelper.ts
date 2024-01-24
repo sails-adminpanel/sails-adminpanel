@@ -1,6 +1,13 @@
-import { AdminpanelConfig } from "../interfaces/adminpanelConfig";
+import { AdminpanelConfig, ModelConfig } from "../interfaces/adminpanelConfig";
 
 export class ConfigHelper {
+    
+    public static addModelConfig(modelConfig: {[key:string]: ModelConfig}){
+        if(sails.config.adminpanel && modelConfig){
+            let models = {...sails.config.adminpanel.models}
+            sails.config.adminpanel.models = {...models, ...modelConfig}
+        }
+    }
 
     public static getConfig(): AdminpanelConfig {
         return sails.config.adminpanel;

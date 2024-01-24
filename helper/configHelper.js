@@ -2,6 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ConfigHelper = void 0;
 class ConfigHelper {
+    static addModelConfig(modelConfig) {
+        if (sails.config.adminpanel && modelConfig) {
+            let models = { ...sails.config.adminpanel.models };
+            sails.config.adminpanel.models = { ...models, ...modelConfig };
+        }
+    }
     static getConfig() {
         return sails.config.adminpanel;
     }

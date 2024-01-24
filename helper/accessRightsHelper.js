@@ -74,5 +74,5 @@ class AccessRightsHelper {
         return true;
     }
 }
-AccessRightsHelper._tokens = [];
 exports.AccessRightsHelper = AccessRightsHelper;
+AccessRightsHelper._tokens = [];
