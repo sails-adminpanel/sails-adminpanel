@@ -1,4 +1,5 @@
 import { AdminpanelConfig } from "../interfaces/adminpanelConfig";
+import Router from "../lib/bindRoutes";
 import { getDefaultConfig, setDefaultConfig } from "../lib/defaults";
 export class ConfigHelper {
 
@@ -13,6 +14,7 @@ export class ConfigHelper {
             config.models = {...models, ...modelConfig}
             setDefaultConfig(config)
         }
+        Router.bind()
     }
 
     public static getConfig(): AdminpanelConfig {
