@@ -11,8 +11,7 @@ describe('Enough hook methods sails.adminpanel...', function () {
                 icon: "test"
             }
         };
-        console.log(1111, sails.hooks.adminpanel.addModelConfig);
         sails.hooks.adminpanel.addModelConfig(testModel);
-        (0, chai_1.expect)(sails.hooks.adminpanel.models.test.title).to.equal("test");
+        (0, chai_1.expect)(sails.config.adminpanel.models.test.title).to.equal("test");
     });
 });

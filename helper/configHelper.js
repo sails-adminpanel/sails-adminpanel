@@ -1,12 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ConfigHelper = void 0;
+const bindRoutes_1 = require("../lib/bindRoutes");
 class ConfigHelper {
     static addModelConfig(modelConfig) {
         if (sails.config.adminpanel && modelConfig) {
             let models = { ...sails.config.adminpanel.models };
             sails.config.adminpanel.models = { ...models, ...modelConfig };
         }
+        bindRoutes_1.default.bind();
     }
     static getConfig() {
         return sails.config.adminpanel;
