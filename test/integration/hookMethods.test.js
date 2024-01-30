@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("mocha");
 const chai_1 = require("chai");
-describe('Enough hook methods sails.adminpanel...', function () {
+describe('Hook methods sails.adminpanel...', function () {
     it("addModelConfig", async function () {
         let testModel = {
             test: {
