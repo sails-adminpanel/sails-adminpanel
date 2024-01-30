@@ -1,4 +1,5 @@
 import { AdminpanelConfig, ModelConfig } from "../interfaces/adminpanelConfig";
+import Router from "../lib/bindRoutes";
 
 export class ConfigHelper {
     
@@ -7,6 +8,7 @@ export class ConfigHelper {
             let models = {...sails.config.adminpanel.models}
             sails.config.adminpanel.models = {...models, ...modelConfig}
         }
+        Router.bind();
     }
 
     public static getConfig(): AdminpanelConfig {

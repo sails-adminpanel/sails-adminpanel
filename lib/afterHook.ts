@@ -4,6 +4,7 @@ import bindAccessRights from "./bindAccessRights";
 import bindDev from "./bindDev";
 import bindForms from "./bindForms";
 import { MigrationsHelper } from "../helper/migrationsHelper";
+import Router from "./bindRoutes";
 
 export default async function () {
     // check that current datastore is appropriate for migrations
@@ -32,10 +33,7 @@ export default async function () {
     }
 
     sails.on('lifted', async function() {
-        //binding all routes.
-        require('./bindRoutes').default();
-
-        // binding forms from files
+        Router.bind()
     })
 
     bindForms();
