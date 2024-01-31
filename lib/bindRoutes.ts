@@ -1,5 +1,6 @@
 import _migrations from "../controllers/migrations";
 import _processMigrations from "../controllers/processMigrations";
+import _processInstallStep from "../controllers/processInstallStep";
 import _dashboard from "../controllers/dashboard";
 import _welcome from "../controllers/welcome";
 import _list from "../controllers/list";
@@ -77,7 +78,6 @@ export default class Router {
 		 */
 		sails.router.bind(`${config.routePrefix}/widgets-action/:widgetId`, bindPolicies(policies, widgetCustomController))
 
-
 		/**
 		 * Migrations
 		 * */
@@ -85,6 +85,11 @@ export default class Router {
 			sails.router.bind(`${config.routePrefix}/migrations`, bindPolicies(policies, _migrations));
 			sails.router.bind(`${config.routePrefix}/processMigrations`, bindPolicies(policies, _processMigrations));
 		}
+
+		/**
+		 * Install Stepper
+		 * */
+		sails.router.bind(`${config.routePrefix}/processInstallStep`, bindPolicies(policies, _processInstallStep));
 
 		/**
 		 * Edit form
