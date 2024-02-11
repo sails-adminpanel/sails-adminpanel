@@ -20,9 +20,9 @@ interface Column {
   data: string;
   searchable: string;
   orderable: string;
-  search: { 
-    value: string, 
-    regex: 'true' | 'false' | boolean 
+  search: {
+    value: string,
+    regex: 'true' | 'false' | boolean
   }
 
 }
@@ -70,43 +70,43 @@ export class NodeTable {
 
 
   filter(): any {
-    let globalSearch: any = []; 
-    let localSearch: any = []; 
+    let globalSearch: any = [];
+    let localSearch: any = [];
 
     let hasLocalSearch = false;
     if (typeof this.request.columns === 'object' && this.request.columns !== null) {
-        for (const key in this.request.columns) {
-            if (Object.prototype.hasOwnProperty.call(this.request.columns, key)) {
-                const column = this.request.columns[key];
-                if (column && column.search && column.search.value !== '') {
-                    hasLocalSearch = true;
-                    break;
-                }
-            }
+      for (const key in this.request.columns) {
+        if (Object.prototype.hasOwnProperty.call(this.request.columns, key)) {
+          const column = this.request.columns[key];
+          if (column && column.search && column.search.value !== '') {
+            hasLocalSearch = true;
+            break;
+          }
         }
+      }
     }
 
     if ((this.request.search !== undefined && this.request.search.value !== "") || hasLocalSearch) {
       let searchStrGlobal = this.request.search.value;
       const columns = this.request.columns;
       const fieldsArray = this.fieldsArray;
-  
+
       for (let index = 0; index < columns.length; index++) {
         let searchStr = searchStrGlobal;
         let columnQuery: any = null
         const requestColumn = columns[index];
         let isLocalSearch = false
-        if(hasLocalSearch && requestColumn['search']['value']){
+        if (hasLocalSearch && requestColumn['search']['value']) {
           searchStr = requestColumn['search']['value'];
           isLocalSearch = true;
         }
 
         const columnName = requestColumn.data;
-        if(!searchStr) continue;
+        if (!searchStr) continue;
 
 
         // Skip actions first column
-        if(fieldsArray[parseInt(columnName)]=== 'actions') {
+        if (fieldsArray[parseInt(columnName)] === 'actions') {
           continue;
         }
 
@@ -115,12 +115,12 @@ export class NodeTable {
 
           switch (fieldType) {
             case 'boolean':
-              if(searchStr+"" === "true" || searchStr+"" === "false") {
+              if (searchStr + "" === "true" || searchStr + "" === "false") {
                 columnQuery = { [fieldsArray[parseInt(columnName)]]: searchStr.toLowerCase() === 'true' };
               }
               break;
             case 'number':
-              if(!Number.isNaN(parseFloat(searchStr))){
+              if (!Number.isNaN(parseFloat(searchStr))) {
                 columnQuery = { [fieldsArray[parseInt(columnName)]]: parseFloat(searchStr) };
               }
               break;
@@ -133,8 +133,8 @@ export class NodeTable {
           }
         }
 
-        if(columnQuery){
-          if(isLocalSearch) {
+        if (columnQuery) {
+          if (isLocalSearch) {
             localSearch.push(columnQuery)
           } else {
             globalSearch.push(columnQuery)
@@ -142,13 +142,13 @@ export class NodeTable {
         }
       }
     }
-  
+
     let criteria = {}
-    if(globalSearch.length || localSearch.length) {
-      if(globalSearch.length) {
+    if (globalSearch.length || localSearch.length) {
+      if (globalSearch.length) {
         criteria['or'] = globalSearch
-      } 
-      if(localSearch.length) {
+      }
+      if (localSearch.length) {
         criteria['and'] = localSearch
       }
 
@@ -172,8 +172,8 @@ export class NodeTable {
       console.log(JSON.stringify(queryOptions, null, 2))
       const totalRecords = await this.model.count();
       const filteredRecords = await this.model.count(queryOptions.where);
-      const data = await this.model.find(queryOptions);
-
+      const data = await this.model.find(queryOptions).populateAll();
+      console.log(data)
       const output = {
         draw: this.request.draw !== "" ? this.request.draw : 0,
         recordsTotal: totalRecords,
@@ -196,10 +196,36 @@ export class NodeTable {
     data.forEach((elem: any) => {
       let row: any = [null];
       Object.keys(this.fields).forEach((key: string) => {
-        if (elem[key]) {
-          row.push(elem[key]);
+        console.log(this.fields[key].model)
+        if (this.fields[key].config.displayModifier) {
+          row.push(this.fields[key].config.displayModifier(elem[key]));
+        } else if (this.fields[key].model && this.fields[key].model.model) {
+          // Обработка связей типа "belongsTo"
+          if (!elem[key]) {
+            row.push(null);
+          } else {
+            row.push(elem[key][this.fields[key].config.displayField]);
+          }
+        } else if (this.fields[key].model.type === "association-many" || this.fields[key].model.type === "association") {
+          if (!elem[key] || elem[key].length === 0) {
+            row.push(null);
+          } else {
+            let displayValues: string[] = [];
+            elem[key].forEach((item: any) => {
+              if (item[this.fields[key].config.displayField]) {
+                displayValues.push(item[this.fields[key].config.displayField]);
+              } else {
+                displayValues.push(item[this.fields[key].config.identifierField]);
+              }
+            });
+            row.push(displayValues.join(', '));
+          }
+        
+        } else if (this.fields[key].model.type === "json") {
+          let str = JSON.stringify(elem[key]);
+          row.push(str === "{}" ? "": str);
         } else {
-          row.push(null);
+          row.push(elem[key]);
         }
       });
       out.push(row);
@@ -208,59 +234,3 @@ export class NodeTable {
     return out;
   }
 }
-
-/**
- * 
- * 
- * TODO: Implement adminonael features
- * 
- * 
- * records = await waterlineExec(query);
-
-    let identifierField = ConfigHelper.getIdentifierField(entity.config.model);
-    let keyFields = Object.keys(fields);
-    let result = [];
-
-    records.reverse().forEach((entity) => {
-        let a = [];
-        a.push(entity[identifierField]); // Push ID for Actions
-        keyFields.forEach((key) => {
-            let fieldData = "";
-            let displayField = fields[key].config.displayField;
-            if(fields[key].model.model){
-                if (!entity[key]){
-                    fieldData = ""
-                } else {
-                    // Model
-                    fieldData = entity[key][displayField];
-                }
-            } else if (fields[key].model.collection) {
-                if (!entity[key] || !entity[key].length) {
-                    fieldData = ""
-                }
-                else {
-                    // Collection
-                    entity[key].forEach((item)=>{
-                        if (fieldData !== "") fieldData += ", "
-                        fieldData += !item[displayField] ? item[fields[key].config.identifierField] : item[displayField];
-                    })
-                }
-
-            } else {
-                // Plain data
-                fieldData = entity[key];
-            }
-
-            if (typeof fields[key].config.displayModifier === "function") {
-                a.push(fields[key].config.displayModifier(entity[key]));
-            } else {
-                a.push(fieldData);
-            }
-        });
-        result.push(a);
-    });
-
-    res.json({
-        data: result
-    });
- */
