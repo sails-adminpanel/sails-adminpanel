@@ -18,8 +18,11 @@
 			});
 		});
 		var table = $('#list').DataTable({
-			"ajax": '<%= entity.uri %>/json',
-			"sDom": 'Rfrtlip',
+			ajax:{
+        url : '<%= entity.uri %>/json',
+        type : "POST"
+			},
+			sDom: 'Rfrtlip',
 			fixedHeader: true,
 			fixedColumns: true,
 			scrollX: true,
