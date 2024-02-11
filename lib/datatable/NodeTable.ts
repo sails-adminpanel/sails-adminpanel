@@ -73,7 +73,18 @@ export class NodeTable {
     let globalSearch: any = []; 
     let localSearch: any = []; 
 
-    const hasLocalSearch = this.request.columns.every(item => item.search.value === '') === false;
+    let hasLocalSearch = false;
+    if (typeof this.request.columns === 'object' && this.request.columns !== null) {
+        for (const key in this.request.columns) {
+            if (Object.prototype.hasOwnProperty.call(this.request.columns, key)) {
+                const column = this.request.columns[key];
+                if (column && column.search && column.search.value !== '') {
+                    hasLocalSearch = true;
+                    break;
+                }
+            }
+        }
+    }
 
     if ((this.request.search !== undefined && this.request.search.value !== "") || hasLocalSearch) {
       let searchStrGlobal = this.request.search.value;
