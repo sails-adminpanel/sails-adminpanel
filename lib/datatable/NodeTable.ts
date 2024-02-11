@@ -99,14 +99,17 @@ export class NodeTable {
 
         if (requestColumn.searchable === "true") {
           const fieldType = this.fields[fieldsArray[parseInt(columnName)]].model.type;
+
           switch (fieldType) {
             case 'boolean':
-              if(this.request.search.value === "true" || this.request.search.value === "false") {
+              console.log(searchStr,fieldsArray[parseInt(columnName)] , fieldType)        
+
+              if(searchStr) {
                 globalSearch.push({ [fieldsArray[parseInt(columnName)]]: searchStr.toLowerCase() === 'true' });
               }
               break;
             case 'number':
-              if(!Number.isNaN(parseFloat(this.request.search.value))){
+              if(!Number.isNaN(parseFloat(searchStr))){
                 globalSearch.push({ [fieldsArray[parseInt(columnName)]]: parseFloat(searchStr) });
               }
               break;
