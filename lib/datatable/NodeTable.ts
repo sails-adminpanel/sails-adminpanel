@@ -120,8 +120,20 @@ export class NodeTable {
               }
               break;
             case 'number':
-              if (!Number.isNaN(parseFloat(searchStr))) {
-                columnQuery = { [fieldsArray[parseInt(columnName)]]: parseFloat(searchStr) };
+              if (searchStr.startsWith(">") || searchStr.startsWith("<")) {
+                if (Number.isNaN(parseFloat(searchStr.substring(1)))) {
+                  break;
+                }
+              }
+              
+              if (searchStr.startsWith(">")) {
+                columnQuery = { [fieldsArray[parseInt(columnName)]]: { '>=': parseFloat(searchStr.substring(1)) } };
+              } else if (searchStr.startsWith("<")) {
+                columnQuery = { [fieldsArray[parseInt(columnName)]]: { '<=': parseFloat(searchStr.substring(1)) } };
+              } else {
+                if (!Number.isNaN(parseFloat(searchStr))) {
+                  columnQuery = { [fieldsArray[parseInt(columnName)]]: parseFloat(searchStr) };
+                }
               }
               break;
             case 'string':
@@ -194,7 +206,7 @@ export class NodeTable {
   mapData(data: { [key: string]: any }): object[] {
     let out: object[] = [];
     data.forEach((elem: any) => {
-      let row: any = [null];
+      let row: any = [elem[this.model.primaryKey ?? 'id']];
       Object.keys(this.fields).forEach((key: string) => {
         console.log(this.fields[key].model)
         if (this.fields[key].config.displayModifier) {
@@ -220,10 +232,10 @@ export class NodeTable {
             });
             row.push(displayValues.join(', '));
           }
-        
+
         } else if (this.fields[key].model.type === "json") {
           let str = JSON.stringify(elem[key]);
-          row.push(str === "{}" ? "": str);
+          row.push(str === "{}" ? "" : str);
         } else {
           row.push(elem[key]);
         }
