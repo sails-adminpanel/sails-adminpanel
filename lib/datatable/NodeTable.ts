@@ -1,5 +1,4 @@
 import { Model } from 'sails';
-import { ModelConfig } from '../../interfaces/adminpanelConfig';
 import { Fields } from '../../helper/fieldsHelper';
 
 interface Request {
