@@ -128,5 +128,5 @@
 		"build:css": "sass assets/styles:clarity/src",
 		"bulid:js": "npx gulp js && npx gulp jsProd"
 	},
-	"version": "3.0.0"
+	"version": "3.1.0"
 }
