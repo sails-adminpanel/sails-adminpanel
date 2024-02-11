@@ -83,9 +83,10 @@ export class NodeTable {
   
       for (let index = 0; index < columns.length; index++) {
         const requestColumn = columns[index];
-
+        let isLocalSearch = false
         if(hasLocalSearch && requestColumn['search']['value']){
           searchStr = requestColumn['search']['value'];
+          isLocalSearch = true;
         }
 
         const columnName = requestColumn.data;
@@ -102,9 +103,7 @@ export class NodeTable {
 
           switch (fieldType) {
             case 'boolean':
-              console.log(searchStr,fieldsArray[parseInt(columnName)] , fieldType)        
-
-              if(searchStr) {
+              if(searchStr+"" === "true" || searchStr+"" === "false") {
                 globalSearch.push({ [fieldsArray[parseInt(columnName)]]: searchStr.toLowerCase() === 'true' });
               }
               break;
