@@ -70,18 +70,19 @@ export class NodeTable {
 
 
   filter(): any {
-    let globalSearch: any = []; // Массив для условий фильтрации 
-    
-    // console.log(this.request.columns);
-    
+    let globalSearch: any = []; 
+    let localSearch: any = []; 
+
     const hasLocalSearch = this.request.columns.every(item => item.search.value === '') === false;
 
     if ((this.request.search !== undefined && this.request.search.value !== "") || hasLocalSearch) {
-      let searchStr = this.request.search.value;
+      let searchStrGlobal = this.request.search.value;
       const columns = this.request.columns;
       const fieldsArray = this.fieldsArray;
   
       for (let index = 0; index < columns.length; index++) {
+        let searchStr = searchStrGlobal;
+        let columnQuery: any = null
         const requestColumn = columns[index];
         let isLocalSearch = false
         if(hasLocalSearch && requestColumn['search']['value']){
@@ -104,31 +105,44 @@ export class NodeTable {
           switch (fieldType) {
             case 'boolean':
               if(searchStr+"" === "true" || searchStr+"" === "false") {
-                globalSearch.push({ [fieldsArray[parseInt(columnName)]]: searchStr.toLowerCase() === 'true' });
+                columnQuery = { [fieldsArray[parseInt(columnName)]]: searchStr.toLowerCase() === 'true' };
               }
               break;
             case 'number':
               if(!Number.isNaN(parseFloat(searchStr))){
-                globalSearch.push({ [fieldsArray[parseInt(columnName)]]: parseFloat(searchStr) });
+                columnQuery = { [fieldsArray[parseInt(columnName)]]: parseFloat(searchStr) };
               }
               break;
             case 'string':
-              globalSearch.push({ [fieldsArray[parseInt(columnName)]]: { contains: searchStr } });
+              columnQuery = { [fieldsArray[parseInt(columnName)]]: { contains: searchStr } };
               break;
             default:
               // Пропускаем json, ref и ассоциации
               break;
           }
         }
+
+        if(columnQuery){
+          if(isLocalSearch) {
+            localSearch.push(columnQuery)
+          } else {
+            globalSearch.push(columnQuery)
+          }
+        }
       }
     }
   
-    if(!globalSearch.length) {
-      globalSearch = {}
-    } else {
-      globalSearch = {or: globalSearch}
+    let criteria = {}
+    if(globalSearch.length || localSearch.length) {
+      if(globalSearch.length) {
+        criteria['or'] = globalSearch
+      } 
+      if(localSearch.length) {
+        criteria['and'] = localSearch
+      }
+
     }
-    return globalSearch;
+    return criteria;
   }
 
 
