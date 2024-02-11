@@ -9,7 +9,7 @@ declare let attributes: {
     tokens: string[];
     users: UserAP[];
 };
-declare type attributes = typeof attributes & WaterlineEntity;
+type attributes = typeof attributes & WaterlineEntity;
 interface GroupAP extends OptionalAll<attributes> {
 }
 export default GroupAP;

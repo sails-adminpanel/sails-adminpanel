@@ -142,7 +142,7 @@ export class WidgetHandler {
 		let user: UserAP;
 		let widgets: WidgetConfig[];
 		if (!auth) {
-			user = await UserAP.findOne({ login: sails.config.adminpanel.administrator.login })
+			user = await UserAP.findOne({ login: sails.config.adminpanel.administrator?.login ?? 'admin' })
 		} else {
 			user = await UserAP.findOne({ id: id })
 		}
@@ -164,7 +164,7 @@ export class WidgetHandler {
 
 	public static async setWidgetsDB(id: number, widgets: WidgetConfig[], auth: boolean): Promise<number> {
 		if (!auth) {
-			let updatedUser = await UserAP.updateOne({ login: sails.config.adminpanel.administrator.login }, { widgets: widgets })
+			let updatedUser = await UserAP.updateOne({ login: sails.config.adminpanel.administrator?.login ?? 'admin' }, { widgets: widgets })
 			return updatedUser.id
 		} else {
 			let updatedUser = await UserAP.updateOne({ id: id }, { widgets: widgets })

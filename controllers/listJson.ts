@@ -2,6 +2,7 @@ import { AdminUtil } from "../lib/adminUtil";
 import { FieldsHelper } from "../helper/fieldsHelper";
 import { ConfigHelper } from "../helper/configHelper";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
+import { NodeTable } from "../lib/datatable/NodeTable";
 
 export default async function listJson(req, res) {
     let entity = AdminUtil.findEntityObject(req);
@@ -19,12 +20,11 @@ export default async function listJson(req, res) {
 
     let records: any = [];
     let fields = FieldsHelper.getFields(req, entity, 'list');
-
     let query;
     try {
-        // adminpanel design do not support list of more than 50000 lines per request
+        // adminpanel design do not support list of more than 5000 lines per request
         // !TODO take off this limit :)
-        query = entity.model.find({}).limit(50000);
+        query = entity.model.find({}).limit(5000);
     } catch (e) {
         sails.log.error(e);
     }
@@ -33,6 +33,22 @@ export default async function listJson(req, res) {
         query.populate(val);
     });
 
+
+
+
+    const nodeTable = new NodeTable(req.query, entity.model, fields);
+    
+    nodeTable.output((err, data)=>{
+        if (err) {
+        console.log(err);
+        return;
+        }
+
+        // Directly send this data as output to Datatable
+        res.send(data)
+    })
+
+    return;
     records = await waterlineExec(query);
 
     let identifierField = ConfigHelper.getIdentifierField(entity.config.model);
