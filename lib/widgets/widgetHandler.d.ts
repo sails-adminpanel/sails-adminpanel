@@ -5,7 +5,7 @@ import LinkBase from "./abstractLink";
 import UserAP from "../../models/UserAP";
 import { LineAwesomeIcon } from "../../interfaces/lineAwesome";
 import CustomBase from "./abstractCustom";
-declare type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase | CustomBase);
+type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase | CustomBase);
 export interface WidgetConfig {
     id: string;
     type: string;

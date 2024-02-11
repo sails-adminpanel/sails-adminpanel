@@ -24,6 +24,8 @@
 			fixedColumns: true,
 			scrollX: true,
 			responsive: true,
+			processing: true,
+	    serverSide: true,
 			language: {
 				url: '/admin/assets/datatables/i18n/<%= req.session.UserAP.locale !== undefined ? req.session.UserAP.locale : "en" %>.json'
 			},

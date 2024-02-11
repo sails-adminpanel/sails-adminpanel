@@ -25,7 +25,7 @@ declare let attributes: {
     groups: GroupAP[];
     widgets: WidgetConfig[];
 };
-declare type attributes = typeof attributes & WaterlineEntity;
+type attributes = typeof attributes & WaterlineEntity;
 interface UserAP extends OptionalAll<attributes> {
 }
 export default UserAP;

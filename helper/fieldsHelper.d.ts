@@ -1,5 +1,16 @@
-import { ActionType } from "../interfaces/adminpanelConfig";
+import { ActionType, BaseFieldConfig } from "../interfaces/adminpanelConfig";
 import { Entity } from "../interfaces/types";
+export type Fields = {
+    [key: string]: {
+        config: BaseFieldConfig;
+        model: {
+            model: string;
+            autoMigrations: any;
+            required: boolean;
+            type: 'association' | 'association-many' | 'number' | 'json' | 'string' | 'boolean' | 'ref';
+        };
+    };
+};
 export declare class FieldsHelper {
     /**
      * Will normalize a field configuration that will be loaded from config file.
@@ -123,5 +134,5 @@ export declare class FieldsHelper {
      * @param {string=} [type] Type of action that config should be loaded for. Example: list, edit, add, remove, view. Defaut: list
      * @returns {Object} Empty object or pbject with list of properties
      */
-    static getFields(req: ReqType, entity: Entity, type: ActionType): {};
+    static getFields(req: ReqType, entity: Entity, type: ActionType): Fields;
 }
