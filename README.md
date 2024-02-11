@@ -1,117 +1,186 @@
 
 <p align="center">
-<img alt="Redox" width="346" src="assets/identy/logo.svg">
+  <img alt="Redox" width="346" src="assets/identy/logo.svg">
 </p>
 
-
-
+# sails-adminpanel
 <span class="badge-npmversion"><a href="https://npmjs.org/package/sails-adminpanel" title="View this project on NPM"><img src="https://img.shields.io/npm/v/sails-adminpanel.svg" alt="NPM version" /></a></span>
 
+**Only for use sails  > v1.5**
 
-Autogeniration adminpanel |  internationalization | User & Group access rights | Policies | Modern UI
-
-In nearest future: Customization dashboard | Custom widgets | Wizards
-
-### ***sails-adminpanel readme for sails v1.x***
-
-___sails v0.x is not supported___
-
-TODO:
-1. Check csrf to fileUpload
-2. Docs finish
-3. Add disabled fields to all widgets
-
-for fileUploader
-
-    csrf: false
+## SailsJS Discord community
+**Community Link:** [Join SailsJS Discord Community](https://discord.gg/YG2Sv34H)
+Feel free to use this link to connect with the community and engage in discussions or ask any questions you may have.
 
 
-# Installation
+## About
 
-To install this hook you will need to run:
+The admin panel offers automatic generation capabilities, ensuring ease of use, and includes features such as internationalization, user and group access rights, policy enforcement, and a modern user interface. In the near future, installation steps will be provided for a smoother setup experience.
 
-    npm install sails-adminpanel
+Key Features and Components:
 
-> Currently, we have to patch sails framework, so you install our patches for using
-all functionality. Without these patches i18n will not work. [Read how to install patch](https://www.npmjs.com/package/muddy-water)
+- **Access Rights:** Manage user and group access rights efficiently.
+- **GeoJsonWidget:** A widget designed for handling GeoJSON data.
+- **Policies:** Enforce policies to control and restrict actions within the admin panel.
+- **AceEditorWidget:** Incorporate the Ace code editor widget for code editing functionalities.
+- **HandsontableWidget:** Utilize the Handsontable widget for creating interactive data tables.
+- **CKeditorWidget:** A widget featuring the CKeditor for rich text editing capabilities.
+- **Links:** Manage and organize links within the admin panel.
+- **ScheduleWidget:** Incorporate a widget for scheduling and time-related functionalities.
+- **Configuration:** Configure various settings and options for the admin panel.
+- **Migrations:** Handle database migrations to manage changes in the data structure.
+- **Sections:** Organize and manage different sections of the admin panel.
+- **Dashboard:** View and customize the admin panel dashboard for a personalized experience.
+- **ModifierCallbacks:** Implement callbacks for modifying data and behavior.
+- **Styles:** Customize the appearance and styling of the admin panel.
+- **FileUploaderWidget:** Utilize a widget for convenient file uploading functionalities.
+- **Navbar:** Manage the navigation bar for easy access to different sections.
+- **Translations:** Implement internationalization features for multiple language support.
+- **Forms:** Create and manage forms for data input and manipulation.
+- **NavigationWidget:** Utilize a widget to enhance navigation capabilities.
+- **Widget:** General reference to customizable and extensible components.
 
-Then you will need to create a config file for admin panel generator into `config/adminpanel.js`
+This comprehensive set of features and components makes the admin panel a powerful tool for managing and controlling various aspects of your application with a focus on simplicity and a modern user interface.
 
-This is example of this file:
+## Installation
 
-    'use strict';
+To install this hook, you will need to run:
 
-    module.exports.adminpanel = {
-        models: {
+```bash
+npm install sails-adminpanel
+```
 
-            pages: {
+### i18n
+> Currently, we have to patch sails framework, so you install our patches for using all functionality. Without these patches, i18n will not work. [Read how to install the patch](https://www.npmjs.com/package/muddy-water)
 
-                title: 'Pages',
-                model: 'Page',
+### Configuration
+Then you will need to create a config file for the admin panel generator into `config/adminpanel.js`
+For use Typescript look below
 
-                list: {
-                    fields: {
-                        id: 'ID',
-                        name: 'Article name'
-                    }
-                },
+This is an example of this file:
 
-                edit: {
-                    fields: {
-                        name: 'Article name',
-                        content: {
-                            type: 'wysiwyg',
-                            title: 'Article body'
-                        }
+```javascript
+'use strict';
+
+module.exports.adminpanel = {
+    models: {
+
+        pages: {
+
+            title: 'Pages',
+            model: 'Page',
+
+            list: {
+                fields: {
+                    id: 'ID',
+                    name: 'Article name'
+                }
+            },
+
+            edit: {
+                fields: {
+                    name: 'Article name',
+                    content: {
+                        type: 'wysiwyg',
+                        title: 'Article body'
                     }
                 }
             }
         }
-    };
-
+    }
+};
+```
 
 And your admin panel will be accessible under: `http://127.0.0.1:port/admin`
 
-## Gulp
-***Main gulp file*** -- `gulpfile.js`
-### Gulp commands
-`gulp` -- development mode
-
-`gulp prod` -- production mode
-
-## CKeditor5
-**Custom build file** -- `assets/src/scripts/ckeditor5/app.js`
-**gulp task** -- `gulp ckeditorBuild`
-
 ## Migrations
-```javascript
-if ((process.env.NODE_ENV === "production" && process.env.DATASTORE === "postgres") || process.env.ADMINPANEL_MIGRATIONS_FORCE === "TRUE")  {
-    if (process.env.ADMINPANEL_MIGRATIONS_SKIP !== "TRUE") {
-        await MigrationsHelper.addToProcessMigrationsQueue(`${sails.config.adminpanel.rootPath}/migrations`, "up");
+
+The migration block is responsible for determining when the admin panel migrations should be executed. The conditions for running migrations are as follows:
+
+1. If the environment is set to production (`process.env.NODE_ENV === "production"`) and the datastore is PostgreSQL (`process.env.DATASTORE === "postgres"`).
+2. OR if the environment variable `ADMINPANEL_MIGRATIONS_FORCE` is set to "TRUE" (`process.env.ADMINPANEL_MIGRATIONS_FORCE === "TRUE"`).
+
+If these conditions are met, and the environment variable `ADMINPANEL_MIGRATIONS_SKIP` is not set to "TRUE" (`process.env.ADMINPANEL_MIGRATIONS_SKIP !== "TRUE"`), the following action will be performed:
+
+- The `MigrationsHelper.addToProcessMigrationsQueue` function is called to add migrations from the specified path (`${sails.config.adminpanel.rootPath}/migrations`) to the process migrations queue.
+- The migration direction is set to "up", indicating that migrations should be executed.
+
+This block ensures that admin panel migrations are run under specific conditions, providing flexibility and control over the migration process.
+
+
+Admin panel migrations will run if some conditions will be done. Set `process.env.NODE_ENV = "production"` and `process.env.DATASTORE = "postgres"` or use `process.env.ADMINPANEL_MIGRATIONS_FORCE = "TRUE"`. But if you want to forbid migrations and cancel all these conditions use `process.env.ADMINPANEL_MIGRATIONS_SKIP = "TRUE"`
+
+## Documentation & Types
+
+For comprehensive information on configuration and usage, it is highly recommended to refer to the [docs](https://github.com/sails-adminpanel/sails-adminpanel/tree/master/docs) folder within the project repository. The documentation provides detailed insights into various aspects of the admin panel, including configuration options and usage guidelines.
+
+When working with TypeScript in the project, it is advisable to explore the type definitions located in the `/interfaces/adminpanelConfig.d.ts` file. This TypeScript definition file outlines the types and structures associated with the admin panel configuration. It serves as a valuable resource for understanding the available options and ensuring type safety when configuring the admin panel.
+
+For projects utilizing TypeScript, consider the following example:
+
+```typescript
+import { ModelConfig, AdminpanelConfig } from "sails-adminpanel/interfaces/adminpanelConfig";
+
+let models: { [key: string]: ModelConfig } = {
+  // Define your model configurations here
+};
+
+var config: AdminpanelConfig = {
+  //auth: true,
+  dashboard: {
+    autoloadWidgetsPath: 'api/dashboardWidgets',
+    defaultWidgets: ['reload_website']
+  },
+  brand: {
+    link: {
+      title: 'SailsJS adminpanel',
+      id: "brand_link",
+      link: "/admin"
     }
-}
+  }
+};
+
+module.exports.adminpanel = config;
 ```
 
-Adminpanel migrations will run if some conditions will be done.
-Set `process.env.NODE_ENV = "production"` and `process.env.DATASTORE = "postgres"`
-or use `process.env.ADMINPANEL_MIGRATIONS_FORCE = "TRUE"`. But if you want to forbid
-migrations and cancel all these conditions use `process.env.ADMINPANEL_MIGRATIONS_SKIP = "TRUE"`
+This TypeScript example demonstrates how to structure model configurations and the overall admin panel configuration. Utilizing TypeScript enhances code clarity, provides autocompletion support, and helps prevent potential configuration errors.
 
-## Documentation
 
-Take a look into [docs](https://github.com/sails-adminpanel/sails-adminpanel/tree/master/docs) folder. There are a lot of docs about configuration and usage.
+## UI Reference
 
-## UI reference
+The UI of the project is designed with the Tailwind CSS framework, providing a modern and responsive user interface.
 
-We use VmWare Clarity framework as UI framework
+### Gulp
 
-Clarity docs https://vmware.github.io/clarity/documentation/v0.13/
+- **Main Gulp File:** `gulpfile.js`
 
-for build styles - sass --watch clarity/src:assets/styles/
+### Gulp Commands
 
-# JSON-schema config
+- `gulp` - Executes in development mode.
+- `gulp prod` - Executes in production mode.
 
-`npx ts-json-schema-generator -p ./interfaces/adminpanelConfig.d.ts > adminpanel-config.schema.json`
+### CKeditor5
+
+- **Custom Build File:** `assets/src/scripts/ckeditor5/app.js`
+- **Gulp Task:** `gulp ckeditorBuild`
+
+The CKeditor5 section indicates the custom build file location for CKeditor5, which can be found at `assets/src/scripts/ckeditor5/app.js`. Additionally, there is a Gulp task named `gulp ckeditorBuild` associated with building CKeditor5.
+
+These details provide information on the project's build process, specifically related to Gulp tasks and CKeditor5 customization.
+
+## TODO:
+1. Check csrf for fileUpload
+2. Docs finish
+3. Add disabled fields to all widgets
+
+
+## Problems
+for fileUploader (readmore in TODO)
+
+```javascript
+csrf: false
+```
+
 
 ## License
 

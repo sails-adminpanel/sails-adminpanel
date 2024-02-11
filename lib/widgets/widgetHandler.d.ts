@@ -15,6 +15,10 @@ export interface WidgetConfig {
     icon: LineAwesomeIcon;
     name: string;
     backgroundCSS: string;
+    scriptUrl?: string;
+    constructorName?: string;
+    constructorOption?: any;
+    hideAdminPanelUI?: boolean;
     size?: {
         h: number;
         w: number;
