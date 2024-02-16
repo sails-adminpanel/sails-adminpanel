@@ -212,6 +212,82 @@ const vueWidgets = () => {
 		.pipe(gulp.dest(`${path.build.js}/`))
 }
 
+const vueInstallStepper = () => {
+	return gulp.src(`${srcFolder}/installStepper/app.js`, { sourcemaps: true })
+		.pipe(webpackStream({
+			mode: 'development',
+			entry: `${srcFolder}/installStepper/app.js`,
+			output: {
+				path: Fpath.resolve('./assets/build/js/'),
+				filename: 'vue-installStepper.js'
+			},
+			module: {
+				rules: [
+					{
+						test: /\.vue$/,
+						loader: 'vue-loader'
+					},
+					{
+						test: /\.css$/,
+						use: [
+						  'vue-style-loader',
+						  'css-loader',
+						]
+					  }
+				],
+			},
+			experiments: {
+				topLevelAwait: true
+			},
+			plugins: [
+				new VueLoaderPlugin(),
+				new webpack.DefinePlugin({
+					__VUE_PROD_DEVTOOLS__: true,
+					__VUE_OPTIONS_API__: true
+				  })
+			]
+		}))
+		.pipe(gulp.dest(`${path.build.js}/`))
+}
+
+const vueInstallStepperProd = () => {
+	return gulp.src(`${srcFolder}/installStepper/app.js`, { sourcemaps: true })
+		.pipe(webpackStream({
+			mode: 'production',
+			entry: `${srcFolder}/installStepper/app.js`,
+			output: {
+				path: Fpath.resolve('./assets/build/js/'),
+				filename: 'vue-installStepper.js'
+			},
+			module: {
+				rules: [
+					{
+						test: /\.vue$/,
+						loader: 'vue-loader'
+					},
+					{
+						test: /\.css$/,
+						use: [
+							'vue-style-loader',
+							'css-loader',
+						]
+					}
+				],
+			},
+			experiments: {
+				topLevelAwait: true
+			},
+			plugins: [
+				new VueLoaderPlugin(),
+				new webpack.DefinePlugin({
+					__VUE_PROD_DEVTOOLS__: false,
+					__VUE_OPTIONS_API__: true
+				})
+			]
+		}))
+		.pipe(gulp.dest(`${path.build.js}/`))
+}
+
 const vueWidgetsProd = () => {
 	return gulp.src(`${srcFolder}/widgets/app.js`, { sourcemaps: true })
 		.pipe(webpackStream({
@@ -330,13 +406,20 @@ function vueWidgetsWatcher(){
 	gulp.watch(path.watch.scss, gulp.series(scss, reload))
 }
 
+function vueInstallStepperWatcher(){
+	gulp.watch(`${srcFolder}/installStepper/**/*.*`, gulp.series(vueInstallStepper, reload))
+	gulp.watch(path.watch.scss, gulp.series(scss, reload))
+}
+
 const build = gulp.series(reset, copy_styles_files, scss, js, ckeditorBuild);
 //const build = gulp.series(reset, copy_styles_files, scss, js);
 
-const prod = gulp.series(reset, copy_styles_files, scssProd, jsProd, ckeditorBuild, vueWidgetsProd);
+const prod = gulp.series(reset, copy_styles_files, scssProd, ckeditorBuild, vueWidgetsProd, vueInstallStepperProd, jsProd);
+// const prodInstallStepper = gulp.series(reset, copy_styles_files, scssProd, jsProd, ckeditorBuild, vueInstallStepperProd);
 
 gulp.task('default', build);
 gulp.task('prod', prod);
+// gulp.task('prodInstallStepper', prodInstallStepper);
 gulp.task('ckeditorBuild', ckeditorBuild);
 
 gulp.task('js', js);
@@ -344,4 +427,4 @@ gulp.task('jsProd', jsProd);
 gulp.task('styles-prod', scssProd);
 gulp.task('styles', gulp.series(scss, gulp.parallel(serve, watcher)))
 
-gulp.task('vue', gulp.series(vueWidgets, gulp.parallel(serve, vueWidgetsWatcher)))
+gulp.task('vue', gulp.series(vueWidgets, gulp.parallel(serve, vueWidgetsWatcher) ,gulp.parallel(serve, vueInstallStepperWatcher)))
