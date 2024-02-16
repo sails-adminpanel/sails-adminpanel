@@ -1,7 +1,7 @@
 import {createApp} from 'vue';
 import App from './App.vue'
 
-/** 
+/**
 interface Ioptions {
     mountDivId: string,
     uischema: string,
@@ -46,7 +46,7 @@ interface Ioptions {
       },
     },
   };
-  
+
   const uischema = {
     type: "HorizontalLayout",
     elements: [
@@ -93,7 +93,7 @@ interface Ioptions {
       },
     ],
   };
-  
+
 
 
 export function MountJSONForm(options){
@@ -101,7 +101,7 @@ export function MountJSONForm(options){
     console.log(app)
     app.config.devtools = true;
     const appInstance = app.mount(options.mountDivId); // '#installStep'
-    appInstance.addSchema(schema, uischema)
+    appInstance.addSchema(options.schema, options.uischema)
 }
 
 window.MountJSONForm = MountJSONForm
