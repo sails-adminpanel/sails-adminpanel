@@ -21,22 +21,6 @@ export default async function listJson(req, res) {
         }
 
         let fields = FieldsHelper.getFields(req, entity, 'list');
-        let query;
-        try {
-            // adminpanel design do not support list of more than 5000 lines per request
-            // !TODO take off this limit :)
-            query = entity.model.find({}).limit(5000);
-        } catch (e) {
-            sails.log.error(e);
-        }
-
-        FieldsHelper.getFieldsToPopulate(fields).forEach(function (val) {
-            query.populate(val);
-        });
-
-
-
-
         const nodeTable = new NodeTable(req.body, entity.model, fields);
 
         nodeTable.output((err, data) => {

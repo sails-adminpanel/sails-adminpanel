@@ -180,7 +180,6 @@ export class NodeTable {
   async output(callback: Function): Promise<void> {
     try {
       const queryOptions = await this.buildQuery();
-      console.log(JSON.stringify(queryOptions, null, 2))
       const totalRecords = await this.model.count();
       const filteredRecords = await this.model.count(queryOptions.where);
       const data = await this.model.find(queryOptions).populateAll();
