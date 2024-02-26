@@ -128,10 +128,7 @@ export class RequestProcessor {
 
             if (field.model.type == 'json') {
                 try {
-                    console.log(postParams[key],1)
                     postParams[key] = JSON.parse(postParams[key]);
-                    console.log(postParams[key],2)
-
                 } catch (error) {
                     // show error only when string and when string is not empty
                     if (typeof postParams[key] === "string" && postParams[key].replace(/(\r\n|\n|\r|\s{2,})/gm, "")) {

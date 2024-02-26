@@ -5,8 +5,6 @@ export default function() {
         if (InstallStepper.hasUnprocessedSteps()) {
             let renderData = InstallStepper.render();
             let renderer = renderData.currentStep.renderer;
-            console.log("renderer", renderer)
-
             return res.viewAdmin(`installer/${renderer}`, renderData);
         }
 

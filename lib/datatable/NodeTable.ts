@@ -184,7 +184,6 @@ export class NodeTable {
       const totalRecords = await this.model.count();
       const filteredRecords = await this.model.count(queryOptions.where);
       const data = await this.model.find(queryOptions).populateAll();
-      console.log(data)
       const output = {
         draw: this.request.draw !== "" ? this.request.draw : 0,
         recordsTotal: totalRecords,
@@ -207,7 +206,6 @@ export class NodeTable {
     data.forEach((elem: any) => {
       let row: any = [elem[this.model.primaryKey ?? 'id']];
       Object.keys(this.fields).forEach((key: string) => {
-        console.log(this.fields[key].model)
         if (this.fields[key].config.displayModifier) {
           row.push(this.fields[key].config.displayModifier(elem[key]));
         } else if (this.fields[key].model && this.fields[key].model.model) {

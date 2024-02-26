@@ -41,7 +41,7 @@ export default async function listJson(req, res) {
 
         nodeTable.output((err, data) => {
             if (err) {
-                console.log(err);
+                sails.log.error(err);
                 return;
             }
 

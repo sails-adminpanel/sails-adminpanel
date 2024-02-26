@@ -99,7 +99,7 @@ export class AdminUtil {
         let Model = sails.models[name.toLowerCase()];
         if (!Model) {
             if (!sails) {
-                console.log('No model found in sails.');
+                sails.log.error('No model found in sails.');
             } else {
                 sails.log.error('No model found in sails.');
             }

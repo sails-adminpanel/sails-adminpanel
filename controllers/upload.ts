@@ -134,7 +134,6 @@ export default function upload(req, res) {
         /**
          * Saving in file
          */
-        console.log(fieldConfig)
         if(fieldConfig.type !== 'file' && fieldConfig.options.file !== undefined) {
             return res.serverError('Only file full destination allowed');
         } else if(fieldConfig.options.file !== undefined) {
@@ -219,7 +218,6 @@ export default function upload(req, res) {
                                     sizes: resizes
                                 }
                                 res.status(201);
-                                console.log(result)
                                 res.send(result);
                             });
                         });

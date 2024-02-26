@@ -32,7 +32,7 @@
 				$("#informationBlock").append(`<tr><td><p>Migrations 'up' method processed successfully</p></td></tr>`)
 			})
 			.fail(function (err) {
-				console.log(err);
+				console.error(err);
 				$("#informationBlock").append(`<tr><td><p>Error trying to process migrations 'up' method: ${err.responseText}</p></td></tr>`)
 			})
 	})
@@ -45,7 +45,7 @@
 				$("#informationBlock").append(`<tr><td><p>Migrations 'down' method processed successfully</p></td></tr>`)
 			})
 			.fail(function (err) {
-				console.log(err);
+				console.error(err);
 				$("#informationBlock > tbody").append(`<tr><td><p>Error trying to process migrations 'down' method: ${err.responseText}</p></td></tr>`)
 			})
 	})

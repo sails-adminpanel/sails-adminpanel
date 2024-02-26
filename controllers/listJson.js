@@ -34,7 +34,7 @@ async function listJson(req, res) {
         const nodeTable = new NodeTable_1.NodeTable(req.body, entity.model, fields);
         nodeTable.output((err, data) => {
             if (err) {
-                console.log(err);
+                sails.log.error(err);
                 return;
             }
             // Directly send this data as output to Datatable

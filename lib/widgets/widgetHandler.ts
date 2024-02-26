@@ -162,7 +162,6 @@ export class WidgetHandler {
 				})
 			}
 		}
-		console.log(widgets,123)
 		return widgets
 	}
 
