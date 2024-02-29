@@ -1,0 +1,36 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+
+<h1>Hello world from jsonforms</h1>
+<p>totalStepCount: <%= totalStepCount %></p>
+<p>leftStepsCount: <%= leftStepsCount %></p>
+<p>currentStep: <%= JSON.stringify(currentStep) %></p>
+
+<div class="content__body">
+    <input type="text" id="tempInput">
+    <button id="nextButton" class="btn btn-sm">
+        <span><%= __("NEXT") %></span>
+    </button>
+
+    <script>
+		// Pass variables from EJS to the script
+		var currentStepData = <%- JSON.stringify(currentStep) %>;
+
+		$("#nextButton").on('click', function () {
+			console.log("BUTTON was clicked")
+			let inputValue = $("#tempInput").val();
+			$.get(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, {
+				inputValue: inputValue,
+				currentStep: currentStepData
+			})
+				.done(function (data) {
+					console.log("Step successfully processed")
+					console.log(data)
+				})
+				.fail(function (err) {
+					console.log("Step was not processed")
+				})
+		})
+
+    </script>
+</div>

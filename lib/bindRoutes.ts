@@ -1,6 +1,6 @@
 import _migrations from "../controllers/migrations";
 import _processMigrations from "../controllers/processMigrations";
-// import _processInstallStep from "../controllers/processInstallStep";
+import _processInstallStep from "../controllers/processInstallStep";
 import _dashboard from "../controllers/dashboard";
 import _welcome from "../controllers/welcome";
 import _list from "../controllers/list";
@@ -89,7 +89,7 @@ export default class Router {
 		/**
 		 * Install Stepper
 		 * */
-		//sails.router.bind(`${config.routePrefix}/processInstallStep`, bindPolicies(policies, _processInstallStep));
+		sails.router.bind(`${config.routePrefix}/processInstallStep`, bindPolicies(policies, _processInstallStep));
 
 		/**
 		 * Edit form

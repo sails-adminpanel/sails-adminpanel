@@ -4,6 +4,7 @@
 <p>currentStep: <%= JSON.stringify(currentStep) %></p>
 
 <script src="/admin/assets/build/js/vue-widgets.js" defer></script>
+<script src="/admin/assets/build/js/vue-installStepper.js"></script>
 <div class="content__body">
     <div id="widgets"></div>
 </div>
@@ -17,7 +18,7 @@
 		MountJSONForm({
 			mountDivId: '#installStep',
 			schema: currentStepData.payload.data.jsonSchema,
-            uischema: currentStepData.payload.data.uiSchema
+		    uischema: currentStepData.payload.data.uiSchema
 		})
 
     </script>

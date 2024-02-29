@@ -12,6 +12,6 @@ describe('Hook methods sails.adminpanel...', function () {
             }
         };
         sails.hooks.adminpanel.addModelConfig(testModel);
-        (0, chai_1.expect)(sails.config.adminpanel.models.test.title).to.equal("test");
+        chai_1.expect(sails.config.adminpanel.models.test.title).to.equal("test");
     });
 });

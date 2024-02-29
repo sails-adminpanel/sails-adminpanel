@@ -1,6 +1,6 @@
 import { ActionType, BaseFieldConfig } from "../interfaces/adminpanelConfig";
 import { Entity } from "../interfaces/types";
-export type Fields = {
+export declare type Fields = {
     [key: string]: {
         config: BaseFieldConfig;
         model: {
