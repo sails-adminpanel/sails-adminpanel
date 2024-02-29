@@ -55,7 +55,6 @@
 
     if(options<%=key%>.height === 'auto') options<%=key%>.height = 500
 
-    console.log("options<%=key%>",options<%=key%>)
     tables['<%= key %>'] = new Handsontable(container<%=key%>, {
         data: data<%=key%>,
         ...options<%=key%>
