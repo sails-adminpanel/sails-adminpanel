@@ -31,7 +31,7 @@ export class TranslationHelper {
                         sails.log.error(`Adminpanel > Error when reading ${locale}.json: ${error}`);
                     }
                 } else {
-                    sails.log.error(`Adminpanel > Cannot find ${locale} locale in translations directory`)
+                    sails.log.debug(`Adminpanel > Cannot find ${locale} locale in translations directory`)
                 }
             }
         } catch (e) {

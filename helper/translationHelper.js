@@ -32,7 +32,7 @@ class TranslationHelper {
                     }
                 }
                 else {
-                    sails.log.error(`Adminpanel > Cannot find ${locale} locale in translations directory`);
+                    sails.log.debug(`Adminpanel > Cannot find ${locale} locale in translations directory`);
                 }
             }
         }
