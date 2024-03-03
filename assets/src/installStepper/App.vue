@@ -8,6 +8,7 @@
       :uischema="uischema"
       @change="onChange"
     />
+    <button v-if="isSkippable" class="step-button"> SKIP </button>
   </div>
 </template>
 
@@ -40,16 +41,53 @@ export default defineComponent({
       },
       schema: null,
       uischema: null,
+      isSkippable: false,
+      validationCallback: () => {}, 
     };
   },
   methods: {
     onChange(event) {
+      // call error if output doesn't exist
       this.data = event.data;
+      this.validationCallback(isDataFilled()) 
     },
     addSchema(schema, uischema) {
+      // call error if output doesn't exist
       this.schema = schema;
       this.uischema = uischema;
     },
+    addOutput(mountInputId) {
+      
+    },
+    setValidationCallback(cb){
+      this.validationCallback = cb
+    },
+    isDataFilled() {
+      const dataKeys = Object.keys(this.data);
+      for (const key of dataKeys) {
+        if (!this.data[key]) {
+          return false;
+        }
+      }
+      return true;
+    },
+    initializeTaskData() {
+      const taskData = {};
+      for (const property in this.schema.properties) {
+        const { type, enum: enumeration } = this.schema.properties[property];
+        if (type === "string") {
+          taskData[property] = "";
+        } else if (type === "boolean") {
+          taskData[property] = false;
+        } else if (type === "integer") {
+          taskData[property] = 0;
+        } else if (type === "string" && enumeration && enumeration.length > 0) {
+          taskData[property] = enumeration[0];
+        }
+      }
+      return taskData;
+    },
+
   },
   provide() {
     return {
