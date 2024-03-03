@@ -95,13 +95,15 @@ interface Ioptions {
   };
 
 
-
 export function MountJSONForm(options){
     let app = createApp(App);
     console.log(app)
     app.config.devtools = true;
     const appInstance = app.mount(options.mountDivId); // '#installStep'
     appInstance.addSchema(options.schema, options.uischema)
+    // if form validation is ok mountInputId have to receive value from form
+    appInstance.addOutput(options.mountInputId)
+    return appInstance
 }
 
 window.MountJSONForm = MountJSONForm
