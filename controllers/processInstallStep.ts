@@ -13,15 +13,31 @@ export default async function processInstallStep(req, res) {
 
 	console.log("REQ", req.query);
 
+	// TODO есть еще проблема в том, то админка успевает пропустить пользователя по роуту до того как policy сработает
+
 	// TODO добавить сеттинги в модулях вместо сидов на bootstrap, они должны писаться в базу и из них должен рендериться степпер.
 	//  Сделать нужно это в нескольких модулях и в каждом по нескольку настроек разных типов
 
 	// TODO раз это универсальный контроллер, то в req.query уже должна приходить правильная структура данных,
 	//  в данном случае это setting или массив setting
 
+	// TODO Это в случае next (все обернуть в try/catch):
 	// await InstallStepper.processStep()
 
-	// TODO data должна выгладеть как setting или массив setting
+	// TODO В случае skip:
+	// await InstallStepper.skipStep()
+
+	// TODO
+	// if InstallStepper.hasUnprocessedSteps() {
+	// 	let renderData = InstallStepper.render();
+	//  let renderer = renderData.currentStep.renderer;
+	//  console.log("renderer", renderer)
+	//  return res.viewAdmin(`installer/${renderer}`, renderData);
+	// } else {
+	//   return res.redirect(`/modules/my`)
+	// }
+
+	// TODO data должна выгладеть как setting или массив setting. Вот его обработка дальше:
 	// async process(data: any): Promise<void> {
 	// 	if (Array.isArray(data)) {
 	// 	for (let _setting of data) {
@@ -31,7 +47,4 @@ export default async function processInstallStep(req, res) {
 	// } else {
 	// 	await Settings.update({id: data.id}, {value: data.value});
 	// }
-
-	// TODO здесь выполнять processStep
-	// TODO во вью добавить инпут с кнопкой и post запрос сюда, который вернет данные сюда и будет вызван processStep
 };
