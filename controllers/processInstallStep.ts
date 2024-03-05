@@ -1,6 +1,5 @@
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import {InstallStepper} from "../lib/installStepper/installStepper";
-import Settings from "modulemanager/models/Settings";
 
 export default async function processInstallStep(req, res) {
 	if (sails.config.adminpanel.auth) {
@@ -11,40 +10,63 @@ export default async function processInstallStep(req, res) {
 		}
 	}
 
-	console.log("REQ", req.query);
+	if (req.method.toUpperCase() === 'GET') {
+		console.log("GET REQUEST TO PROCESS INSTALL STEP")
+		if (InstallStepper.hasUnprocessedSteps()) {
+			console.log(InstallStepper.getSteps())
+			let renderData = InstallStepper.render();
+			// let renderer = renderData.currentStep.renderer;
+			// console.log("renderer", renderer)
 
-	// TODO есть еще проблема в том, то админка успевает пропустить пользователя по роуту до того как policy сработает
+			// return res.viewAdmin(`installer/${renderer}`, renderData);
+			return res.viewAdmin(`installer/dev`, renderData);
+		} else {
+			return res.redirect(`${sails.config.adminpanel.routePrefix}`);
+		}
+	}
 
-	// TODO добавить сеттинги в модулях вместо сидов на bootstrap, они должны писаться в базу и из них должен рендериться степпер.
-	//  Сделать нужно это в нескольких модулях и в каждом по нескольку настроек разных типов
+	if (req.method.toUpperCase() === 'POST') {
+		console.log("POST REQUEST TO PROCESS INSTALL STEP")
+		// TODO если тип json и нету ui-schema, то vue будет строить ui-schema по json схеме (добавить потом пример
+		//  такой настройки когда будет готово vue app)
+		// TODO есть еще проблема в том, то админка успевает пропустить пользователя по роуту до того как policy сработает
 
-	// TODO раз это универсальный контроллер, то в req.query уже должна приходить правильная структура данных,
-	//  в данном случае это setting или массив setting
+		if (req.body.inputData) {
+			console.log("INPUT DATA", JSON.parse(req.body.inputData))
+		} else {
+			console.log("NO INPUT DATA, THIS IS SKIP")
+		}
 
-	// TODO Это в случае next (все обернуть в try/catch):
-	// await InstallStepper.processStep()
+		try {
+			const currentStepId = req.body.currentStepId;
 
-	// TODO В случае skip:
-	// await InstallStepper.skipStep()
+			if (req.body.action === 'next') {
+				const inputData = JSON.parse(req.body.inputData);
 
-	// TODO
-	// if InstallStepper.hasUnprocessedSteps() {
-	// 	let renderData = InstallStepper.render();
-	//  let renderer = renderData.currentStep.renderer;
-	//  console.log("renderer", renderer)
-	//  return res.viewAdmin(`installer/${renderer}`, renderData);
-	// } else {
-	//   return res.redirect(`/modules/my`)
-	// }
+				// trying to process step
+				await InstallStepper.processStep(currentStepId, inputData);
 
-	// TODO data должна выгладеть как setting или массив setting. Вот его обработка дальше:
-	// async process(data: any): Promise<void> {
-	// 	if (Array.isArray(data)) {
-	// 	for (let _setting of data) {
-	// 		let setting = _setting as Settings;
-	// 		await Settings.update({id: setting.id}, {value: setting.value});
-	// 	}
-	// } else {
-	// 	await Settings.update({id: data.id}, {value: data.value});
-	// }
+			} else if (req.body.action === 'skip') {
+				// trying to skip step
+				await InstallStepper.skipStep(currentStepId);
+
+			} else {
+				return res.status(400).send("Invalid action parameter");
+			}
+
+			// go back to stepper if there are more unprocessed steps, otherwise go back to /admin
+			if (InstallStepper.hasUnprocessedSteps()) {
+				return res.redirect(`${sails.config.adminpanel.routePrefix}/processInstallStep`);
+
+			} else {
+				return res.redirect(`${sails.config.adminpanel.routePrefix}`);
+			}
+
+		} catch (error) {
+			console.error("Error processing step:", error);
+			return res.status(500).send("Error processing step");
+		}
+	}
+
+	return res.status(500).send("Invalid request method")
 };

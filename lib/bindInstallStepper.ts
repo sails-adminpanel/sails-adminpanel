@@ -5,13 +5,8 @@ export default function() {
 		let goingToProcessInstallStep = req._parsedUrl.pathname === `${sails.config.adminpanel.routePrefix}/processInstallStep`
 		console.log("Going to processInstallStep", goingToProcessInstallStep)
 
-        if (!goingToProcessInstallStep && InstallStepper.hasUnprocessedSteps()) {
-            let renderData = InstallStepper.render();
-            let renderer = renderData.currentStep.renderer;
-            console.log("renderer", renderer)
-
-			return res.viewAdmin(`installer/${renderer}`, renderData);
-            // return res.viewAdmin(`installer/dev`, renderData);
+        if (InstallStepper.hasUnprocessedSteps() && !goingToProcessInstallStep) {
+            return res.redirect(`${sails.config.adminpanel.routePrefix}/processInstallStep`)
         }
 
         return proceed()

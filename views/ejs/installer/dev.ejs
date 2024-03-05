@@ -1,36 +1,97 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<!-- Ваш ejs-файл -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Install Stepper</title>
+    <!-- Подключение jQuery (если еще не подключено) -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
 
+<!-- Отображение JSON currentStep -->
+<pre><%= JSON.stringify(currentStep, null, 2) %></pre>
 
-<h1>Hello world from jsonforms</h1>
-<p>totalStepCount: <%= totalStepCount %></p>
-<p>leftStepsCount: <%= leftStepsCount %></p>
-<p>currentStep: <%= JSON.stringify(currentStep) %></p>
+<% if (currentStep.payload.type === 'single') { %>
+    <!-- Если тип single, пока выводим сообщение о неподдерживаемом типе -->
+    <p>Single type is not supported yet. <button id="skipButton">Skip</button></p>
+<% } else if (currentStep.payload.type === 'multi') { %>
+    <!-- Если тип multi, отображаем форму для каждого поля в payload.data -->
+    <div id="multiForm">
+        <% for (let i = 0; i < currentStep.payload.data.length; i++) { %>
+            <div style="margin-bottom: 10px;">
+                <label for="<%= `input${i}` %>"><%= currentStep.payload.data[i].name %>:</label>
+                <% if (currentStep.payload.data[i].type === 'number') { %>
+                    <input type="number" id="<%= `input${i}` %>" />
+                <% } else if (currentStep.payload.data[i].type === 'string') { %>
+                    <input type="text" id="<%= `input${i}` %>" />
+                <% } else if (currentStep.payload.data[i].type === 'boolean') { %>
+                    <input type="checkbox" id="<%= `input${i}` %>" />
+                <% } %>
+                <small><%= currentStep.payload.data[i].key %> - <%= currentStep.payload.data[i].description %> (<%= currentStep.payload.data[i].tooltip %>)</small>
+            </div>
+        <% } %>
+        <!-- Кнопки "Next" и "Skip" -->
+        <button id="nextButton">Next</button>
+        <button id="skipButton">Skip</button>
+    </div>
 
-<div class="content__body">
-    <input type="text" id="tempInput">
-    <button id="nextButton" class="btn btn-sm">
-        <span><%= __("NEXT") %></span>
-    </button>
-
+    <!-- Скрипт для обработки кнопок "Next" и "Skip" -->
     <script>
 		// Pass variables from EJS to the script
 		var currentStepData = <%- JSON.stringify(currentStep) %>;
 
 		$("#nextButton").on('click', function () {
-			console.log("BUTTON was clicked")
-			let inputValue = $("#tempInput").val();
-			$.get(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, {
-				inputValue: inputValue,
-				currentStep: currentStepData
+			console.log("Next Button was clicked");
+			let inputData = {};
+
+			// Сбор значений с полей ввода
+			for (let i = 0; i < currentStepData.payload.data.length; i++) {
+				const inputId = `input${i}`;
+				const value = currentStepData.payload.data[i].type === 'boolean'
+					? $(`#${inputId}`).is(':checked')
+					: $(`#${inputId}`).val();
+
+                inputData[currentStepData.payload.data[i].key] = value;
+			}
+
+			$.post(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, {
+				inputData: JSON.stringify(inputData),
+				action: "next",
+				currentStepId: currentStepData.id
 			})
-				.done(function (data) {
-					console.log("Step successfully processed")
-					console.log(data)
+				.done(function () {
+					console.log("Step successfully processed");
+					location.reload();
 				})
 				.fail(function (err) {
-					console.log("Step was not processed")
-				})
-		})
+					console.log("Step was not processed");
+				});
+		});
 
+		$("#skipButton").on('click', function () {
+			console.log("Skip Button was clicked");
+
+			$.post(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, {
+				action: "skip",
+				currentStepId: currentStepData.id
+			})
+				.done(function () {
+					console.log("Step successfully skipped");
+					location.reload();
+				})
+				.fail(function (err) {
+					console.log("Step was not skipped");
+				});
+		});
     </script>
-</div>
+
+<% } else { %>
+    <!-- Выводим сообщение о неподдерживаемом типе -->
+    <p>Unsupported type: <%= currentStep.payload.type %></p>
+<% } %>
+
+</body>
+</html>
