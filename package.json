@@ -5,6 +5,7 @@
 	"dependencies": {
 		"@jsonforms/vue": "^3.1.0",
 		"@jsonforms/vue-vanilla": "^3.1.0",
+		"axios": "^1.6.7",
 		"db-migrate": "^0.11.13",
 		"jimp": "^0.2.28",
 		"password-hash": "^1.2.2",

@@ -1,6 +1,12 @@
 <%- include("head") %>
 <%- include("headContent") %>
 
+<p>totalStepCount: <%= totalStepCount %></p>
+<p>leftStepsCount: <%= leftStepsCount %></p>
+<p>currentStep: <%= JSON.stringify(currentStep) %></p>
+
+<script src="/admin/assets/build/js/vue-installStepper.js"></script>
+
 <% if (Boolean((adminpanel.configHelper.getConfig()).dashboard)) { %>
     <% if(havePermission('widgets', req.session.UserAP)){ -%>
         <script src="/admin/assets/build/js/vue-widgets.js" defer></script>
@@ -11,11 +17,11 @@
         <div class="content__body">
             <div id="installStep"></div>
             <script>
-                MountJSONForm({
-                    mountDivId: '#installStep'
-                    // schema,
-                    // uischema,
-                })
+                // MountJSONForm({
+                //     mountDivId: '#installStep'
+                //     // schema,
+                //     // uischema,
+                // })
                 
             </script>
         </div>

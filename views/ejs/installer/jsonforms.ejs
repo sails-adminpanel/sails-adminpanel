@@ -5,16 +5,20 @@
 
 <script src="/admin/assets/build/js/vue-installStepper.js"></script>
 
+
 <div class="content__body">
     <div id="installStep"></div>
     <script>
 		// Pass variables from EJS to the script
 		var currentStepData = <%- JSON.stringify(currentStep) %>;
-
+		console.log(currentStepData, " currentStepData")
+		// console.log(currentStepData.payload, " currentStepData.payload")
+		
 		MountJSONForm({
 			mountDivId: '#installStep',
 			schema: currentStepData.payload.data.jsonSchema,
-		    uischema: currentStepData.payload.data.uiSchema
+		    uischema: currentStepData.payload.data.uiSchema,
+			step: currentStepData,
 		})
 
     </script>

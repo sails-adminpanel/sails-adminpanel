@@ -2,7 +2,7 @@ import {createApp} from 'vue';
 import App from './App.vue'
 
 /**
-interface Ioptions {
+interface Istep {
     mountDivId: string,
     uischema: string,
     jsonschema: string,
@@ -95,14 +95,20 @@ interface Ioptions {
   };
 
 
-export function MountJSONForm(options){
+export function MountJSONForm(step){
+    console.log(step, "STEPpp-----------------")
     let app = createApp(App);
-    console.log(app)
+    // console.log(app)
     app.config.devtools = true;
-    const appInstance = app.mount(options.mountDivId); // '#installStep'
-    appInstance.addSchema(options.schema, options.uischema)
+    const appInstance = app.mount(step.mountDivId); // '#installStep'
+    // generate json schema
+
+    // generate data
+    // appInstance.initializeData(step.schema)
+
+    appInstance.addSchema(step.schema, step.uischema)
     // if form validation is ok mountInputId have to receive value from form
-    appInstance.addOutput(options.mountInputId)
+    appInstance.addOutput(step.mountInputId)
     return appInstance
 }
 

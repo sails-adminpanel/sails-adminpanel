@@ -8,6 +8,7 @@
       :uischema="uischema"
       @change="onChange"
     />
+    <button @click="sendDataToServer" class="step-button"> SEND </button>
     <button v-if="isSkippable" class="step-button"> SKIP </button>
   </div>
 </template>
@@ -71,22 +72,41 @@ export default defineComponent({
       }
       return true;
     },
-    initializeTaskData() {
-      const taskData = {};
-      for (const property in this.schema.properties) {
-        const { type, enum: enumeration } = this.schema.properties[property];
-        if (type === "string") {
-          taskData[property] = "";
-        } else if (type === "boolean") {
-          taskData[property] = false;
-        } else if (type === "integer") {
-          taskData[property] = 0;
-        } else if (type === "string" && enumeration && enumeration.length > 0) {
-          taskData[property] = enumeration[0];
-        }
+    initializeData(schema) {
+      const data = {};
+
+      for (const property in schema.properties) {
+      if (!schema.properties.hasOwnProperty(property)) continue; 
+
+      const { type, enum: enumeration } = schema.properties[property];
+
+      switch (type) {
+        case "string":
+          data[property] = enumeration?.[0] ?? "";
+          break;
+        case "boolean":
+          data[property] = false;
+          break;
+        case "integer":
+          data[property] = 0;
+          break;
+        default:
+          break;
       }
-      return taskData;
+      }
+      return data;
     },
+    sendDataToServer() {
+      const API = "http://localhost:1337/admin"
+
+      axios.post(API, this.data)
+        .then(response => {
+          console.log('Data sent successfully:', response.data);
+        })
+        .catch(error => {
+         console.error('Error sending data:', error);
+       });
+  }
 
   },
   provide() {
