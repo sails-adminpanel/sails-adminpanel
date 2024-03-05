@@ -21,6 +21,7 @@ import {
   mergeStyles,
   vanillaRenderers,
 } from "@jsonforms/vue-vanilla";
+import axios from 'axios'
 
 // Merge default styles with custom styles
 const myStyles = mergeStyles(defaultStyles, { control: { label: "mylabel" } });
