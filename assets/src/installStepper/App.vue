@@ -1,5 +1,5 @@
 <template>
-  <div v-if="schema && uischema" class="myform">
+  <div v-if="schema && uischema" class="myform text shadow">
     <h1>JSON Forms Vue 3</h1>
     <json-forms
       :data="data"
@@ -44,6 +44,8 @@ export default defineComponent({
       schema: null,
       uischema: null,
       isSkippable: false,
+      action: "",
+      currentStepId: "",
       validationCallback: () => {}, 
     };
   },
@@ -51,12 +53,19 @@ export default defineComponent({
     onChange(event) {
       // call error if output doesn't exist
       this.data = event.data;
-      this.validationCallback(isDataFilled()) 
+      this.validationCallback(this.isDataFilled()) 
     },
-    addSchema(schema, uischema) {
-      // call error if output doesn't exist
+    addStepData(schema, uischema, id, skippable) {
+      // call error if output doesn't exists
+      if(this.isEmpty(schema) || this.isEmpty(uischema)){
+        // sails.
+        console.error("output doesn't exists")
+      }
+
       this.schema = schema;
       this.uischema = uischema;
+      this.currentStepId = id,
+      this.isSkippable = skippable
     },
     addOutput(mountInputId) {
       
@@ -64,7 +73,7 @@ export default defineComponent({
     setValidationCallback(cb){
       this.validationCallback = cb
     },
-    isDataFilled() {
+    isDataFilled(){
       const dataKeys = Object.keys(this.data);
       for (const key of dataKeys) {
         if (!this.data[key]) {
@@ -98,16 +107,69 @@ export default defineComponent({
       return data;
     },
     sendDataToServer() {
+      // interface IData {
+      //   inputData: JSON,
+      //   action "next" || "skip",
+      //   currentStepId: string
+      // }
+      let recieve = {
+        inputData: this.data,
+        action: this.action,
+        currentStepId: this.currentStepId
+      }
+      
       const API = "http://localhost:1337/admin"
 
-      axios.post(API, this.data)
+      axios.post(API, recieve)
         .then(response => {
           console.log('Data sent successfully:', response.data);
         })
         .catch(error => {
          console.error('Error sending data:', error);
        });
-  }
+    },
+    isEmpty(obj) {
+      if(obj) return Object.keys(obj).length === 0;
+      return true
+    },
+   generateUISchema(schema) {
+    const uischema = {
+      type: "HorizontalLayout",
+      elements: [
+        {
+          type: "VerticalLayout",
+          elements: [],
+        },
+      ],
+    };
+  
+    // Helper function to add a Control element to the VerticalLayout
+    function addControlElement(property, multi = false) {
+      const controlElement = {
+        type: "Control",
+        scope: `#/properties/${property}`,
+      };
+  
+      if (multi) {
+        controlElement.options = {
+          multi: true,
+        };
+      }
+  
+      return controlElement;
+    }
+  
+    // Iterate through schema properties and add Control elements to uischema
+    Object.keys(schema.properties).forEach((property) => {
+      const layoutIndex = schema.properties[property].layoutIndex || 0; // Default to first VerticalLayout
+      const multi = schema.properties[property].multi || false; // Check if multi-line is specified
+  
+      uischema.elements[layoutIndex].elements.push(addControlElement(property, multi));
+    });
+  
+    return uischema;
+  },
+
 
   },
   provide() {
@@ -131,4 +193,14 @@ export default defineComponent({
 .text-area {
   min-height: 80px;
 }
+
+.text {
+  font-weight: 400;
+  font-style: normal; 
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+
+
 </style>
