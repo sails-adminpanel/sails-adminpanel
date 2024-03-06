@@ -19,6 +19,7 @@ export class InstallStepper {
         try {
             /** As we sort steps by sortOrder, we should check that previous steps were processed */
             const stepIndex = this.steps.findIndex(item => item.id === stepId)
+			console.log("STEP INDEX", stepIndex);
             for (let i = 0; i < stepIndex; i++) {
                 if (this.steps[i].canBeSkipped && this.steps[i].isSkipped) {
                     continue
@@ -33,6 +34,7 @@ export class InstallStepper {
             let step = this.getStepById(stepId);
             await step.process(data);
 			step.isProcessed = true;
+			console.log(`STEP ${stepId} was processed`);
 
 			// clear steps if all of them was processed
             if (!this.hasUnprocessedSteps()) {
@@ -60,14 +62,6 @@ export class InstallStepper {
 		let leftSteps = this.steps.filter(step => !step.isProcessed && !step.isSkipped);
 
         // TODO there will be some checks about errors and some important properties
-
-        // TODO нужно vue приложение, которое будет загружаться из файла ejs при рендере степов. Данные заполненные
-        //  юзером в этом приложении должны прийти на контроллер (надо создать), который выполнит логику
-        //  (check, process/skip, render) и отдаст новый степ для заполнения. Vue приложение должно только построить форму по uiSchema.
-        //  Приоритетна отправка через partial forms data (а не xhr как в vue). jsonforms будет генерить данные в скрытые поля,
-        //  а кнопка "отправить" будет работать как обычная html форма с отправкой со скрытых полей.
-        //  Vue приложение вместе с json-формой должно работать по аналогии как работали jquery (плагином).
-        //  Подключить это все в gulp чтоб Web-pack это все собрал (как подключен dashboard)
 
         return {totalStepCount: this.steps.length, leftStepsCount: leftSteps.length, currentStep: stepToRender};
     }
@@ -102,7 +96,7 @@ export class InstallStepper {
     }
 
     public static hasUnprocessedSteps(): boolean {
-        return this.steps.some(step => !step.isProcessed);
+        return this.steps.some(step => !step.isProcessed && !step.isSkipped);
     }
 
 	public static getNextUnprocessedStep(): InstallStepAbstract {

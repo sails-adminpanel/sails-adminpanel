@@ -11,6 +11,6 @@ describe('Models test', function () {
         // @ts-ignore
         await GroupAP.addToCollection(groups[1].id, "users").members([users[0].id, users[1].id]);
         let user = await UserAP.findOne({ id: users[0].id }).populate("groups");
-        (0, chai_1.expect)(user.groups.length).to.equal(2);
+        chai_1.expect(user.groups.length).to.equal(2);
     });
 });

@@ -1,6 +1,6 @@
 import sails from "@42pub/typed-sails";
 import { AdminpanelConfig } from "./adminpanelConfig";
-type sailsConfig = typeof sails.config;
+declare type sailsConfig = typeof sails.config;
 declare global {
     interface Sails extends sails.Sails {
         helpers: any;
