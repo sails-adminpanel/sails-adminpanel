@@ -12,11 +12,87 @@
 <body>
 
 <!-- Отображение JSON currentStep -->
-<pre><%= JSON.stringify(currentStep, null, 2) %></pre>
+<!--<pre><%= JSON.stringify(currentStep, null, 2) %></pre>-->
+<p>Step <%= totalStepCount - leftStepsCount + 1 %> of <%= totalStepCount %></p>
 
 <% if (currentStep.payload.type === 'single') { %>
-    <!-- Если тип single, пока выводим сообщение о неподдерживаемом типе -->
-    <p>Single type is not supported yet. <button id="skipButton">Skip</button></p>
+    <!-- Если тип single -->
+    <h2><%= currentStep.title %></h2>
+    <p><%= currentStep.description %></p>
+    <label for="<%= 'input0' %>"><%= currentStep.payload.data.name %>:</label>
+    <br>
+    <textarea id="<%= 'input0' %>" rows="15" cols="120"></textarea>
+    <div>
+        <small>
+            <%= currentStep.payload.data.key %> - <%= currentStep.payload.data.description %> (<%= currentStep.payload.data.tooltip %>)
+        </small>
+    </div>
+    <button id="nextButton">Next</button>
+    <button id="skipButton" <% if (!currentStep.canBeSkipped) { %> style="display: none;" <% } %>>Skip</button>
+
+    <!-- Скрипт для обработки кнопок "Next" и "Skip" для single -->
+    <script>
+		// Pass variables from EJS to the script
+		var currentStepData = <%- JSON.stringify(currentStep) %>;
+
+		$("#nextButton").on('click', function () {
+			console.log("Next Button was clicked");
+			let inputData = {};
+
+			const inputId = 'input0';
+			let value = $(`#${inputId}`).val();
+
+			try {
+				value = JSON.parse(value);
+			} catch (error) {
+				console.log("Error parsing JSON:", error);
+				return;
+			}
+
+			inputData[currentStepData.payload.data.key] = value;
+
+			$.post(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, {
+				inputData: JSON.stringify(inputData),
+				action: "next",
+				currentStepId: currentStepData.id
+			})
+				.done(function () {
+					console.log("Step successfully processed");
+					location.reload();
+				})
+				.fail(function () {
+					console.log("Step was not processed");
+				});
+		});
+
+		$("#skipButton").on('click', function () {
+			console.log("Skip Button was clicked");
+
+			$.post(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, {
+				action: "skip",
+				currentStepId: currentStepData.id
+			})
+				.done(function () {
+					console.log("Step successfully skipped");
+					location.reload();
+				})
+				.fail(function () {
+					console.log("Step was not skipped");
+				});
+		});
+
+        // for testing
+        let example = {
+            "name": "Sample Task",
+            "description": "A brief description of the task",
+            "done": true,
+            "rating": 4,
+            "recurrence": "Weekly",
+            "recurrenceInterval": 7
+        }
+
+    </script>
+
 <% } else if (currentStep.payload.type === 'multi') { %>
     <!-- Если тип multi, отображаем форму для каждого поля в payload.data -->
     <div id="multiForm">
@@ -35,7 +111,7 @@
         <% } %>
         <!-- Кнопки "Next" и "Skip" -->
         <button id="nextButton">Next</button>
-        <button id="skipButton">Skip</button>
+        <button id="skipButton" <% if (!currentStep.canBeSkipped) { %> style="display: none;" <% } %>>Skip</button>
     </div>
 
     <!-- Скрипт для обработки кнопок "Next" и "Skip" -->
@@ -50,11 +126,17 @@
 			// Сбор значений с полей ввода
 			for (let i = 0; i < currentStepData.payload.data.length; i++) {
 				const inputId = `input${i}`;
-				const value = currentStepData.payload.data[i].type === 'boolean'
-					? $(`#${inputId}`).is(':checked')
-					: $(`#${inputId}`).val();
+				let value;
 
-                inputData[currentStepData.payload.data[i].key] = value;
+				if (currentStepData.payload.data[i].type === 'boolean') {
+					value = $(`#${inputId}`).is(':checked');
+				} else if (currentStepData.payload.data[i].type === 'number') {
+					value = parseFloat($(`#${inputId}`).val());
+				} else {
+					value = $(`#${inputId}`).val();
+				}
+
+				inputData[currentStepData.payload.data[i].key] = value;
 			}
 
 			$.post(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, {

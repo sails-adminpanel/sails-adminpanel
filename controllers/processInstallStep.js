@@ -14,7 +14,7 @@ async function processInstallStep(req, res) {
     if (req.method.toUpperCase() === 'GET') {
         console.log("GET REQUEST TO PROCESS INSTALL STEP");
         if (installStepper_1.InstallStepper.hasUnprocessedSteps()) {
-            console.log(installStepper_1.InstallStepper.getSteps());
+            // console.log(InstallStepper.getSteps())
             let renderData = installStepper_1.InstallStepper.render();
             // let renderer = renderData.currentStep.renderer;
             // console.log("renderer", renderer)
