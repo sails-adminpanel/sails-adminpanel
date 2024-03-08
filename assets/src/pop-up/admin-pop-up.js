@@ -111,6 +111,6 @@ class AdminPopUp {
         }
     }
 }
-exports.AdminPopUp = AdminPopUp;
 AdminPopUp.popups = [];
+exports.AdminPopUp = AdminPopUp;
 window.AdminPopUp = AdminPopUp;

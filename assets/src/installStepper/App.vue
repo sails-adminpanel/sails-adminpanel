@@ -26,6 +26,14 @@ import axios from 'axios'
 // Merge default styles with custom styles
 const myStyles = mergeStyles(defaultStyles, { control: { label: "mylabel" } });
 
+// {
+//         name: "Send email to Adrian",
+//         description: "Confirm if you have passed the subject\nHereby ...",
+//         done: true,
+//         recurrence: "Daily",
+//         rating: 3,
+//       }
+
 export default defineComponent({
   name: "App",
   components: {
@@ -34,13 +42,7 @@ export default defineComponent({
   data() {
     return {
       renderers: vanillaRenderers, // Use vanillaRenderers directly
-      data: {
-        name: "Send email to Adrian",
-        description: "Confirm if you have passed the subject\nHereby ...",
-        done: true,
-        recurrence: "Daily",
-        rating: 3,
-      },
+      data: null,
       schema: null,
       uischema: null,
       isSkippable: false,
@@ -55,7 +57,7 @@ export default defineComponent({
       this.data = event.data;
       this.validationCallback(this.isDataFilled()) 
     },
-    addStepData(schema, uischema, id, skippable) {
+    addStepData(schema, uischema, id, skippable, data) {
       // call error if output doesn't exists
       if(this.isEmpty(schema) || this.isEmpty(uischema)){
         // sails.
@@ -64,8 +66,9 @@ export default defineComponent({
 
       this.schema = schema;
       this.uischema = uischema;
-      this.currentStepId = id,
-      this.isSkippable = skippable
+      this.currentStepId = id;
+      this.isSkippable = skippable;
+      this.data = data
     },
     addOutput(mountInputId) {
       
