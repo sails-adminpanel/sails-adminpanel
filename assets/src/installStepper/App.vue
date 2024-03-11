@@ -46,7 +46,7 @@ export default defineComponent({
       schema: null,
       uischema: null,
       isSkippable: false,
-      action: "",
+      action: "next",
       currentStepId: "",
       validationCallback: () => {}, 
     };
@@ -112,16 +112,16 @@ export default defineComponent({
     sendDataToServer() {
       // interface IData {
       //   inputData: JSON,
-      //   action "next" || "skip",
+      //   action: "next" || "skip",
       //   currentStepId: string
       // }
       let recieve = {
-        inputData: this.data,
+        inputData: JSON.stringify(this.data),
         action: this.action,
         currentStepId: this.currentStepId
       }
-      
-      const API = "http://localhost:1337/admin"
+      console.log(recieve, "recieve")
+      const API = "/admin/processInstallStep"
 
       axios.post(API, recieve)
         .then(response => {

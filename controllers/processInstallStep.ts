@@ -32,7 +32,7 @@ export default async function processInstallStep(req, res) {
 		// TODO есть еще проблема в том, то админка успевает пропустить пользователя по роуту до того как policy сработает
 
 		if (req.body.inputData) {
-			console.log("INPUT DATA", JSON.parse(req.body.inputData))
+			console.log("INPUT DATA", JSON.parse(req.body.inputData), req.body.currentStepId)
 		} else {
 			console.log("NO INPUT DATA, THIS IS SKIP")
 		}

@@ -13,11 +13,10 @@ interface Istep {
 // TODO: rename installStepper => jsonforms
  // id, uischema, jsonschema, data
 export function MountJSONForm(step){
-  console.log(step, "STEP")
+    console.log(step, "STEP")
     let app = createApp(App);
     app.config.devtools = true;
     const appInstance = app.mount(step.mountDivId); // '#installStep'
-
     // if uischema doesnt exist => generate
     if(appInstance.isEmpty(step?.uischema)){
       step.uischema = appInstance.generateUISchema(step?.schema)
@@ -28,7 +27,7 @@ export function MountJSONForm(step){
     let data = appInstance.initializeData(step.schema)
     console.log(data, "DATA")
 
-    appInstance.addStepData(step.schema, step.uischema, step.id, step.canBeSkipped, data)
+    appInstance.addStepData(step.schema, step.uischema, step.step.id, step.step.canBeSkipped, data)
 
     // if form validation is ok mountInputId have to receive value from form
     // appInstance.addOutput(step.mountInputId)
