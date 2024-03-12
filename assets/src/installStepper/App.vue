@@ -8,7 +8,7 @@
       :uischema="uischema"
       @change="onChange"
     />
-    <button @click="sendDataToServer" class="step-button"> SEND </button>
+    <button v-if="validationCallback" @click="sendDataToServer" class="step-button"> SEND </button>
     <button v-if="isSkippable" class="step-button"> SKIP </button>
   </div>
 </template>
@@ -48,21 +48,21 @@ export default defineComponent({
       isSkippable: false,
       action: "next",
       currentStepId: "",
-      validationCallback: () => {}, 
+      validationCallback: false, 
     };
   },
   methods: {
     onChange(event) {
       // call error if output doesn't exist
       this.data = event.data;
-      this.validationCallback(this.isDataFilled()) 
+      this.validationCallback = this.isDataFilled()
     },
     addStepData(schema, uischema, id, skippable, data) {
       // call error if output doesn't exists
-      if(this.isEmpty(schema) || this.isEmpty(uischema)){
-        // sails.
-        console.error("output doesn't exists")
-      }
+      // if(this.isEmpty(schema) || this.isEmpty(uischema)){
+      //   // sails.
+      //   console.error("output doesn't exists")
+      // }
 
       this.schema = schema;
       this.uischema = uischema;
@@ -73,9 +73,9 @@ export default defineComponent({
     addOutput(mountInputId) {
       
     },
-    setValidationCallback(cb){
-      this.validationCallback = cb
-    },
+    // setValidationCallback(cb){
+    //   this.validationCallback = cb
+    // },
     isDataFilled(){
       const dataKeys = Object.keys(this.data);
       for (const key of dataKeys) {
@@ -100,10 +100,11 @@ export default defineComponent({
         case "boolean":
           data[property] = false;
           break;
-        case "integer":
+        case "number":
           data[property] = 0;
           break;
         default:
+          data[property] = null;
           break;
       }
       }
@@ -125,52 +126,30 @@ export default defineComponent({
 
       axios.post(API, recieve)
         .then(response => {
+          location.reload();
           console.log('Data sent successfully:', response.data);
         })
         .catch(error => {
          console.error('Error sending data:', error);
        });
+
     },
     isEmpty(obj) {
       if(obj) return Object.keys(obj).length === 0;
       return true
     },
-   generateUISchema(schema) {
-    const uischema = {
-      type: "HorizontalLayout",
-      elements: [
-        {
-          type: "VerticalLayout",
-          elements: [],
-        },
-      ],
-    };
+  generateSchema(data) {
+    const schema = { properties: {} };
   
-    // Helper function to add a Control element to the VerticalLayout
-    function addControlElement(property, multi = false) {
-      const controlElement = {
-        type: "Control",
-        scope: `#/properties/${property}`,
+    data.forEach(field => {
+      schema.properties[field.key] = {
+        type: field.type,
+        description: field.description,
+        // tooltip: field.tooltip
       };
-  
-      if (multi) {
-        controlElement.options = {
-          multi: true,
-        };
-      }
-  
-      return controlElement;
-    }
-  
-    // Iterate through schema properties and add Control elements to uischema
-    Object.keys(schema.properties).forEach((property) => {
-      const layoutIndex = schema.properties[property].layoutIndex || 0; // Default to first VerticalLayout
-      const multi = schema.properties[property].multi || false; // Check if multi-line is specified
-  
-      uischema.elements[layoutIndex].elements.push(addControlElement(property, multi));
     });
-  
-    return uischema;
+
+    return schema;
   },
 
 

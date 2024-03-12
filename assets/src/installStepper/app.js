@@ -17,12 +17,14 @@ export function MountJSONForm(step){
     let app = createApp(App);
     app.config.devtools = true;
     const appInstance = app.mount(step.mountDivId); // '#installStep'
-    // if uischema doesnt exist => generate
-    if(appInstance.isEmpty(step?.uischema)){
-      step.uischema = appInstance.generateUISchema(step?.schema)
+
+    if(step.step.payload.type === "multi"){
+      console.log("MULTI")
+      step.schema = appInstance.generateSchema(step.step.payload.data)
+      step.uischema = step.step.payload.uiSchema
+      console.log(step.schema, step.step.payload.data, step.step.payload.uiSchema, "ALL DATA")
     }
-    // let UI = appInstance.generateUISchema(step?.schema)
-    // console.log(appInstance.generateUISchema(step?.schema), "UI SHCEMa")
+
     // generate data
     let data = appInstance.initializeData(step.schema)
     console.log(data, "DATA")
