@@ -52,11 +52,6 @@ export default defineComponent({
     },
     addStepData(schema, uischema, data, step) {
       // call error if output doesn't exists
-      // if(this.isEmpty(schema) || this.isEmpty(uischema)){
-      //   // sails.
-      //   console.error("output doesn't exists")
-      // }
-
       this.schema = schema;
       this.uischema = uischema;
       this.currentStepId = step.step.id;
@@ -116,23 +111,12 @@ export default defineComponent({
       let obj = {}
       if(this.step.step.payload.type === "single"){
         obj[this.step.step.payload.data.key] = this.data;
-        console.log(obj, " OBJECT ")
       }
 
       if(this.step.step.payload.type === "multi"){
-        // for (let i = 0; i < this.step.step.payload.data.length; i++) {
-				//   obj[this.step.step.payload.data[i].key] = this.data[i];
-			  // }
         for(let key in this.data){
-          console.log(key, "key")
-          console.log(this.step.step.payload.data, "this.step.step.payload.data")
-          console.log(this.data, "this.data")
-          console.log(this.data[key], "this.data[key]")
           obj[key] = this.data[key];
-
         }
-        console.log(obj, " OBJECT ")
-        console.log(this.data, " DATA AAAAAAAAA")
       }
 
       let recieve = {
@@ -140,7 +124,7 @@ export default defineComponent({
         action: this.action,
         currentStepId: this.currentStepId
       }
-      console.log(recieve, "recieve")
+
       const API = "/admin/processInstallStep"
 
       axios.post(API, recieve)
@@ -149,7 +133,7 @@ export default defineComponent({
           console.log('Data sent successfully:', response.data);
         })
         .catch(error => {
-        //  console.error('Error sending data:', error);
+          console.error('Error sending data:', error);
        });
 
     },
