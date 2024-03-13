@@ -17,20 +17,28 @@ export function MountJSONForm(step){
     let app = createApp(App);
     app.config.devtools = true;
     const appInstance = app.mount(step.mountDivId); // '#installStep'
+    // if(appInstance.isEmpty(step?.uischema)){
+    //   appInstance.generateSchema
+    //   // step.uischema = appInstance.generateUISchema(step?.schema)
+    //   // console.log(step.uischema)
+    // }
 
     if(step.step.payload.type === "multi"){
-      console.log("MULTI")
       step.schema = appInstance.generateSchema(step.step.payload.data)
       step.uischema = step.step.payload.uiSchema
-      console.log(step.schema, step.step.payload.data, step.step.payload.uiSchema, "ALL DATA")
+      // console.log(step.schema, step.step.payload.data, step.step.payload.uiSchema, "ALL DATA")
+    } 
+    if(step.step.payload.type === "single"){
+      step.uischema = step.step.payload.data.uiSchema
+      step.schema = step.step.payload.data.jsonSchema
+      console.log(step.uischema, step.schema)
     }
-
+    
     // generate data
     let data = appInstance.initializeData(step.schema)
     console.log(data, "DATA")
 
-    appInstance.addStepData(step.schema, step.uischema, step.step.id, step.step.canBeSkipped, data)
-
+    appInstance.addStepData(step.schema, step.uischema, data, step)
     // if form validation is ok mountInputId have to receive value from form
     // appInstance.addOutput(step.mountInputId)
     return appInstance

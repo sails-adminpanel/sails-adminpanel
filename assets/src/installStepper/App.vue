@@ -8,7 +8,7 @@
       :uischema="uischema"
       @change="onChange"
     />
-    <button v-if="validationCallback" @click="sendDataToServer" class="step-button"> SEND </button>
+    <button @click="sendDataToServer" class="step-button"> SEND </button>
     <button v-if="isSkippable" class="step-button"> SKIP </button>
   </div>
 </template>
@@ -26,14 +26,6 @@ import axios from 'axios'
 // Merge default styles with custom styles
 const myStyles = mergeStyles(defaultStyles, { control: { label: "mylabel" } });
 
-// {
-//         name: "Send email to Adrian",
-//         description: "Confirm if you have passed the subject\nHereby ...",
-//         done: true,
-//         recurrence: "Daily",
-//         rating: 3,
-//       }
-
 export default defineComponent({
   name: "App",
   components: {
@@ -48,6 +40,7 @@ export default defineComponent({
       isSkippable: false,
       action: "next",
       currentStepId: "",
+      step: null,
       validationCallback: false, 
     };
   },
@@ -57,7 +50,7 @@ export default defineComponent({
       this.data = event.data;
       this.validationCallback = this.isDataFilled()
     },
-    addStepData(schema, uischema, id, skippable, data) {
+    addStepData(schema, uischema, data, step) {
       // call error if output doesn't exists
       // if(this.isEmpty(schema) || this.isEmpty(uischema)){
       //   // sails.
@@ -66,9 +59,10 @@ export default defineComponent({
 
       this.schema = schema;
       this.uischema = uischema;
-      this.currentStepId = id;
-      this.isSkippable = skippable;
+      this.currentStepId = step.step.id;
+      this.isSkippable = step.step.canBeSkipped;
       this.data = data
+      this.step = step
     },
     addOutput(mountInputId) {
       
@@ -111,13 +105,38 @@ export default defineComponent({
       return data;
     },
     sendDataToServer() {
+      // single key: JSON,
+      // multi {key: value, key: value}
+      
       // interface IData {
-      //   inputData: JSON,
+      //   inputData: key JSON,
       //   action: "next" || "skip",
       //   currentStepId: string
       // }
+      let obj = {}
+      if(this.step.step.payload.type === "single"){
+        obj[this.step.step.payload.data.key] = this.data;
+        console.log(obj, " OBJECT ")
+      }
+
+      if(this.step.step.payload.type === "multi"){
+        // for (let i = 0; i < this.step.step.payload.data.length; i++) {
+				//   obj[this.step.step.payload.data[i].key] = this.data[i];
+			  // }
+        for(let key in this.data){
+          console.log(key, "key")
+          console.log(this.step.step.payload.data, "this.step.step.payload.data")
+          console.log(this.data, "this.data")
+          console.log(this.data[key], "this.data[key]")
+          obj[key] = this.data[key];
+
+        }
+        console.log(obj, " OBJECT ")
+        console.log(this.data, " DATA AAAAAAAAA")
+      }
+
       let recieve = {
-        inputData: JSON.stringify(this.data),
+        inputData: JSON.stringify(obj),
         action: this.action,
         currentStepId: this.currentStepId
       }
@@ -130,7 +149,7 @@ export default defineComponent({
           console.log('Data sent successfully:', response.data);
         })
         .catch(error => {
-         console.error('Error sending data:', error);
+        //  console.error('Error sending data:', error);
        });
 
     },
@@ -152,6 +171,42 @@ export default defineComponent({
     return schema;
   },
 
+  generateUISchema(schema) {
+    const uischema = {
+      type: "HorizontalLayout",
+      elements: [
+        {
+          type: "VerticalLayout",
+          elements: [],
+        },
+      ],
+    };
+  
+    // Helper function to add a Control element to the VerticalLayout
+    function addControlElement(property, multi = false) {
+      const controlElement = {
+        type: "Control",
+        scope: `#/properties/${property}`,
+      };
+  
+      if (multi) {
+        controlElement.options = {
+          multi: true,
+        };
+      }
+  
+      return controlElement;
+    }
+  
+    Object.keys(schema.properties).forEach((property) => {
+      const layoutIndex = schema.properties[property].layoutIndex || 0; 
+      const multi = schema.properties[property].multi || false; 
+  
+      uischema.elements[layoutIndex].elements.push(addControlElement(property, multi));
+    });
+  
+    return uischema;
+  },
 
   },
   provide() {

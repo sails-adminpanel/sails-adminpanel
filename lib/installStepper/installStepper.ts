@@ -43,6 +43,7 @@ export class InstallStepper {
 
         } catch (e) {
             sails.log.error(`Error processing step: ${e}`);
+            console.dir(e);
             throw new Error(e);
         }
     }
