@@ -114,7 +114,7 @@ export interface AdminpanelConfig {
     /**
      * Policies that will be executed before going to every page
      * */
-    policies?: string | string[] | PolicyMiddleware | PolicyMiddleware[]
+    policies?:  PolicyMiddleware[]
     styles?: string[]
     scripts?: {
         header?: string[]

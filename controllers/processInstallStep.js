@@ -16,10 +16,10 @@ async function processInstallStep(req, res) {
         if (installStepper_1.InstallStepper.hasUnprocessedSteps()) {
             // console.log(InstallStepper.getSteps())
             let renderData = installStepper_1.InstallStepper.render();
-            // let renderer = renderData.currentStep.renderer;
+            let renderer = renderData.currentStep.renderer;
             // console.log("renderer", renderer)
-            // return res.viewAdmin(`installer/${renderer}`, renderData);
-            return res.viewAdmin(`installer/dev`, renderData);
+            return res.viewAdmin(`installer/${renderer}`, renderData);
+            // return res.viewAdmin(`installer/dev`, renderData);
         }
         else {
             return res.redirect(`${sails.config.adminpanel.routePrefix}`);
@@ -31,7 +31,7 @@ async function processInstallStep(req, res) {
         //  такой настройки когда будет готово vue app)
         // TODO есть еще проблема в том, то админка успевает пропустить пользователя по роуту до того как policy сработает
         if (req.body.inputData) {
-            console.log("INPUT DATA", JSON.parse(req.body.inputData));
+            console.log("INPUT DATA", JSON.parse(req.body.inputData), req.body.currentStepId);
         }
         else {
             console.log("NO INPUT DATA, THIS IS SKIP");

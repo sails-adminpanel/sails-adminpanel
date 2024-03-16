@@ -3,10 +3,10 @@ import { Callback } from "waterline";
 /**
  * As we generate adminpanel by models from config, we cannot pass model in generic
  */
-declare type CRUDBuilder = {
+type CRUDBuilder = {
     fetch(): Promise<any>;
 };
-declare type QueryBuilder = {
+type QueryBuilder = {
     where(condition: any): QueryBuilder;
     limit(lim: number): QueryBuilder;
     skip(num: number): QueryBuilder;

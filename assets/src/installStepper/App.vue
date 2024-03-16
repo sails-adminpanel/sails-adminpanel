@@ -34,45 +34,37 @@ export default defineComponent({
   data() {
     return {
       renderers: vanillaRenderers, // Use vanillaRenderers directly
-      data: {
-        name: "Send email to Adrian",
-        description: "Confirm if you have passed the subject\nHereby ...",
-        done: true,
-        recurrence: "Daily",
-        rating: 3,
-      },
+      data: null,
       schema: null,
       uischema: null,
       isSkippable: false,
-      action: "",
+      action: "next",
       currentStepId: "",
-      validationCallback: () => {}, 
+      step: null,
+      validationCallback: false, 
     };
   },
   methods: {
     onChange(event) {
       // call error if output doesn't exist
       this.data = event.data;
-      this.validationCallback(this.isDataFilled()) 
+      this.validationCallback = this.isDataFilled()
     },
-    addStepData(schema, uischema, id, skippable) {
+    addStepData(schema, uischema, data, step) {
       // call error if output doesn't exists
-      if(this.isEmpty(schema) || this.isEmpty(uischema)){
-        // sails.
-        console.error("output doesn't exists")
-      }
-
       this.schema = schema;
       this.uischema = uischema;
-      this.currentStepId = id,
-      this.isSkippable = skippable
+      this.currentStepId = step.step.id;
+      this.isSkippable = step.step.canBeSkipped;
+      this.data = data
+      this.step = step
     },
     addOutput(mountInputId) {
       
     },
-    setValidationCallback(cb){
-      this.validationCallback = cb
-    },
+    // setValidationCallback(cb){
+    //   this.validationCallback = cb
+    // },
     isDataFilled(){
       const dataKeys = Object.keys(this.data);
       for (const key of dataKeys) {
@@ -97,42 +89,73 @@ export default defineComponent({
         case "boolean":
           data[property] = false;
           break;
-        case "integer":
+        case "number":
           data[property] = 0;
           break;
         default:
+          data[property] = null;
           break;
       }
       }
       return data;
     },
     sendDataToServer() {
+      // single key: JSON,
+      // multi {key: value, key: value}
+      
       // interface IData {
-      //   inputData: JSON,
-      //   action "next" || "skip",
+      //   inputData: key JSON,
+      //   action: "next" || "skip",
       //   currentStepId: string
       // }
+      let obj = {}
+      if(this.step.step.payload.type === "single"){
+        obj[this.step.step.payload.data.key] = this.data;
+      }
+
+      if(this.step.step.payload.type === "multi"){
+        for(let key in this.data){
+          obj[key] = this.data[key];
+        }
+      }
+
       let recieve = {
-        inputData: this.data,
+        inputData: JSON.stringify(obj),
         action: this.action,
         currentStepId: this.currentStepId
       }
-      
-      const API = "http://localhost:1337/admin"
+
+      const API = "/admin/processInstallStep"
 
       axios.post(API, recieve)
         .then(response => {
+          location.reload();
           console.log('Data sent successfully:', response.data);
         })
         .catch(error => {
-         console.error('Error sending data:', error);
+          console.error('Error sending data:', error);
        });
+
     },
     isEmpty(obj) {
       if(obj) return Object.keys(obj).length === 0;
       return true
     },
-   generateUISchema(schema) {
+  generateSchema(data) {
+    const schema = { properties: {} };
+  
+    data.forEach(field => {
+      schema.properties[field.key] = {
+        type: field.type,
+        description: field.description,
+        // tooltip: field.tooltip
+      };
+    });
+
+    return schema;
+  },
+
+  generateUISchema(schema) {
     const uischema = {
       type: "HorizontalLayout",
       elements: [
@@ -159,17 +182,15 @@ export default defineComponent({
       return controlElement;
     }
   
-    // Iterate through schema properties and add Control elements to uischema
     Object.keys(schema.properties).forEach((property) => {
-      const layoutIndex = schema.properties[property].layoutIndex || 0; // Default to first VerticalLayout
-      const multi = schema.properties[property].multi || false; // Check if multi-line is specified
+      const layoutIndex = schema.properties[property].layoutIndex || 0; 
+      const multi = schema.properties[property].multi || false; 
   
       uischema.elements[layoutIndex].elements.push(addControlElement(property, multi));
     });
   
     return uischema;
   },
-
 
   },
   provide() {
