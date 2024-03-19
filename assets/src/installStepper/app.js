@@ -13,6 +13,7 @@ interface Istep {
 // TODO: rename installStepper => jsonforms
  // id, uischema, jsonschema, data
 export function MountJSONForm(formData){
+    console.log(formData)
     let app = createApp(App);
     app.config.devtools = true;
     const appInstance = app.mount(formData.mountDivId); // '#installStep'

@@ -38,18 +38,8 @@
         
         function sendDataToServer() {
             let installStepOutput = document.getElementById("installStepOutput").value;
-			console.log(installStepOutput, "install step out")
+
             let dataToSend = JSON.parse(installStepOutput);
-            // console.log(dataToSend)
-            // axios.post(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, JSON.stringify(installStepOutput))
-            //     .then(response => {
-            //         if (!response.ok) {
-            //              throw new Error('Network response was not ok');
-            //         }
-            //     })
-            //     .catch(error => {
-            //          console.error('There was a problem with your axios request:', error);
-            //     });
 
             axios.post(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, dataToSend)
                 .then(response => {
@@ -59,21 +49,7 @@
                 .catch(error => {
                 console.error('Error sending data:', error);
             });    
-            // fetch(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            //     body: JSON.stringify(dataToSend),
-            // })
-            // .then(response => {
-            //     if (!response.ok) {
-            //         throw new Error('Network response was not ok');
-            //     }
-            // })
-            // .catch(error => {
-            //     console.error('There was a problem with your fetch operation:', error);
-            // });
+          
         }
 
     </script>

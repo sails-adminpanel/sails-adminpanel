@@ -1,5 +1,5 @@
 <template>
-  <div v-if="schema && uischema" class="myform text shadow">  
+  <div v-if="schema && uischema" :class="[themeClass, 'myform', 'text', 'shadow']">  
     <json-forms
       :data="data"
       :renderers="renderers"
@@ -10,6 +10,7 @@
     />
     <button :disabled="!validationCallback" @click="sendDataToServer" class="step-button"> SEND </button>
     <button v-if="isSkippable" @click="skipStep" class="step-button"> SKIP </button>
+    <button @click="toggleTheme" class="step-button">Toggle Theme</button>
   </div>
 </template>
 
@@ -43,6 +44,7 @@ export default defineComponent({
       step: null,
       validationCallback: false, 
       outputId: "",
+      darkTheme: false, // Add a data property for toggling theme
     };
   },
   methods: {
@@ -73,6 +75,10 @@ export default defineComponent({
 
         document.getElementById("installStepOutput").value = jsonString;
       }
+    },
+    toggleTheme() {
+      this.darkTheme = !this.darkTheme; // Toggle dark theme boolean
+      console.log(this.darkTheme, "AAAAAA")
     },
     addStepData(schema, uischema, data, step) {
       // call error if output doesn't exists
@@ -113,6 +119,9 @@ export default defineComponent({
         case "number":
           data[property] = 0;
           break;
+        // case "array":
+        //   data[property] = 0;
+        //   break;
         default:
           data[property] = null;
           break;
@@ -242,10 +251,25 @@ export default defineComponent({
       styles: myStyles,
     };
   },
+  computed: {
+    themeClass() {
+      return this.darkTheme ? 'dark-theme' : 'light-theme'; // Apply appropriate theme class
+    }
+  }
 });
 </script>
 
 <style scoped>
+.light-theme {
+  background-color: white;
+  color: #333;
+}
+
+.dark-theme {
+  background-color: black;
+  color: white;
+}
+
 .mylabel {
   color: darkslategrey;
   font-size: 50px
@@ -291,7 +315,6 @@ export default defineComponent({
 .text {
   font-weight: 700;
   font-style: normal; 
-  color: #333;
   letter-spacing: .025em;
   text-transform: uppercase;
   font-size: .75rem;
