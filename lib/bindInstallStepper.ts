@@ -2,6 +2,10 @@ import {InstallStepper} from "./installStepper/installStepper"
 
 export default function() {
     let installStepperPolicy = function (req, res, proceed) {
+        if (!req.session.UserAP) {
+            return proceed();
+        }
+
 		let goingToProcessInstallStep = req._parsedUrl.pathname === `${sails.config.adminpanel.routePrefix}/processInstallStep`
         console.log("Going to processInstallStep", goingToProcessInstallStep)
         console.log("link processInstall", `${sails.config.adminpanel.routePrefix}/processInstallStep`)
