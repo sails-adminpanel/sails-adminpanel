@@ -4,10 +4,18 @@
 <p>currentStep: <%= JSON.stringify(currentStep) %></p>
 
 <script src="/admin/assets/build/js/vue-installStepper.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <div class="content__body">
-    <div id="installStep"></div>
+    <div id="installStep">
+        <button onclick="sendDataToServer()">SEND</button>
+    </div>
+	<div id="installStep2"></div>
+
+	<input style="visibility: hidden" id="installStepOutput">
+	<!-- <input style="visibility: hidden" id="installStepOutput2"> -->
+
+	<button onclick="sendDataToServer()">SEND</button>
     <script>
 		// Pass variables from EJS to the script
 		var currentStepData = <%- JSON.stringify(currentStep) %>;
@@ -16,10 +24,57 @@
 		
 		MountJSONForm({
 			mountDivId: '#installStep',
-			// schema: currentStepData.payload.data.jsonSchema,
-		    // uischema: currentStepData.payload.data.uiSchema,
 			step: currentStepData,
 		})
+
+		// MountJSONForm({
+		// 	mountDivId: '#installStep2',
+		// 	step: currentStepData,
+		// })
+
+		// `<%- sails.config.adminpanel.routePrefix %>/processInstallStep`,
+		
+        
+        
+        function sendDataToServer() {
+            let installStepOutput = document.getElementById("installStepOutput").value;
+			console.log(installStepOutput, "install step out")
+            let dataToSend = JSON.parse(installStepOutput);
+            // console.log(dataToSend)
+            // axios.post(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, JSON.stringify(installStepOutput))
+            //     .then(response => {
+            //         if (!response.ok) {
+            //              throw new Error('Network response was not ok');
+            //         }
+            //     })
+            //     .catch(error => {
+            //          console.error('There was a problem with your axios request:', error);
+            //     });
+
+            axios.post(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, dataToSend)
+                .then(response => {
+                 location.reload();
+                 console.log('Data sent successfully:', response.data);
+                })
+                .catch(error => {
+                console.error('Error sending data:', error);
+            });    
+            // fetch(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify(dataToSend),
+            // })
+            // .then(response => {
+            //     if (!response.ok) {
+            //         throw new Error('Network response was not ok');
+            //     }
+            // })
+            // .catch(error => {
+            //     console.error('There was a problem with your fetch operation:', error);
+            // });
+        }
 
     </script>
 </div>
