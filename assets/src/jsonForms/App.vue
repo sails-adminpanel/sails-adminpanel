@@ -1,6 +1,7 @@
 <template>
   <div v-if="schema && uischema" :class="[themeClass, 'myform', 'text', 'shadow']">  
     <div>Current step count: {{formData.currentStepCount}}</div>
+    <div>{{formData.step.name}}</div>
     <div>{{formData.step.description}}</div>
     <json-forms
       :data="data"
@@ -104,32 +105,42 @@ export default defineComponent({
       return true;
     },
     initializeData(schema) {
-      const data = {};
+      let data = {};
+      if(schema.type === "object"){
+        for (const property in schema.properties) {
 
-      for (const property in schema.properties) {
-      if (!schema.properties.hasOwnProperty(property)) continue; 
+        if (!schema.properties.hasOwnProperty(property)) continue; 
 
-      const { type, enum: enumeration } = schema.properties[property];
+        const { type, enum: enumeration } = schema.properties[property];
 
-      switch (type) {
-        case "string":
-          data[property] = enumeration?.[0] ?? "";
-          break;
-        case "boolean":
-          data[property] = false;
-          break;
-        case "number":
-          data[property] = 0;
-          break;
-        // case "array":
-        //   data[property] = 0;
-        //   break;
-        default:
-          data[property] = null;
-          break;
+        data = this.setData(type, property, enumeration, data)
+        }
+      } else{
+        // data = this.setData(schema.type, null, null, data)
+        data = []
       }
-      }
+      
       return data;
+    },
+    setData(type, property, enumeration, data){
+        switch (type) {
+            case "string":
+            data[property] = enumeration?.[0] ?? "";
+            break;
+          case "boolean":
+             data[property] = false;
+             break;
+          case "number":
+             data[property] = 0;
+            break;
+           case "array":
+            data[property] = null;
+            break;
+          default:
+            data[property] = null;
+            break;
+        }
+        return data;
     },
     sendDataToServer() {
       // interface IData {

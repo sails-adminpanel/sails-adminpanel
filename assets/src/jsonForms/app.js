@@ -32,7 +32,7 @@ export function MountJSONForm(formData){
 
     // generate data object for input form
     let data = appInstance.initializeData(formData.schema)
-
+    console.log(data)
     appInstance.addStepData(formData.schema, formData.uischema, data, formData)
 
     // if form validation is ok mountInputId have to receive value from form

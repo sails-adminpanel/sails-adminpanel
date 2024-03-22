@@ -29,7 +29,7 @@
             let installStepOutput = document.getElementById("installStepOutput").value;
 
             let dataToSend = JSON.parse(installStepOutput);
-
+            console.log("JSON data: ",dataToSend)
             axios.post(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, dataToSend)
                 .then(response => {
                  location.reload();
