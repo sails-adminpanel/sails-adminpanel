@@ -1,11 +1,13 @@
 <template>
   <div v-if="schema && uischema" :class="[themeClass, 'myform', 'text', 'shadow']">  
+    <div>Current step count: {{formData.currentStepCount}}</div>
+    <div>{{formData.step.description}}</div>
     <json-forms
       :data="data"
       :renderers="renderers"
       :schema="schema"
       :uischema="uischema"
-      :styles="myStyles"
+      :class="[themeClass,'form', 'shadow']"
       @change="onChange"
     />
     <button :disabled="!validationCallback" @click="sendDataToServer" class="step-button"> SEND </button>
@@ -41,7 +43,7 @@ export default defineComponent({
       uischema: null,
       isSkippable: false,
       currentStepId: "",
-      step: null,
+      formData: null,
       validationCallback: false, 
       outputId: "",
       darkTheme: false, // Add a data property for toggling theme
@@ -55,11 +57,11 @@ export default defineComponent({
 
       if(this.validationCallback){
         let obj = {}
-        if(this.step.step.payload.type === "single"){
-          obj[this.step.step.payload.data.key] = this.data;
+        if(this.formData.step.payload.type === "single"){
+          obj[this.formData.step.payload.data.key] = this.data;
         }
 
-        if(this.step.step.payload.type === "multi"){
+        if(this.formData.step.payload.type === "multi"){
           for(let key in this.data){
             obj[key] = this.data[key];
           }
@@ -80,14 +82,14 @@ export default defineComponent({
       this.darkTheme = !this.darkTheme; // Toggle dark theme boolean
       console.log(this.darkTheme, "AAAAAA")
     },
-    addStepData(schema, uischema, data, step) {
+    addStepData(schema, uischema, data, formData) {
       // call error if output doesn't exists
       this.schema = schema;
       this.uischema = uischema;
-      this.currentStepId = step.step.id;
-      this.isSkippable = step.step.canBeSkipped;
+      this.currentStepId = formData.step.id;
+      this.isSkippable = formData.step.canBeSkipped;
       this.data = data
-      this.step = step
+      this.formData = formData
     },
     addOutput(mountOutputId) {
       this.outputId = mountOutputId
@@ -136,11 +138,11 @@ export default defineComponent({
       //   currentStepId: string
       // }
       let obj = {}
-      if(this.step.step.payload.type === "single"){
-        obj[this.step.step.payload.data.key] = this.data;
+      if(this.formData.step.payload.type === "single"){
+        obj[this.formData.step.payload.data.key] = this.data;
       }
 
-      if(this.step.step.payload.type === "multi"){
+      if(this.formData.step.payload.type === "multi"){
         for(let key in this.data){
           obj[key] = this.data[key];
         }
@@ -283,6 +285,16 @@ export default defineComponent({
   padding-bottom: 1rem;
 }
 
+.form textarea{
+  max-width: 200px;
+  max-height: 200px;
+
+  padding-top: .25rem;
+  padding-bottom: .25rem;
+  padding-left: .75rem;
+  padding-right: .75rem;
+}
+
 .myform {
   width: 100%;
   max-width: 20rem;
@@ -322,21 +334,10 @@ export default defineComponent({
   padding-bottom: 1rem;
 }
 
-
 </style>
 
 
 <!-- 
-  
-.text-area{
-  max-width: 200px;
-  max-height: 200px;
-
-  padding-top: .25rem;
-  padding-bottom: .25rem;
-  padding-left: .75rem;
-  padding-right: .75rem;
-}
 
 .input{
   padding-top: .25rem;

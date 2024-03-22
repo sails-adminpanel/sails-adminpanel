@@ -213,10 +213,10 @@ const vueWidgets = () => {
 }
 
 const vueInstallStepper = () => {
-	return gulp.src(`${srcFolder}/installStepper/app.js`, { sourcemaps: true })
+	return gulp.src(`${srcFolder}/jsonForms/app.js`, { sourcemaps: true })
 		.pipe(webpackStream({
 			mode: 'development',
-			entry: `${srcFolder}/installStepper/app.js`,
+			entry: `${srcFolder}/jsonForms/app.js`,
 			output: {
 				path: Fpath.resolve('./assets/build/js/'),
 				filename: 'vue-installStepper.js'
@@ -251,10 +251,10 @@ const vueInstallStepper = () => {
 }
 
 const vueInstallStepperProd = () => {
-	return gulp.src(`${srcFolder}/installStepper/app.js`, { sourcemaps: true })
+	return gulp.src(`${srcFolder}/jsonForms/app.js`, { sourcemaps: true })
 		.pipe(webpackStream({
 			mode: 'production',
-			entry: `${srcFolder}/installStepper/app.js`,
+			entry: `${srcFolder}/jsonForms/app.js`,
 			output: {
 				path: Fpath.resolve('./assets/build/js/'),
 				filename: 'vue-installStepper.js'

@@ -8,34 +8,23 @@
 
 <div class="content__body">
     <div id="installStep">
-        <button onclick="sendDataToServer()">SEND</button>
+        <button onclick="sendDataToServer()">SENDaaaaaaaa</button>
     </div>
 	<div id="installStep2"></div>
 
 	<input style="visibility: hidden" id="installStepOutput">
-	<!-- <input style="visibility: hidden" id="installStepOutput2"> -->
 
 	<button onclick="sendDataToServer()">SEND</button>
     <script>
-		// Pass variables from EJS to the script
 		var currentStepData = <%- JSON.stringify(currentStep) %>;
-		// console.log(currentStepData, " currentStepData")
-		// console.log(currentStepData.payload, " currentStepData.payload")
 		
 		MountJSONForm({
 			mountDivId: '#installStep',
 			step: currentStepData,
+            currentStepCount: <%= totalStepCount %> - <%= leftStepsCount %>,
+            mountDivOutput: 'installStepOutput',
 		})
 
-		// MountJSONForm({
-		// 	mountDivId: '#installStep2',
-		// 	step: currentStepData,
-		// })
-
-		// `<%- sails.config.adminpanel.routePrefix %>/processInstallStep`,
-		
-        
-        
         function sendDataToServer() {
             let installStepOutput = document.getElementById("installStepOutput").value;
 
