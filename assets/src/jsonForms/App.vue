@@ -8,12 +8,9 @@
       :renderers="renderers"
       :schema="schema"
       :uischema="uischema"
-      :class="[themeClass,'form', 'shadow']"
+      :class="[themeClass,'form', 'shadow', 'control']"
       @change="onChange"
     />
-    <button :disabled="!validationCallback" @click="sendDataToServer" class="step-button"> SEND </button>
-    <button v-if="isSkippable" @click="skipStep" class="step-button"> SKIP </button>
-    <button @click="toggleTheme" class="step-button">Toggle Theme</button>
   </div>
 </template>
 
@@ -24,6 +21,7 @@ import {
   defaultStyles,
   mergeStyles,
   vanillaRenderers,
+  vanillaStyles
 } from "@jsonforms/vue-vanilla";
 import axios from 'axios'
 // import "tailwindcss/tailwind.css";
@@ -81,7 +79,6 @@ export default defineComponent({
     },
     toggleTheme() {
       this.darkTheme = !this.darkTheme; // Toggle dark theme boolean
-      console.log(this.darkTheme, "AAAAAA")
     },
     addStepData(schema, uischema, data, formData) {
       // call error if output doesn't exists
@@ -142,47 +139,6 @@ export default defineComponent({
         }
         return data;
     },
-    sendDataToServer() {
-      // interface IData {
-      //   inputData: key JSON,
-      //   action: "next" || "skip",
-      //   currentStepId: string
-      // }
-      let obj = {}
-      if(this.formData.step.payload.type === "single"){
-        obj[this.formData.step.payload.data.key] = this.data;
-      }
-
-      if(this.formData.step.payload.type === "multi"){
-        for(let key in this.data){
-          obj[key] = this.data[key];
-        }
-      }
-      // JSON.stringify(obj)
-      let recieve = {
-        inputData: JSON.stringify(obj), 
-        action: "next",
-        currentStepId: this.currentStepId
-      }
-
-      // Convert JSON to string
-      let jsonString = JSON.stringify(recieve);
-
-      document.getElementById("installStepOutput").value = jsonString;
-
-
-      // const API = "/admin/processInstallStep"
-
-      // axios.post(API, recieve)
-      //   .then(response => {
-      //     location.reload();
-      //     console.log('Data sent successfully:', response.data);
-      //   })
-      //   .catch(error => {
-      //     console.error('Error sending data:', error);
-      //  });
-
-    },
     skipStep(){
       let recieve = {
         action: "skip",
@@ -204,60 +160,9 @@ export default defineComponent({
       if(obj) return Object.keys(obj).length === 0;
       return true
     },
-  generateSchema(data) {
-    const schema = { properties: {} };
-  
-    data.forEach(field => {
-      schema.properties[field.key] = {
-        type: field.type,
-        description: field.description,
-        // tooltip: field.tooltip
-      };
-    });
-
-    return schema;
-  },
-
-  generateUISchema(schema) {
-    const uischema = {
-      type: "HorizontalLayout",
-      elements: [
-        {
-          type: "VerticalLayout",
-          elements: [],
-        },
-      ],
-    };
-
-    // Helper function to add a Control element to the VerticalLayout
-    function addControlElement(property, multi = false) {
-      const controlElement = {
-        type: "Control",
-        scope: `#/properties/${property}`,
-      };
-  
-      if (multi) {
-        controlElement.options = {
-          multi: true,
-        };
-      }
-  
-      return controlElement;
-    }
-  
-    Object.keys(schema.properties).forEach((property) => {
-      const layoutIndex = schema.properties[property].layoutIndex || 0; 
-      const multi = schema.properties[property].multi || false; 
-  
-      uischema.elements[layoutIndex].elements.push(addControlElement(property, multi));
-    });
-  
-    return uischema;
-  },
   isFormValid(){
     
-  }
-
+    }
   },
   provide() {
     return {
@@ -344,6 +249,34 @@ export default defineComponent({
   line-height: 1rem;
   padding-bottom: 1rem;
 }
+
+.control {
+  font-size: 0.75rem;
+  text-align: left;
+  margin-top: 0.5em;
+  min-height: 1em;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  line-height: 1em;
+}
+
+.control>.input-description, .control>.validation {
+  font-size: 0.75rem;
+  text-align: left;
+  margin-top: 0.5em;
+  min-height: 1em;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  line-height: 1em;
+}
+.control>.input {
+  border-style: solid;
+  border-width: thin;
+  border-radius: 0.2em;
+  border-color: var(--jsf-border-color);
+  padding: 0.2em;
+  color: var(--jsf-main-fg-color);
+}
+
+
 
 </style>
 
