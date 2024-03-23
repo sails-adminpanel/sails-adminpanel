@@ -20,14 +20,14 @@ export function MountJSONForm(formData){
 
     appInstance.isFormValid()
   
-    if(formData.step.payload.type === "multi"){
-      formData.schema = formData.step.payload.jsonSchema
-      formData.uischema = formData.step.payload.uiSchema
+    if(formData.stepData.payload.type === "multi"){
+      formData.schema = formData.stepData.payload.jsonSchema
+      formData.uischema = formData.stepData.payload.uiSchema
     } 
 
-    if(formData.step.payload.type === "single"){
-      formData.uischema = formData.step.payload.data.uiSchema
-      formData.schema = formData.step.payload.data.jsonSchema
+    if(formData.stepData.payload.type === "single"){
+      formData.uischema = formData.stepData.payload.data.uiSchema
+      formData.schema = formData.stepData.payload.data.jsonSchema
     }
 
     // generate data object for input form

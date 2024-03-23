@@ -1,8 +1,8 @@
 <template>
   <div v-if="schema && uischema" :class="[themeClass, 'myform', 'text', 'shadow']">  
     <div>Current step count: {{formData.currentStepCount}}</div>
-    <div>{{formData.step.name}}</div>
-    <div>{{formData.step.description}}</div>
+    <div>{{formData.stepData.name}}</div>
+    <div>{{formData.stepData.description}}</div>
     <json-forms
       :data="data"
       :renderers="renderers"
@@ -56,11 +56,11 @@ export default defineComponent({
 
       if(this.validationCallback){
         let obj = {}
-        if(this.formData.step.payload.type === "single"){
-          obj[this.formData.step.payload.data.key] = this.data;
+        if(this.formData.stepData.payload.type === "single"){
+          obj[this.formData.stepData.payload.data.key] = this.data;
         }
 
-        if(this.formData.step.payload.type === "multi"){
+        if(this.formData.stepData.payload.type === "multi"){
           for(let key in this.data){
             obj[key] = this.data[key];
           }
@@ -84,8 +84,8 @@ export default defineComponent({
       // call error if output doesn't exists
       this.schema = schema;
       this.uischema = uischema;
-      this.currentStepId = formData.step.id;
-      this.isSkippable = formData.step.canBeSkipped;
+      this.currentStepId = formData.stepData.id;
+      this.isSkippable = formData.stepData.canBeSkipped;
       this.data = data
       this.formData = formData
     },
