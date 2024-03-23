@@ -139,23 +139,6 @@ export default defineComponent({
         }
         return data;
     },
-    skipStep(){
-      let recieve = {
-        action: "skip",
-        currentStepId: this.currentStepId
-      }
-
-      const API = "/admin/processInstallStep"
-
-      axios.post(API, recieve)
-        .then(response => {
-          location.reload();
-          console.log('Data sent successfully:', response.data);
-        })
-        .catch(error => {
-          console.error('Error sending data:', error);
-       });
-    },
     isEmpty(obj) {
       if(obj) return Object.keys(obj).length === 0;
       return true
