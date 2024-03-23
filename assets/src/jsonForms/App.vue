@@ -8,7 +8,7 @@
       :renderers="renderers"
       :schema="schema"
       :uischema="uischema"
-      :class="[themeClass,'form', 'shadow', 'control']"
+      :class="[themeClass,'form', 'shadow']"
       @change="onChange"
     />
   </div>
