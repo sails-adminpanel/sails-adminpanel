@@ -48,9 +48,14 @@ export default defineComponent({
     onChange(event) {
       // call error if output doesn't exist
       this.data = event.data;
-      this.validationCallback = this.isDataFilled()
+      const dataValidBySchema = {}
 
-      if(this.validationCallback){
+      if(this?.validationCallback && typeof this.validationCallback === "function"){
+        this.validationCallback( event?.errors.length > 0 )
+      }
+
+      if(this.isDataFilled()){
+
         let obj = {}
         // if(this.formData.stepData.payload.type === "single"){
         //   obj[this.formData.stepData.payload.data.key] = this.data;
@@ -67,12 +72,7 @@ export default defineComponent({
          }
         console.log("Data on change: ",obj)
 
-
         let recieve = JSON.stringify(obj);
-
-
-        // Convert JSON to string
-        // let jsonString = JSON.stringify(recieve);
 
         document.getElementById("installStepOutput").value = recieve;
       }

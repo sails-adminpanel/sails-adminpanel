@@ -18,8 +18,8 @@ export function MountJSONForm(formData){
     app.config.devtools = true;
     const appInstance = app.mount(formData.mountDivId); // '#installStep'
 
-    appInstance.isFormValid()
-
+    appInstance.validationCallback = formData.validationCallback
+    
     // generate data object for input form
     appInstance.initializeData(formData.jsonSchema, formData.uiSchema)
 

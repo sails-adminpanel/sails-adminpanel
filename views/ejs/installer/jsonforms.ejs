@@ -7,15 +7,20 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <div class="content__body">
-    <div id="installStep">
-        <!-- <button onclick="sendDataToServer()">SENDaaaaaaaa</button> -->
-    </div>
-	<div id="installStep2"></div>
-
-	<input type="hidden" id="installStepOutput">
-
-	<button onclick="sendDataToServer()">SEND</button>
+    <!-- action=`<%- sails.config.adminpanel.routePrefix %>/processInstallStep` -->
+    <form id="form" action= '<%- sails.config.adminpanel.routePrefix %>/processInstallStep' method="POST"
+        enctype="multipart/form-data">
+        <div id="installStep"></div>
+        <div id="installStep2"></div>
+        
+	    <input type="hidden" id="installStepOutput">    
+        <button class="btn btn-green" id="submit" disabled>
+            <%= __("Next") %>
+        </button> 
+    </form>
+    
     <script>
+	
 		var currentStepData = <%- JSON.stringify(currentStep) %>;
 		
         if(currentStepData.payload.type === "multi"){
@@ -27,32 +32,22 @@
             currentStepData.uiSchema = currentStepData.payload.data.uiSchema
             currentStepData.jsonSchema = currentStepData.payload.data.jsonSchema
         }
-
-        console.log("Current data: ",currentStepData)
         
 		MountJSONForm({
 			mountDivId: '#installStep',
 			uiSchema: currentStepData.uiSchema,
             jsonSchema: currentStepData.jsonSchema,
-            currentStepCount: <%= totalStepCount %> - <%= leftStepsCount %>,
             mountDivOutput: 'installStepOutput',
+            validationCallback: (status) => {
+                let submitButton = document.getElementById("submit");
+                if (status === true) {
+					submitButton.setAttribute("disabled", true);
+				} else {
+					submitButton.removeAttribute("disabled");
+				}
+            },
 		})
-
-        function sendDataToServer() {
-            let installStepOutput = document.getElementById("installStepOutput").value;
-
-            let dataToSend = JSON.parse(installStepOutput);
-            console.log("JSON data: ",dataToSend)
-            axios.post(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, dataToSend)
-                .then(response => {
-                 location.reload();
-                 console.log('Data sent successfully:', response.data);
-                })
-                .catch(error => {
-                console.error('Error sending data:', error);
-            });    
-          
-        }
+        
 
     </script>
 </div>
