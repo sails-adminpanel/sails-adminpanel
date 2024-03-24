@@ -8,19 +8,32 @@
 
 <div class="content__body">
     <div id="installStep">
-        <button onclick="sendDataToServer()">SENDaaaaaaaa</button>
+        <!-- <button onclick="sendDataToServer()">SENDaaaaaaaa</button> -->
     </div>
 	<div id="installStep2"></div>
 
-	<input style="visibility: hidden" id="installStepOutput">
+	<input type="hidden" id="installStepOutput">
 
 	<button onclick="sendDataToServer()">SEND</button>
     <script>
 		var currentStepData = <%- JSON.stringify(currentStep) %>;
 		
+        if(currentStepData.payload.type === "multi"){
+            currentStepData.jsonSchema = currentStepDatap.payload.jsonSchema
+            currentStepData.uiSchema = currentStepData.payload.uiSchema
+        } 
+
+        if(currentStepData.payload.type === "single"){
+            currentStepData.uiSchema = currentStepData.payload.data.uiSchema
+            currentStepData.jsonSchema = currentStepData.payload.data.jsonSchema
+        }
+
+        console.log("Current data: ",currentStepData)
+        
 		MountJSONForm({
 			mountDivId: '#installStep',
-			stepData: currentStepData,
+			uiSchema: currentStepData.uiSchema,
+            jsonSchema: currentStepData.jsonSchema,
             currentStepCount: <%= totalStepCount %> - <%= leftStepsCount %>,
             mountDivOutput: 'installStepOutput',
 		})

@@ -1,8 +1,5 @@
 <template>
   <div v-if="schema && uischema" :class="[themeClass, 'myform', 'text', 'shadow']">  
-    <div>Current step count: {{formData.currentStepCount}}</div>
-    <div>{{formData.stepData.name}}</div>
-    <div>{{formData.stepData.description}}</div>
     <json-forms
       :data="data"
       :renderers="renderers"
@@ -23,7 +20,6 @@ import {
   vanillaRenderers,
   vanillaStyles
 } from "@jsonforms/vue-vanilla";
-import axios from 'axios'
 // import "tailwindcss/tailwind.css";
 
 // Merge default styles with custom styles
@@ -56,38 +52,33 @@ export default defineComponent({
 
       if(this.validationCallback){
         let obj = {}
-        if(this.formData.stepData.payload.type === "single"){
-          obj[this.formData.stepData.payload.data.key] = this.data;
-        }
+        // if(this.formData.stepData.payload.type === "single"){
+        //   obj[this.formData.stepData.payload.data.key] = this.data;
+        // }
 
-        if(this.formData.stepData.payload.type === "multi"){
-          for(let key in this.data){
+        // if(this.formData.stepData.payload.type === "multi"){
+        //   for(let key in this.data){
+        //     obj[key] = this.data[key];
+        //   }
+        // }
+
+        for(let key in this.data){
             obj[key] = this.data[key];
-          }
-        }
-        let recieve = {
-          inputData: JSON.stringify(obj), 
-          action: "next",
-          currentStepId: this.currentStepId
-        }
+         }
+        console.log("Data on change: ",obj)
+
+
+        let recieve = JSON.stringify(obj);
+
 
         // Convert JSON to string
-        let jsonString = JSON.stringify(recieve);
+        // let jsonString = JSON.stringify(recieve);
 
-        document.getElementById("installStepOutput").value = jsonString;
+        document.getElementById("installStepOutput").value = recieve;
       }
     },
     toggleTheme() {
       this.darkTheme = !this.darkTheme; // Toggle dark theme boolean
-    },
-    addStepData(schema, uischema, data, formData) {
-      // call error if output doesn't exists
-      this.schema = schema;
-      this.uischema = uischema;
-      this.currentStepId = formData.stepData.id;
-      this.isSkippable = formData.stepData.canBeSkipped;
-      this.data = data
-      this.formData = formData
     },
     addOutput(mountOutputId) {
       this.outputId = mountOutputId
@@ -101,8 +92,11 @@ export default defineComponent({
       }
       return true;
     },
-    initializeData(schema) {
+    initializeData(schema, uiSchema) {
       let data = {};
+      this.schema = schema;
+      this.uischema = uiSchema;
+
       if(schema.type === "object"){
         for (const property in schema.properties) {
 
@@ -117,7 +111,7 @@ export default defineComponent({
         data = []
       }
       
-      return data;
+      this.data = data;
     },
     setData(type, property, enumeration, data){
         switch (type) {
