@@ -61,15 +61,19 @@ export default async function bindAuthorization() {
         console.group("Administrators credentials")
         console.table(adminsCredentials);
         console.groupEnd()
-    
+
     } else { // try to create one if we don't
-        sails.log.debug(`Adminpanel does not have an administrator`)
-        sails.config.adminpanel.policies.push(initUserPolicy)
-        sails.router.bind(sails.config.adminpanel.routePrefix + '/init_user', _initUser);
+        if (sails.config.adminpanel.auth) {
+            sails.log.debug(`Adminpanel does not have an administrator`)
+            sails.config.adminpanel.policies.push(initUserPolicy)
+            sails.router.bind(sails.config.adminpanel.routePrefix + '/init_user', _initUser);
+        }
     }
 
-    sails.router.bind(baseRoute + '/login', bindPolicies(policies, _login));
-    sails.router.bind(baseRoute + '/logout', bindPolicies(policies, _login));
+    if (sails.config.adminpanel.auth) {
+        sails.router.bind(baseRoute + '/login', bindPolicies(policies, _login));
+        sails.router.bind(baseRoute + '/logout', bindPolicies(policies, _login));
+    }
 };
 
 function getRandomInt(min, max) {
