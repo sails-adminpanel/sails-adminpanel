@@ -1,10 +1,28 @@
+<!-- Ваш ejs-файл -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Install Stepper</title>
+
+    <link rel="stylesheet" href="/admin/assets/build/style/style.min.css"/>
+    <script src="/admin/assets/build/js/vue-installStepper.js"></script>
+    
+    <!--TODO: load from local bundle-->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>    
+</head>
+<body>
+
+
+
+
+
 <h1>Hello world from jsonforms</h1>
 <p>totalStepCount: <%= totalStepCount %></p>
 <p>leftStepsCount: <%= leftStepsCount %></p>
 <p>currentStep: <%= JSON.stringify(currentStep) %></p>
-
-<script src="/admin/assets/build/js/vue-installStepper.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <div class="content__body">
         <div id="installStep"></div>
@@ -31,12 +49,12 @@
             currentStepData.uiSchema = currentStepData.payload.data.uiSchema
             currentStepData.jsonSchema = currentStepData.payload.data.jsonSchema
         }
-
+        
+        let skipButton = document.getElementById("skip");
         if(!currentStepData.canBeSkipped) {
-            let submitButton = document.getElementById("skip");
-			submitButton.setAttribute("hidden", true);
+			skipButton.setAttribute("hidden", true);
         } else {
-            submitButton.removeAttribute("hidden");
+            skipButton.removeAttribute("hidden");
         }
         
 		MountJSONForm({
@@ -104,3 +122,7 @@
 
     </script>
 </div>
+
+</body>
+</html>
+

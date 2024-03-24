@@ -23,7 +23,23 @@ import {
 // import "tailwindcss/tailwind.css";
 
 // Merge default styles with custom styles
-const myStyles = mergeStyles(defaultStyles, { control: { label: "mylabel" } });
+const myStyles = mergeStyles(defaultStyles, {
+   control: {
+      root: 'control',
+      wrapper: 'wrapper',
+      label: 'label',
+      description: 'description',
+      input: 'text-input',
+      error: 'error',
+      textarea: 'text-area',
+      select: 'select',
+      option: 'option',
+    },
+    arrayList: {
+      root: 'array-list'
+    },
+    // text-input
+  });
 
 export default defineComponent({
   name: "App",
@@ -155,6 +171,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
 .light-theme {
   background-color: white;
   color: #333;
