@@ -56,7 +56,7 @@ export default defineComponent({
 
       if(this.isDataFilled()){
 
-        let obj = {}
+        // let obj = {}
         // if(this.formData.stepData.payload.type === "single"){
         //   obj[this.formData.stepData.payload.data.key] = this.data;
         // }
@@ -67,12 +67,12 @@ export default defineComponent({
         //   }
         // }
 
-        for(let key in this.data){
-            obj[key] = this.data[key];
-         }
-        console.log("Data on change: ",obj)
+        // for(let key in this.data){
+        //     obj[key] = this.data[key];
+        //  }
+        console.log("Data on change: ",this.data)
 
-        let recieve = JSON.stringify(obj);
+        let recieve = JSON.stringify(this.data);
 
         document.getElementById("installStepOutput").value = recieve;
       }

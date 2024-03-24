@@ -19,22 +19,24 @@
         </button> 
     </form>
      -->
-     <form >
+
         <div id="installStep"></div>
         <div id="installStep2"></div>
         
 	    <input type="hidden" id="installStepOutput">    
+        <button class="btn btn-green" id="skip" disabled  onclick="skipStep()">
+            <%= __("Skip") %>
+        </button> 
         <button class="btn btn-green" id="submit" disabled  onclick="sendDataToServer()">
             <%= __("Next") %>
         </button> 
-    </form>
 
     <script>
 	
 		var currentStepData = <%- JSON.stringify(currentStep) %>;
 		
         if(currentStepData.payload.type === "multi"){
-            currentStepData.jsonSchema = currentStepDatap.payload.jsonSchema
+            currentStepData.jsonSchema = currentStepData.payload.jsonSchema
             currentStepData.uiSchema = currentStepData.payload.uiSchema
         } 
 
@@ -60,10 +62,26 @@
         
         function sendDataToServer() {
             let installStepOutput = document.getElementById("installStepOutput").value;
-
             let dataToSend = JSON.parse(installStepOutput);
-            console.log("JSON data: ",dataToSend)
-            axios.post(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, dataToSend)
+
+            let obj = {}
+            if(currentStepData.payload.type  === "single"){
+                obj[currentStepData.payload.data.key] = dataToSend;
+            }
+
+            if(currentStepData.payload.type === "multi"){
+                for(let key in dataToSend){
+                    obj[key] = dataToSend[key];
+                }
+            }
+
+            let recieve = {
+                inputData: JSON.stringify(obj), 
+                action: "next",
+                currentStepId: currentStepData.id
+            }
+        
+            axios.post(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, recieve)
                 .then(response => {
                  location.reload();
                  console.log('Data sent successfully:', response.data);
@@ -71,9 +89,23 @@
                 .catch(error => {
                 console.error('Error sending data:', error);
             });    
-          
         }
 
+        function skipStep(){
+            let recieve = {
+                action: "skip",
+                currentStepId: currentStepData.id
+            }
+
+            axios.post(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, recieve)
+                .then(response => {
+                location.reload();
+                 console.log('Data sent successfully:', response.data);
+                })
+                .catch(error => {
+                  console.error('Error sending data:', error);
+            });
+        }
 
     </script>
 </div>
