@@ -78,6 +78,7 @@ import { registerStyles, stylingReducer, vanillaStyles } from '@jsonforms/vanill
 import "tailwindcss/tailwind.css";
 
 // Merge default styles with custom styles
+<<<<<<< HEAD
 const myStyles = mergeStyles(defaultStyles, { 
   control: {
     root: 'control',
@@ -91,6 +92,25 @@ const myStyles = mergeStyles(defaultStyles, {
     option: 'option',
   },
  });
+=======
+const myStyles = mergeStyles(defaultStyles, {
+   control: {
+      root: 'control',
+      wrapper: 'wrapper',
+      label: 'label',
+      description: 'description',
+      input: 'text-input',
+      error: 'error',
+      textarea: 'text-area',
+      select: 'select',
+      option: 'option',
+    },
+    arrayList: {
+      root: 'array-list'
+    },
+    // text-input
+  });
+>>>>>>> bc4a4685633bd33260d2c802dbd20521c18e8fd8
 
 export default defineComponent({
   name: "App",
@@ -223,6 +243,7 @@ export default defineComponent({
 
 <style scoped>
 
+<<<<<<< HEAD
 .text-inputssss{
   color: red;
   width: 100%;
@@ -240,6 +261,8 @@ export default defineComponent({
   
 }
 
+=======
+>>>>>>> bc4a4685633bd33260d2c802dbd20521c18e8fd8
 .light-theme {
   background-color: white;
   color: #333;
