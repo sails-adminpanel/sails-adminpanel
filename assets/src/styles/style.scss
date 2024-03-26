@@ -4,7 +4,7 @@
 @import '../fileuploader/styles/styles';
 @import '../fileuploader/styles/basic';
 @import '../fileuploader/styles/dropzone';
-@import '~handsontable/dist/handsontable.full.min';
+@import "handsontable/dist/handsontable.full.css";
 @import '~leaflet/dist/leaflet';
 @import '~leaflet-draw/dist/leaflet.draw-src';
 
@@ -167,7 +167,7 @@ html.dark{
 	}
 }
 
-.btn-red, {
+.btn-red {
 	@apply uppercase text-red-600 font-bold border-red-600 hover:text-white hover:bg-red-600;
 }
 
@@ -309,15 +309,33 @@ select {
 	@apply w-full border-b border-gray-400 dark:border-gray-400 dark:bg-gray-900 focus:outline-none px-1 text-sm font-medium;
 }
 
+// .dataTables_filter {
+// 	@apply mb-2 md:text-left #{!important};
+// 	label{
+// 		@apply flex gap-2 items-center dark:text-slate-100;
+// 	}
+// 	input {
+// 		@apply focus:outline-none dark:border-slate-100 dark:placeholder-slate-100;
+// 	}
+// }
+
 .dataTables_filter {
-	@apply mb-2 md:text-left #{!important};
-	label{
-		@apply flex gap-2 items-center dark:text-slate-100;
+	margin-bottom: 2px !important;
+	text-align: left !important;
+  
+	label {
+	  display: flex;
+	  gap: 2px;
+	  align-items: center;
+	  color: #d3d3d3; /* You may need to adjust this color */
 	}
+  
 	input {
-		@apply focus:outline-none dark:border-slate-100 dark:placeholder-slate-100;
+	  outline: none;
+	  border: 1px solid #d3d3d3; /* You may need to adjust this color */
+	  color: #d3d3d3; /* You may need to adjust this color */
 	}
-}
+  }
 
 .dataTables_scroll {
 	@apply border border-gray-400 border-b-transparent dark:border-b-gray-400 rounded overflow-hidden;
@@ -716,21 +734,52 @@ select {
 		overflow: initial;
 	}
 }
-.navigation-item{
-	@apply max-w-[600px] w-full border rounded border-gray-400 min-h-[24px] mb-2 px-3 grid grid-cols-1 divide-y divide-gray-400 #{!important};
-	.navigation-list{
-		@apply py-2;
-		ul{
-			@apply ml-16;
-			li{
-				@apply border-b border-gray-400;
-			}
+
+// .navigation-item{
+// 	@apply max-w-[600px] w-full border rounded border-gray-400 min-h-[24px] mb-2 px-3 grid grid-cols-1 divide-y divide-gray-400 #{!important};
+// 	.navigation-list{
+// 		@apply py-2;
+// 		ul{
+// 			@apply ml-16;
+// 			li{
+// 				@apply border-b border-gray-400;
+// 			}
+// 		}
+// 	}
+// 	.s-l-opener{
+// 		@apply cursor-pointer;
+// 	}
+// }
+
+.navigation-item {
+	max-width: 600px;
+	width: 100%;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	min-height: 24px;
+	margin-bottom: 2px;
+	padding: 0 3px;
+	display: grid;
+	grid-template-columns: 1fr;
+	border-color: #ccc !important;
+  
+	.navigation-list {
+	  padding-top: 2px;
+  
+	  ul {
+		margin-left: 16px;
+  
+		li {
+		  border-bottom: 1px solid #ccc;
+		  border-color: #ccc !important;
 		}
+	  }
 	}
-	.s-l-opener{
-		@apply cursor-pointer;
+  
+	.s-l-opener {
+	  cursor: pointer;
 	}
-}
+  }
 
 
 .navigation-content{

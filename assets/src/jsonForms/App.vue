@@ -5,10 +5,11 @@
       :renderers="renderers"
       :schema="schema"
       :uischema="uischema"
-      :class="[themeClass,'form', 'shadow']"
+      :class="[themeClass]"
       @change="onChange"
     />
   </div>
+  <input :class="['w-full', 'bg-gray-100']">
 </template>
 
 <script>
@@ -18,12 +19,78 @@ import {
   defaultStyles,
   mergeStyles,
   vanillaRenderers,
-  vanillaStyles
 } from "@jsonforms/vue-vanilla";
-// import "tailwindcss/tailwind.css";
+import { registerStyles, stylingReducer, vanillaStyles } from '@jsonforms/vanilla-renderers';
+
+// const registerStylesAction = registerStyles([
+//   {
+//     name: 'control.input',
+//     class: ['custom-input']
+//   },
+//   {
+//     name: 'array.button',
+//     classNames: ['custom-array-button']
+//   },
+//   {
+//       name: "control",
+//       classNames: "my-5"
+//     },
+//     {
+//       name: "control.input",
+//       classNames:
+//         "w-full bg-gray-100 rounded border border-gray-300 focus:border-indigo-500 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out font-sans"
+//     },
+//     {
+//       name: "control.select",
+//       classNames:
+//         "w-full bg-gray-100 rounded border border-gray-300 focus:border-indigo-500 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out appearance-none"
+//     },
+//     {
+//       name: "control.label",
+//       classNames:
+//         "block uppercase tracking-wide text-gray-700 text-xs font-bold pb-4"
+//     },
+//     {
+//       name: "array.button",
+//       classNames: "custom-array-button"
+//     },
+//     {
+//       name: "control.validation",
+//       classNames: "text-red-500 font-normal mt-2 text-xs"
+//     },
+//     {
+//       name: "vertical.layout",
+//       classNames:
+//         "block uppercase tracking-wide text-gray-700 text-s font-bold mb-2"
+//     },
+//     {
+//       name: "group.layout",
+//       classNames: "accordion-item bg-white"
+//     },
+//     {
+//       name: "group.label",
+//       classNames:
+//         "accordion-button relative flex w-full py-4 transition focus:outline-none block uppercase tracking-wide text-gray-700 text-s font-bold pb-4"
+//     }
+// ]);
+// const adaptedStyles = stylingReducer(vanillaStyles, registerStylesAction);
+
+import "tailwindcss/tailwind.css";
 
 // Merge default styles with custom styles
-const myStyles = mergeStyles(defaultStyles, { control: { label: "mylabel" } });
+const myStyles = mergeStyles(defaultStyles, { 
+  control: {
+    root: 'control',
+    wrapper: 'wrapper',
+    label: 'label',
+    description: 'description',
+    input: ['w-full bg-gray-100 rounded border border-gray-300 focus:border-indigo-500 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out font-sans'],
+    error: 'error',
+    textarea: 'text-area',
+    select: 'select',
+    option: 'option',
+  },
+ });
 
 export default defineComponent({
   name: "App",
@@ -155,6 +222,24 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
+.text-inputssss{
+  color: red;
+  width: 100%;
+  
+}
+
+.control input {
+  color: red;
+  width: 100%;
+}
+
+.control .text-inputssss{
+  color: red;
+  width: 100%;
+  
+}
+
 .light-theme {
   background-color: white;
   color: #333;
@@ -253,6 +338,15 @@ export default defineComponent({
   color: var(--jsf-main-fg-color);
 }
 
+.custom-input{
+  font-size: 2rem;
+  color: red;
+}
+
+#control.select{
+  font-size: 2rem;
+  color: red;
+}
 
 
 </style>

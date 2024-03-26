@@ -192,10 +192,16 @@ const vueWidgets = () => {
 					{
 						test: /\.css$/,
 						use: [
-						  'vue-style-loader',
-						  'css-loader',
+							'vue-style-loader',
+							'css-loader',
 						]
-					  }
+					},
+					{
+					test: /\.s[ac]ss$/i,
+						use: [
+						  "sass-loader",
+						]
+					}
 				],
 			},
 			experiments: {
@@ -230,10 +236,16 @@ const vueInstallStepper = () => {
 					{
 						test: /\.css$/,
 						use: [
-						  'vue-style-loader',
-						  'css-loader',
+							'vue-style-loader',
+							'css-loader',
 						]
-					  }
+					},
+					{
+					test: /\.s[ac]ss$/i,
+						use: [
+						  "sass-loader",
+						]
+					}
 				],
 			},
 			experiments: {
@@ -270,6 +282,12 @@ const vueInstallStepperProd = () => {
 						use: [
 							'vue-style-loader',
 							'css-loader',
+						]
+					},
+					{
+					test: /\.s[ac]ss$/i,
+						use: [
+						  "sass-loader",
 						]
 					}
 				],
@@ -308,6 +326,12 @@ const vueWidgetsProd = () => {
 						use: [
 							'vue-style-loader',
 							'css-loader',
+						]
+					},
+					{
+					test: /\.s[ac]ss$/i,
+						use: [
+						  "sass-loader",
 						]
 					}
 				],
