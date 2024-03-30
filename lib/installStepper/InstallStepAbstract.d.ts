@@ -1,6 +1,7 @@
 export default abstract class InstallStepAbstract {
     abstract id: string;
     abstract title: string;
+    abstract badge: string;
     abstract sortOrder: number;
     /** Step can be skipped. For this option you should do realization for skip handler */
     abstract canBeSkipped: boolean;

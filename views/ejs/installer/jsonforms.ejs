@@ -1,128 +1,122 @@
-<!-- Ваш ejs-файл -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Install Stepper</title>
+<%- include("./partials/header") %>
 
-    <link rel="stylesheet" href="/admin/assets/build/style/style.min.css"/>
-    <script src="/admin/assets/build/js/vue-installStepper.js"></script>
-    
-    <!--TODO: load from local bundle-->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>    
-</head>
-<body>
+<script>
+    console.log(<%- JSON.stringify(currentStep) %>)
+</script>
 
-
-
-
-
-<h1>Hello world from jsonforms</h1>
-<p>totalStepCount: <%= totalStepCount %></p>
-<p>leftStepsCount: <%= leftStepsCount %></p>
-<p>currentStep: <%= JSON.stringify(currentStep) %></p>
-
-<div class="content__body">
-        <div id="installStep"></div>
-        <div id="installStep2"></div>
-        
-	    <input type="hidden" id="installStepOutput">    
-        <button class="btn btn-green" id="skip"  onclick="skipStep()">
-            <%= __("Skip") %>
-        </button> 
-        <button class="btn btn-green" id="submit" disabled  onclick="sendDataToServer()">
-            <%= __("Next") %>
-        </button> 
-
-    <script>
-	
-		var currentStepData = <%- JSON.stringify(currentStep) %>;
-		
-        if(currentStepData.payload.type === "multi"){
-            currentStepData.jsonSchema = currentStepData.payload.jsonSchema
-            currentStepData.uiSchema = currentStepData.payload.uiSchema
-        } 
-
-        if(currentStepData.payload.type === "single"){
-            currentStepData.uiSchema = currentStepData.payload.data.uiSchema
-            currentStepData.jsonSchema = currentStepData.payload.data.jsonSchema
-        }
-        
-        let skipButton = document.getElementById("skip");
-        if(!currentStepData.canBeSkipped) {
-			skipButton.setAttribute("hidden", true);
-        } else {
-            skipButton.removeAttribute("hidden");
-        }
-        
-		MountJSONForm({
-			mountDivId: '#installStep',
-			uiSchema: currentStepData.uiSchema,
-            jsonSchema: currentStepData.jsonSchema,
-            mountDivOutput: 'installStepOutput',
-            validationCallback: (status) => {
-                let submitButton = document.getElementById("submit");
-                if (status === true) {
-					submitButton.setAttribute("disabled", true);
-				} else {
-					submitButton.removeAttribute("disabled");
-				}
-            },
-		})
-        
-        function sendDataToServer() {
-            let installStepOutput = document.getElementById("installStepOutput").value;
-            let dataToSend = JSON.parse(installStepOutput);
-
-            let obj = {}
-            if(currentStepData.payload.type  === "single"){
-                obj[currentStepData.payload.data.key] = dataToSend;
-            }
-
-            if(currentStepData.payload.type === "multi"){
-                for(let key in dataToSend){
-                    obj[key] = dataToSend[key];
-                }
-            }
-
-            let recieve = {
-                inputData: JSON.stringify(obj), 
-                action: "next",
-                currentStepId: currentStepData.id
-            }
-        
-            axios.post(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, recieve)
-                .then(response => {
-                 location.reload();
-                 console.log('Data sent successfully:', response.data);
-                })
-                .catch(error => {
-                console.error('Error sending data:', error);
-            });    
-        }
-
-        function skipStep(){
-            // currentStepData.canBeSkipped
-            let recieve = {
-                action: "skip",
-                currentStepId: currentStepData.id
-            }
-
-            axios.post(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, recieve)
-                .then(response => {
-                location.reload();
-                 console.log('Data sent successfully:', response.data);
-                })
-                .catch(error => {
-                  console.error('Error sending data:', error);
-            });
-        }
-
-    </script>
+<div class="max-w-4xl mx-auto py-12">
+    <div class="p-6 flex items-center border-b-2 border-gray-300">
+        <div class="text-left">
+            <% if (currentStep.badge) { %>
+                <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded-full mb-2"><%= currentStep.badge %></span>
+            <% } %>
+            <h1 class="text-2xl font-medium text-gray-800"><%= currentStep.title %></h1>
+        </div>
+        <div class="ml-auto">
+            <span class="text-lg font-medium text-gray-800">Step <%= totalStepCount - leftStepsCount + 1 %></span>
+            <span class="text-sm text-gray-500">of <%= totalStepCount %></span>
+        </div>
+    </div>
+    <h2 class="p-6 font-medium text-gray-500"><%= currentStep.description %></h2>
 </div>
 
-</body>
-</html>
+<div id="installStep"></div>
+<input type="hidden" id="installStepOutput">
+<div class="p-6 flex justify-between items-center">
+    <div>
+        <button class="btn btn-green" id="submit" disabled onclick="sendDataToServer()">
+            <%= __("Next") %>
+        </button>
+        <button class="btn btn-grey" id="skip" onclick="skipStep()">
+            <%= __("Skip") %>
+        </button>
+    </div>
+</div>
+
+<script>
+
+    var currentStepData = <%- JSON.stringify(currentStep) %>;
+
+    if (currentStepData.payload.type === "multi") {
+        currentStepData.jsonSchema = currentStepData.payload.jsonSchema
+        currentStepData.uiSchema = currentStepData.payload.uiSchema
+    }
+
+    if (currentStepData.payload.type === "single") {
+        currentStepData.uiSchema = currentStepData.payload.data.uiSchema
+        currentStepData.jsonSchema = currentStepData.payload.data.jsonSchema
+    }
+
+    let skipButton = document.getElementById("skip");
+    if (!currentStepData.canBeSkipped) {
+        skipButton.setAttribute("hidden", true);
+    } else {
+        skipButton.removeAttribute("hidden");
+    }
+
+    MountJSONForm({
+        mountDivId: '#installStep',
+        uiSchema: currentStepData.uiSchema,
+        jsonSchema: currentStepData.jsonSchema,
+        mountDivOutput: 'installStepOutput',
+        validationCallback: (status) => {
+            let submitButton = document.getElementById("submit");
+            if (status === true) {
+                submitButton.setAttribute("disabled", true);
+            } else {
+                submitButton.removeAttribute("disabled");
+            }
+        },
+    })
+
+    function sendDataToServer() {
+        let installStepOutput = document.getElementById("installStepOutput").value;
+        let dataToSend = JSON.parse(installStepOutput);
+
+        let obj = {}
+        if (currentStepData.payload.type === "single") {
+            obj[currentStepData.payload.data.key] = dataToSend;
+        }
+
+        if (currentStepData.payload.type === "multi") {
+            for (let key in dataToSend) {
+                obj[key] = dataToSend[key];
+            }
+        }
+
+        let recieve = {
+            inputData: JSON.stringify(obj),
+            action: "next",
+            currentStepId: currentStepData.id
+        }
+
+        axios.post(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, recieve)
+            .then(response => {
+                location.reload();
+                console.log('Data sent successfully:', response.data);
+            })
+            .catch(error => {
+                console.error('Error sending data:', error);
+            });
+    }
+
+    function skipStep() {
+        // currentStepData.canBeSkipped
+        let recieve = {
+            action: "skip",
+            currentStepId: currentStepData.id
+        }
+
+        axios.post(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, recieve)
+            .then(response => {
+                location.reload();
+                console.log('Data sent successfully:', response.data);
+            })
+            .catch(error => {
+                console.error('Error sending data:', error);
+            });
+    }
+
+</script>
+<%- include("./partials/footer") %>
 
