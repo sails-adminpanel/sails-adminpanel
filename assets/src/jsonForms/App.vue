@@ -1,11 +1,11 @@
 <template>
-  <div v-if="schema && uischema" :class="[themeClass, 'myform', 'text', 'shadow']">  
+  <div v-if="schema && uischema" :class="[themeClass, 'template']">  
     <json-forms
       :data="data"
       :renderers="renderers"
       :schema="schema"
       :uischema="uischema"
-      :class="[themeClass,'form', 'shadow']"
+      :class="[themeClass]"
       @change="onChange"
     />
   </div>
@@ -173,7 +173,7 @@ export default defineComponent({
 <style scoped>
 
 .light-theme {
-  background-color: white;
+  background-color: rgb(249 250 251, 1);
   color: #333;
 }
 
@@ -205,14 +205,7 @@ export default defineComponent({
   padding-right: .75rem;
 }
 
-.myform {
-  width: 100%;
-  max-width: 20rem;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-}
+
 .step-button {
   padding: 10px 20px;
   margin-right: 10px;

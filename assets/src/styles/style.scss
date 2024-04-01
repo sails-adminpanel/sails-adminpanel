@@ -84,6 +84,117 @@ html.dark{
 	padding: 4px;
 }
 
+
+
+.myform {
+	width: 100%;
+	max-width: fit-content;
+	margin: 0 auto;
+  
+	.vertical-layout {
+	  box-sizing: border-box;
+	  display: flex;
+	  width: 100%;
+	  flex-flow: column wrap;
+	  padding: 16px;
+  
+	//   &-item {
+	// 	// Your styles for vertical layout items
+	//   }
+	}
+  
+	.horizontal-layout {
+	  box-sizing: border-box;
+	  display: flex;
+	  flex-direction: row;
+  
+	  &-item {
+		flex-basis: 0px;
+		-moz-box-flex: 1;
+		flex-grow: 1;
+		max-width: 100%;
+		margin: 0px;
+		flex-direction: row;
+		box-sizing: border-box;
+		padding-left: 16px;
+		// padding-top: 16px;
+	  }
+	}
+  }
+
+
+
+
+// .myform {
+// 	@apply w-full max-w-max mx-auto
+// }
+
+.template{
+  @apply rounded-lg border border-gray-300
+}
+
+// .vertical-layout {
+// 	@apply box-border flex w-full flex-col flex-wrap p-4
+// }
+
+// .vertical-layout-item {
+	
+// }
+
+// .horizontal-layout {
+// 	@apply box-border flex flex-row
+// }
+
+// .horizontal-layout-item {
+// 	flex-basis: 0px;
+//   	-moz-box-flex: 1;
+//   	flex-grow: 1;
+//  	max-width: 100%;
+//  	margin: 0px;
+//  	flex-direction: row;
+//  	box-sizing: border-box;
+// 	padding-left: 16px;
+// 	padding-top: 16px;
+// 	// @apply flex-grow flex-shrink-0 flex flex-row box-border max-w-full mx-0 flex-wrap
+// }
+
+.error{
+  color: rgb(211, 47, 47);
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  line-height: 1.66;
+//   letter-spacing: 0.03333em;
+  text-align: left;
+  margin: 3px 0px 0px;
+}
+
+.label {}
+
+.label-element {
+	padding-left: 16px;	
+	margin: 0px;
+  	font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  	font-weight: 500;
+  	font-size: 1.25rem;
+  	line-height: 1.6;
+}
+
+// .underline{
+// 	border: 0px;
+// 	position: relative;
+// }
+// .underline::before{
+//   border-bottom: 1px solid rgba(0, 0, 0, 0.42);
+//   left: 0px;
+//   bottom: 0px;
+//   content: " ";
+//   position: absolute;
+//   right: 0px;
+//   transition: border-bottom-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+//   pointer-events: none;
+//   width: 100%;
+// }
+
 .nav-link {
 	@apply h-full pt-2 text-sm font-medium text-neutral-500 dark:text-slate-100 relative relative after:content-[''] after:absolute
 	after:w-0 after:h-[3px] after:bottom-0 after:left-0 after:bg-blue-700 dark:after:bg-blue-400 hover:after:w-full hover:text-neutral-900 dark:hover:text-slate-400 after:transition-all whitespace-nowrap;
@@ -167,7 +278,7 @@ html.dark{
 	}
 }
 
-.btn-red, {
+.btn-red {
 	@apply uppercase text-red-600 font-bold border-red-600 hover:text-white hover:bg-red-600;
 }
 
@@ -187,6 +298,10 @@ select {
 	@apply px-3 py-2 rounded border border-gray-400 dark:border-gray-700 dark:focus:border-blue-600 outline-none focus:ring focus:ring-offset-0 focus:ring-blue-600 h-12 bg-white dark:bg-gray-900 transition;
 }
 
+.input[type="date"] {
+	width: 100%;
+
+}
 
 .textarea {
 	@apply h-[200px] w-full;

@@ -15,21 +15,17 @@
 </head>
 <body>
 
-
-
-
-
 <h1>Hello world from jsonforms</h1>
 <p>totalStepCount: <%= totalStepCount %></p>
 <p>leftStepsCount: <%= leftStepsCount %></p>
 <p>currentStep: <%= JSON.stringify(currentStep) %></p>
-
-<div class="content__body">
+<!-- style="display: none;" -->
+<div class="content__body myform">
         <div id="installStep"></div>
         <div id="installStep2"></div>
         
 	    <input type="hidden" id="installStepOutput">    
-        <button class="btn btn-green" id="skip"  onclick="skipStep()">
+        <button class="btn btn-green skip" id="skip"  onclick="skipStep()">
             <%= __("Skip") %>
         </button> 
         <button class="btn btn-green" id="submit" disabled  onclick="sendDataToServer()">
@@ -37,9 +33,8 @@
         </button> 
 
     <script>
-	
 		var currentStepData = <%- JSON.stringify(currentStep) %>;
-		
+
         if(currentStepData.payload.type === "multi"){
             currentStepData.jsonSchema = currentStepData.payload.jsonSchema
             currentStepData.uiSchema = currentStepData.payload.uiSchema
@@ -51,11 +46,14 @@
         }
         
         let skipButton = document.getElementById("skip");
+
         if(!currentStepData.canBeSkipped) {
-			skipButton.setAttribute("hidden", true);
+            skipButton.style.display = "none";
         } else {
-            skipButton.removeAttribute("hidden");
+            skipButton.style.display = "inline";
         }
+        // hidden
+
         
 		MountJSONForm({
 			mountDivId: '#installStep',
