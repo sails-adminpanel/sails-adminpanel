@@ -96,10 +96,9 @@ html.dark{
 	  display: flex;
 	  width: 100%;
 	  flex-flow: column wrap;
-	  padding: 16px;
+	  padding: 16px 16px 24px 16px;
   
 	//   &-item {
-	// 	// Your styles for vertical layout items
 	//   }
 	}
   
@@ -112,25 +111,27 @@ html.dark{
 		flex-basis: 0px;
 		-moz-box-flex: 1;
 		flex-grow: 1;
-		max-width: 100%;
+		max-width: 225px;
 		margin: 0px;
 		flex-direction: row;
 		box-sizing: border-box;
 		padding-left: 16px;
+		min-width: 225px;
 		// padding-top: 16px;
+	  }
+
+	  &:last-child {
+		padding-right: 16px;
 	  }
 	}
   }
-
-
-
 
 // .myform {
 // 	@apply w-full max-w-max mx-auto
 // }
 
 .template{
-  @apply rounded-lg border border-gray-300
+  @apply rounded-lg border border-gray-300 mb-4
 }
 
 // .vertical-layout {
