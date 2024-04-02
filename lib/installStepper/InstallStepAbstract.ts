@@ -8,6 +8,7 @@ export default abstract class InstallStepAbstract {
     public abstract description: string
     public abstract scriptsUrl: string
     public abstract stylesUrl: string
+    /** Absolute path to ejs template */
     public abstract ejsPath: string
     public abstract renderer: "ejs" | "jsonforms"
     public isSkipped: boolean = false

@@ -1,4 +1,5 @@
 import InstallStepAbstract from "./InstallStepAbstract";
+import * as fs from "fs";
 
 interface RenderData {
     totalStepCount: number
@@ -80,9 +81,10 @@ export class InstallStepper {
 
     /** Add step (replace if it already exists) */
     public static addStep(step: InstallStepAbstract) {
-        if (step.renderer !== "jsonforms") {
-            /** The ability of adding ejs inside step is being planned for customising installer */
-            throw "Install stepper error: Allowed renderer is only jsonforms for now"
+        if (step.renderer === "ejs") {
+            if (!step.ejsPath || !fs.existsSync(step.ejsPath)) {
+                throw `Step [${step.title}] error: ejs path does not exists`
+            }
         }
 
         const stepIndex = this.steps.findIndex(item => item.id === step.id)
