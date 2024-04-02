@@ -25,10 +25,10 @@
         <div id="installStep2"></div>
         
 	    <input type="hidden" id="installStepOutput">    
-        <button class="btn btn-green skip" id="skip"  onclick="skipStep()">
+        <button class="btn skip" id="skip"  onclick="skipStep()">
             <%= __("Skip") %>
         </button> 
-        <button class="btn btn-green" id="submit" disabled  onclick="sendDataToServer()">
+        <button class="btn" id="submit" disabled  onclick="sendDataToServer()">
             <%= __("Next") %>
         </button> 
 
@@ -47,6 +47,7 @@
         
         let skipButton = document.getElementById("skip");
 
+        currentStepData.canBeSkipped = true
         if(!currentStepData.canBeSkipped) {
             skipButton.style.display = "none";
         } else {
