@@ -20,7 +20,6 @@ export function MountJSONForm(formData){
 
     appInstance.validationCallback = formData.validationCallback
     
-    // generate data object for input form
     // appInstance.initializeData(formData.jsonSchema, formData.uiSchema)
     appInstance.initializeData(schema, uischema)
 

@@ -98,8 +98,17 @@ html.dark{
 	  flex-flow: column wrap;
 	  padding: 16px 16px 24px 16px;
   
-	//   &-item {
-	//   }
+	  &-item {
+		// flex-basis: 0px;
+		// -moz-box-flex: 1;
+		// flex-grow: 1;
+		// max-width: 225px;
+		// margin: 0px;
+		// flex-direction: row;
+		// box-sizing: border-box;
+		// padding-left: 16px;
+		min-width: 225px;
+	  }
 	}
   
 	.horizontal-layout {
@@ -133,6 +142,12 @@ html.dark{
 .template{
   @apply rounded-lg border border-gray-300 mb-4
 }
+
+.array-list-add{
+	// @apply rounded-lg border border-gray-300 mb-4
+	width: 16px;
+}
+
 
 // .vertical-layout {
 // 	@apply box-border flex w-full flex-col flex-wrap p-4
@@ -169,6 +184,13 @@ html.dark{
   text-align: left;
   margin: 3px 0px 0px;
   font-size: 10px;
+}
+
+.fullwidth{
+	width: 100%;
+}
+.fullwidth[type="checkbox"]{
+	width: 16px;
 }
 
 .label {}

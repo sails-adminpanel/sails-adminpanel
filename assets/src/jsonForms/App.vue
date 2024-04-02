@@ -29,7 +29,7 @@ const myStyles = mergeStyles(defaultStyles, {
       wrapper: 'wrapper',
       label: 'label',
       description: 'description',
-      input: 'text-input',
+      input: 'text-input fullwidth',
       error: 'error',
       textarea: 'text-area',
       select: 'select',
