@@ -15,6 +15,7 @@ export default abstract class InstallStepAbstract {
     public isProcessed: boolean = false;
     /** Data that will be given to browser */
     public payload: any = {};
+    public groupSortOrder: number = 1;
 
     /** Action that will be run when saving data to storage */
     public abstract process(data: any): Promise<void>

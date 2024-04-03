@@ -31,7 +31,7 @@ The `InstallStepAbstract` class serves as a template for individual installation
 - `process(data: any): Promise<void>`: Action to be executed when saving data to storage during the step.
 - `skipIt(): Promise<void>`: Initiates the skipping process for the step. Throws an error if the step cannot be skipped. Calls skip() method.
 - `skip(): Promise<void>`: Action to be executed when skipping the step. Protected method that will be executed from skipIt() method after all required checks.
-- `check(): Promise<boolean>`: Checks whether the step should be processed during installation.
+- `check(): Promise<boolean>`: Checks whether the step should be processed during installation. If returns true, step will not be added to stepper
 
 ## InstallStepper Class
 

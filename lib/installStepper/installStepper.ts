@@ -14,8 +14,6 @@ export class InstallStepper {
         return this.steps;
     }
 
-    // TODO добавить в доку как добавлять степы и в принципе как это все работает
-
     public static async processStep(stepId: string, data: any) {
         try {
             /** As we sort steps by sortOrder, we should check that previous steps were processed */
@@ -95,7 +93,19 @@ export class InstallStepper {
             this.steps.push(step);
         }
 
-        this.steps.sort((a, b) => a.sortOrder - b.sortOrder);
+        // sort by group, then by renderer and then by sortOrder
+        this.steps.sort((a, b) => {
+            if (a.groupSortOrder !== b.groupSortOrder) {
+                return a.groupSortOrder - b.groupSortOrder;
+            } else {
+                if (a.renderer !== b.renderer) {
+                    return a.renderer === 'ejs' ? -1 : 1;
+                } else {
+                    return a.sortOrder - b.sortOrder;
+                }
+            }
+        });
+
     }
 
     public static hasUnprocessedSteps(): boolean {
