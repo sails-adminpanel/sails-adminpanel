@@ -8,6 +8,8 @@
 
     <!-- Main CSS -->
     <link rel="stylesheet" href="/admin/assets/build/style/style.min.css"/>
+    <!-- Main Script -->
+    <script src="/admin/assets/build/js/script.min.js"></script>
     <style>
 		.alerts {
 			padding-left: 24px !important;
@@ -16,6 +18,13 @@
 </head>
 
 <body>
+
+<% if (sails.config.adminpanel && 
+    sails.config.adminpanel.translation && 
+    sails.config.adminpanel.translation.locales && 
+    sails.config.adminpanel.translation.defaultLocale) { %>
+    <% var isLocalized = true; %>
+<% } %>
 
 <div class="bg-gray-50 dark:bg-slate-800 dark:text-slate-100">
     <div class="flex min-h-screen items-center justify-center bg-gradient-to-tr from-purple-400 dark:from-slate-700 via-pink-500 dark:via-slate-900 to-red-500 dark:to-slate-800">
@@ -72,6 +81,16 @@
                         </div>
                     </div>
                 </div>
+
+                <% if (isLocalized) { %>
+                <div class="mb-6 last:mb-0">
+                    <label class="block font-bold mb-2"><%= __("Locale") %></label>
+                    <div class="widget_narrow">
+                        <span class="locale"></span>
+                        <input class="text-input w-full" type="text" id="locale" name="locale" hidden>
+                    </div>
+                </div>
+                <% } %>
                 <p>
                     <button class="inline-flex justify-center items-baseline gap-1 whitespace-nowrap focus:outline-none transition-colors cursor-pointer rounded border py-2 px-3 text-white bg-blue-500 dark:bg-blue-700 dark:hover:text-slate-300 font-medium border-green-500 dark:border-gray-900 hover:bg-blue-700 dark:hover:bg-blue-900"
                             type="submit"><%= __("Create") %></button>
@@ -88,6 +107,23 @@
 	if (dark === '1') {
 		html.classList.add('dark')
 	}
+
+    <% if (isLocalized) { %>
+    let localeOptions = [];
+	
+    for (let locale of <%- JSON.stringify(sails.config.adminpanel.translation.locales) %>) {
+		localeOptions.push({label: locale, value: locale})
+	}
+
+	let locale = new SelectPure(".locale", {
+		options: localeOptions,
+		value: '<%- sails.config.adminpanel.translation.defaultLocale %>',
+        autocomplete: true,
+		onChange: function (value) {
+			$('#locale').val(value)
+		}
+	});
+    <% } %>
 </script>
 </body>
 </html>
