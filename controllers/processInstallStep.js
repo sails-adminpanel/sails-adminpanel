@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 const installStepper_1 = require("../lib/installStepper/installStepper");
+const path = require("path");
 async function processInstallStep(req, res) {
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
@@ -26,18 +27,23 @@ async function processInstallStep(req, res) {
         }
     }
     if (req.method.toUpperCase() === 'POST') {
-        console.log("POST REQUEST TO PROCESS INSTALL STEP");
-        // TODO если тип json и нету ui-schema, то vue будет строить ui-schema по json схеме (добавить потом пример
-        //  такой настройки когда будет готово vue app)
-        // TODO есть еще проблема в том, то админка успевает пропустить пользователя по роуту до того как policy сработает
-        if (req.body.inputData) {
-            console.log("INPUT DATA", JSON.parse(req.body.inputData), req.body.currentStepId);
-        }
-        else {
-            console.log("NO INPUT DATA, THIS IS SKIP");
-        }
         try {
+            console.log("POST REQUEST TO PROCESS INSTALL STEP");
+            console.log("req.body", req.body);
             const currentStepId = req.body.currentStepId;
+            const filesCounter = req.body.filesCounter;
+            // upload files before processing other fields (filesCounter > 0 means that req contains files)
+            if (filesCounter && filesCounter > 0) {
+                for (let i = 0; i < filesCounter; i++) {
+                    let filesUpstream = req.file(`files_${i}`);
+                    try {
+                        await uploadFiles(filesUpstream, currentStepId);
+                    }
+                    catch (error) {
+                        console.error('Error uploading files:', error);
+                    }
+                }
+            }
             if (req.body.action === 'next') {
                 const inputData = JSON.parse(req.body.inputData);
                 // trying to process step
@@ -67,3 +73,30 @@ async function processInstallStep(req, res) {
 }
 exports.default = processInstallStep;
 ;
+function uploadFiles(files, currentStepId) {
+    // TODO: Investigate system hang when trying to save a file, and execution of the code after save block does not process.
+    //  The system seems to only proceed after encountering a timeout error.
+    //  This issue is ruining the ability to upload multiple files.
+    return new Promise((resolve, reject) => {
+        files.upload({
+            dirname: `installStepper/uploadedImages`,
+            maxBytes: 100000000,
+            saveAs: function (file, cb) {
+                const extension = path.extname(file.filename);
+                const baseName = path.basename(file.filename);
+                const uniqueName = `${currentStepId}_${baseName}_${Date.now()}${extension}`;
+                console.log("FILE", file.filename);
+                cb(null, uniqueName);
+            }
+        }, (err, uploadedFiles) => {
+            if (err) {
+                console.error(err);
+                return reject(err);
+            }
+            if (uploadedFiles && uploadedFiles.length) {
+                console.log("DOWNLOADED FILES", uploadedFiles);
+            }
+            resolve();
+        });
+    });
+}
