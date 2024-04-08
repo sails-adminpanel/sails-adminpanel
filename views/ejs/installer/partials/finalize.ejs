@@ -40,7 +40,7 @@
 
 
 <div>
-    <h1 class="text-2xl font-semibold mb-4">Install Finalize Progress</h1>
+    <h1 class="text-2xl font-medium text-gray-800 pb-5">Install finalize progress</h1>
 
     <div id="progress-bar" class="relative w-full bg-gray-200 rounded-lg overflow-hidden">
         <div id="progress-bar-fill" class="h-8 bg-blue-500 text-white text-sm flex items-center justify-center shim-blue">
@@ -74,7 +74,7 @@
 
             // Update status text
             const statusText = document.getElementById('status-text');
-            statusText.textContent = `Status: ${status}`;
+            statusText.textContent = `Status: ${status !== "fulfilled" ? "<%=__('In progress')%>" : "<%=__('Done')%>"}`;
 
             // Render finalize list
             const finalizeListContainer = document.getElementById('finalize-list');
@@ -85,10 +85,10 @@
                 listItem.innerHTML = `
                         <div class="flex items-center justify-between">
                             <div>
-                                <span class="font-semibold">Step ${item.id}:</span>
-                                <span class="ml-2 text-sm text-gray-500">${item.status}</span>
+                                <span class="text-gray-600">${item.description}:</span>
+                                <span class="ml-2 text-sm text-gray-500">${item.status !== "fulfilled" ? "<%=__('In progress')%>" : "<%=__('Done')%>"}</span>
                             </div>
-                            <div class="text-gray-600">${item.description}</div>
+                            <div class="text-gray-300">${item.id}</div>
                         </div>
                     `;
                 finalizeListContainer.appendChild(listItem);
