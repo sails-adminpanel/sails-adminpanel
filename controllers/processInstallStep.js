@@ -15,16 +15,9 @@ async function processInstallStep(req, res) {
     if (req.method.toUpperCase() === 'GET') {
         console.log("GET REQUEST TO PROCESS INSTALL STEP");
         console.log(installStepper_1.InstallStepper.getSteps());
-        if (installStepper_1.InstallStepper.hasUnfinalizedSteps() && !installStepper_1.InstallStepper.hasUnprocessedSteps()) {
-            console.log(installStepper_1.InstallStepper.getSteps());
-            console.log("YES, HAS UNFINALIZED STEPS");
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/processInstallFinalize`);
-        }
-        if (installStepper_1.InstallStepper.hasUnprocessedSteps()) {
-            // console.log(InstallStepper.getSteps())
+        if (installStepper_1.InstallStepper.hasUnprocessedSteps() || installStepper_1.InstallStepper.hasUnfinalizedSteps()) {
             let renderData = installStepper_1.InstallStepper.render();
             let renderer = renderData.currentStep.renderer;
-            // console.log("renderer", renderer)
             return res.viewAdmin(`installer/${renderer}`, renderData);
             // return res.viewAdmin(`installer/dev`, renderData);
         }
@@ -64,6 +57,7 @@ async function processInstallStep(req, res) {
             }
             // go back to stepper if there are more unprocessed steps, otherwise go back to /admin
             if (installStepper_1.InstallStepper.hasUnprocessedSteps()) {
+                console.log("STEPS", installStepper_1.InstallStepper.getSteps());
                 return res.redirect(`${sails.config.adminpanel.routePrefix}/processInstallStep`);
             }
             else {

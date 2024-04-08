@@ -11,6 +11,8 @@ async function processInstallStep(req, res) {
             return res.sendStatus(403);
         }
     }
+    console.log("IN PROCESS FINALIZE");
+    console.log(installStepper_1.InstallStepper.getFinalizeStatus());
     return res.json(installStepper_1.InstallStepper.getFinalizeStatus());
     // TODO тут нужно разрендерить вьюху (какую? если finalize.ejs это только partial, то что мы рендерим?)
     // TODO этот контроллер вообще можно удалить, он бессполезный, на него мы идем из основного.

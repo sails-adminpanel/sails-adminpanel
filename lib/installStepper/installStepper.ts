@@ -47,12 +47,7 @@ export class InstallStepper {
     }
 
     private static getStepById(stepId: string): InstallStepAbstract {
-        const step = this.steps.find(item => item.id === stepId);
-        if (!step) {
-            throw `Step [${stepId}] not found`
-        }
-
-        return step;
+        return this.steps.find(item => item.id === stepId);
     }
 
     /** Prepares steps array for user interface render */
@@ -113,8 +108,12 @@ export class InstallStepper {
 
 	public static getNextUnprocessedStep(): InstallStepAbstract {
         let nextStep = this.steps.find(step => !step.isProcessed && !step.isSkipped);
+        console.log("NEXT STEP", nextStep)
+        console.log("HAS UNFINALIZED STEPS", this.hasUnfinalizedSteps())
+        console.log("ALL STEPS", this.getSteps())
         if (!nextStep && this.hasUnfinalizedSteps()) {
             if (this.getStepById("finalize")) {
+                console.log("WE HAVE FINALIZE STEP")
                 nextStep = this.getStepById("finalize")
 
             } else {
@@ -123,6 +122,7 @@ export class InstallStepper {
                     // clear steps if all of them was processed and finalized
                     if (!this.hasUnprocessedSteps() && !this.hasUnfinalizedSteps()) {
                         this.steps = []
+                        console.log("CREARING STEPS")
                         clearInterval(timer);
                     }
                 }, 5000)

@@ -16,5 +16,6 @@ export default class FinalizeStep extends InstallStepAbstract {
     check(): Promise<boolean>;
     process(data: any): Promise<void>;
     skip(): Promise<void>;
-    finally(): Promise<any>;
+    finally(): Promise<void>;
+    toFinally(): void;
 }
