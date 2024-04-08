@@ -129,4 +129,28 @@
             });
 
     }
+
+    let submitButton = document.getElementById("submit");
+    if (currentStepData.renderer === "ejs") {
+        let inputs = document.querySelectorAll('input[required], textarea[required], select[required]');
+        if (inputs.length) {
+            submitButton.setAttribute("disabled", true);
+            document.addEventListener("input", checkRequiredInputs);
+        }
+    }
+
+    function checkRequiredInputs() {
+        let submitButton = document.getElementById("submit");
+        let inputs = document.querySelectorAll('input[required], textarea[required], select[required]');
+
+        for (let input of inputs) {
+            if (!input.value.trim()) {
+                submitButton.setAttribute("disabled", true);
+                return;
+            }
+        }
+
+        submitButton.removeAttribute("disabled");
+    }
+
 </script>

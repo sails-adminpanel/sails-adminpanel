@@ -14,6 +14,12 @@ async function processInstallStep(req, res) {
     }
     if (req.method.toUpperCase() === 'GET') {
         console.log("GET REQUEST TO PROCESS INSTALL STEP");
+        console.log(installStepper_1.InstallStepper.getSteps());
+        if (installStepper_1.InstallStepper.hasUnfinalizedSteps() && !installStepper_1.InstallStepper.hasUnprocessedSteps()) {
+            console.log(installStepper_1.InstallStepper.getSteps());
+            console.log("YES, HAS UNFINALIZED STEPS");
+            return res.redirect(`${sails.config.adminpanel.routePrefix}/processInstallFinalize`);
+        }
         if (installStepper_1.InstallStepper.hasUnprocessedSteps()) {
             // console.log(InstallStepper.getSteps())
             let renderData = installStepper_1.InstallStepper.render();

@@ -1,4 +1,5 @@
 import InstallStepAbstract from "./InstallStepAbstract";
+import FinalizeStep from "./finalizeStep";
 import * as fs from "fs";
 
 interface RenderData {
@@ -35,10 +36,8 @@ export class InstallStepper {
 			step.isProcessed = true;
 			console.log(`STEP ${stepId} was processed`);
 
-			// clear steps if all of them was processed
-            if (!this.hasUnprocessedSteps()) {
-				this.steps = []
-			}
+            // call finalize method
+            step.toFinally()
 
         } catch (e) {
             sails.log.error(`Error processing step: ${e}`);
@@ -113,6 +112,44 @@ export class InstallStepper {
     }
 
 	public static getNextUnprocessedStep(): InstallStepAbstract {
-        return this.steps.find(step => !step.isProcessed && !step.isSkipped);
+        let nextStep = this.steps.find(step => !step.isProcessed && !step.isSkipped);
+        if (!nextStep && this.hasUnfinalizedSteps()) {
+            if (this.getStepById("finalize")) {
+                nextStep = this.getStepById("finalize")
+
+            } else {
+                let timer = setInterval(() => {
+
+                    // clear steps if all of them was processed and finalized
+                    if (!this.hasUnprocessedSteps() && !this.hasUnfinalizedSteps()) {
+                        this.steps = []
+                        clearInterval(timer);
+                    }
+                }, 5000)
+
+                nextStep = new FinalizeStep();
+                this.addStep(nextStep);
+            }
+        }
+
+        return nextStep;
 	}
+
+    public static hasUnfinalizedSteps(): boolean {
+        return this.steps.some(step => step.finallyPromise?.status === "pending");
+    }
+
+    public static getFinalizeStatus() {
+        let stepsWithFinalize = this.steps.filter(step => step.finallyPromise !== null);
+        let generalStatus = "fulfilled";
+        let stepFinalizeStatuses = stepsWithFinalize.map(item => {
+            // if one of them is pending, general status is pending
+            if (item.finallyPromise.status === "pending") {
+                generalStatus = "pending";
+            }
+            return {id: item.id, status: item.finallyPromise.status, description: item.finallyDescription}
+        })
+
+        return {status: generalStatus, finalizeList: stepFinalizeStatuses ?? []};
+    }
 }

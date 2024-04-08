@@ -1,3 +1,4 @@
+import { ObservablePromise } from "../observablePromise";
 export default abstract class InstallStepAbstract {
     abstract id: string;
     abstract title: string;
@@ -16,10 +17,17 @@ export default abstract class InstallStepAbstract {
     /** Data that will be given to browser */
     payload: any;
     groupSortOrder: number;
+    finallyPromise: ObservablePromise<void>;
+    finallyDescription: string;
     /** Action that will be run when saving data to storage */
     abstract process(data: any): Promise<void>;
+    /** Method will be called after processing step (both process or skip) */
+    finally(): Promise<void>;
+    /** This method will be called by InstallStepper and is a wrapper for "finally" method */
+    toFinally(timeout?: number): void;
     /** Action that will be run when skipping the step */
     protected abstract skip(): Promise<void>;
+    /** This method will be called by InstallStepper and is a wrapper for "skip" method */
     skipIt(): Promise<void>;
     /** Checks that step should be processed during install */
     abstract check(): Promise<boolean>;

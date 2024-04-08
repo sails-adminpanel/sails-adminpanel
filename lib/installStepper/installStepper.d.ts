@@ -16,5 +16,14 @@ export declare class InstallStepper {
     static addStep(step: InstallStepAbstract): void;
     static hasUnprocessedSteps(): boolean;
     static getNextUnprocessedStep(): InstallStepAbstract;
+    static hasUnfinalizedSteps(): boolean;
+    static getFinalizeStatus(): {
+        status: string;
+        finalizeList: {
+            id: string;
+            status: "pending" | "fulfilled" | "rejected";
+            description: string;
+        }[];
+    };
 }
 export {};

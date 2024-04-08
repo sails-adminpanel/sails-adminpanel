@@ -1,3 +1,5 @@
+import {ObservablePromise} from "../observablePromise";
+
 export default abstract class InstallStepAbstract {
     public abstract id: string
     public abstract title: string
@@ -16,13 +18,32 @@ export default abstract class InstallStepAbstract {
     /** Data that will be given to browser */
     public payload: any = {};
     public groupSortOrder: number = 1;
+    public finallyPromise: ObservablePromise<void> = null;
+    public finallyDescription: string = null;
 
     /** Action that will be run when saving data to storage */
     public abstract process(data: any): Promise<void>
 
+    /** Method will be called after processing step (both process or skip) */
+    public finally(): Promise<void> {
+        return null;
+    }
+
+    /** This method will be called by InstallStepper and is a wrapper for "finally" method */
+    public toFinally(timeout: number = 15*60*1000): void {
+        if (this.finallyPromise && this.finallyPromise.status === "pending") {
+            sails.log.warn(`Method "finally" was already executed and won't be executed again`);
+        } else {
+            this.finallyPromise = new ObservablePromise(this.finally(), timeout)
+        }
+
+        this.finallyPromise.promise;
+    }
+
     /** Action that will be run when skipping the step */
     protected abstract skip(): Promise<void>
 
+    /** This method will be called by InstallStepper and is a wrapper for "skip" method */
     public async skipIt(): Promise<void> {
         if (this.canBeSkipped === false) {
             throw `Step [${this.title}] can not be skipped`
