@@ -134,6 +134,8 @@
             submitButton.setAttribute("disabled", true);
             document.addEventListener("input", checkRequiredInputs);
         }
+    } else {
+        submitButton.setAttribute("disabled", true);
     }
 
     function checkRequiredInputs() {
