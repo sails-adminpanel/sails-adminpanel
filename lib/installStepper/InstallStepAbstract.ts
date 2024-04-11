@@ -22,7 +22,7 @@ export default abstract class InstallStepAbstract {
     public finallyDescription: string = null;
 
     /** Action that will be run when saving data to storage */
-    public abstract process(data: any): Promise<void>
+    public abstract process(data: any, context?: any): Promise<void>
 
     /** Method will be called after processing step (both process or skip) */
     public finally(): Promise<void> {

@@ -20,7 +20,7 @@ export default abstract class InstallStepAbstract {
     finallyPromise: ObservablePromise<void>;
     finallyDescription: string;
     /** Action that will be run when saving data to storage */
-    abstract process(data: any): Promise<void>;
+    abstract process(data: any, context?: any): Promise<void>;
     /** Method will be called after processing step (both process or skip) */
     finally(): Promise<void>;
     /** This method will be called by InstallStepper and is a wrapper for "finally" method */

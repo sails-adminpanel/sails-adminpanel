@@ -6,10 +6,12 @@ interface RenderData {
     totalStepCount: number
     leftStepsCount: number
     currentStep: InstallStepAbstract
+    locale: string
 }
 
 export class InstallStepper {
     private static steps: InstallStepAbstract[] = [];
+    public static context: any = {};
 
     public static getSteps(): InstallStepAbstract[] {
         return this.steps;
@@ -32,7 +34,12 @@ export class InstallStepper {
             }
 
             let step = this.getStepById(stepId);
-            await step.process(data);
+
+            // get context copy and write down information in it on process without damaging source object
+            const contextCopy = {...this.context};
+            await step.process(data, contextCopy);
+            Object.assign(this.context, contextCopy);
+
 			step.isProcessed = true;
 			console.log(`STEP ${stepId} was processed`);
 
@@ -51,13 +58,23 @@ export class InstallStepper {
     }
 
     /** Prepares steps array for user interface render */
-    public static render(): RenderData {
+    public static render(locale: string): RenderData {
 		let stepToRender = this.getNextUnprocessedStep();
 		let leftSteps = this.steps.filter(step => !step.isProcessed && !step.isSkipped);
 
-        // TODO there will be some checks about errors and some important properties
+        // TODO there will be step translation
+        if (typeof sails.config.adminpanel.translation !== "boolean") {
+            if (!locale || !sails.config.adminpanel.translation.locales.includes(locale)) {
+                locale = sails.config.adminpanel.translation.defaultLocale || "en";
+            }
+        } else {
+            locale = "en";
+        }
 
-        return {totalStepCount: this.steps.length, leftStepsCount: leftSteps.length, currentStep: stepToRender};
+        console.log("Will be rendered with locale ", locale);
+        this.context.locale = locale;
+
+        return {totalStepCount: this.steps.length, leftStepsCount: leftSteps.length, currentStep: stepToRender, locale: locale};
     }
 
     public static async skipStep(stepId: string) {
@@ -108,12 +125,8 @@ export class InstallStepper {
 
 	public static getNextUnprocessedStep(): InstallStepAbstract {
         let nextStep = this.steps.find(step => !step.isProcessed && !step.isSkipped);
-        console.log("NEXT STEP", nextStep)
-        console.log("HAS UNFINALIZED STEPS", this.hasUnfinalizedSteps())
-        console.log("ALL STEPS", this.getSteps())
         if (!nextStep && this.hasUnfinalizedSteps()) {
             if (this.getStepById("finalize")) {
-                console.log("WE HAVE FINALIZE STEP")
                 nextStep = this.getStepById("finalize")
 
             } else {
@@ -122,7 +135,7 @@ export class InstallStepper {
                     // clear steps if all of them was processed and finalized
                     if (!this.hasUnprocessedSteps() && !this.hasUnfinalizedSteps()) {
                         this.steps = []
-                        console.log("CREARING STEPS")
+                        console.log("CLEARING STEPS", this.steps)
                         clearInterval(timer);
                     }
                 }, 5000)

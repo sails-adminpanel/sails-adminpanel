@@ -13,10 +13,9 @@ export default async function processInstallStep(req, res) {
 
 	if (req.method.toUpperCase() === 'GET') {
 		console.log("GET REQUEST TO PROCESS INSTALL STEP")
-		console.log(InstallStepper.getSteps());
 
 		if (InstallStepper.hasUnprocessedSteps() || InstallStepper.hasUnfinalizedSteps()) {
-			let renderData = InstallStepper.render();
+			let renderData = InstallStepper.render(req.session.UserAP.locale);
 			let renderer = renderData.currentStep.renderer;
 
 			return res.viewAdmin(`installer/${renderer}`, renderData);
@@ -36,12 +35,14 @@ export default async function processInstallStep(req, res) {
 			const filesCounter = req.body.filesCounter;
 
 			// upload files before processing other fields (filesCounter > 0 means that req contains files)
+			let uploadedFiles = [];
 			if (filesCounter && filesCounter > 0) {
 				for (let i = 0; i < filesCounter; i++) {
 					let filesUpstream = req.file(`files_${i}`);
 
 					try {
-						await uploadFiles(filesUpstream, currentStepId);
+						let uploadedFile = await uploadFiles(filesUpstream, currentStepId);
+						uploadedFiles.push(uploadedFile);
 					} catch (error) {
 						console.error('Error uploading files:', error);
 					}
@@ -50,6 +51,9 @@ export default async function processInstallStep(req, res) {
 
 			if (req.body.action === 'next') {
 				const inputData = JSON.parse(req.body.inputData);
+				if (uploadedFiles.length) {
+					inputData.uploadedFiles = uploadedFiles;
+				}
 
 				// trying to process step
 				await InstallStepper.processStep(currentStepId, inputData);
@@ -64,7 +68,6 @@ export default async function processInstallStep(req, res) {
 
 			// go back to stepper if there are more unprocessed steps, otherwise go back to /admin
 			if (InstallStepper.hasUnprocessedSteps()) {
-				console.log("STEPS", InstallStepper.getSteps());
 				return res.redirect(`${sails.config.adminpanel.routePrefix}/processInstallStep`);
 
 			} else {
@@ -91,20 +94,24 @@ function uploadFiles(files, currentStepId) {
 			maxBytes: 100000000,
 			saveAs: function (file, cb) {
 				const extension = path.extname(file.filename);
-				const baseName = path.basename(file.filename);
+				const baseName = path.basename(file.filename, path.extname(file.filename));
 				const uniqueName = `${currentStepId}_${baseName}_${Date.now()}${extension}`;
-				console.log("FILE", file.filename)
 				cb(null, uniqueName);
 			}
 		}, (err, uploadedFiles) => {
 			if (err) {
 				console.error(err);
-				return reject(err);
+				reject(err);
+
+			} else if (uploadedFiles && uploadedFiles.length > 0) {
+				const uploadedFile = uploadedFiles[0];
+				const uploadedFileName = uploadedFile.fd;
+				console.log("DOWNLOADED FILE", uploadedFileName);
+				resolve(uploadedFileName);
+
+			} else {
+				reject(new Error("No files were uploaded"));
 			}
-			if (uploadedFiles && uploadedFiles.length) {
-				console.log("DOWNLOADED FILES", uploadedFiles)
-			}
-			resolve();
 		});
 	});
 }
