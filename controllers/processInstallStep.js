@@ -44,7 +44,14 @@ async function processInstallStep(req, res) {
                 }
             }
             if (req.body.action === 'next') {
-                const inputData = JSON.parse(req.body.inputData);
+                try {
+                    var inputData = typeof req.body === "object" ? req.body.inputData : JSON.parse(req.body).inputData;
+                }
+                catch (error) {
+                    const errorMessage = `Install step process: failed parse body JSON data: ${req.body}`;
+                    sails.log.error(errorMessage);
+                    throw errorMessage;
+                }
                 // trying to process step
                 await installStepper_1.InstallStepper.processStep(currentStepId, inputData);
             }

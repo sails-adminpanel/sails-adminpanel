@@ -23,7 +23,12 @@
 
         if (currentStepData.renderer === "jsonforms") {
             let installStepOutput = document.getElementById("installStepOutput").value;
-            let dataToSend = JSON.parse(installStepOutput);
+            let dataToSend;
+            try {
+                dataToSend = JSON.parse(installStepOutput);
+            } catch (error) {
+                dataToSend = installStepOutput;
+            }
 
             let obj = {}
             if (currentStepData.payload.type === "single") {
@@ -37,7 +42,7 @@
             }
 
             formData = {
-                inputData: JSON.stringify(obj),
+                inputData: obj,
                 action: "next",
                 currentStepId: currentStepData.id
             }
@@ -87,19 +92,23 @@
 
         fetch(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, {
             method: 'POST',
-            body: formData
+            body: typeof formData === "object" ? JSON.stringify(formData) : `${formData}`,
+            headers: {
+                'Content-Type': 'application/json' // Указываем MIME-тип JSON
+            }
         })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                } else {
-                    location.reload();
-                    console.log('Data sent successfully:', data);
-                }
-            })
-            .catch(error => {
-                console.error('Error sending data:', error);
-            });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            } else {
+                location.reload();
+                console.log('Data sent successfully:', data);
+            }
+        })
+        .catch(error => {
+            console.error('Error sending data:', error);
+        });
+
     }
 
     function skipStep() {
@@ -137,6 +146,8 @@
             submitButton.setAttribute("disabled", true);
             document.addEventListener("input", checkRequiredInputs);
         }
+    } else {
+        submitButton.setAttribute("disabled", true);
     }
 
     function checkRequiredInputs() {
