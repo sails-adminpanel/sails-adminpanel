@@ -72,20 +72,6 @@ export default defineComponent({
 
       if(this.isDataFilled()){
 
-        // let obj = {}
-        // if(this.formData.stepData.payload.type === "single"){
-        //   obj[this.formData.stepData.payload.data.key] = this.data;
-        // }
-
-        // if(this.formData.stepData.payload.type === "multi"){
-        //   for(let key in this.data){
-        //     obj[key] = this.data[key];
-        //   }
-        // }
-
-        // for(let key in this.data){
-        //     obj[key] = this.data[key];
-        //  }
         console.log("Data on change: ",this.data)
 
         let recieve = JSON.stringify(this.data);
@@ -105,6 +91,14 @@ export default defineComponent({
         if (!this.data[key]) {
           return false;
         }
+        
+        // if (this.data[key] === undefined || this.data[key] === null) {
+        //   return false;
+        // }
+    
+        // if (typeof this.data[key] === 'boolean' && !this.data[key]) {
+        //   continue;
+        // }
       }
       return true;
     },

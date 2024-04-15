@@ -84,63 +84,37 @@ html.dark{
 	padding: 4px;
 }
 
-
-
 .myform {
-	// 	@apply w-full max-w-max mx-auto
-	width: 100%;
-	max-width: fit-content;
-	margin: 0 auto;
-	min-width: fit-content;
+	@apply w-full max-w-fit mx-auto min-w-fit;
   
 	.vertical-layout {
-	  box-sizing: border-box;
-	  display: flex;
-	  width: 100%;
-	  flex-flow: column wrap;
-	  padding: 16px 16px 16px 16px;
+		@apply box-border flex w-full flex-col flex-wrap p-4;
   
 	  &-item {
-		// flex-basis: 0px;
-		// -moz-box-flex: 1;
-		// flex-grow: 1;
-		// max-width: 225px;
-		// margin: 0px;
-		// flex-direction: row;
-		// box-sizing: border-box;
-		// padding-left: 16px;
-		min-width: 225px;
+		@apply min-w-56;
 	  }
 	}
   
 	.horizontal-layout {
-	  box-sizing: border-box;
-	  display: flex;
-	  flex-direction: row;
+	  @apply box-border flex flex-row;
   
 	  &-item {
-		flex-basis: 0px;
-		-moz-box-flex: 1;
-		flex-grow: 1;
-		margin: 0px;
-		flex-direction: row;
-		box-sizing: border-box;
-		padding-left: 16px;
-		min-width: 225px;
-		// max-width: 225px; 
-		// padding-top: 16px;
+		@apply flex-grow flex-shrink-0 flex flex-row box-border max-w-full mx-0 flex-wrap pl-4 min-w-56;
 	  }
 
 	  &:last-child {
-		padding-right: 16px;
+		@apply pr-4;
 	  }
 	}
   }
 
 .template{
-  @apply rounded-lg border border-gray-300 mb-4
+	@apply rounded-lg border border-gray-300 mb-4;
 }
 
+.control{
+	@apply w-full;
+}
 .array-list {
 
 }
@@ -157,23 +131,16 @@ html.dark{
 }
 
 .array-list-item-toolbar{
-	padding: 0px 0px 0px 16px;
+	@apply pl-4;
 }
+
 .array-list-item-content{
 
 }
 
 .array-list-no-data{
-	// display: none;
-	display: flex;
- 	justify-content: center;
-	margin: 0px;
+	@apply flex justify-center items-center m-0  font-semibold text-base leading-6 tracking-tighter pt-4;
 	font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-	font-weight: 600;
-	font-size: 1rem;
-	line-height: 1.5;
-	letter-spacing: 0.00938em;
-	padding: 16px 0 0 0;
 }
 
 .array-list-item-label {
@@ -181,6 +148,7 @@ html.dark{
 }
 
 .array-list-legend {
+	// @apply flex justify-end border-b border-solid border-black w-full;
 	width: 100%;
   	justify-content: right;
   	display: flex;
@@ -188,76 +156,43 @@ html.dark{
 }
 
 .array-list-add{
-	// @apply rounded-lg border border-gray-300 mb-4
-  color: rgba(0, 0, 0, 0.54);
-  font-size: 2rem;
+  @apply text-opacity-50 text-black text-4xl;
+
 }
 
 .array-list-item-move-up{
-	color: rgba(0, 0, 0, 0.54);
-  	font-size: 1.5rem;
+	@apply text-opacity-50 text-black text-2xl;
 }
 .array-list-item-move-down{
-	color: rgba(0, 0, 0, 0.54);
-  	font-size: 1.5rem;
+	@apply text-opacity-50 text-black text-2xl;
 }
 .array-list-item-delete{
-	color: rgba(0, 0, 0, 0.54);
-  	font-size: 1.5rem;
+	@apply text-opacity-50 text-black text-lg;
 }
-// .vertical-layout {
-// 	@apply box-border flex w-full flex-col flex-wrap p-4
-// }
-
-// .vertical-layout-item {
-	
-// }
-
-// .horizontal-layout {
-// 	@apply box-border flex flex-row
-// }
-
-// .horizontal-layout-item {
-// 	 @apply flex-grow flex-shrink-0 flex flex-row box-border max-w-full mx-0 flex-wrap
-// }
 
 .error{
-  color: rgb(211, 47, 47);
+  @apply text-red-500 font-normal leading-4 text-left mt-3 text-xs;
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-  font-weight: 400;
-  line-height: 1.66;
-//   letter-spacing: 0.03333em;
-  text-align: left;
-  margin: 3px 0px 0px;
-  font-size: 10px;
 }
 
 .description{
+  @apply font-normal leading-4 text-left mt-3 text-xs;
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-  font-weight: 400;
-  line-height: 1.66;
-//   letter-spacing: 0.03333em;
-  text-align: left;
-  margin: 3px 0px 0px;
-  font-size: 10px;
 }
 
 .fullwidth{
-	width: 100%;
+	@apply w-full;
 }
+
 .fullwidth[type="checkbox"]{
-	width: 16px;
+	@apply w-4;
 }
 
 .label {}
 
 .label-element {
-	padding-left: 16px;	
-	margin: 0px;
-  	font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-  	font-weight: 500;
-  	font-size: 1.25rem;
-  	line-height: 1.6;
+	@apply pl-4 m-0 font-medium text-lg leading-6;
+	font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 }
 
 

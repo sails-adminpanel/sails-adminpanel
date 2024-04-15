@@ -20,8 +20,8 @@ export function MountJSONForm(formData){
 
     appInstance.validationCallback = formData.validationCallback
     
-    // appInstance.initializeData(formData.jsonSchema, formData.uiSchema)
-    appInstance.initializeData(schema, uischema)
+    appInstance.initializeData(formData.jsonSchema, formData.uiSchema)
+    // appInstance.initializeData(schema, uischema)
 
     // if form validation is ok mountInputId have to receive value from form
     appInstance.addOutput(formData.mountDivOutput)
