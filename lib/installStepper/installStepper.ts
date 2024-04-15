@@ -1,6 +1,7 @@
 import InstallStepAbstract from "./InstallStepAbstract";
 import FinalizeStep from "./finalizeStep";
 import * as fs from "fs";
+import {TranslationHelper} from "../../helper/translationHelper";
 
 interface RenderData {
     totalStepCount: number
@@ -62,7 +63,7 @@ export class InstallStepper {
 		let stepToRender = this.getNextUnprocessedStep();
 		let leftSteps = this.steps.filter(step => !step.isProcessed && !step.isSkipped);
 
-        // TODO there will be step translation
+        // set locale
         if (typeof sails.config.adminpanel.translation !== "boolean") {
             if (!locale || !sails.config.adminpanel.translation.locales.includes(locale)) {
                 locale = sails.config.adminpanel.translation.defaultLocale || "en";
@@ -74,7 +75,15 @@ export class InstallStepper {
         console.log("Will be rendered with locale ", locale);
         this.context.locale = locale;
 
-        return {totalStepCount: this.steps.length, leftStepsCount: leftSteps.length, currentStep: stepToRender, locale: locale};
+        // translate step
+        stepToRender = TranslationHelper.translateProperties(stepToRender, locale, ["title", "description", "name"]);
+
+        return {
+            totalStepCount: this.steps.length,
+            leftStepsCount: leftSteps.length,
+            currentStep: stepToRender,
+            locale: locale
+        };
     }
 
     public static async skipStep(stepId: string) {

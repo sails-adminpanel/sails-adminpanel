@@ -1,5 +1,7 @@
 import * as path from "path";
 import * as fs from "fs";
+import InstallStepAbstract from "../lib/installStepper/InstallStepAbstract";
+let i18nFactory = require('i18n-2');
 
 export class TranslationHelper {
     public static loadTranslations(translationsPath: string): void {
@@ -37,5 +39,42 @@ export class TranslationHelper {
         } catch (e) {
             sails.log.error("Adminpanel > Error when loading translations", e)
         }
+    }
+
+    public static translateProperties(object: any, locale: string, fields: string[]): any {
+        const i18n = this.getI18nInstance(locale);
+
+        const translateObject = (obj: any) => {
+            if (typeof obj !== 'object' || obj === null) {
+                return obj;
+            }
+
+            Object.keys(obj).forEach((key) => {
+                const value = obj[key];
+
+                if (fields.includes(key) && typeof value !== 'object') {
+                    obj[key] = i18n.__(value);
+                } else {
+                    obj[key] = translateObject(value);
+                }
+            });
+
+            return obj;
+        };
+
+        return translateObject(object);
+    }
+
+    private static getI18nInstance(locale: string): any {
+        const i18nConfig = {
+            directory: typeof sails.config.adminpanel.translation !== "boolean" ? sails.config.adminpanel.translation.path : sails.config.i18n.localesDirectory,
+            extension: ".json",
+            defaultLocale: "en"
+        };
+
+        const i18n = new i18nFactory(i18nConfig);
+        i18n.setLocale(locale);
+
+        return i18n;
     }
 }

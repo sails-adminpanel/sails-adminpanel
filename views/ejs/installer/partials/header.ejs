@@ -1,8 +1,8 @@
-<html lang="ru">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Install Stepper</title>
+    <title><%= __("Install Stepper") %></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -14,7 +14,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Install Stepper</title>
+    <title><%= __("Install Stepper") %></title>
 
     <link rel="stylesheet" href="/admin/assets/build/style/style.min.css"/>
     <script src="/admin/assets/build/js/vue-installStepper.js"></script>
@@ -41,8 +41,8 @@
                     <h1 class="text-2xl font-medium text-gray-800"><%= currentStep.title %></h1>
                 </div>
                 <div class="ml-auto">
-                    <span class="text-lg font-medium text-gray-800">Step <%= totalStepCount - leftStepsCount + 1 %></span>
-                    <span class="text-sm text-gray-500">of <%= totalStepCount %></span>
+                    <span class="text-lg font-medium text-gray-800"><%= __("Step") %> <%= totalStepCount - leftStepsCount + 1 %></span>
+                    <span class="text-sm text-gray-500"><%= __("of") %> <%= totalStepCount %></span>
                 </div>
             </div>
             <div class="p-6 flex items-center">

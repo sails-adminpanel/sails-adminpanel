@@ -40,15 +40,15 @@
 
 
 <div>
-    <h1 class="text-2xl font-medium text-gray-800 pb-5">Install finalize progress</h1>
+    <h1 class="text-2xl font-medium text-gray-800 pb-5"><%= __("Install finalize progress") %></h1>
 
     <div id="progress-bar" class="relative w-full bg-gray-200 rounded-lg overflow-hidden">
         <div id="progress-bar-fill" class="h-8 bg-blue-500 text-white text-sm flex items-center justify-center shim-blue">
-            Loading...
+            <%= __("Loading...") %>
         </div>
     </div>
 
-    <p id="status-text" class="mt-4 text-gray-600">Status: Loading...</p>
+    <p id="status-text" class="mt-4 text-gray-600"><%= __("Status: Loading...") %></p>
 
     <ul id="finalize-list" class="mt-4"></ul>
 </div>
@@ -74,7 +74,7 @@
 
             // Update status text
             const statusText = document.getElementById('status-text');
-            statusText.textContent = `Status: ${status !== "fulfilled" ? "<%=__('In progress')%>" : "<%=__('Done')%>"}`;
+            statusText.textContent = `<%=__('Status')%>: ${status !== "fulfilled" ? "<%=__('In progress')%>" : "<%=__('Done')%>"}`;
 
             // Render finalize list
             const finalizeListContainer = document.getElementById('finalize-list');
