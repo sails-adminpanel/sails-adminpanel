@@ -25,6 +25,6 @@ jsonEditor['<%= key %>'] = new JSONEditor(
                 $('#form-<%= key %>').val(JSON.stringify(jsonEditor['<%= key %>'].get()));
             }}
     <% } %>
-    ,<%- data %>
+    ,"<%- data %>"
 )
 </script>
