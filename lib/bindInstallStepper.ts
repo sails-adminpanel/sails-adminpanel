@@ -8,7 +8,6 @@ export default function() {
 
 		let goingToProcessInstallStep = req._parsedUrl.pathname === `${sails.config.adminpanel.routePrefix}/processInstallStep`;
 		let goingToProcessInstallFinalize = req._parsedUrl.pathname === `${sails.config.adminpanel.routePrefix}/processInstallFinalize`;
-        console.log("Going to processInstallStep", goingToProcessInstallStep)
 
         if (InstallStepper.hasUnprocessedSteps() && !goingToProcessInstallStep && !goingToProcessInstallFinalize) {
             return res.redirect(`${sails.config.adminpanel.routePrefix}/processInstallStep`)

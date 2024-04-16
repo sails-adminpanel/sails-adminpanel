@@ -13,7 +13,7 @@ async function processInstallStep(req, res) {
         }
     }
     if (req.method.toUpperCase() === 'GET') {
-        console.log("GET REQUEST TO PROCESS INSTALL STEP");
+        sails.log.debug("GET REQUEST TO PROCESS INSTALL STEP");
         if (installStepper_1.InstallStepper.hasUnprocessedSteps() || installStepper_1.InstallStepper.hasUnfinalizedSteps()) {
             let renderData = installStepper_1.InstallStepper.render(req.session.UserAP.locale);
             let renderer = renderData.currentStep.renderer;
@@ -26,8 +26,7 @@ async function processInstallStep(req, res) {
     }
     if (req.method.toUpperCase() === 'POST') {
         try {
-            console.log("POST REQUEST TO PROCESS INSTALL STEP");
-            console.log("req.body", req.body);
+            sails.log.debug("POST REQUEST TO PROCESS INSTALL STEP", req.body);
             const currentStepId = req.body.currentStepId;
             const filesCounter = req.body.filesCounter;
             // upload files before processing other fields (filesCounter > 0 means that req contains files)
@@ -98,7 +97,7 @@ function uploadFiles(files, currentStepId) {
             else if (uploadedFiles && uploadedFiles.length > 0) {
                 const uploadedFile = uploadedFiles[0];
                 const uploadedFileName = uploadedFile.fd;
-                console.log("DOWNLOADED FILE", uploadedFileName);
+                sails.log.debug("DOWNLOADED FILE", uploadedFileName);
                 resolve(uploadedFileName);
             }
             else {

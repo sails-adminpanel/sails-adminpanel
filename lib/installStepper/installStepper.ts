@@ -22,7 +22,7 @@ export class InstallStepper {
         try {
             /** As we sort steps by sortOrder, we should check that previous steps were processed */
             const stepIndex = this.steps.findIndex(item => item.id === stepId)
-			console.log("STEP INDEX", stepIndex);
+			sails.log.debug("STEP INDEX", stepIndex);
             for (let i = 0; i < stepIndex; i++) {
                 if (this.steps[i].canBeSkipped && this.steps[i].isSkipped) {
                     continue
@@ -42,14 +42,13 @@ export class InstallStepper {
             Object.assign(this.context, contextCopy);
 
 			step.isProcessed = true;
-			console.log(`STEP ${stepId} was processed`);
+            sails.log.debug(`STEP ${stepId} was processed`);
 
             // call finalize method
             step.toFinally()
 
         } catch (e) {
             sails.log.error(`Error processing step: ${e}`);
-            console.dir(e);
             throw new Error(e);
         }
     }
@@ -72,7 +71,6 @@ export class InstallStepper {
             locale = "en";
         }
 
-        console.log("Will be rendered with locale ", locale);
         this.context.locale = locale;
 
         // translate step
@@ -144,7 +142,7 @@ export class InstallStepper {
                     // clear steps if all of them was processed and finalized
                     if (!this.hasUnprocessedSteps() && !this.hasUnfinalizedSteps()) {
                         this.steps = []
-                        console.log("CLEARING STEPS", this.steps)
+                        sails.log.debug("CLEARING STEPS", this.steps)
                         clearInterval(timer);
                     }
                 }, 5000)

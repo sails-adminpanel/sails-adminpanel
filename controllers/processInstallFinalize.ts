@@ -10,11 +10,6 @@ export default async function processInstallStep(req, res) {
         }
     }
 
-    console.log("IN PROCESS FINALIZE");
-    console.log(InstallStepper.getFinalizeStatus())
+    sails.log.debug("IN PROCESS FINALIZE", InstallStepper.getFinalizeStatus());
     return res.json(InstallStepper.getFinalizeStatus())
-    // TODO тут нужно разрендерить вьюху (какую? если finalize.ejs это только partial, то что мы рендерим?)
-    // TODO этот контроллер вообще можно удалить, он бессполезный, на него мы идем из основного.
-    //  И с вьюхи можем идти на основной и там забирать getFinalizeStatus
-    // return res.viewAdmin(`installer/${renderer}`, renderData);
 };
