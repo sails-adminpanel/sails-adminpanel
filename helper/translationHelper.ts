@@ -65,16 +65,13 @@ export class TranslationHelper {
         return translateObject(object);
     }
 
-    private static getI18nInstance(locale: string): any {
-        const i18nConfig = {
-            directory: typeof sails.config.adminpanel.translation !== "boolean" ? sails.config.adminpanel.translation.path : sails.config.i18n.localesDirectory,
-            extension: ".json",
-            defaultLocale: "en"
-        };
+    private static getI18nInstance(locale: string): any {        
+        if(typeof sails.config.adminpanel.translation === "boolean") {
+            throw `Transaltion is disabled`
+        }
 
-        const i18n = new i18nFactory(i18nConfig);
+        const i18n = new i18nFactory({...sails.config.i18n, directory: sails.config.i18n.localesDirectory, extension: ".json"})
         i18n.setLocale(locale);
-
         return i18n;
     }
 }
