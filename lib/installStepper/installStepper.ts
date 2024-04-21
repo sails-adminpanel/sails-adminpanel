@@ -44,8 +44,10 @@ export class InstallStepper {
 			step.isProcessed = true;
             sails.log.debug(`STEP ${stepId} was processed`);
 
-            // call finalize method
-            step.toFinally()
+            // call finalize method only if has description
+            if(step.finallyDescription) {
+                step.toFinally()
+            }
 
         } catch (e) {
             sails.log.error(`Error processing step: ${e}`);
