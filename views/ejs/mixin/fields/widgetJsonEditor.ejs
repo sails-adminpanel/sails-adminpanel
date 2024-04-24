@@ -25,6 +25,6 @@ jsonEditor['<%= key %>'] = new JSONEditor(
                 $('#form-<%= key %>').val(JSON.stringify(jsonEditor['<%= key %>'].get()));
             }}
     <% } %>
-    ,<% if(typeof value === "object"){ %>JSON.parse('<%- data %>')<%}else{%>'<%- data %>'<% } %>
+    ,<% if(typeof value === "object"){ %><%- data %><%}else{%>'<%- data %>'<% } %>
 )
 </script>
