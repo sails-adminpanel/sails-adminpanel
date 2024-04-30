@@ -109,6 +109,7 @@ export class InstallStepper {
 
         const stepIndex = this.steps.findIndex(item => item.id === step.id)
         if (stepIndex !== -1) {
+            sails.log.warn(`Attention! The step has been replaced\`${step.id}\``)
             this.steps[stepIndex] = step;
 
         } else {
