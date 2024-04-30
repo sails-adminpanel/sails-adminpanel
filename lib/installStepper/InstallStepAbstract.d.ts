@@ -22,9 +22,9 @@ export default abstract class InstallStepAbstract {
     /** Action that will be run when saving data to storage */
     abstract process(data: any, context?: any): Promise<void>;
     /** Method will be called after processing step (both process or skip) */
-    finally(): Promise<void>;
+    finally(data: any, context?: any): Promise<void>;
     /** This method will be called by InstallStepper and is a wrapper for "finally" method */
-    toFinally(timeout?: number): void;
+    toFinally(data?: any, context?: any, timeout?: number): void;
     /** Action that will be run when skipping the step */
     protected abstract skip(): Promise<void>;
     /** This method will be called by InstallStepper and is a wrapper for "skip" method */

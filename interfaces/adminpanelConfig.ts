@@ -1,5 +1,5 @@
 import sails from "@42pub/typed-sails";
-import LineAwesomeIcon from "./lineAwesome"
+import { LineAwesomeIcon } from "./lineAwesome"
 type FieldsTypes =
 "string" |
 "password" |

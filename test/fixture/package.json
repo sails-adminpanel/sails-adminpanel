@@ -5,14 +5,14 @@
   "description": "Sails test application",
   "keywords": [],
   "dependencies": {
-    "muddy-water": "^1.0.0",
-    "include-all": "^1.0.8",
+    "muddy-water": "^1.2.1",
+    "include-all": "^4.0.3",
     "sails-adminpanel": "file:../..",
-    "patch-package": "^6.4.7",
-    "rc": "^1.0.1",
+    "patch-package": "^8.0.0",
+    "rc": "^1.2.8",
     "request": "^2.88.2",
-    "sails": "^1.5.0",
-    "sails-hook-orm": "^4.0.1",
+    "sails": "^1.5.10",
+    "sails-hook-orm": "^4.0.3",
     "sails-memory": "^0.10.7"
   },
   "scripts": {

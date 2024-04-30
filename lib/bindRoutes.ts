@@ -174,5 +174,7 @@ export default class Router {
 		} else {
 			sails.router.bind(config.routePrefix, bindPolicies(policies, _welcome));
 		}
+		console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!")
+		sails.emit("adminpanel:router:binded")
 	}
 }
