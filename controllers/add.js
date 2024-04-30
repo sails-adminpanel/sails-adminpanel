@@ -64,7 +64,7 @@ async function add(req, res) {
         }
         try {
             let record = await entity.model.create(reqData).fetch();
-            sails.log(`A new record was created: `, record);
+            sails.log.debug(`A new record was created: `, record);
             req.session.messages.adminSuccess.push('Your record was created !');
             return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
         }

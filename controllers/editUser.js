@@ -58,7 +58,7 @@ async function default_1(req, res) {
             if (req.body.userPassword) {
                 updatedUser = await UserAP.update({ id: user.id }, { login: req.body.login, password: req.body.userPassword });
             }
-            sails.log(`User was updated: `, updatedUser);
+            sails.log.debug(`User was updated: `, updatedUser);
             req.session.messages.adminSuccess.push('User was updated !');
         }
         catch (e) {

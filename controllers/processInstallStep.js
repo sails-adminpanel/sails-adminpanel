@@ -39,7 +39,7 @@ async function processInstallStep(req, res) {
                         uploadedFiles.push(uploadedFile);
                     }
                     catch (error) {
-                        console.error('Error uploading files:', error);
+                        sails.log.error('Error uploading files:', error);
                     }
                 }
             }
@@ -67,7 +67,7 @@ async function processInstallStep(req, res) {
             }
         }
         catch (error) {
-            console.error("Error processing step:", error);
+            sails.log.error("Error processing step:", error);
             return res.status(500).send("Error processing step");
         }
     }
@@ -91,7 +91,7 @@ function uploadFiles(files, currentStepId) {
             }
         }, (err, uploadedFiles) => {
             if (err) {
-                console.error(err);
+                sails.log.error(err);
                 reject(err);
             }
             else if (uploadedFiles && uploadedFiles.length > 0) {

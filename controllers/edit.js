@@ -84,7 +84,7 @@ async function edit(req, res) {
         }
         try {
             let newRecord = await entity.model.update(params, reqData).fetch();
-            sails.log(`Record was updated: `, newRecord);
+            sails.log.debug(`Record was updated: `, newRecord);
             req.session.messages.adminSuccess.push('Your record was updated !');
             return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
         }
