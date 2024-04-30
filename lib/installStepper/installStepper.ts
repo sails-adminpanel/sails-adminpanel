@@ -37,7 +37,7 @@ export class InstallStepper {
             let step = this.getStepById(stepId);
 
             // get context copy and write down information in it on process without damaging source object
-            const contextCopy = {...this.context};
+            let contextCopy = {...this.context};
             await step.process(data, contextCopy);
             Object.assign(this.context, contextCopy);
 
@@ -46,7 +46,9 @@ export class InstallStepper {
 
             // call finalize method only if has description
             if(step.finallyDescription) {
-                step.toFinally()
+                contextCopy = {...this.context};
+                step.toFinally(data, this.context)
+                Object.assign(this.context, contextCopy);
             }
 
         } catch (e) {

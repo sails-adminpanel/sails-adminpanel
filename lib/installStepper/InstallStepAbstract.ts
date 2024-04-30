@@ -25,16 +25,21 @@ export default abstract class InstallStepAbstract {
     public abstract process(data: any, context?: any): Promise<void>
 
     /** Method will be called after processing step (both process or skip) */
-    public finally(): Promise<void> {
+    public finally(data: any, context?: any): Promise<void> {
         return null;
     }
 
     /** This method will be called by InstallStepper and is a wrapper for "finally" method */
-    public toFinally(timeout: number = 15*60*1000): void {
+    public toFinally(data?: any, context?: any, timeout: number = 15*60*1000): void {
+        
+        if(typeof arguments[0] === "number") {
+            timeout = arguments[0];
+        }
+
         if (this.finallyPromise && this.finallyPromise.status === "pending") {
             sails.log.warn(`Method "finally" was already executed and won't be executed again`);
         } else {
-            this.finallyPromise = new ObservablePromise(this.finally(), timeout)
+            this.finallyPromise = new ObservablePromise(this.finally(data, context), timeout)
         }
 
         this.finallyPromise.promise;
