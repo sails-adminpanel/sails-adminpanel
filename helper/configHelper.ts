@@ -3,7 +3,7 @@ import Router from "../lib/bindRoutes";
 import { getDefaultConfig, setDefaultConfig } from "../lib/defaults";
 export class ConfigHelper {
 
-    public static addModelConfig(modelConfig): void {
+    public static addModelConfig(modelConfig: AdminpanelConfig["models"]): void {
         if(sails !== undefined && sails.config?.adminpanel !== undefined){
             const config = sails.config?.adminpanel
             const models = {...config.models}
