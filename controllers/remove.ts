@@ -52,7 +52,7 @@ export default async function remove(req, res) {
         }
         return res.notFound();
     }
-    // console.log('admin > remove > record > ', record);
+    // sails.log.debug('admin > remove > record > ', record);
 
     let destroyedRecord;
     try {

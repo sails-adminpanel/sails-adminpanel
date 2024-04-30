@@ -35,7 +35,7 @@ export default async function bindAuthorization() {
             })
         }
 
-        console.log(`Has Administrators with login [${adminsCredentials[0].login}]`)
+        sails.log.debug(`Has Administrators with login [${adminsCredentials[0].login}]`)
 
     } else if(process.env.ADMINPANEL_LAZY_GEN_ADMIN_DISABLE === undefined ) {
         let adminData;

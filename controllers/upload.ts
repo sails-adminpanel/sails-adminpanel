@@ -8,7 +8,7 @@ const Jimp = require('jimp');
 
 export default function upload(req, res) {
 
-    // console.log('admin > upload');
+    // sails.log.debug('admin > upload');
     let entity = AdminUtil.findEntityObject(req);
 
     if (sails.config.adminpanel.auth) {
