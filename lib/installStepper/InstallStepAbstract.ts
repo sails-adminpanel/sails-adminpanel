@@ -20,7 +20,10 @@ export default abstract class InstallStepAbstract {
     public groupSortOrder: number = 1;
     public finallyPromise: ObservablePromise<void> = null;
     public finallyDescription: string = null;
-
+    /**
+     * A sign that finalization should be started
+     */
+    public finallyToRun: boolean = false;
     /** Action that will be run when saving data to storage */
     public abstract process(data: any, context?: any): Promise<void>
 

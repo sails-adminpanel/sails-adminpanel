@@ -19,6 +19,10 @@ export default abstract class InstallStepAbstract {
     groupSortOrder: number;
     finallyPromise: ObservablePromise<void>;
     finallyDescription: string;
+    /**
+     * A sign that finalization should be started
+     */
+    finallyToRun: boolean;
     /** Action that will be run when saving data to storage */
     abstract process(data: any, context?: any): Promise<void>;
     /** Method will be called after processing step (both process or skip) */

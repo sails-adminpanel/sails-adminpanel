@@ -45,7 +45,7 @@ export class InstallStepper {
             sails.log.debug(`STEP ${stepId} was processed`);
 
             // call finalize method only if has description
-            if(step.finallyDescription) {
+            if(step.finallyToRun) {
                 contextCopy = {...this.context};
                 step.toFinally(data, this.context)
                 Object.assign(this.context, contextCopy);
