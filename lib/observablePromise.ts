@@ -5,6 +5,8 @@ export class ObservablePromise<T> {
     constructor(promise: Promise<T>, timeout: number) {
         this._promise = new Promise<T>((resolve, reject) => {
 
+            console.log("IN OBSERVABLE PROMISE WITH HARDCORE TIMEOUT")
+
             const timerPromise = new Promise((resolve, reject) => {
                 // TODO check with hardcode timeout
                 // const timer = setTimeout(() => {
