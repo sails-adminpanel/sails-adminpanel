@@ -172,6 +172,10 @@ export class InstallStepper {
             if (item.finallyPromise.status === "pending") {
                 generalStatus = "pending";
             }
+            if (item.finallyPromise.status === "rejected") {
+                generalStatus = "rejected";
+            }
+
             return {id: item.id, status: item.finallyPromise.status, description: item.finallyDescription}
         })
 

@@ -26,9 +26,9 @@ export default abstract class InstallStepAbstract {
     public finallyToRun: boolean = false;
     /**
      * The time it takes for finally to complete
-     * 
+     *
      * default: 15 seconds
-     * 
+     *
      * maximum: 10 minutes;
      */
     public finallyTimeout: number = 15*60*1000;
@@ -43,21 +43,19 @@ export default abstract class InstallStepAbstract {
     /** This method will be called by InstallStepper and is a wrapper for "finally" method */
     public toFinally(data?: any, context?: any, timeout?: number): void {
         sails.log.debug(`To finaly [${this.id}]`)
-        if(!timeout) {
+        if (!timeout) {
             timeout = this.finallyTimeout
-        } 
-        
-        if(!timeout || typeof timeout !== "number")){
+        }
+
+        if (!timeout || typeof timeout !== "number") {
             timeout = 15*60*1000
         }
 
-        if(timeout > 10 * 60 * 60 * 1000) {
+        if (timeout > 10 * 60 * 60 * 1000) {
             timeout = 10 * 60 * 60 * 1000;
         }
 
-            
-
-        if(typeof arguments[0] === "number") {
+        if (typeof arguments[0] === "number") {
             timeout = arguments[0];
         }
 

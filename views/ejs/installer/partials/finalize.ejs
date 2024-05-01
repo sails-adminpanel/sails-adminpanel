@@ -74,7 +74,7 @@
 
             // Update status text
             const statusText = document.getElementById('status-text');
-            statusText.textContent = `<%=__('Status')%>: ${status !== "fulfilled" ? "<%=__('In progress')%>" : "<%=__('Done')%>"}`;
+            statusText.textContent = `<%=__('Status')%>: ${status === "fulfilled" ? "<%=__('Done')%>" : (status === "pending" ? "<%=__('In progress')%>" : "<%=__('Error')%>")}`;
 
             // Render finalize list
             const finalizeListContainer = document.getElementById('finalize-list');
@@ -86,7 +86,7 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <span class="text-gray-600">${item.description}:</span>
-                                <span class="ml-2 text-sm text-gray-500">${item.status !== "fulfilled" ? "<%=__('In progress')%>" : "<%=__('Done')%>"}</span>
+                                <span class="ml-2 text-sm text-gray-500">${item.status === "fulfilled" ? "<%=__('Done')%>" : (status === "pending" ? "<%=__('In progress')%>" : "<%=__('Error')%>")}</span>
                             </div>
                             <div class="text-gray-300">${item.id}</div>
                         </div>
