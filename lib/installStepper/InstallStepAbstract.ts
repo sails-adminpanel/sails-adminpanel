@@ -42,7 +42,7 @@ export default abstract class InstallStepAbstract {
 
     /** This method will be called by InstallStepper and is a wrapper for "finally" method */
     public toFinally(data?: any, context?: any, timeout?: number): void {
-        
+        sails.log.debug(`To finaly [${this.id}]`)
         if(!timeout) {
             timeout = this.finallyTimeout
         } 
