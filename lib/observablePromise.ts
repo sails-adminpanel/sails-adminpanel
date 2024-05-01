@@ -7,7 +7,7 @@ export class ObservablePromise<T> {
 
             const timerPromise = new Promise((resolve, reject) => {
                 const timer = setTimeout(() => {
-                    clearTimeout(timer); // Очистка таймера перед вызовом reject
+                    clearTimeout(timer); // Clearing the timer before calling reject
                     reject(new Error(`Promise timed out after ${timeout}ms`));
                 }, timeout);
 

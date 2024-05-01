@@ -23,6 +23,14 @@ export default abstract class InstallStepAbstract {
      * A sign that finalization should be started
      */
     finallyToRun: boolean;
+    /**
+     * The time it takes for finally to complete
+     *
+     * default: 15 seconds
+     *
+     * maximum: 10 minutes;
+     */
+    finallyTimeout: number;
     /** Action that will be run when saving data to storage */
     abstract process(data: any, context?: any): Promise<void>;
     /** Method will be called after processing step (both process or skip) */

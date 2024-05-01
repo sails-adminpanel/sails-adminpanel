@@ -24,6 +24,14 @@ export default abstract class InstallStepAbstract {
      * A sign that finalization should be started
      */
     public finallyToRun: boolean = false;
+    /**
+     * The time it takes for finally to complete
+     * 
+     * default: 15 seconds
+     * 
+     * maximum: 10 minutes;
+     */
+    public finallyTimeout: number = 15*60*1000;
     /** Action that will be run when saving data to storage */
     public abstract process(data: any, context?: any): Promise<void>
 
@@ -33,8 +41,22 @@ export default abstract class InstallStepAbstract {
     }
 
     /** This method will be called by InstallStepper and is a wrapper for "finally" method */
-    public toFinally(data?: any, context?: any, timeout: number = 15*60*1000): void {
+    public toFinally(data?: any, context?: any, timeout?: number): void {
         
+        if(!timeout) {
+            timeout = this.finallyTimeout
+        } 
+        
+        if(!timeout || typeof timeout !== "number")){
+            timeout = 15*60*1000
+        }
+
+        if(timeout > 10 * 60 * 60 * 1000) {
+            timeout = 10 * 60 * 60 * 1000;
+        }
+
+            
+
         if(typeof arguments[0] === "number") {
             timeout = arguments[0];
         }
