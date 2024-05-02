@@ -5,7 +5,7 @@ export class ObservablePromise<T> {
     constructor(promise: Promise<T>, timeout: number) {
         this._promise = new Promise<T>((resolve, reject) => {
 
-            console.log("IN OBSERVABLE PROMISE WITH HARDCORE TIMEOUT")
+            sails.log.debug("IN OBSERVABLE PROMISE WITH HARDCORE TIMEOUT")
 
             const timerPromise = new Promise((resolve, reject) => {
                 // TODO check with hardcode timeout
@@ -29,10 +29,12 @@ export class ObservablePromise<T> {
             Promise.race([promise, timerPromise])
                 .then(
                     (value: T) => {
+                        sails.log.debug("IN PROMISE RACE fulfilled")
                         this._status = 'fulfilled';
                         resolve(value);
                     },
                     (error) => {
+                        sails.log.debug("IN PROMISE RACE rejected")
                         this._status = 'rejected';
                         reject(error);
                     }

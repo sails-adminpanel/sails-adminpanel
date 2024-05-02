@@ -166,6 +166,7 @@ export class InstallStepper {
 
     public static getFinalizeStatus() {
         let stepsWithFinalize = this.steps.filter(step => step.finallyPromise !== null);
+        sails.log.debug("stepsWithFinalize", stepsWithFinalize)
         let generalStatus = "fulfilled";
         let stepFinalizeStatuses = stepsWithFinalize.map(item => {
             // if one of them is pending, general status is pending

@@ -42,7 +42,7 @@ export default abstract class InstallStepAbstract {
 
     /** This method will be called by InstallStepper and is a wrapper for "finally" method */
     public toFinally(data?: any, context?: any, timeout?: number): void {
-        sails.log.debug(`To finaly [${this.id}]`)
+        sails.log.debug(`To finally [${this.id}]`)
         if (!timeout) {
             timeout = this.finallyTimeout
         }
@@ -63,6 +63,7 @@ export default abstract class InstallStepAbstract {
             sails.log.warn(`Method "finally" was already executed and won't be executed again`);
         } else {
             try {
+                sails.log.debug("CREATING OBSERVABLE PROMISE")
                 this.finallyPromise = new ObservablePromise(this.finally(data, context), timeout)
             } catch (error) {
                 sails.log.error(`Step [${this.id}] finally error:`, error)
