@@ -63,7 +63,6 @@ export default abstract class InstallStepAbstract {
             sails.log.warn(`Method "finally" was already executed and won't be executed again`);
         } else {
             try {
-                sails.log.debug("CREATING OBSERVABLE PROMISE")
                 this.finallyPromise = new ObservablePromise(this.finally(data, context), timeout)
             } catch (error) {
                 sails.log.error(`Step [${this.id}] finally error:`, error)
