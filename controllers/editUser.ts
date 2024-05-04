@@ -62,7 +62,7 @@ export default async function(req, res) {
                 email: req.body.email, timezone: req.body.timezone, expires: req.body.date,
                 locale: locale, isAdministrator: isAdministrator, groups: userGroups}).fetch();
             if (req.body.userPassword) {
-                updatedUser = await UserAP.update({id: user.id}, {login: req.body.login, password: req.body.userPassword});
+                updatedUser = await UserAP.update({id: user.id}, {login: req.body.login, password: req.body.userPassword}).fetch();
             }
             sails.log.debug(`User was updated: `, updatedUser);
             req.session.messages.adminSuccess.push('User was updated !');
