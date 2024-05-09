@@ -1,7 +1,7 @@
 import InstallStepAbstract from "./InstallStepAbstract";
 import FinalizeStep from "./finalizeStep";
 import * as fs from "fs";
-import {TranslationHelper} from "../../helper/translationHelper";
+import { TranslationHelper } from "../../helper/translationHelper";
 
 interface RenderData {
     totalStepCount: number
@@ -22,7 +22,7 @@ export class InstallStepper {
         try {
             /** As we sort steps by sortOrder, we should check that previous steps were processed */
             const stepIndex = this.steps.findIndex(item => item.id === stepId)
-			sails.log.debug("STEP INDEX", stepIndex);
+            sails.log.debug("STEP INDEX", stepIndex);
             for (let i = 0; i < stepIndex; i++) {
                 if (this.steps[i].canBeSkipped && this.steps[i].isSkipped) {
                     continue
@@ -37,16 +37,16 @@ export class InstallStepper {
             let step = this.getStepById(stepId);
 
             // get context copy and write down information in it on process without damaging source object
-            let contextCopy = {...this.context};
+            let contextCopy = { ...this.context };
             await step.process(data, contextCopy);
             Object.assign(this.context, contextCopy);
 
-			step.isProcessed = true;
+            step.isProcessed = true;
             sails.log.debug(`STEP ${stepId} was processed`);
 
             // call finalize method only if has description
-            if(step.finallyToRun) {
-                contextCopy = {...this.context};
+            if (step.finallyToRun) {
+                contextCopy = { ...this.context };
                 step.toFinally(data, this.context)
                 Object.assign(this.context, contextCopy);
             }
@@ -63,8 +63,8 @@ export class InstallStepper {
 
     /** Prepares steps array for user interface render */
     public static render(locale: string): RenderData {
-		let stepToRender = this.getNextUnprocessedStep();
-		let leftSteps = this.steps.filter(step => !step.isProcessed && !step.isSkipped);
+        let stepToRender = this.getNextUnprocessedStep();
+        let leftSteps = this.steps.filter(step => !step.isProcessed && !step.isSkipped);
 
         // set locale
         if (typeof sails.config.adminpanel.translation !== "boolean") {
@@ -92,7 +92,7 @@ export class InstallStepper {
         try {
             let step = this.getStepById(stepId);
             await step.skipIt();
-			step.isSkipped = true;
+            step.isSkipped = true;
 
         } catch (e) {
             sails.log.error(`Error skipping step: ${e}`);
@@ -135,7 +135,7 @@ export class InstallStepper {
         return this.steps.some(step => !step.isProcessed && !step.isSkipped);
     }
 
-	public static getNextUnprocessedStep(): InstallStepAbstract {
+    public static getNextUnprocessedStep(): InstallStepAbstract {
         let nextStep = this.steps.find(step => !step.isProcessed && !step.isSkipped);
         if (!nextStep && this.hasUnfinalizedSteps()) {
             if (this.getStepById("finalize")) {
@@ -158,7 +158,7 @@ export class InstallStepper {
         }
 
         return nextStep;
-	}
+    }
 
     public static hasUnfinalizedSteps(): boolean {
         return this.steps.some(step => step.finallyPromise?.status === "pending");
@@ -168,17 +168,19 @@ export class InstallStepper {
         let stepsWithFinalize = this.steps.filter(step => step.finallyPromise !== null);
         let generalStatus = "fulfilled";
         let stepFinalizeStatuses = stepsWithFinalize.map(item => {
+            let info: string = null
             // if one of them is pending, general status is pending
             if (item.finallyPromise.status === "pending") {
                 generalStatus = "pending";
             }
             if (item.finallyPromise.status === "rejected") {
                 generalStatus = "rejected";
+                info = `Error: ${item.finallyPromise.info}`
             }
 
-            return {id: item.id, status: item.finallyPromise.status, description: item.finallyDescription}
+            return { id: item.id, status: item.finallyPromise.status, description: item.finallyDescription, info: info }
         })
 
-        return {status: generalStatus, finalizeList: stepFinalizeStatuses ?? []};
+        return { status: generalStatus, finalizeList: stepFinalizeStatuses ?? [] };
     }
 }

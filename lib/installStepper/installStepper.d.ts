@@ -25,6 +25,7 @@ export declare class InstallStepper {
             id: string;
             status: "pending" | "fulfilled" | "rejected";
             description: string;
+            info: string;
         }[];
     };
 }

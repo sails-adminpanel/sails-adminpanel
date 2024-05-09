@@ -81,6 +81,13 @@
             finalizeListContainer.innerHTML = ''; // Clear existing list
 
             finalizeList.forEach(item => {
+                if(item.info) {
+                    if(item.status === "rejected"){
+                        console.error(item.info)
+                    } else {
+                        console.warn(item.info)
+                    }
+                }
                 const listItem = document.createElement('li');
                 listItem.innerHTML = `
                         <div class="flex items-center justify-between">
