@@ -1,0 +1,6 @@
+.custom-catalog{
+	@apply p-6;
+	&__container{
+		@apply mt-4 grid grid-cols-2 gap-4;
+	}
+}

@@ -326,6 +326,82 @@ const vueWidgetsProd = () => {
 		.pipe(gulp.dest(`${path.build.js}/`))
 }
 
+const vueCatalog = () => {
+	return gulp.src(`${srcFolder}/catalog/app.js`, { sourcemaps: true })
+		.pipe(webpackStream({
+			mode: 'development',
+			entry: `${srcFolder}/catalog/app.js`,
+			output: {
+				path: Fpath.resolve('./assets/build/js/'),
+				filename: 'vue-catalog.js'
+			},
+			module: {
+				rules: [
+					{
+						test: /\.vue$/,
+						loader: 'vue-loader'
+					},
+					{
+						test: /\.css$/,
+						use: [
+							'vue-style-loader',
+							'css-loader',
+						]
+					}
+				],
+			},
+			experiments: {
+				topLevelAwait: true
+			},
+			plugins: [
+				new VueLoaderPlugin(),
+				new webpack.DefinePlugin({
+					__VUE_PROD_DEVTOOLS__: true,
+					__VUE_OPTIONS_API__: true
+				})
+			]
+		}))
+		.pipe(gulp.dest(`${path.build.js}/`))
+}
+
+const vueCatalogProd = () => {
+	return gulp.src(`${srcFolder}/catalog/app.js`, { sourcemaps: true })
+		.pipe(webpackStream({
+			mode: 'production',
+			entry: `${srcFolder}/catalog/app.js`,
+			output: {
+				path: Fpath.resolve('./assets/build/js/'),
+				filename: 'vue-catalog.js'
+			},
+			module: {
+				rules: [
+					{
+						test: /\.vue$/,
+						loader: 'vue-loader'
+					},
+					{
+						test: /\.css$/,
+						use: [
+							'vue-style-loader',
+							'css-loader',
+						]
+					}
+				],
+			},
+			experiments: {
+				topLevelAwait: true
+			},
+			plugins: [
+				new VueLoaderPlugin(),
+				new webpack.DefinePlugin({
+					__VUE_PROD_DEVTOOLS__: false,
+					__VUE_OPTIONS_API__: true
+				})
+			]
+		}))
+		.pipe(gulp.dest(`${path.build.js}/`))
+}
+
 const ckeditorBuild = () => {
 	return gulp.src(`${srcFolder}/scripts/ckeditor5/app.js`, {sourcemaps: true})
 		.pipe(webpackStream({
@@ -405,6 +481,10 @@ function vueWidgetsWatcher(){
 	gulp.watch(`${srcFolder}/widgets/**/*.*`, gulp.series(vueWidgets, reload))
 	gulp.watch(path.watch.scss, gulp.series(scss, reload))
 }
+function vueCaalogWatcher(){
+	gulp.watch(`${srcFolder}/catalog/**/*.*`, gulp.series(vueCatalog, reload))
+	gulp.watch(path.watch.scss, gulp.series(scss, reload))
+}
 
 function vueInstallStepperWatcher(){
 	gulp.watch(`${srcFolder}/installStepper/**/*.*`, gulp.series(vueInstallStepper, reload))
@@ -414,7 +494,7 @@ function vueInstallStepperWatcher(){
 const build = gulp.series(reset, copy_styles_files, scss, js, ckeditorBuild);
 //const build = gulp.series(reset, copy_styles_files, scss, js);
 
-const prod = gulp.series(reset, copy_styles_files, scssProd, ckeditorBuild, vueWidgetsProd, vueInstallStepperProd, jsProd);
+const prod = gulp.series(reset, copy_styles_files, scssProd, ckeditorBuild, vueWidgetsProd, vueInstallStepperProd, vueCatalogProd, jsProd);
 // const prodInstallStepper = gulp.series(reset, copy_styles_files, scssProd, jsProd, ckeditorBuild, vueInstallStepperProd);
 
 gulp.task('default', build);
@@ -428,3 +508,4 @@ gulp.task('styles-prod', scssProd);
 gulp.task('styles', gulp.series(scss, gulp.parallel(serve, watcher)))
 
 gulp.task('vue', gulp.series(vueWidgets, gulp.parallel(serve, vueWidgetsWatcher) ,gulp.parallel(serve, vueInstallStepperWatcher)))
+gulp.task('catalog', gulp.series(vueCatalog, gulp.parallel(serve, vueCaalogWatcher)))

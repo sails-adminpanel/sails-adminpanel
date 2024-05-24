@@ -23,7 +23,7 @@ import { widgetInfoController } from '../controllers/widgets/Info'
 import { widgetActionController } from '../controllers/widgets/Action'
 import { widgetCustomController } from "../controllers/widgets/Custom";
 import { debounce } from "utils-decorators"
-
+import {catalogController} from "../controllers/catalog/Catalog";
 
 export default class Router {
 
@@ -78,6 +78,11 @@ export default class Router {
 		 * Widgets Custom
 		 */
 		sails.router.bind(`${config.routePrefix}/widgets-action/:widgetId`, bindPolicies(policies, widgetCustomController))
+
+		/**
+		 * Catalog
+		 */
+		sails.router.bind(`${config.routePrefix}/catalog/:slug`, bindPolicies(policies, catalogController))
 
 		/**
 		 * Migrations
