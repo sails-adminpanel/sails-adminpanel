@@ -1,6 +1,31 @@
-.custom-catalog{
+.custom-catalog {
 	@apply p-6;
-	&__container{
+	&__container {
 		@apply mt-4 grid grid-cols-2 gap-4;
 	}
+
+	&__add {
+		@apply relative;
+	}
+
+	&__add-items {
+		@apply absolute left-[100%] top-0 bg-white rounded-[2px];
+		opacity: 0;
+		visibility: hidden;
+
+		li {
+			@apply p-2.5 hover:bg-[rgba(100,_100,_255,_0.5)] whitespace-nowrap;
+		}
+	}
+	&__form{
+		@apply flex flex-col gap-4;
+	}
+	&__form-input{
+		@apply flex gap-4 flex-col;
+	}
+}
+
+.custom-catalog__add:hover .custom-catalog__add-items {
+	opacity: 1;
+	visibility: visible;
 }
