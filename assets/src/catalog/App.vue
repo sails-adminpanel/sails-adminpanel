@@ -1,6 +1,6 @@
 <template>
-	<button class="btn btn-add" @click="addFolder(true)"><i class="las la-plus"></i><span>create</span></button>
-	<div class="custom-catalog__container">
+	<button class="btn btn-add" @click="addFolder(true)" v-if="!nodes.length"><i class="las la-plus"></i><span>create</span></button>
+	<div class="custom-catalog__container" v-show="nodes.length">
 		<sl-vue-tree-next
 			v-model="nodes"
 			ref="slVueTreeRef"
@@ -36,10 +36,10 @@
 
 			<template #draginfo="draginfo"> {{ selectedNodesTitle }}</template>
 		</sl-vue-tree-next>
-		<div class="json-preview">
-			<h2>JSON Preview</h2>
-			<pre>{{ JSON.stringify(nodes, null, 4) }}</pre>
-		</div>
+<!--		<div class="json-preview">-->
+<!--			<h2>JSON Preview</h2>-->
+<!--			<pre>{{ JSON.stringify(nodes, null, 4) }}</pre>-->
+<!--		</div>-->
 	</div>
 	<div class="contextmenu" ref="contextmenu" id="contextmenu" v-show="contextMenuIsVisible">
 		<div class="custom-catalog__add">
@@ -49,7 +49,7 @@
 					<li @click="addFolder(true)">
 						New Folder
 					</li>
-					<li @click="addFolder(false)">
+					<li @click="addFolder(false)" v-if="!selectedNodesType">
 						In Selected Folder
 					</li>
 					<li @click="addItem">
@@ -62,26 +62,10 @@
 	</div>
 	<pop-up @reset="closePopup" v-for="index in modalCount" :key="index" ref="parentPopUp">
 		<div v-if="isFolder" class="custom-catalog__form">
-			<div class="custom-catalog__form-input">
-				<label for="folder">Folder name</label>
-				<input type="text" name="folder" id="folder" v-model="folderName">
-			</div>
-			<div>
-				<button class="btn btn-green" @click="saveFolder(0)">
-					Save
-				</button>
-			</div>
+			<folder @save-folder="saveFolder" />
 		</div>
 		<div v-if="isItem" class="custom-catalog__form">
-			<div class="custom-catalog__form-input">
-				<label for="item">Item name</label>
-				<input type="text" name="item" id="item" v-model="itemName">
-			</div>
-			<div>
-				<button class="btn btn-green" @click="saveItem(0)">
-					Save
-				</button>
-			</div>
+			<Item @save-item="saveItem"/>
 		</div>
 	</pop-up>
 </template>
@@ -90,17 +74,20 @@
 import {SlVueTreeNext} from 'sl-vue-tree-next'
 import {ref, onMounted, computed, reactive} from 'vue'
 import PopUp from "./PopUp.vue";
+import Folder from "./Components/Folder.vue";
+import Item from "./Components/Item.vue";
 
 let nodes = reactive([])
 
 let contextMenuIsVisible = ref(false)
 let lastEvent = ref('No last event')
 let selectedNodesTitle = ref('')
+let selectedNodesType = ref('')
 let slVueTreeRef = ref(null)
 let contextmenu = ref(null)
 let modalCount = ref(0)
 let isFolder = ref(false)
-let [folderName, itemName] = defineModel()
+let itemName = defineModel()
 let isItem = ref(false)
 let parentPopUp = ref(null)
 let newFolder = ref(false)
@@ -124,61 +111,36 @@ function addFolder(isNew) {
 	isFolder.value = true
 }
 
-function saveFolder(index) {
-	if (newFolder.value) {
-		nodes.push({
-			title: folderName
-		})
-	} else {
-		let selectedFolderPath = slVueTreeRef.value.getSelected().filter(e => e.isLeaf === false)[0].path
-		recurciveFindAndInsert(selectedFolderPath)
-		folderName = ''
-	}
-	folderName = ''
-	slVueTreeRef.value.updateNode([0])
-	isFolder.value = false
-	parentPopUp.value[index].closePopup()
-}
-
-function recurciveFindAndInsert(path, nodesArr) {
-	let index = path.shift()
-	let result = null
-	if (nodesArr && nodesArr.children.length) {
-		result = nodesArr.children.find((e, i) => i === index)
-	} else {
-		result = nodes.find((e, i) => i === index)
-	}
-	if (path.length) {
-		recurciveFindAndInsert(path, result)
-	} else {
-		if (result.children) {
-			result.children.push({title: folderName})
-		} else {
-			result.children = []
-			result.children.push({title: folderName})
-		}
-	}
-
-}
-
 function addItem() {
 	modalCount.value++
 	isItem.value = true
 	itemName = ''
 }
 
-function saveItem(index) {
+function saveFolder(index, folderName) {
+	if (newFolder.value) {
+		nodes.push({
+			title: folderName
+		})
+	} else {
+		let selectedFolderPath = slVueTreeRef.value.getSelected().filter(e => e.isLeaf === false)[0].path
+		recurciveFindAndInsert(selectedFolderPath, false,false, folderName)
+	}
 
-	let selectedFolderPath = slVueTreeRef.value.getSelected().filter(e => e.isLeaf === false)[0].path
-	recurciveFindAndInsertItem(selectedFolderPath)
-
-	itemName = ''
 	slVueTreeRef.value.updateNode([0])
-	isItem.value = false
 	parentPopUp.value[index].closePopup()
 }
 
-function recurciveFindAndInsertItem(path, nodesArr) {
+function saveItem(index, itemName) {
+
+	let selectedFolderPath = slVueTreeRef.value.getSelected().filter(e => e.isLeaf === false)[0].path
+	recurciveFindAndInsert(selectedFolderPath, false,true, itemName)
+
+	slVueTreeRef.value.updateNode([0])
+	parentPopUp.value[index].closePopup()
+}
+
+function recurciveFindAndInsert(path, nodesArr, isLeaf, title) {
 	let index = path.shift()
 	let result = null
 	if (nodesArr && nodesArr.children.length) {
@@ -187,13 +149,13 @@ function recurciveFindAndInsertItem(path, nodesArr) {
 		result = nodes.find((e, i) => i === index)
 	}
 	if (path.length) {
-		recurciveFindAndInsertItem(path, result)
+		recurciveFindAndInsert(path, result, isLeaf, title)
 	} else {
 		if (result.children) {
-			result.children.push({title: itemName, isLeaf: true})
+			result.children.push({title: title, isLeaf: isLeaf})
 		} else {
 			result.children = []
-			result.children.push({title: itemName, isLeaf: true})
+			result.children.push({title: title, isLeaf: isLeaf})
 		}
 	}
 
@@ -208,8 +170,8 @@ function toggleVisibility(event, node) {
 }
 
 function nodeSelected(nodes, event) {
-	selectedNodesTitle.value = nodes.map((node) => node.title).join(', ')
-	lastEvent.value = `Select nodes: ${selectedNodesTitle.value}`
+	selectedNodesTitle.value = nodes.map((node) => node.title)[0]
+	selectedNodesType.value = nodes.map((node) => node.isLeaf)[0]
 }
 
 function nodeToggled(node, event) {
@@ -234,10 +196,10 @@ function removeNode() {
 	const paths = $slVueTree.getSelected().map((node) => node.path)
 	$slVueTree.remove(paths)
 }
-
-function closePopup() {
-	modalCount.value--
+function closePopup(){
 	isFolder.value = false
+	isItem.value = false
+	modalCount.value--
 }
 </script>
 
