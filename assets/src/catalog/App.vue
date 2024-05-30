@@ -5,7 +5,7 @@
 			v-model="nodes"
 			ref="slVueTreeRef"
 			id="slVueTree_id"
-			:allow-multiselect="false"
+			:allow-multiselect="true"
 			@select="nodeSelected"
 			@drop="nodeDropped"
 			@toggle="nodeToggled"
