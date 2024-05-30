@@ -52,8 +52,6 @@ export abstract class BaseItem {
    *  delete element
    */
   public abstract deleteItem(id: string | number);
-
-  
 }
 
 export abstract class GroupType extends BaseItem {
@@ -62,11 +60,11 @@ export abstract class GroupType extends BaseItem {
 
 export abstract class ItemType extends BaseItem {
   
-  public abstract  getAddLink(): string 
+  public abstract  getAddHTML(): string 
 
   public readonly isGroup: boolean = false;
 
-  public abstract getEditLink(id: string | number): string;
+  public abstract getEditHTML(id: string | number): string;
 }
 
 /// ContextHandler
@@ -136,8 +134,15 @@ export abstract class AbstractCatalog {
     return this.itemsType.find((it) => it.id === id);
   }
 
-  public addActionHandler(contextHandler: ActionHandler) {
-    this.actionHandlers.push(contextHandler);
+  public addActionHandler(actionHandler: ActionHandler) {
+    if(actionHandler.selectedItemTypes.length > 0) {
+      for(let actionItem of actionHandler.selectedItemTypes){
+        this.getItemType(actionItem).addActionHandler(actionHandler)
+      }
+      
+    } else {
+      this.actionHandlers.push(actionHandler);
+    }
   }
 
 
@@ -169,14 +174,14 @@ export abstract class AbstractCatalog {
    * Receives HTML to update an element for projection into a popup
    */
   public getEditHTML(item: Item) {
-    this.getItemType(item.type)?.getEditLink(item.id);
+    this.getItemType(item.type)?.getEditHTML(item.id);
   }
 
   /**
    * Receives HTML to create an element for projection into a popup
    */
   public getAddHTML(item: Item): string {
-    return this.getItemType(item.type)?.getAddLink();
+    return this.getItemType(item.type)?.getAddHTML();
   }
 
   /**
