@@ -60,7 +60,7 @@ export abstract class GroupType extends BaseItem {
 
 export abstract class ItemType extends BaseItem {
   
-  public abstract  getAddHTML(): string 
+  public abstract getAddHTML(): string 
 
   public readonly isGroup: boolean = false;
 
@@ -147,13 +147,14 @@ export abstract class AbstractCatalog {
 
 
   public addItemsType(itemType: ItemType) {
-    if (
-      itemType.isGroup === true &&
-      this.itemsType.find((it) => it.isGroup === true)
-    ) {
-      throw new Error(`Only one type group is allowed`);
-    }
-    this.itemsType.push(itemType);
+    // Возможно что страницы будут иметь ссылки внутри
+    // if (
+    //   itemType.isGroup === true &&
+    //   this.itemsType.find((it) => it.isGroup === true)
+    // ) {
+    //   throw new Error(`Only one type group is allowed`);
+    // }
+    // this.itemsType.push(itemType);
   }
 
   /**
@@ -188,7 +189,7 @@ export abstract class AbstractCatalog {
    * Method for getting group elements
    * If there are several Items, then the global ones will be obtained
    */
-  public getContext(items?: Item[]): ActionHandler[] {
+  public getContextAction(items?: Item[]): ActionHandler[] {
     if(items.length === 1) {
       const item = items[0];
       const itemType = this.itemsType.find((it) => it.id === item.id);
@@ -201,6 +202,8 @@ export abstract class AbstractCatalog {
   /**
    * Method for getting group elements
    */
-  public abstract getItems(groupId?: string): Item[];
+  getItems(groupId?: string): Item[] {
+    // TODO: implement realizations
+  };
 
 }
