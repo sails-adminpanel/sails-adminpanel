@@ -1,10 +1,7 @@
-import UserAP from "../../models/UserAP";
-type CatalogType = {
-    slug: string;
-};
+import { AbstractCatalog } from "../../lib/catalog/abstractCatalog";
 export declare class CatalogHandler {
     private static catalog;
-    static add(catalog: CatalogType): void;
-    static getAll(user: UserAP): Promise<any[]>;
+    static add(catalog: AbstractCatalog): AbstractCatalog;
+    static getAll(): Promise<any[]>;
+    static getCatalog(slug: string): AbstractCatalog;
 }
-export {};

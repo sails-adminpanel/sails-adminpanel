@@ -1,5 +1,10 @@
 <template>
-	<button class="btn btn-add" @click="addFolder(true)" v-if="!nodes.length"><i class="las la-plus"></i><span>create</span></button>
+	<div v-if="!nodes.length">
+		<select class="select" @change="create(true, $event)">
+			<option selected disabled>Select Group</option>
+			<option v-for="item in ItemsGroup" :value="item.type">{{item.name}}</option>
+		</select>
+	</div>
 	<div class="custom-catalog__container" v-show="nodes.length">
 		<sl-vue-tree-next
 			v-model="nodes"
@@ -36,10 +41,10 @@
 
 			<template #draginfo="draginfo"> {{ selectedNodesTitle }}</template>
 		</sl-vue-tree-next>
-<!--		<div class="json-preview">-->
-<!--			<h2>JSON Preview</h2>-->
-<!--			<pre>{{ JSON.stringify(nodes, null, 4) }}</pre>-->
-<!--		</div>-->
+		<!--		<div class="json-preview">-->
+		<!--			<h2>JSON Preview</h2>-->
+		<!--			<pre>{{ JSON.stringify(nodes, null, 4) }}</pre>-->
+		<!--		</div>-->
 	</div>
 	<div class="contextmenu" ref="contextmenu" id="contextmenu" v-show="contextMenuIsVisible">
 		<div class="custom-catalog__add">
@@ -62,7 +67,7 @@
 	</div>
 	<pop-up @reset="closePopup" v-for="index in modalCount" :key="index" ref="parentPopUp">
 		<div v-if="isFolder" class="custom-catalog__form">
-			<folder @save-folder="saveFolder" />
+			<folder @save-folder="saveFolder" :html="HTML"/>
 		</div>
 		<div v-if="isItem" class="custom-catalog__form">
 			<Item @save-item="saveItem"/>
@@ -76,6 +81,7 @@ import {ref, onMounted, computed, reactive} from 'vue'
 import PopUp from "./PopUp.vue";
 import Folder from "./Components/Folder.vue";
 import Item from "./Components/Item.vue";
+import ky from "ky";
 
 let nodes = reactive([])
 
@@ -91,8 +97,12 @@ let itemName = defineModel()
 let isItem = ref(false)
 let parentPopUp = ref(null)
 let newFolder = ref(false)
+let HTML = ref('')
+let ItemsGroup = ref([])
+let ItemsItem = ref([])
+let selectedGroup = ref([])
 
-onMounted(() => {
+onMounted(async () => {
 	document.addEventListener('click', function (e) {
 		const contextmenu = document.getElementById('contextmenu')
 		if (!e.composedPath().includes(contextmenu)) {
@@ -103,6 +113,14 @@ onMounted(() => {
 			contextMenuIsVisible.value = false
 		}
 	})
+	let catalogItems = await ky.post('/admin/get-catalog', {json: {slug: window.location.pathname.split("/").pop()}}).json()
+	for (const catalogItem of catalogItems.data) {
+		if (catalogItem.isGroup) {
+			ItemsGroup.value.push(catalogItem)
+		} else {
+			ItemsItem.value.push(catalogItem)
+		}
+	}
 })
 
 function addFolder(isNew) {
@@ -117,24 +135,35 @@ function addItem() {
 	itemName = ''
 }
 
-function saveFolder(index, folderName) {
+async function create(isNew, event) {
+	selectedGroup.value = event.target.value
+	let resPost = await ky.post('', {json: {type: selectedGroup.value, _method: 'getHTML'}}).json()
+	HTML.value = resPost.data
+	addFolder(true)
+}
+
+function saveFolder(index, data) {
 	if (newFolder.value) {
-		nodes.push({
-			title: folderName
-		})
+		createFolder(data)
+		//nodes.push(data)
 	} else {
 		let selectedFolderPath = slVueTreeRef.value.getSelected().filter(e => e.isLeaf === false)[0].path
-		recurciveFindAndInsert(selectedFolderPath, false,false, folderName)
+		recurciveFindAndInsert(selectedFolderPath, false, false, folderName)
 	}
 
 	slVueTreeRef.value.updateNode([0])
 	parentPopUp.value[index].closePopup()
 }
 
+async function createFolder(data) {
+	let res = await ky.post('', {json: {type: selectedGroup.value, data: data, _method: 'create'}}).json()
+	console.log(res)
+}
+
 function saveItem(index, itemName) {
 
 	let selectedFolderPath = slVueTreeRef.value.getSelected().filter(e => e.isLeaf === false)[0].path
-	recurciveFindAndInsert(selectedFolderPath, false,true, itemName)
+	recurciveFindAndInsert(selectedFolderPath, false, true, itemName)
 
 	slVueTreeRef.value.updateNode([0])
 	parentPopUp.value[index].closePopup()
@@ -196,7 +225,8 @@ function removeNode() {
 	const paths = $slVueTree.getSelected().map((node) => node.path)
 	$slVueTree.remove(paths)
 }
-function closePopup(){
+
+function closePopup() {
 	isFolder.value = false
 	isItem.value = false
 	modalCount.value--

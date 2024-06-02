@@ -1,29 +1,27 @@
-import {AccessRightsHelper} from "../../helper/accessRightsHelper";
-import {Model} from "waterline";
-import UserAP from "../../models/UserAP";
-import {WidgetConfig} from "../../lib/widgets/widgetHandler";
-
-type CatalogType = {
-	slug: string
-}
+import {AbstractCatalog} from "../../lib/catalog/abstractCatalog";
 
 export class CatalogHandler {
-	private static catalog: CatalogType[] = [];
+	private static catalog: AbstractCatalog[] = [];
 
-	public static add(catalog: CatalogType): void {
+	public static add(catalog: AbstractCatalog) {
 		this.catalog.push(catalog)
+		return catalog
 	}
 
-	public static getAll(user: UserAP){
+	public static getAll(){
 		let catalog = []
 		let config = sails.config.adminpanel;
 		if (this.catalog.length) {
 			for (const catItem of this.catalog) {
 				catalog.push({
-					api: `${config.routePrefix}/catalog/${catItem.slug}`,
+					id: catItem.id
 				})
 			}
 		}
 		return Promise.resolve(catalog)
+	}
+
+	public static getCatalog(slug:string){
+		return this.catalog.find((catalog) => catalog.slug === slug)
 	}
 }
