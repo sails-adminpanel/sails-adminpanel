@@ -40,7 +40,6 @@ function saveFolder(e) {
 			}
 		}
 	}
-	console.log(data)
 	emit("saveFolder", 0, data)
 }
 </script>

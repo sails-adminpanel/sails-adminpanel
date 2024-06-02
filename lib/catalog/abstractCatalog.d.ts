@@ -110,6 +110,8 @@ export declare abstract class AbstractCatalog {
     readonly itemsType: ItemType[] | GroupType[];
     /** Add second panel as instance of class */
     abstract readonly secondPanel: AbstractCatalog | null;
+    abstract create(): Promise<any>;
+    abstract getCatalog(): Promise<any>;
     getItemType(type: string): GroupType | ItemType;
     addActionHandler(actionHandler: ActionHandler): void;
     addItemsType(itemType: ItemType): void;
@@ -134,7 +136,7 @@ export declare abstract class AbstractCatalog {
      * If there are several Items, then the global ones will be obtained
      */
     getContextAction(items?: Item[]): ActionHandler[];
-    create(item: Item, data: any): Promise<any>;
+    createItem(item: Item, data: any): Promise<any>;
     /**
      * Method for getting group elements
      */

@@ -1,50 +1,54 @@
 <template>
-	<div v-if="!nodes.length">
-		<select class="select" @change="create(true, $event)">
-			<option selected disabled>Select Group</option>
-			<option v-for="item in ItemsGroup" :value="item.type">{{item.name}}</option>
-		</select>
-	</div>
-	<div class="custom-catalog__container" v-show="nodes.length">
-		<sl-vue-tree-next
-			v-model="nodes"
-			ref="slVueTreeRef"
-			id="slVueTree_id"
-			:allow-multiselect="true"
-			@select="nodeSelected"
-			@drop="nodeDropped"
-			@toggle="nodeToggled"
-			@nodecontextmenu="showContextMenu"
-		>
-			<template #title="{ node }">
+	<button class="btn btn-add mb-4" @click="createCatalog" v-if="!catalogCreated"><i class="las la-plus"></i><span>create</span>
+	</button>
+	<div v-else>
+		<div v-if="!nodes.length">
+			<select class="select" @change="create(true, $event)">
+				<option selected disabled>Select Group</option>
+				<option v-for="item in ItemsGroup" :value="item.type">{{ item.name }}</option>
+			</select>
+		</div>
+		<div class="custom-catalog__container" v-show="nodes.length">
+			<sl-vue-tree-next
+				v-model="nodes"
+				ref="slVueTreeRef"
+				id="slVueTree_id"
+				:allow-multiselect="true"
+				@select="nodeSelected"
+				@drop="nodeDropped"
+				@toggle="nodeToggled"
+				@nodecontextmenu="showContextMenu"
+			>
+				<template #title="{ node }">
                             <span class="item-icon">
                                 <i class="fa-solid fa-file" v-if="node.isLeaf"></i>
                                 <i class="fa-solid fa-folder" v-if="!node.isLeaf"></i>
                             </span>
 
-				{{ node.title }}
-			</template>
+					{{ node.title }}
+				</template>
 
-			<template #toggle="{ node }">
+				<template #toggle="{ node }">
                             <span v-if="!node.isLeaf">
                                 <i v-if="node.isExpanded" class="fa fa-chevron-down"></i>
                                 <i v-if="!node.isExpanded" class="fa fa-chevron-right"></i>
                             </span>
-			</template>
+				</template>
 
-			<template #sidebar="{ node }">
+				<template #sidebar="{ node }">
                             <span class="visible-icon" @click="event => toggleVisibility(event, node)">
                                 <i v-if="!node.data || node.data.visible !== false" class="fa fa-eye"></i>
                                 <i v-if="node.data && node.data.visible === false" class="fa fa-eye-slash"></i>
                             </span>
-			</template>
+				</template>
 
-			<template #draginfo="draginfo"> {{ selectedNodesTitle }}</template>
-		</sl-vue-tree-next>
-		<!--		<div class="json-preview">-->
-		<!--			<h2>JSON Preview</h2>-->
-		<!--			<pre>{{ JSON.stringify(nodes, null, 4) }}</pre>-->
-		<!--		</div>-->
+				<template #draginfo="draginfo"> {{ selectedNodesTitle }}</template>
+			</sl-vue-tree-next>
+					<div class="json-preview">
+						<h2>JSON Preview</h2>
+						<pre>{{ nodes }}</pre>
+					</div>
+		</div>
 	</div>
 	<div class="contextmenu" ref="contextmenu" id="contextmenu" v-show="contextMenuIsVisible">
 		<div class="custom-catalog__add">
@@ -83,7 +87,7 @@ import Folder from "./Components/Folder.vue";
 import Item from "./Components/Item.vue";
 import ky from "ky";
 
-let nodes = reactive([])
+let nodes = ref([])
 
 let contextMenuIsVisible = ref(false)
 let lastEvent = ref('No last event')
@@ -101,6 +105,7 @@ let HTML = ref('')
 let ItemsGroup = ref([])
 let ItemsItem = ref([])
 let selectedGroup = ref([])
+let catalogCreated = ref(false)
 
 onMounted(async () => {
 	document.addEventListener('click', function (e) {
@@ -113,15 +118,22 @@ onMounted(async () => {
 			contextMenuIsVisible.value = false
 		}
 	})
-	let catalogItems = await ky.post('/admin/get-catalog', {json: {slug: window.location.pathname.split("/").pop()}}).json()
-	for (const catalogItem of catalogItems.data) {
+	let catalog = await ky.post('/admin/get-catalog', {json: {slug: window.location.pathname.split("/").pop()}}).json()
+	setCatalog(catalog)
+})
+
+function setCatalog(catalog) {
+	console.log(catalog)
+	for (const catalogItem of catalog.items) {
 		if (catalogItem.isGroup) {
 			ItemsGroup.value.push(catalogItem)
 		} else {
 			ItemsItem.value.push(catalogItem)
 		}
 	}
-})
+	nodes.value = catalog.catalog.nodes
+	catalogCreated.value = catalog.catalog.created
+}
 
 function addFolder(isNew) {
 	newFolder.value = isNew
@@ -135,6 +147,11 @@ function addItem() {
 	itemName = ''
 }
 
+async function createCatalog() {
+	let catalog = await ky.post('', {json: {_method: 'createCatalog'}}).json()
+	setCatalog(catalog)
+}
+
 async function create(isNew, event) {
 	selectedGroup.value = event.target.value
 	let resPost = await ky.post('', {json: {type: selectedGroup.value, _method: 'getHTML'}}).json()
@@ -145,7 +162,6 @@ async function create(isNew, event) {
 function saveFolder(index, data) {
 	if (newFolder.value) {
 		createFolder(data)
-		//nodes.push(data)
 	} else {
 		let selectedFolderPath = slVueTreeRef.value.getSelected().filter(e => e.isLeaf === false)[0].path
 		recurciveFindAndInsert(selectedFolderPath, false, false, folderName)
@@ -157,7 +173,7 @@ function saveFolder(index, data) {
 
 async function createFolder(data) {
 	let res = await ky.post('', {json: {type: selectedGroup.value, data: data, _method: 'create'}}).json()
-	console.log(res)
+	nodes.value = res.nodes
 }
 
 function saveItem(index, itemName) {

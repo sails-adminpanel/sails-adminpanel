@@ -144,8 +144,13 @@ export abstract class AbstractCatalog {
 	/** Add second panel as instance of class */
 	public abstract readonly secondPanel: AbstractCatalog | null
 
+	public abstract create(): Promise<any>;
+
+	public abstract getCatalog(): Promise<any>
+
 	// constructor(parameters) {
 	// }
+
 
 	public getItemType(type: string) {
 		return this.itemsType.find((it) => it.type === type);
@@ -216,7 +221,7 @@ export abstract class AbstractCatalog {
 		}
 	}
 
-	public create(item: Item, data: any) {
+	public createItem(item: Item, data: any) {
 		return this.getItemType(item.type)?.create(data);
 	}
 

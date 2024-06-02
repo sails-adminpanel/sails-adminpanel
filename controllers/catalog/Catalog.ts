@@ -20,9 +20,14 @@ export async function catalogController(req, res) {
 			case 'POST':
 				if (data._method === 'getHTML') {
 					return res.json({'data': catalog.getAddHTML(item)})
+				} else if (data._method === 'createCatalog') {
+					return res.json({
+						'items': catalog.getItems(),
+						'catalog': await catalog.create()
+					})
 				} else {
-					let result = await catalog.create(item, data.data)
-					return res.json({'data': result})
+					let result = await catalog.createItem(item, data.data)
+					return res.json({'nodes': result})
 				}
 			case 'PUT':
 			// return res.json({'data': catalog.getEditHTML(item)})
@@ -30,14 +35,19 @@ export async function catalogController(req, res) {
 	}
 }
 
-export async function getCatalogItems(req, res) {
-	if (!req.session.UserAP) {
-		return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+export async function getCatalog(req, res) {
+	if (sails.config.adminpanel.auth) {
+		if (!req.session.UserAP) {
+			return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+		}
 	}
 	const method = req.method.toUpperCase();
 	if (method === 'POST') {
 		const body = req.body
 		let catalog = CatalogHandler.getCatalog(body.slug)
-		return res.json({'data': catalog.getItems()})
+		return res.json({
+			'items': catalog.getItems(),
+			'catalog': await catalog.getCatalog()
+		})
 	}
 }
