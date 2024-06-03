@@ -43,4 +43,5 @@ export default abstract class InstallStepAbstract {
     skipIt(): Promise<void>;
     /** Checks that step should be processed during install */
     abstract check(): Promise<boolean>;
+    onInit(): Promise<void>;
 }

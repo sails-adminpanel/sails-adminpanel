@@ -2,7 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 const installStepper_1 = require("../lib/installStepper/installStepper");
-async function processInstallStep(req, res) {
+let installStepper = installStepper_1.InstallStepper.getInstance();
+async function processInstallFinalize(req, res) {
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
             return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
@@ -11,8 +12,8 @@ async function processInstallStep(req, res) {
             return res.sendStatus(403);
         }
     }
-    sails.log.debug("IN PROCESS FINALIZE", installStepper_1.InstallStepper.getFinalizeStatus());
-    return res.json(installStepper_1.InstallStepper.getFinalizeStatus());
+    sails.log.debug("IN PROCESS FINALIZE", installStepper.getFinalizeStatus());
+    return res.json(installStepper.getFinalizeStatus());
 }
-exports.default = processInstallStep;
+exports.default = processInstallFinalize;
 ;

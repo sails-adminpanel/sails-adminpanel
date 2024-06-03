@@ -1,1 +1,1 @@
-export default function processInstallStep(req: any, res: any): Promise<any>;
+export default function processInstallFinalize(req: any, res: any): Promise<any>;
