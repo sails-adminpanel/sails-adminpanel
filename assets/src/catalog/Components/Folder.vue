@@ -40,6 +40,7 @@ function saveFolder(e) {
 			}
 		}
 	}
+	e.target.reset()
 	emit("saveFolder", 0, data)
 }
 </script>

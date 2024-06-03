@@ -2,7 +2,7 @@
 	<button class="btn btn-add mb-4" @click="createCatalog" v-if="!catalogCreated"><i class="las la-plus"></i><span>create</span>
 	</button>
 	<div v-else>
-		<div v-if="!nodes.length">
+		<div>
 			<select class="select" @change="create(true, $event)">
 				<option selected disabled>Select Group</option>
 				<option v-for="item in ItemsGroup" :value="item.type">{{ item.name }}</option>
@@ -52,20 +52,20 @@
 	</div>
 	<div class="contextmenu" ref="contextmenu" id="contextmenu" v-show="contextMenuIsVisible">
 		<div class="custom-catalog__add">
-			<span>Add</span>
-			<div class="custom-catalog__add-items">
-				<ul>
-					<li @click="addFolder(true)">
-						New Folder
-					</li>
-					<li @click="addFolder(false)" v-if="!selectedNodesType">
-						In Selected Folder
-					</li>
-					<li @click="addItem">
-						Item
-					</li>
-				</ul>
-			</div>
+<!--			<span>Add</span>-->
+<!--			<div class="custom-catalog__add-items">-->
+<!--				<ul>-->
+<!--					<li @click="addFolder(true)">-->
+<!--						New Folder-->
+<!--					</li>-->
+<!--					<li @click="addFolder(false)" v-if="!selectedNodesType">-->
+<!--						In Selected Folder-->
+<!--					</li>-->
+<!--					<li @click="addItem">-->
+<!--						Item-->
+<!--					</li>-->
+<!--				</ul>-->
+<!--			</div>-->
 		</div>
 		<div @click="removeNode" v-if="selectedNodesTitle">Remove</div>
 	</div>
@@ -119,7 +119,11 @@ onMounted(async () => {
 		}
 	})
 	let catalog = await ky.post('/admin/get-catalog', {json: {slug: window.location.pathname.split("/").pop()}}).json()
-	setCatalog(catalog)
+	if(catalog.items && catalog.catalog.nodes) {
+		setCatalog(catalog)
+	} else {
+		console.log(catalog)
+	}
 })
 
 function setCatalog(catalog) {
@@ -172,6 +176,7 @@ function saveFolder(index, data) {
 }
 
 async function createFolder(data) {
+	data.data.type = selectedGroup.value
 	let res = await ky.post('', {json: {type: selectedGroup.value, data: data, _method: 'create'}}).json()
 	nodes.value = res.nodes
 }

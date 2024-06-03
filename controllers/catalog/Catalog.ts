@@ -44,10 +44,33 @@ export async function getCatalog(req, res) {
 	const method = req.method.toUpperCase();
 	if (method === 'POST') {
 		const body = req.body
-		let catalog = CatalogHandler.getCatalog(body.slug)
-		return res.json({
-			'items': catalog.getItems(),
-			'catalog': await catalog.getCatalog()
-		})
+		try {
+			const catalog = CatalogHandler.getCatalog(body.slug)
+			if(catalog) {
+				const items = catalog.getItems()
+
+				return res.json({
+					'items': items,
+					'catalog': await catalog.getCatalog()
+				})
+			} else {
+				return res.json({'error': true, 'message': 'No catalog found'})
+			}
+		} catch (e){
+			return e
+		}
+	}
+}
+
+export async function getAction(req, res) {
+	if (sails.config.adminpanel.auth) {
+		if (!req.session.UserAP) {
+			return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+		}
+	}
+	const method = req.method.toUpperCase();
+	if (method === 'POST') {
+		const body = req.body
+		const catalog = CatalogHandler.getCatalog(body.slug)
 	}
 }

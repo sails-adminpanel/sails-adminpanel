@@ -75,12 +75,13 @@ export declare abstract class ActionHandler {
      * icon (url or id)
      */
     abstract readonly icon: string;
+    abstract readonly name: string;
     /**
      * Implementation of a method that will do something with elements.
      * there's really not much you can do with the context menu
      * @param items
      */
-    abstract handler(items?: Item[]): string;
+    abstract handler(items: Item[]): string;
 }
 export declare abstract class AbstractCatalog {
     /**
@@ -112,6 +113,7 @@ export declare abstract class AbstractCatalog {
     abstract readonly secondPanel: AbstractCatalog | null;
     abstract create(): Promise<any>;
     abstract getCatalog(): Promise<any>;
+    protected constructor();
     getItemType(type: string): GroupType | ItemType;
     addActionHandler(actionHandler: ActionHandler): void;
     addItemsType(itemType: ItemType): void;

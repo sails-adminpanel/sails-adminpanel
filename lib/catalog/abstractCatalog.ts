@@ -101,12 +101,14 @@ export abstract class ActionHandler {
 	 */
 	public abstract readonly icon: string;
 
+	public abstract readonly name: string
+
 	/**
 	 * Implementation of a method that will do something with elements.
 	 * there's really not much you can do with the context menu
 	 * @param items
 	 */
-	public abstract handler(items?: Item[]): string;
+	public abstract handler(items: Item[]): string;
 
 }
 
@@ -148,8 +150,8 @@ export abstract class AbstractCatalog {
 
 	public abstract getCatalog(): Promise<any>
 
-	// constructor(parameters) {
-	// }
+	protected constructor() {
+	}
 
 
 	public getItemType(type: string) {
@@ -214,7 +216,7 @@ export abstract class AbstractCatalog {
 	public getContextAction(items?: Item[]): ActionHandler[] {
 		if (items.length === 1) {
 			const item = items[0];
-			const itemType = this.itemsType.find((it) => it.id === item.id);
+			const itemType = this.itemsType.find((it) => it.type === item.type);
 			return itemType.actionHandlers
 		} else {
 			return this.actionHandlers.filter((ah) => ah.display === "context")
