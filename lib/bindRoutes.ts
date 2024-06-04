@@ -1,5 +1,3 @@
-import _migrations from "../controllers/migrations";
-import _processMigrations from "../controllers/processMigrations";
 import _processInstallStep from "../controllers/processInstallStep";
 import _processInstallFinalize from "../controllers/processInstallFinalize";
 import _dashboard from "../controllers/dashboard";
@@ -78,14 +76,6 @@ export default class Router {
 		 * Widgets Custom
 		 */
 		sails.router.bind(`${config.routePrefix}/widgets-action/:widgetId`, bindPolicies(policies, widgetCustomController))
-
-		/**
-		 * Migrations
-		 * */
-		if (config.globalSettings.enableMigrations) {
-			sails.router.bind(`${config.routePrefix}/migrations`, bindPolicies(policies, _migrations));
-			sails.router.bind(`${config.routePrefix}/processMigrations`, bindPolicies(policies, _processMigrations));
-		}
 
 		/**
 		 * Install Stepper

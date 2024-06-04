@@ -109,14 +109,7 @@ var adminpanelConfig: AdminpanelConfig = {
     sections: [],
     package: packageJson,
     showVersion: true,
-    timezones: timezones,
-    migrations: {
-        path: `${process.cwd()}/migrations`,
-        config: path.resolve(__dirname + "./../database.json")
-    },
-    globalSettings: {
-        enableMigrations: false
-    }
+    timezones: timezones
 }
 
 

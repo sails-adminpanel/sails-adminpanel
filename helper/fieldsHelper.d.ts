@@ -5,7 +5,6 @@ export type Fields = {
         config: BaseFieldConfig;
         model: {
             model: string;
-            autoMigrations: any;
             required: boolean;
             type: 'association' | 'association-many' | 'number' | 'json' | 'string' | 'boolean' | 'ref';
         };

@@ -216,26 +216,6 @@ export interface AdminpanelConfig {
      * System field for store absolute root path adminpanel hookfolder
      */
     rootPath?:string
-
-    /**
-     * Migrations
-     */
-    migrations?: {
-        path: string
-        config?: string | {
-            [key:string]: {
-                [key:string]: string
-            }
-        }
-    } | boolean
-
-    /**
-     * Global settings
-     */
-    globalSettings?: {
-        enableMigrations?: boolean
-		enableWidgets?: boolean
-    }
 }
 
 export interface ModelConfig {
@@ -271,7 +251,7 @@ export interface ModelConfig {
 
         /**
          * Allows you to filter records by criteria,
-         * by default the first one will be selected if filters are specified.  
+         * by default the first one will be selected if filters are specified.
          */
         filter?: {
             [key: string]: {
