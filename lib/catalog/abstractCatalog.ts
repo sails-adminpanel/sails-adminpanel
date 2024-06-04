@@ -89,7 +89,12 @@ export abstract class ActionHandler {
 	/**
 	 * Display option
 	 */
-	public readonly display: "context" | "tool"
+	public readonly displayContext: boolean
+	public readonly displayTool: boolean
+
+	public abstract readonly configUI: "JSONFORM"
+	public abstract readonly configSchema: "JSONSchema"
+	public abstract getConfigHTML(): Promise<string>
 
 	/**
 	 * For which elements the action can be used
@@ -108,7 +113,7 @@ export abstract class ActionHandler {
 	 * there's really not much you can do with the context menu
 	 * @param items
 	 */
-	public abstract handler(items: Item[]): string;
+	public abstract handler(items: Item[], config?: any): string;
 
 }
 
@@ -222,6 +227,8 @@ export abstract class AbstractCatalog {
 			return this.actionHandlers.filter((ah) => ah.display === "context")
 		}
 	}
+
+
 
 	public createItem(item: Item, data: any) {
 		return this.getItemType(item.type)?.create(data);
