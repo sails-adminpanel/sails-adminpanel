@@ -22,13 +22,15 @@ export default class FinalizeStep extends InstallStepAbstract {
     }
 
     async process(data) {
-        if (!InstallStepper.hasUnfinalizedSteps()) {
+		let installStepper = InstallStepper.getInstance();
+        if (!installStepper.hasUnfinalizedSteps()) {
             this.isProcessed = true;
         }
     }
 
     async skip() {
-        if (!InstallStepper.hasUnfinalizedSteps()) {
+		let installStepper = InstallStepper.getInstance();
+        if (!installStepper.hasUnfinalizedSteps()) {
             this.isProcessed = true;
         }
     }

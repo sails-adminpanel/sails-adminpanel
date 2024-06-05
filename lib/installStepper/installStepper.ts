@@ -11,14 +11,28 @@ interface RenderData {
 }
 
 export class InstallStepper {
-    private static steps: InstallStepAbstract[] = [];
-    public static context: any = {};
+    private steps: InstallStepAbstract[] = [];
+    public context: any = {};
+    public readonly canBeClosed: boolean;
+    public static _instance: InstallStepper;
 
-    public static getSteps(): InstallStepAbstract[] {
+    constructor(canBeClosed: boolean = false) {
+        this.canBeClosed = canBeClosed;
+    }
+
+    public static getInstance(): InstallStepper {
+        if (!this._instance) {
+            this._instance = new InstallStepper();
+        }
+
+        return this._instance;
+    }
+
+    public getSteps(): InstallStepAbstract[] {
         return this.steps;
     }
 
-    public static async processStep(stepId: string, data: any) {
+    public async processStep(stepId: string, data: any) {
         try {
             /** As we sort steps by sortOrder, we should check that previous steps were processed */
             const stepIndex = this.steps.findIndex(item => item.id === stepId)
@@ -57,12 +71,12 @@ export class InstallStepper {
         }
     }
 
-    private static getStepById(stepId: string): InstallStepAbstract {
+    private getStepById(stepId: string): InstallStepAbstract {
         return this.steps.find(item => item.id === stepId);
     }
 
     /** Prepares steps array for user interface render */
-    public static render(locale: string): RenderData {
+    public render(locale: string): RenderData {
         let stepToRender = this.getNextUnprocessedStep();
         let leftSteps = this.steps.filter(step => !step.isProcessed && !step.isSkipped);
 
@@ -88,7 +102,7 @@ export class InstallStepper {
         };
     }
 
-    public static async skipStep(stepId: string) {
+    public async skipStep(stepId: string) {
         try {
             let step = this.getStepById(stepId);
             await step.skipIt();
@@ -100,7 +114,7 @@ export class InstallStepper {
     }
 
     /** Add step (replace if it already exists) */
-    public static addStep(step: InstallStepAbstract) {
+    public addStep(step: InstallStepAbstract) {
         if (step.renderer === "ejs") {
             if (!step.ejsPath || !fs.existsSync(step.ejsPath)) {
                 throw `Step [${step.title}] error: ejs path does not exists`
@@ -131,11 +145,11 @@ export class InstallStepper {
 
     }
 
-    public static hasUnprocessedSteps(): boolean {
+    public hasUnprocessedSteps(): boolean {
         return this.steps.some(step => !step.isProcessed && !step.isSkipped);
     }
 
-    public static getNextUnprocessedStep(): InstallStepAbstract {
+    public getNextUnprocessedStep(): InstallStepAbstract {
         let nextStep = this.steps.find(step => !step.isProcessed && !step.isSkipped);
         if (!nextStep && this.hasUnfinalizedSteps()) {
             if (this.getStepById("finalize")) {
@@ -160,11 +174,11 @@ export class InstallStepper {
         return nextStep;
     }
 
-    public static hasUnfinalizedSteps(): boolean {
+    public hasUnfinalizedSteps(): boolean {
         return this.steps.some(step => step.finallyPromise?.status === "pending");
     }
 
-    public static getFinalizeStatus() {
+    public getFinalizeStatus() {
         let stepsWithFinalize = this.steps.filter(step => step.finallyPromise !== null);
         let generalStatus = "fulfilled";
         let stepFinalizeStatuses = stepsWithFinalize.map(item => {

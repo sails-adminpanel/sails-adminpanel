@@ -1,5 +1,6 @@
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import {InstallStepper} from "../lib/installStepper/installStepper";
+let installStepper = InstallStepper.getInstance();
 import * as path from "path";
 
 export default async function processInstallStep(req, res) {
@@ -14,9 +15,16 @@ export default async function processInstallStep(req, res) {
 	if (req.method.toUpperCase() === 'GET') {
 		sails.log.debug("GET REQUEST TO PROCESS INSTALL STEP")
 
-		if (InstallStepper.hasUnprocessedSteps() || InstallStepper.hasUnfinalizedSteps()) {
-			let renderData = InstallStepper.render(req.session.UserAP.locale);
+		if (installStepper.hasUnprocessedSteps() || installStepper.hasUnfinalizedSteps()) {
+			let renderData = installStepper.render(req.session.UserAP.locale);
 			let renderer = renderData.currentStep.renderer;
+			// run onInit method before showing step to user
+			try {
+				await renderData.currentStep.onInit();
+			} catch (e) {
+				console.log("ERROR IN PROCESS INSTALL STEP", e)
+				return res.viewAdmin(`installer/error`, {error: e});
+			}
 
 			return res.viewAdmin(`installer/${renderer}`, renderData);
 			// return res.viewAdmin(`installer/dev`, renderData);
@@ -55,18 +63,18 @@ export default async function processInstallStep(req, res) {
 				}
 
 				// trying to process step
-				await InstallStepper.processStep(currentStepId, inputData);
+				await installStepper.processStep(currentStepId, inputData);
 
 			} else if (req.body.action === 'skip') {
 				// trying to skip step
-				await InstallStepper.skipStep(currentStepId);
+				await installStepper.skipStep(currentStepId);
 
 			} else {
 				return res.status(400).send("Invalid action parameter");
 			}
 
 			// go back to stepper if there are more unprocessed steps, otherwise go back to /admin
-			if (InstallStepper.hasUnprocessedSteps()) {
+			if (installStepper.hasUnprocessedSteps()) {
 				return res.redirect(`${sails.config.adminpanel.routePrefix}/processInstallStep`);
 
 			} else {

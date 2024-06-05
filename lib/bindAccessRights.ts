@@ -47,12 +47,6 @@ export default function bindAccessRights() {
         }
     }
 
-    AccessRightsHelper.registerToken({id: `migrations`, name: "Migrations",
-        description: "Access to '/migrations' route", department: "Routes"});
-
-    AccessRightsHelper.registerToken({id: `process-migrations`, name: "Process migrations",
-        description: "Access to '/processMigrations' route", department: "Routes"});
-
 	AccessRightsHelper.registerToken({id: `process-install-step`, name: "Process install step",
 		description: "Access to '/processInstallStep' route", department: "Routes"});
 

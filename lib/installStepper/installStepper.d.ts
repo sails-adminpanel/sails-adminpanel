@@ -6,20 +6,24 @@ interface RenderData {
     locale: string;
 }
 export declare class InstallStepper {
-    private static steps;
-    static context: any;
-    static getSteps(): InstallStepAbstract[];
-    static processStep(stepId: string, data: any): Promise<void>;
-    private static getStepById;
+    private steps;
+    context: any;
+    readonly canBeClosed: boolean;
+    static _instance: InstallStepper;
+    constructor(canBeClosed?: boolean);
+    static getInstance(): InstallStepper;
+    getSteps(): InstallStepAbstract[];
+    processStep(stepId: string, data: any): Promise<void>;
+    private getStepById;
     /** Prepares steps array for user interface render */
-    static render(locale: string): RenderData;
-    static skipStep(stepId: string): Promise<void>;
+    render(locale: string): RenderData;
+    skipStep(stepId: string): Promise<void>;
     /** Add step (replace if it already exists) */
-    static addStep(step: InstallStepAbstract): void;
-    static hasUnprocessedSteps(): boolean;
-    static getNextUnprocessedStep(): InstallStepAbstract;
-    static hasUnfinalizedSteps(): boolean;
-    static getFinalizeStatus(): {
+    addStep(step: InstallStepAbstract): void;
+    hasUnprocessedSteps(): boolean;
+    getNextUnprocessedStep(): InstallStepAbstract;
+    hasUnfinalizedSteps(): boolean;
+    getFinalizeStatus(): {
         status: string;
         finalizeList: {
             id: string;

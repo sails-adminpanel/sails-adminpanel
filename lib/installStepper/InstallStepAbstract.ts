@@ -86,4 +86,8 @@ export default abstract class InstallStepAbstract {
 
     /** Checks that step should be processed during install */
     public abstract check(): Promise<boolean>
+
+    public async onInit(): Promise<void> {
+        return
+    }
 }

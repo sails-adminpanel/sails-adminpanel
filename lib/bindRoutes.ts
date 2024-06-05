@@ -1,5 +1,3 @@
-import _migrations from "../controllers/migrations";
-import _processMigrations from "../controllers/processMigrations";
 import _processInstallStep from "../controllers/processInstallStep";
 import _processInstallFinalize from "../controllers/processInstallFinalize";
 import _dashboard from "../controllers/dashboard";
@@ -80,24 +78,6 @@ export default class Router {
 		sails.router.bind(`${config.routePrefix}/widgets-action/:widgetId`, bindPolicies(policies, widgetCustomController))
 
 		/**
-		 * Catalog
-		 */
-		sails.router.bind(`${config.routePrefix}/catalog/:slug`, bindPolicies(policies, catalogController))
-
-		/**
-		 * Catalog get Items
-		 */
-		sails.router.bind(`${config.routePrefix}/get-catalog`, bindPolicies(policies, getCatalog))
-
-		/**
-		 * Migrations
-		 * */
-		if (config.globalSettings.enableMigrations) {
-			sails.router.bind(`${config.routePrefix}/migrations`, bindPolicies(policies, _migrations));
-			sails.router.bind(`${config.routePrefix}/processMigrations`, bindPolicies(policies, _processMigrations));
-		}
-
-		/**
 		 * Install Stepper
 		 * */
 		sails.router.bind(`${config.routePrefix}/processInstallStep`, bindPolicies(policies, _processInstallStep));
@@ -118,6 +98,16 @@ export default class Router {
 		 * @todo for custom widgets api we will have to create universal controller that will call methods from any custom widgets
 		 */
 		sails.router.bind(baseRoute + "/widget", bindPolicies(policies, _normalizeNavigationConfig));
+
+		/*
+		* Catalog
+		*/
+	   sails.router.bind(`${config.routePrefix}/catalog/:slug`, bindPolicies(policies, catalogController))
+
+	   /**
+		* Catalog get Items
+		*/
+	   sails.router.bind(`${config.routePrefix}/get-catalog`, bindPolicies(policies, getCatalog))
 
 		/**
 		 * List of records
