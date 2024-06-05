@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 const installStepper_1 = require("../lib/installStepper/installStepper");
-let installStepper = installStepper_1.InstallStepper.getInstance();
 const path = require("path");
 async function processInstallStep(req, res) {
     if (sails.config.adminpanel.auth) {
@@ -15,6 +14,7 @@ async function processInstallStep(req, res) {
     }
     if (req.method.toUpperCase() === 'GET') {
         sails.log.debug("GET REQUEST TO PROCESS INSTALL STEP");
+        let installStepper = installStepper_1.InstallStepper.getStepper(req.params.id);
         if (installStepper.hasUnprocessedSteps() || installStepper.hasUnfinalizedSteps()) {
             let renderData = installStepper.render(req.session.UserAP.locale);
             let renderer = renderData.currentStep.renderer;
@@ -26,8 +26,8 @@ async function processInstallStep(req, res) {
                 console.log("ERROR IN PROCESS INSTALL STEP", e);
                 return res.viewAdmin(`installer/error`, { error: e });
             }
-            return res.viewAdmin(`installer/${renderer}`, renderData);
-            // return res.viewAdmin(`installer/dev`, renderData);
+            return res.viewAdmin(`installer/${renderer}`, { ...renderData, stepperId: installStepper.id });
+            // return res.viewAdmin(`installer/dev`, {...renderData, stepperId: installStepper.id});
         }
         else {
             return res.redirect(`${sails.config.adminpanel.routePrefix}`);
@@ -36,6 +36,7 @@ async function processInstallStep(req, res) {
     if (req.method.toUpperCase() === 'POST') {
         try {
             sails.log.debug("POST REQUEST TO PROCESS INSTALL STEP", req.body);
+            let installStepper = installStepper_1.InstallStepper.getStepper(req.params.id);
             const currentStepId = req.body.currentStepId;
             const filesCounter = req.body.filesCounter;
             // upload files before processing other fields (filesCounter > 0 means that req contains files)
@@ -69,7 +70,7 @@ async function processInstallStep(req, res) {
             }
             // go back to stepper if there are more unprocessed steps, otherwise go back to /admin
             if (installStepper.hasUnprocessedSteps()) {
-                return res.redirect(`${sails.config.adminpanel.routePrefix}/processInstallStep`);
+                return res.redirect(`${sails.config.adminpanel.routePrefix}/install/${installStepper.id}`);
             }
             else {
                 return res.redirect(`${sails.config.adminpanel.routePrefix}`);
@@ -78,6 +79,16 @@ async function processInstallStep(req, res) {
         catch (error) {
             sails.log.error("Error processing step:", error);
             return res.status(500).send("Error processing step");
+        }
+    }
+    if (req.method.toUpperCase() === 'DELETE') {
+        sails.log.debug("DELETE REQUEST TO PROCESS INSTALL STEP", req.body);
+        try {
+            installStepper_1.InstallStepper.deleteStepper(req.params.id);
+            return res.status(200).send("OK");
+        }
+        catch (e) {
+            return res.status(403).send(e);
         }
     }
     return res.status(500).send("Invalid request method");

@@ -57,7 +57,7 @@
 <script>
     async function updateProgressBar() {
         try {
-            const response = await fetch('<%- sails.config.adminpanel.routePrefix %>/processInstallFinalize');
+            const response = await fetch('<%- sails.config.adminpanel.routePrefix %>/install/<%=stepperId%>/finalize');
             const data = await response.json();
 
             const { status, finalizeList } = data;
@@ -104,7 +104,7 @@
             // Process finalize step if all promises are fulfilled
             if (progress === 100) {
 
-                fetch(`<%- sails.config.adminpanel.routePrefix %>/processInstallStep`, {
+                fetch(`<%- sails.config.adminpanel.routePrefix %>/install/<%=stepperId%>`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

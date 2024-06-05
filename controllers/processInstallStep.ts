@@ -1,6 +1,5 @@
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import {InstallStepper} from "../lib/installStepper/installStepper";
-let installStepper = InstallStepper.getInstance();
 import * as path from "path";
 
 export default async function processInstallStep(req, res) {
@@ -14,6 +13,7 @@ export default async function processInstallStep(req, res) {
 
 	if (req.method.toUpperCase() === 'GET') {
 		sails.log.debug("GET REQUEST TO PROCESS INSTALL STEP")
+		let installStepper = InstallStepper.getStepper(req.params.id);
 
 		if (installStepper.hasUnprocessedSteps() || installStepper.hasUnfinalizedSteps()) {
 			let renderData = installStepper.render(req.session.UserAP.locale);
@@ -26,8 +26,8 @@ export default async function processInstallStep(req, res) {
 				return res.viewAdmin(`installer/error`, {error: e});
 			}
 
-			return res.viewAdmin(`installer/${renderer}`, renderData);
-			// return res.viewAdmin(`installer/dev`, renderData);
+			return res.viewAdmin(`installer/${renderer}`, {...renderData, stepperId: installStepper.id});
+			// return res.viewAdmin(`installer/dev`, {...renderData, stepperId: installStepper.id});
 		} else {
 			return res.redirect(`${sails.config.adminpanel.routePrefix}`);
 		}
@@ -37,6 +37,7 @@ export default async function processInstallStep(req, res) {
 
 		try {
 			sails.log.debug("POST REQUEST TO PROCESS INSTALL STEP", req.body)
+			let installStepper = InstallStepper.getStepper(req.params.id);
 
 			const currentStepId = req.body.currentStepId;
 			const filesCounter = req.body.filesCounter;
@@ -75,7 +76,7 @@ export default async function processInstallStep(req, res) {
 
 			// go back to stepper if there are more unprocessed steps, otherwise go back to /admin
 			if (installStepper.hasUnprocessedSteps()) {
-				return res.redirect(`${sails.config.adminpanel.routePrefix}/processInstallStep`);
+				return res.redirect(`${sails.config.adminpanel.routePrefix}/install/${installStepper.id}`);
 
 			} else {
 				return res.redirect(`${sails.config.adminpanel.routePrefix}`);
@@ -84,6 +85,18 @@ export default async function processInstallStep(req, res) {
 		} catch (error) {
 			sails.log.error("Error processing step:", error);
 			return res.status(500).send("Error processing step");
+		}
+	}
+
+	if (req.method.toUpperCase() === 'DELETE') {
+		sails.log.debug("DELETE REQUEST TO PROCESS INSTALL STEP", req.body)
+
+		try {
+			InstallStepper.deleteStepper(req.params.id);
+			return res.status(200).send("OK")
+
+		} catch (e) {
+			return res.status(403).send(e);
 		}
 	}
 

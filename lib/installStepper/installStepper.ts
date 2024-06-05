@@ -11,22 +11,55 @@ interface RenderData {
 }
 
 export class InstallStepper {
+	public id: string;
     private steps: InstallStepAbstract[] = [];
     public context: any = {};
     public readonly canBeClosed: boolean;
-    public static _instance: InstallStepper;
+    public static instances: InstallStepper[] = [];
 
-    constructor(canBeClosed: boolean = false) {
+    constructor(id: string, canBeClosed: boolean = false) {
+		this.id = id;
         this.canBeClosed = canBeClosed;
     }
 
-    public static getInstance(): InstallStepper {
-        if (!this._instance) {
-            this._instance = new InstallStepper();
-        }
+	public static addStepper(stepper?: InstallStepper) {
+		if (this.instances.find(item => item.id === stepper.id)) {
+			sails.log.debug(`Stepper with id ${stepper.id} was deleted due to creating new one`);
+			this.deleteStepper(stepper.id);
+		}
+		this.instances.push(stepper);
+	}
 
-        return this._instance;
+    public static getStepper(stepperId: string): InstallStepper {
+        return this.instances.find(item => item.id === stepperId);
     }
+
+    public static deleteStepper(stepperId: string) {
+		let stepper = this.getStepper(stepperId);
+		if (!stepper.canBeClosed) {
+            sails.log.error(`Can not delete stepper: Stepper with id ${stepperId} can not be closed.`);
+			throw `Can not delete stepper: Stepper with id ${stepperId} can not be closed`
+		}
+
+        const index = this.instances.findIndex(item => item.id === stepperId);
+
+		if (index !== -1) {
+            this.instances.splice(index, 1);
+            sails.log.info(`Stepper with id ${stepperId} has been deleted.`);
+        } else {
+            sails.log.error(`Can not delete stepper: Stepper with id ${stepperId} not found.`);
+            throw `Can not delete stepper: Stepper with id ${stepperId} not found.`
+        }
+    }
+
+	public static getInstance(): InstallStepper {
+		if (!this.instances.length) {
+            let newStepper = new InstallStepper("project", false);
+            this.instances.push(newStepper);
+		}
+
+        return this.instances.find(item => item.id === "project");
+	}
 
     public getSteps(): InstallStepAbstract[] {
         return this.steps;

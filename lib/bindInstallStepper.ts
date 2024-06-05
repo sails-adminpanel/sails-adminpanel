@@ -7,11 +7,11 @@ export default function() {
             return proceed();
         }
 
-		let goingToProcessInstallStep = req._parsedUrl.pathname === `${sails.config.adminpanel.routePrefix}/processInstallStep`;
-		let goingToProcessInstallFinalize = req._parsedUrl.pathname === `${sails.config.adminpanel.routePrefix}/processInstallFinalize`;
+		let goingToProcessInstallStep = req._parsedUrl.pathname === `${sails.config.adminpanel.routePrefix}/install/${installStepper.id}`;
+		let goingToProcessInstallFinalize = req._parsedUrl.pathname === `${sails.config.adminpanel.routePrefix}/install/${installStepper.id}/finalize`;
 
         if (installStepper.hasUnprocessedSteps() && !goingToProcessInstallStep && !goingToProcessInstallFinalize) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/processInstallStep`)
+            return res.redirect(`${sails.config.adminpanel.routePrefix}/install/${installStepper.id}`)
         }
 
         return proceed()

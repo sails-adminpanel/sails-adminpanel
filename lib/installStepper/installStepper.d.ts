@@ -6,11 +6,15 @@ interface RenderData {
     locale: string;
 }
 export declare class InstallStepper {
+    id: string;
     private steps;
     context: any;
     readonly canBeClosed: boolean;
-    static _instance: InstallStepper;
-    constructor(canBeClosed?: boolean);
+    static instances: InstallStepper[];
+    constructor(id: string, canBeClosed?: boolean);
+    static addStepper(stepper?: InstallStepper): void;
+    static getStepper(stepperId: string): InstallStepper;
+    static deleteStepper(stepperId: string): void;
     static getInstance(): InstallStepper;
     getSteps(): InstallStepAbstract[];
     processStep(stepId: string, data: any): Promise<void>;

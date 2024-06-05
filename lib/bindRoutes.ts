@@ -78,10 +78,10 @@ export default class Router {
 		sails.router.bind(`${config.routePrefix}/widgets-action/:widgetId`, bindPolicies(policies, widgetCustomController))
 
 		/**
-		 * Install Stepper
+		 * Module Install Stepper
 		 * */
-		sails.router.bind(`${config.routePrefix}/processInstallStep`, bindPolicies(policies, _processInstallStep));
-		sails.router.bind(`${config.routePrefix}/processInstallFinalize`, bindPolicies(policies, _processInstallFinalize));
+        sails.router.bind(`${config.routePrefix}/install/:id`, bindPolicies(policies, _processInstallStep));
+        sails.router.bind(`${config.routePrefix}/install/:id/finalize`, bindPolicies(policies, _processInstallFinalize));
 
 		/**
 		 * Edit form
