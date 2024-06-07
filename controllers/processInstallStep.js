@@ -15,6 +15,9 @@ async function processInstallStep(req, res) {
     if (req.method.toUpperCase() === 'GET') {
         sails.log.debug("GET REQUEST TO PROCESS INSTALL STEP");
         let installStepper = installStepper_1.InstallStepper.getStepper(req.params.id);
+        if (!installStepper) {
+            return res.redirect(`${sails.config.adminpanel.routePrefix}`);
+        }
         if (installStepper.hasUnprocessedSteps() || installStepper.hasUnfinalizedSteps()) {
             let renderData = installStepper.render(req.session.UserAP.locale);
             let renderer = renderData.currentStep.renderer;
