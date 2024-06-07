@@ -1,3 +1,5 @@
+import { JSONSchema4 } from "@types/json-schema";
+
 /**
  * Interface `Item` describes the data that the UI will operate on
  */
@@ -58,43 +60,59 @@ export abstract class BaseItem implements Item {
 	public abstract childs: Item[];
 	public abstract parentId: string | number | null;
 	public abstract type: string;
+
+	public abstract getAddHTML(): string
+
+	public abstract getEditHTML(id: string | number): string;
 }
 
 export abstract class GroupType extends BaseItem {
 
 	public readonly isGroup: boolean = true;
-
-	public abstract getAddHTML(): string
-
-	public abstract getEditHTML(id: string | number): string;
 }
 
 export abstract class ItemType extends BaseItem {
 
-	public abstract getAddHTML(): string
-
 	public readonly isGroup: boolean = false;
 
-	public abstract getEditHTML(id: string | number): string;
 }
 
 /// ContextHandler
 export abstract class ActionHandler {
+
 	/**
 	 * Three actions are possible, without configuration, configuration via pop-up, and just external action
 	 * For the first two, a handler is provided, but the third type of action simply calls the HTML in the popup; the controller will be implemented externally
 	 * */
-	public readonly type: "basic" | "configured" | "external"
+	public readonly type: "basic" | "json-forms" | "external" | "link"
 
 	/**
-	 * Display option
+	 * Will be shown in the context menu section
 	 */
 	public readonly displayContext: boolean
+	/**
+	 * Will be shown in the toolbox section
+	 */
 	public readonly displayTool: boolean
 
-	public abstract readonly configUI: "JSONFORM"
-	public abstract readonly configSchema: "JSONSchema"
-	public abstract getConfigHTML(): Promise<string>
+	/**
+	 * Only for json-forms 
+	 * ref: https://jsonforms.io/docs
+	 */
+	public abstract readonly uiSchema: any
+	public abstract readonly jsonSchema: JSONSchema4
+	
+	/**
+	 * For "json-forms" | "external"
+	 */
+	public abstract getPopUpHTML(): Promise<string>
+
+
+	/**
+	 * Only for link type
+	 */
+	public abstract getLink(): Promise<string>
+
 
 	/**
 	 * For which elements the action can be used
@@ -104,6 +122,8 @@ export abstract class ActionHandler {
 	/**
 	 * icon (url or id)
 	 */
+	public abstract readonly id: string;
+
 	public abstract readonly icon: string;
 
 	public abstract readonly name: string
@@ -113,7 +133,7 @@ export abstract class ActionHandler {
 	 * there's really not much you can do with the context menu
 	 * @param items
 	 */
-	public abstract handler(items: Item[], config?: any): string;
+	public abstract handler(items: Item[], config?: any): Promise<void>;
 
 }
 
@@ -132,6 +152,11 @@ export abstract class AbstractCatalog {
 	 * Catalog slug
 	 */
 	public abstract readonly slug: string;
+
+	/**
+	 * 0 or null without limits
+	 */
+	public abstract readonly maxNestingDepth: number | null
 
 	/**
 	 * Array of all global contexts, which will appear for all elements
@@ -218,17 +243,32 @@ export abstract class AbstractCatalog {
 	 * Method for getting group elements
 	 * If there are several Items, then the global ones will be obtained
 	 */
-	public getContextAction(items?: Item[]): ActionHandler[] {
+	public getActions(items?: Item[]): ActionHandler[] {
 		if (items.length === 1) {
 			const item = items[0];
 			const itemType = this.itemsType.find((it) => it.type === item.type);
 			return itemType.actionHandlers
 		} else {
-			return this.actionHandlers.filter((ah) => ah.display === "context")
+			return this.actionHandlers
 		}
 	}
 
+	/**
+	 * Implements search and execution of a specific action.handler
+	 */
+	public async handleAction(actionId: string, items?: Item[], config?: any): Promise<void> {
+		let action: ActionHandler = null;
+		if (items.length === 1) {
+			const item = items[0];
+			const itemType = this.itemsType.find((it) => it.type === item.type);
+			action = itemType.actionHandlers.find((it) => it.id === actionId);
+		} else {
+			action = this.actionHandlers.find((it) => it.id === actionId);
+		}
 
+		if(!action) throw `Action with id \`${actionId}\` not found`
+		await action.handler(items, config);
+	}
 
 	public createItem(item: Item, data: any) {
 		return this.getItemType(item.type)?.create(data);

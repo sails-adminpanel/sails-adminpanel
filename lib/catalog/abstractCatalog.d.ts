@@ -66,7 +66,11 @@ export declare abstract class ActionHandler {
     /**
      * Display option
      */
-    readonly display: "context" | "tool";
+    readonly displayContext: boolean;
+    readonly displayTool: boolean;
+    abstract readonly configUI: "JSONFORM";
+    abstract readonly configSchema: "JSONSchema";
+    abstract getConfigHTML(): Promise<string>;
     /**
      * For which elements the action can be used
      */
@@ -81,7 +85,7 @@ export declare abstract class ActionHandler {
      * there's really not much you can do with the context menu
      * @param items
      */
-    abstract handler(items: Item[]): string;
+    abstract handler(items: Item[], config?: any): string;
 }
 export declare abstract class AbstractCatalog {
     /**
