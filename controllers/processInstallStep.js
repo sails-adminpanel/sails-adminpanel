@@ -27,7 +27,7 @@ async function processInstallStep(req, res) {
             }
             catch (e) {
                 console.log("ERROR IN PROCESS INSTALL STEP", e);
-                return res.viewAdmin(`installer/error`, { error: e });
+                return res.viewAdmin(`installer/error`, { error: e, stepperId: installStepper.id });
             }
             return res.viewAdmin(`installer/${renderer}`, { ...renderData, stepperId: installStepper.id });
             // return res.viewAdmin(`installer/dev`, {...renderData, stepperId: installStepper.id});
