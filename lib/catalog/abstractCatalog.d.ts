@@ -1,3 +1,4 @@
+import { JSONSchema4 } from "json-schema";
 /**
  * Interface `Item` describes the data that the UI will operate on
  */
@@ -34,7 +35,7 @@ export declare abstract class BaseItem implements Item {
      * Is false because default value Group is added
      */
     abstract update(id: string | number, item: Item): Promise<void>;
-    abstract create(data: any): Promise<any>;
+    abstract create(data: any, id: string): Promise<any>;
     /**
      *  Set sort value for element
      */
@@ -46,31 +47,43 @@ export declare abstract class BaseItem implements Item {
     abstract childs: Item[];
     abstract parentId: string | number | null;
     abstract type: string;
+    abstract getAddHTML(req: any, res: any): string;
+    abstract getEditHTML(id: string | number): string;
 }
 export declare abstract class GroupType extends BaseItem {
     readonly isGroup: boolean;
-    abstract getAddHTML(): string;
-    abstract getEditHTML(id: string | number): string;
 }
 export declare abstract class ItemType extends BaseItem {
-    abstract getAddHTML(): string;
     readonly isGroup: boolean;
-    abstract getEditHTML(id: string | number): string;
 }
 export declare abstract class ActionHandler {
     /**
      * Three actions are possible, without configuration, configuration via pop-up, and just external action
      * For the first two, a handler is provided, but the third type of action simply calls the HTML in the popup; the controller will be implemented externally
      * */
-    readonly type: "basic" | "configured" | "external";
+    readonly type: "basic" | "json-forms" | "external" | "link";
     /**
-     * Display option
+     * Will be shown in the context menu section
      */
     readonly displayContext: boolean;
+    /**
+     * Will be shown in the toolbox section
+     */
     readonly displayTool: boolean;
-    abstract readonly configUI: "JSONFORM";
-    abstract readonly configSchema: "JSONSchema";
-    abstract getConfigHTML(): Promise<string>;
+    /**
+     * Only for json-forms
+     * ref: https://jsonforms.io/docs
+     */
+    abstract readonly uiSchema: any;
+    abstract readonly jsonSchema: JSONSchema4;
+    /**
+     * For "json-forms" | "external"
+     */
+    abstract getPopUpHTML(): Promise<string>;
+    /**
+     * Only for link type
+     */
+    abstract getLink(): Promise<string>;
     /**
      * For which elements the action can be used
      */
@@ -78,21 +91,23 @@ export declare abstract class ActionHandler {
     /**
      * icon (url or id)
      */
+    abstract readonly id: string;
     abstract readonly icon: string;
     abstract readonly name: string;
     /**
      * Implementation of a method that will do something with elements.
      * there's really not much you can do with the context menu
      * @param items
+     * @param config
      */
-    abstract handler(items: Item[], config?: any): string;
+    abstract handler(items: Item[], config?: any): Promise<void>;
 }
 export declare abstract class AbstractCatalog {
     /**
      * id for catalog please use id format
      *
      *    */
-    abstract readonly id: string;
+    id: string;
     /**
      * Catalog name
      */
@@ -101,6 +116,10 @@ export declare abstract class AbstractCatalog {
      * Catalog slug
      */
     abstract readonly slug: string;
+    /**
+     * 0 or null without limits
+     */
+    abstract readonly maxNestingDepth: number | null;
     /**
      * Array of all global contexts, which will appear for all elements
      */
@@ -118,6 +137,7 @@ export declare abstract class AbstractCatalog {
     abstract create(): Promise<any>;
     abstract getCatalog(): Promise<any>;
     protected constructor();
+    setID(id: string): void;
     getItemType(type: string): GroupType | ItemType;
     addActionHandler(actionHandler: ActionHandler): void;
     addItemsType(itemType: ItemType): void;
@@ -136,12 +156,16 @@ export declare abstract class AbstractCatalog {
     /**
      * Receives HTML to create an element for projection into a popup
      */
-    getAddHTML(item: Item): string;
+    getAddHTML(item: Item, req: any, res: any): string;
     /**
      * Method for getting group elements
      * If there are several Items, then the global ones will be obtained
      */
-    getContextAction(items?: Item[]): ActionHandler[];
+    getActions(items?: Item[]): ActionHandler[];
+    /**
+     * Implements search and execution of a specific action.handler
+     */
+    handleAction(actionId: string, items?: Item[], config?: any): Promise<void>;
     createItem(item: Item, data: any): Promise<any>;
     /**
      * Method for getting group elements

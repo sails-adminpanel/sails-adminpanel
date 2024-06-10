@@ -99,9 +99,10 @@ export default class Router {
 		 */
 		sails.router.bind(baseRoute + "/widget", bindPolicies(policies, _normalizeNavigationConfig));
 
-		/*
+		/**
 		* Catalog
 		*/
+	   sails.router.bind(`${config.routePrefix}/catalog/:slug/:id`, bindPolicies(policies, catalogController))
 	   sails.router.bind(`${config.routePrefix}/catalog/:slug`, bindPolicies(policies, catalogController))
 
 	   /**

@@ -2,11 +2,22 @@
 	<button class="btn btn-add mb-4" @click="createCatalog" v-if="!catalogCreated"><i class="las la-plus"></i><span>create</span>
 	</button>
 	<div v-else>
-		<div>
-			<select class="select" @change="create(true, $event)">
+		<div class="flex items-center gap-4">
+		<div class="flex flex-col gap-2">
+			<label class="admin-panel__title" for="root-group">Select and create root Group Item</label>
+			<select id="root-group" class="select" @change="create(true, $event)">
 				<option selected disabled>Select Group</option>
 				<option v-for="item in ItemsGroup" :value="item.type">{{ item.name }}</option>
 			</select>
+		</div>
+			<div class="flex flex-col gap-2">
+			<label class="admin-panel__title" for="root-group">Select and create root Item</label>
+			<select id="root-group" class="select" @change="createItem">
+				<option selected disabled>Select Item</option>
+				<option v-for="item in ItemsItem" :value="item.type">{{ item.name }}</option>
+			</select>
+		</div>
+
 		</div>
 		<div class="custom-catalog__container" v-show="nodes.length">
 			<sl-vue-tree-next
@@ -21,8 +32,8 @@
 			>
 				<template #title="{ node }">
                             <span class="item-icon">
-                                <i class="fa-solid fa-file" v-if="node.isLeaf"></i>
-                                <i class="fa-solid fa-folder" v-if="!node.isLeaf"></i>
+                                <i class="las la-file" v-if="node.isLeaf"></i>
+                                <i class="las la-folder" v-if="!node.isLeaf"></i>
                             </span>
 
 					{{ node.title }}
@@ -30,15 +41,15 @@
 
 				<template #toggle="{ node }">
                             <span v-if="!node.isLeaf">
-                                <i v-if="node.isExpanded" class="fa fa-chevron-down"></i>
-                                <i v-if="!node.isExpanded" class="fa fa-chevron-right"></i>
+                                <i v-if="node.isExpanded" class="las la-angle-down"></i>
+                                <i v-if="!node.isExpanded" class="las la-angle-up"></i>
                             </span>
 				</template>
 
 				<template #sidebar="{ node }">
                             <span class="visible-icon" @click="event => toggleVisibility(event, node)">
-                                <i v-if="!node.data || node.data.visible !== false" class="fa fa-eye"></i>
-                                <i v-if="node.data && node.data.visible === false" class="fa fa-eye-slash"></i>
+                                <i v-if="!node.data || node.data.visible !== false" class="las la-eye"></i>
+                                <i v-if="node.data && node.data.visible === false" class="las la-eye-slash"></i>
                             </span>
 				</template>
 
@@ -77,6 +88,7 @@
 			<Item @save-item="saveItem"/>
 		</div>
 	</pop-up>
+	<iframe class="w-full" style="height: 1000px" :src="iFrame"></iframe>
 </template>
 
 <script setup>
@@ -105,7 +117,9 @@ let HTML = ref('')
 let ItemsGroup = ref([])
 let ItemsItem = ref([])
 let selectedGroup = ref([])
+let selectedItem = ref([])
 let catalogCreated = ref(false)
+let iFrame = ref(null)
 
 onMounted(async () => {
 	document.addEventListener('click', function (e) {
@@ -118,8 +132,16 @@ onMounted(async () => {
 			contextMenuIsVisible.value = false
 		}
 	})
-	let catalog = await ky.post('/admin/get-catalog', {json: {slug: window.location.pathname.split("/").pop()}}).json()
-	if(catalog.items && catalog.catalog.nodes) {
+	let catalog = await ky.post('/admin/get-catalog', {json: {slug: window.slug, id: window.id}}).json()
+	if(catalog.items) {
+		console.log(catalog)
+		for (const catalogItem of catalog.items) {
+			if (catalogItem.isGroup) {
+				ItemsGroup.value.push(catalogItem)
+			} else {
+				ItemsItem.value.push(catalogItem)
+			}
+		}
 		setCatalog(catalog)
 	} else {
 		console.log(catalog)
@@ -127,14 +149,6 @@ onMounted(async () => {
 })
 
 function setCatalog(catalog) {
-	console.log(catalog)
-	for (const catalogItem of catalog.items) {
-		if (catalogItem.isGroup) {
-			ItemsGroup.value.push(catalogItem)
-		} else {
-			ItemsItem.value.push(catalogItem)
-		}
-	}
 	nodes.value = catalog.catalog.nodes
 	catalogCreated.value = catalog.catalog.created
 }
@@ -161,6 +175,15 @@ async function create(isNew, event) {
 	let resPost = await ky.post('', {json: {type: selectedGroup.value, _method: 'getHTML'}}).json()
 	HTML.value = resPost.data
 	addFolder(true)
+}
+
+async function createItem(event){
+	selectedItem.value = event.target.value
+	// let resPost = await ky.post('', {json: {type: selectedItem.value, _method: 'getHTML'}}).json()
+	// HTML.value = resPost.data
+	// console.log(HTML.value)
+	// iFrame.value = await ky.get('/admin/model/page/add').text()
+	iFrame.value = '/admin/model/page/add'
 }
 
 function saveFolder(index, data) {
