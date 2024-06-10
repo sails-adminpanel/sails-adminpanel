@@ -1,3 +1,5 @@
+<% var config = adminpanel.configHelper.getConfig() %>
+
 <% Object.keys(fields).forEach(function(key) { %>
 	<% if ((!config.showORMtime) && (key === 'createdAt' || key === 'updatedAt')) return %>
 	<div class="flex flex-col gap-3">
@@ -21,7 +23,7 @@
 					</div>
 			<% } %>
 			<div class="admin-panel__widget">
-					<%- include("mixin/fieldWidget", {field: field, value: value, key: key}) %>
+					<%- include("../../mixin/fieldWidget", {field: field, value: value, key: key}) %>
 			</div>
 	</div>
 <% }) %>

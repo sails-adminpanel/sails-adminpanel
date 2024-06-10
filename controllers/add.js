@@ -74,7 +74,7 @@ async function add(req, res) {
             data = reqData;
         }
     }
-    return res.viewAdmin({
+    return res.viewAdmin("./../ejs/partials/content/add.ejs", {
         entity: entity,
         fields: fields,
         data: data

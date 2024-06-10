@@ -86,7 +86,7 @@ export default async function add(req, res) {
         }
     }
 
-    return res.viewAdmin({
+    return res.viewAdmin("./../ejs/partials/content/add.ejs", {
         entity: entity,
         fields: fields,
         data: data
