@@ -1,4 +1,4 @@
-import { JSONSchema4 } from "@types/json-schema";
+import { JSONSchema4 } from "json-schema";
 
 /**
  * Interface `Item` describes the data that the UI will operate on
@@ -45,7 +45,7 @@ export abstract class BaseItem implements Item {
 	 */
 	public abstract update(id: string | number, item: Item): Promise<void>;
 
-	public abstract create(data: any): Promise<any>;
+	public abstract create(data: any, id:string): Promise<any>;
 
 	/**
 	 *  Set sort value for element
@@ -61,7 +61,7 @@ export abstract class BaseItem implements Item {
 	public abstract parentId: string | number | null;
 	public abstract type: string;
 
-	public abstract getAddHTML(): string
+	public abstract getAddHTML(req:any, res:any): string
 
 	public abstract getEditHTML(id: string | number): string;
 }
@@ -96,12 +96,12 @@ export abstract class ActionHandler {
 	public readonly displayTool: boolean
 
 	/**
-	 * Only for json-forms 
+	 * Only for json-forms
 	 * ref: https://jsonforms.io/docs
 	 */
 	public abstract readonly uiSchema: any
 	public abstract readonly jsonSchema: JSONSchema4
-	
+
 	/**
 	 * For "json-forms" | "external"
 	 */
@@ -132,6 +132,7 @@ export abstract class ActionHandler {
 	 * Implementation of a method that will do something with elements.
 	 * there's really not much you can do with the context menu
 	 * @param items
+	 * @param config
 	 */
 	public abstract handler(items: Item[], config?: any): Promise<void>;
 
@@ -143,7 +144,7 @@ export abstract class AbstractCatalog {
 	 * id for catalog please use id format
 	 *
 	 *    */
-	public abstract readonly id: string;
+	public id: string;
 	/**
 	 * Catalog name
 	 */
@@ -183,6 +184,9 @@ export abstract class AbstractCatalog {
 	protected constructor() {
 	}
 
+	public setID(id: string){
+		this.id = id
+	}
 
 	public getItemType(type: string) {
 		return this.itemsType.find((it) => it.type === type);
@@ -235,8 +239,8 @@ export abstract class AbstractCatalog {
 	/**
 	 * Receives HTML to create an element for projection into a popup
 	 */
-	public getAddHTML(item: Item): string {
-		return this.getItemType(item.type)?.getAddHTML();
+	public getAddHTML(item: Item, req:any, res:any): string {
+		return this.getItemType(item.type)?.getAddHTML(req, res);
 	}
 
 	/**
@@ -271,7 +275,7 @@ export abstract class AbstractCatalog {
 	}
 
 	public createItem(item: Item, data: any) {
-		return this.getItemType(item.type)?.create(data);
+		return this.getItemType(item.type)?.create(data, this.id);
 	}
 
 	/**

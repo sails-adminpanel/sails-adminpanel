@@ -8,18 +8,20 @@ export async function catalogController(req, res) {
 		}
 	}
 	const slug = req.param('slug');
+	const id = req.param('id') ? req.param('id') : '';
 	const method = req.method.toUpperCase();
 	if (method === 'GET') {
-		return res.viewAdmin('catalog', {entity: "entity", slug: slug});
+		return res.viewAdmin('catalog', {entity: "entity", slug: slug, id: id});
 	}
 	if (method === 'POST' || method === 'PUT') {
 		const data = req.body
 		const catalog = CatalogHandler.getCatalog(slug)
+		catalog.setID(id)
 		const item = catalog.getItemType(data.type)
 		switch (method) {
 			case 'POST':
 				if (data._method === 'getHTML') {
-					return res.json({'data': catalog.getAddHTML(item)})
+					return res.json({'data': catalog.getAddHTML(item, req, res)})
 				} else if (data._method === 'createCatalog') {
 					return res.json({
 						'items': catalog.getItems(),
@@ -46,6 +48,7 @@ export async function getCatalog(req, res) {
 		const body = req.body
 		try {
 			const catalog = CatalogHandler.getCatalog(body.slug)
+			catalog.setID(body.id)
 			if(catalog) {
 				const items = catalog.getItems()
 
