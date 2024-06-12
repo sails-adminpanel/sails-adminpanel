@@ -10,6 +10,7 @@ import L from 'leaflet'
 import 'leaflet-draw'
 import {GeoJsonEditor} from '../geojson/geojson'
 import { AdminPopUp } from '../pop-up/admin-pop-up'
+import UploadAdapter from './ckeditor5/UploadAdapter'
 
 import 'jquery-ui-dist/jquery-ui.js'
 
@@ -29,6 +30,7 @@ window.Handsontable = Handsontable
 window.L = L
 window.GeoJsonEditor = GeoJsonEditor
 window.AdminPopUp = AdminPopUp
+window.UploadAdapter = UploadAdapter
 
 import('../navigation/js/jquery-sortable-lists.min.js')
 import('bootstrap/dist/js/bootstrap.js')

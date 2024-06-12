@@ -23,6 +23,10 @@ export declare abstract class BaseItem implements Item {
      */
     abstract readonly isGroup: boolean;
     /**
+     * Is it allowed or not to add an element to the root
+     */
+    abstract readonly allowedRoot: boolean;
+    /**
      *  icon (url or id)
      */
     abstract readonly icon: string;
@@ -136,7 +140,7 @@ export declare abstract class AbstractCatalog {
     abstract readonly secondPanel: AbstractCatalog | null;
     abstract create(): Promise<any>;
     abstract getCatalog(): Promise<any>;
-    protected constructor();
+    protected constructor(items: BaseItem[]);
     setID(id: string): void;
     getItemType(type: string): GroupType | ItemType;
     addActionHandler(actionHandler: ActionHandler): void;

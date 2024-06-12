@@ -27,6 +27,11 @@ export abstract class BaseItem implements Item {
 	public abstract readonly isGroup: boolean;
 
 	/**
+	 * Is it allowed or not to add an element to the root
+	 */
+	public abstract readonly allowedRoot: boolean
+
+	/**
 	 *  icon (url or id)
 	 */
 	public abstract readonly icon: string;
@@ -159,6 +164,7 @@ export abstract class AbstractCatalog {
 	 */
 	public abstract readonly maxNestingDepth: number | null
 
+
 	/**
 	 * Array of all global contexts, which will appear for all elements
 	 */
@@ -181,7 +187,10 @@ export abstract class AbstractCatalog {
 
 	public abstract getCatalog(): Promise<any>
 
-	protected constructor() {
+	protected constructor(items:BaseItem[]) {
+		for (const item of items) {
+			this.addItemsType(item)
+		}
 	}
 
 	public setID(id: string){

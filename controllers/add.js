@@ -74,11 +74,20 @@ async function add(req, res) {
             data = reqData;
         }
     }
-    return res.viewAdmin("./../ejs/partials/content/add.ejs", {
-        entity: entity,
-        fields: fields,
-        data: data
-    });
+    if (req.query.without_layout) {
+        return res.viewAdmin("./../ejs/partials/content/add.ejs", {
+            entity: entity,
+            fields: fields,
+            data: data
+        });
+    }
+    else {
+        return res.viewAdmin({
+            entity: entity,
+            fields: fields,
+            data: data
+        });
+    }
 }
 exports.default = add;
 ;

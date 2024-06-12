@@ -28,20 +28,16 @@ const emit = defineEmits(['saveFolder'])
 const props = defineProps(['html'])
 
 function saveFolder(e) {
-	let data = {
-		data: {}
-	}
+	let data = {}
 	for (const eElement of e.target.elements) {
 		if (eElement.value) {
+			data[eElement.name] = eElement.value
 			if (eElement.name === 'title') {
-				data.title = eElement.value
-			} else {
-				data.data[eElement.name] = eElement.value
+				eElement.value = ''
 			}
 		}
 	}
-	e.target.reset()
-	emit("saveFolder", 0, data)
+	emit("saveFolder", data)
 }
 </script>
 

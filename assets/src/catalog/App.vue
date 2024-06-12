@@ -1,23 +1,13 @@
 <template>
-	<button class="btn btn-add mb-4" @click="createCatalog" v-if="!catalogCreated"><i class="las la-plus"></i><span>create</span>
+	<button class="btn btn-add mb-4" @click="createCatalog" v-if="!catalogCreated"><i class="las la-plus"></i><span>create catalog</span>
 	</button>
 	<div v-else>
 		<div class="flex items-center gap-4">
-		<div class="flex flex-col gap-2">
-			<label class="admin-panel__title" for="root-group">Select and create root Group Item</label>
-			<select id="root-group" class="select" @change="create(true, $event)">
-				<option selected disabled>Select Group</option>
-				<option v-for="item in ItemsGroup" :value="item.type">{{ item.name }}</option>
-			</select>
-		</div>
-			<div class="flex flex-col gap-2">
-			<label class="admin-panel__title" for="root-group">Select and create root Item</label>
-			<select id="root-group" class="select" @change="createItem">
-				<option selected disabled>Select Item</option>
-				<option v-for="item in ItemsItem" :value="item.type">{{ item.name }}</option>
-			</select>
-		</div>
-
+			<button class="btn btn-add mb-4" @click="toolAddGroup('group')"><i class="las la-plus"></i><span>create group</span>
+			</button>
+			<button class="btn btn-add mb-4" @click="toolAddGroup('item')"><i
+				class="las la-plus"></i><span>create item</span>
+			</button>
 		</div>
 		<div class="custom-catalog__container" v-show="nodes.length">
 			<sl-vue-tree-next
@@ -55,40 +45,44 @@
 
 				<template #draginfo="draginfo"> {{ selectedNodesTitle }}</template>
 			</sl-vue-tree-next>
-					<div class="json-preview">
-						<h2>JSON Preview</h2>
-						<pre>{{ nodes }}</pre>
-					</div>
+			<div class="json-preview">
+				<h2>JSON Preview</h2>
+				<pre>{{ nodes }}</pre>
+			</div>
 		</div>
 	</div>
 	<div class="contextmenu" ref="contextmenu" id="contextmenu" v-show="contextMenuIsVisible">
 		<div class="custom-catalog__add">
-<!--			<span>Add</span>-->
-<!--			<div class="custom-catalog__add-items">-->
-<!--				<ul>-->
-<!--					<li @click="addFolder(true)">-->
-<!--						New Folder-->
-<!--					</li>-->
-<!--					<li @click="addFolder(false)" v-if="!selectedNodesType">-->
-<!--						In Selected Folder-->
-<!--					</li>-->
-<!--					<li @click="addItem">-->
-<!--						Item-->
-<!--					</li>-->
-<!--				</ul>-->
-<!--			</div>-->
+			<!--			<span>Add</span>-->
+			<!--			<div class="custom-catalog__add-items">-->
+			<!--				<ul>-->
+			<!--					<li @click="addFolder(true)">-->
+			<!--						New Folder-->
+			<!--					</li>-->
+			<!--					<li @click="addFolder(false)" v-if="!selectedNodesType">-->
+			<!--						In Selected Folder-->
+			<!--					</li>-->
+			<!--					<li @click="addItem">-->
+			<!--						Item-->
+			<!--					</li>-->
+			<!--				</ul>-->
+			<!--			</div>-->
 		</div>
 		<div @click="removeNode" v-if="selectedNodesTitle">Remove</div>
 	</div>
 	<pop-up @reset="closePopup" v-for="index in modalCount" :key="index" ref="parentPopUp">
-		<div v-if="isFolder" class="custom-catalog__form">
+		<div v-if="isFolder && index === 2" class="custom-catalog__form">
 			<folder @save-folder="saveFolder" :html="HTML"/>
 		</div>
-		<div v-if="isItem" class="custom-catalog__form">
-			<Item @save-item="saveItem"/>
+		<div v-if="isItem && index === 2" class="custom-catalog__form">
+			<Item @save-item="saveItem" :html="HTML" :itemType="selectedItem"/>
+		</div>
+		<div v-if="isTollAdd && index === 1" class="custom-catalog__form">
+			<SelectItem :ItemsGroup="ItemsGroup" :ItemsItem="ItemsItem" :isGroupRootAdd="isGroupRootAdd"
+						:isItemRootAdd="isItemRootAdd" @createNewFolder="createNewFolder"
+						@createNewItem="createNewItem"/>
 		</div>
 	</pop-up>
-	<iframe class="w-full" style="height: 1000px" :src="iFrame"></iframe>
 </template>
 
 <script setup>
@@ -97,6 +91,7 @@ import {ref, onMounted, computed, reactive} from 'vue'
 import PopUp from "./PopUp.vue";
 import Folder from "./Components/Folder.vue";
 import Item from "./Components/Item.vue";
+import SelectItem from "./Components/SelectItem.vue";
 import ky from "ky";
 
 let nodes = ref([])
@@ -119,7 +114,9 @@ let ItemsItem = ref([])
 let selectedGroup = ref([])
 let selectedItem = ref([])
 let catalogCreated = ref(false)
-let iFrame = ref(null)
+let isTollAdd = ref(false)
+let isItemRootAdd = ref(false)
+let isGroupRootAdd = ref(false)
 
 onMounted(async () => {
 	document.addEventListener('click', function (e) {
@@ -132,10 +129,10 @@ onMounted(async () => {
 			contextMenuIsVisible.value = false
 		}
 	})
-	let catalog = await ky.post('/admin/get-catalog', {json: {slug: window.slug, id: window.id}}).json()
-	if(catalog.items) {
-		console.log(catalog)
-		for (const catalogItem of catalog.items) {
+	let {catalog, items} = await ky.post('/admin/get-catalog', {json: {slug: window.slug, id: window.id}}).json()
+	if (items) {
+		console.log(catalog, items)
+		for (const catalogItem of items) {
 			if (catalogItem.isGroup) {
 				ItemsGroup.value.push(catalogItem)
 			} else {
@@ -148,9 +145,24 @@ onMounted(async () => {
 	}
 })
 
+function toolAddGroup(type) {
+	modalCount.value++
+	switch (type) {
+		case('group'):
+			isGroupRootAdd.value = true
+			break
+		case ('item'):
+			isItemRootAdd = true
+			break;
+		default:
+			break;
+	}
+	isTollAdd.value = true
+}
+
 function setCatalog(catalog) {
-	nodes.value = catalog.catalog.nodes
-	catalogCreated.value = catalog.catalog.created
+	nodes.value = catalog.nodes
+	catalogCreated.value = catalog.created
 }
 
 function addFolder(isNew) {
@@ -162,31 +174,31 @@ function addFolder(isNew) {
 function addItem() {
 	modalCount.value++
 	isItem.value = true
-	itemName = ''
 }
 
 async function createCatalog() {
-	let catalog = await ky.post('', {json: {_method: 'createCatalog'}}).json()
+	let {catalog} = await ky.post('', {json: {_method: 'createCatalog'}}).json()
 	setCatalog(catalog)
 }
 
-async function create(isNew, event) {
-	selectedGroup.value = event.target.value
-	let resPost = await ky.post('', {json: {type: selectedGroup.value, _method: 'getHTML'}}).json()
+async function createNewFolder(isNew, value) {
+	selectedGroup.value = value
+	let resPost = await ky.post('', {json: {type: value, _method: 'getHTML'}}).json()
 	HTML.value = resPost.data
 	addFolder(true)
 }
 
-async function createItem(event){
-	selectedItem.value = event.target.value
+async function createNewItem(value) {
+	selectedItem.value = value
 	// let resPost = await ky.post('', {json: {type: selectedItem.value, _method: 'getHTML'}}).json()
 	// HTML.value = resPost.data
 	// console.log(HTML.value)
-	// iFrame.value = await ky.get('/admin/model/page/add').text()
-	iFrame.value = '/admin/model/page/add'
+	let resPost = await ky.get('/admin/model/page/add?without_layout=true').text()
+	HTML.value = resPost
+	addItem()
 }
 
-function saveFolder(index, data) {
+function saveFolder(data) {
 	if (newFolder.value) {
 		createFolder(data)
 	} else {
@@ -195,22 +207,35 @@ function saveFolder(index, data) {
 	}
 
 	slVueTreeRef.value.updateNode([0])
-	parentPopUp.value[index].closePopup()
+	closeAllPopups()
+}
+
+function closeAllPopups() {
+	for (const parentPopUpElement of parentPopUp.value) {
+		parentPopUpElement.closePopup()
+	}
 }
 
 async function createFolder(data) {
-	data.data.type = selectedGroup.value
-	let res = await ky.post('', {json: {type: selectedGroup.value, data: data, _method: 'create'}}).json()
-	nodes.value = res.nodes
+	console.log(data)
+	// data.data.type = selectedGroup.value
+	// let res = await ky.post('', {json: {type: selectedGroup.value, data: data, _method: 'create'}}).json()
+	// nodes.value = res.nodes
 }
 
-function saveItem(index, itemName) {
+async function createItem(data) {
+	let res = await ky.post('', {json: {type: selectedItem.value, data: data, _method: 'create'}}).json()
+	console.log(res)
+	// nodes.value = res.nodes
+}
 
-	let selectedFolderPath = slVueTreeRef.value.getSelected().filter(e => e.isLeaf === false)[0].path
-	recurciveFindAndInsert(selectedFolderPath, false, true, itemName)
+function saveItem(data) {
+	createItem(data)
+	// let selectedFolderPath = slVueTreeRef.value.getSelected().filter(e => e.isLeaf === false)[0].path
+	// recurciveFindAndInsert(selectedFolderPath, false, true, itemName)
 
 	slVueTreeRef.value.updateNode([0])
-	parentPopUp.value[index].closePopup()
+	closeAllPopups()
 }
 
 function recurciveFindAndInsert(path, nodesArr, isLeaf, title) {

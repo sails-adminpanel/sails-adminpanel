@@ -1,15 +1,11 @@
 <%- include("head") %>
 <%- include("headContent") %>
-<script src="/admin/assets/build/js/vue-catalog.js" defer></script>
 <script>
     window.slug = '<%= slug %>'
     window.id = '<%= id %>'
 </script>
+<script src="/admin/assets/build/js/vue-catalog.js" defer></script>
 <div class="custom-catalog">
-    <p style="margin-bottom: 15px">
-        catalog <b><%= slug %></b>
-        id <b><%= id %></b>
-    </p>
     <div id="catalog"></div>
 </div>
 

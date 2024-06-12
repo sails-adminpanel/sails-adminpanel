@@ -2,7 +2,8 @@
 module.exports = {
 	content: [
 		'./views/**/*.ejs',
-		'./assets/src/styles/style.scss'
+		'./assets/src/styles/style.scss',
+		'./assets/src/catalog/*.vue',
 	],
 	theme: {
 		container: {
