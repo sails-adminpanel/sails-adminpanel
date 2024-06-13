@@ -35,19 +35,16 @@ onMounted(() => {
 })
 
 function saveItem(e) {
-	let data = {
-		data: {}
-	}
+	let data = {}
 
 	setTimeout(() => {
 		for (const eElement of e.target.elements) {
 			if (eElement.value) {
-				data.data[eElement.name] = eElement.value
+				data[eElement.name] = eElement.value
 			}
 		}
-	}, 0)
-
-	emit("saveItem", data)
+		emit("saveItem", data)
+	}, 10)
 }
 </script>
 

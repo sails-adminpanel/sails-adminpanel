@@ -66,7 +66,7 @@ export abstract class BaseItem implements Item {
 	public abstract parentId: string | number | null;
 	public abstract type: string;
 
-	public abstract getAddHTML(req:any, res:any): string
+	public abstract getAddHTML(): {type: 'link' | 'html', data: string}
 
 	public abstract getEditHTML(id: string | number): string;
 }
@@ -248,8 +248,8 @@ export abstract class AbstractCatalog {
 	/**
 	 * Receives HTML to create an element for projection into a popup
 	 */
-	public getAddHTML(item: Item, req:any, res:any): string {
-		return this.getItemType(item.type)?.getAddHTML(req, res);
+	public getAddHTML(item: Item)  {
+		return this.getItemType(item.type)?.getAddHTML();
 	}
 
 	/**

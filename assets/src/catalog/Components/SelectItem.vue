@@ -9,15 +9,24 @@
 	<div class="flex flex-col gap-2" v-if="isItemRootAdd">
 		<label class="admin-panel__title" for="root-group">Select and create root Item</label>
 		<select id="root-group" class="select" @change="createItem">
-			<option selected disabled>Select Item</option>
+			<option selected disabled value="">Select Item</option>
 			<option v-for="item in ItemsItem" :value="item.type">{{ item.name }}</option>
 		</select>
 	</div>
 </template>
 
 <script setup>
-const props = defineProps(['ItemsGroup', 'ItemsItem', 'isItemRootAdd', 'isGroupRootAdd'])
+import {computed} from "vue";
+
+const props = defineProps(['initItemsGroup', 'initItemsItem', 'isItemRootAdd', 'isGroupRootAdd'])
 const emit = defineEmits(['createNewFolder', 'createNewItem'])
+
+let ItemsGroup = computed(() => {
+	return props.initItemsGroup.filter((item) => item.allowedRoot === true)
+})
+let ItemsItem = computed(() => {
+	return props.initItemsItem.filter((item) => item.allowedRoot === true)
+})
 
 function createNewFolder(isNew, event){
 	emit("createNewFolder", isNew, event.target.value)
@@ -25,6 +34,7 @@ function createNewFolder(isNew, event){
 
 function createItem(event){
 	emit("createNewItem", event.target.value)
+	event.target.value = ''
 }
 </script>
 

@@ -52,35 +52,26 @@
 		</div>
 	</div>
 	<div class="contextmenu" ref="contextmenu" id="contextmenu" v-show="contextMenuIsVisible">
-		<div class="custom-catalog__add">
-			<!--			<span>Add</span>-->
-			<!--			<div class="custom-catalog__add-items">-->
-			<!--				<ul>-->
-			<!--					<li @click="addFolder(true)">-->
-			<!--						New Folder-->
-			<!--					</li>-->
-			<!--					<li @click="addFolder(false)" v-if="!selectedNodesType">-->
-			<!--						In Selected Folder-->
-			<!--					</li>-->
-			<!--					<li @click="addItem">-->
-			<!--						Item-->
-			<!--					</li>-->
-			<!--				</ul>-->
-			<!--			</div>-->
-		</div>
-		<div @click="removeNode" v-if="selectedNodesTitle">Remove</div>
+		<ul class="custom-catalog__actions-items">
+			<li>
+				New Folder
+			</li>
+		</ul>
 	</div>
 	<pop-up @reset="closePopup" v-for="index in modalCount" :key="index" ref="parentPopUp">
+		<div v-if="isTollAdd && index === 1" class="custom-catalog__form">
+			<SelectItem :initItemsGroup="ItemsGroup" :initItemsItem="ItemsItem" :isGroupRootAdd="isGroupRootAdd"
+						:isItemRootAdd="isItemRootAdd" @createNewFolder="createNewFolder"
+						@createNewItem="initCreateNewItem"/>
+		</div>
 		<div v-if="isFolder && index === 2" class="custom-catalog__form">
 			<folder @save-folder="saveFolder" :html="HTML"/>
 		</div>
 		<div v-if="isItem && index === 2" class="custom-catalog__form">
-			<Item @save-item="saveItem" :html="HTML" :itemType="selectedItem"/>
+			<MiddlewareItem :selectedItem="selectedItem" :getHTMLoading="getHTMLoading" @createNewItem="createNewItem"/>
 		</div>
-		<div v-if="isTollAdd && index === 1" class="custom-catalog__form">
-			<SelectItem :ItemsGroup="ItemsGroup" :ItemsItem="ItemsItem" :isGroupRootAdd="isGroupRootAdd"
-						:isItemRootAdd="isItemRootAdd" @createNewFolder="createNewFolder"
-						@createNewItem="createNewItem"/>
+		<div v-if="isItem && index === 3" class="custom-catalog__form">
+			<Item @save-item="saveItem" :html="HTML" :itemType="selectedItem"/>
 		</div>
 	</pop-up>
 </template>
@@ -92,19 +83,18 @@ import PopUp from "./PopUp.vue";
 import Folder from "./Components/Folder.vue";
 import Item from "./Components/Item.vue";
 import SelectItem from "./Components/SelectItem.vue";
+import MiddlewareItem from "./Components/MiddlewareItem.vue";
 import ky from "ky";
 
 let nodes = ref([])
 
 let contextMenuIsVisible = ref(false)
-let lastEvent = ref('No last event')
 let selectedNodesTitle = ref('')
 let selectedNodesType = ref('')
 let slVueTreeRef = ref(null)
 let contextmenu = ref(null)
 let modalCount = ref(0)
 let isFolder = ref(false)
-let itemName = defineModel()
 let isItem = ref(false)
 let parentPopUp = ref(null)
 let newFolder = ref(false)
@@ -112,11 +102,12 @@ let HTML = ref('')
 let ItemsGroup = ref([])
 let ItemsItem = ref([])
 let selectedGroup = ref([])
-let selectedItem = ref([])
+let selectedItem = ref('')
 let catalogCreated = ref(false)
 let isTollAdd = ref(false)
 let isItemRootAdd = ref(false)
 let isGroupRootAdd = ref(false)
+let getHTMLoading = ref(false)
 
 onMounted(async () => {
 	document.addEventListener('click', function (e) {
@@ -126,6 +117,10 @@ onMounted(async () => {
 		}
 		const slVueTree_id = document.getElementById('slVueTree_id')
 		if (!e.composedPath().includes(slVueTree_id)) {
+			contextMenuIsVisible.value = false
+		}
+		const nodesList = document.querySelector('.sl-vue-tree-next-nodes-list')
+		if (!e.composedPath().includes(nodesList)) {
 			contextMenuIsVisible.value = false
 		}
 	})
@@ -152,7 +147,7 @@ function toolAddGroup(type) {
 			isGroupRootAdd.value = true
 			break
 		case ('item'):
-			isItemRootAdd = true
+			isItemRootAdd.value = true
 			break;
 		default:
 			break;
@@ -171,11 +166,6 @@ function addFolder(isNew) {
 	isFolder.value = true
 }
 
-function addItem() {
-	modalCount.value++
-	isItem.value = true
-}
-
 async function createCatalog() {
 	let {catalog} = await ky.post('', {json: {_method: 'createCatalog'}}).json()
 	setCatalog(catalog)
@@ -184,18 +174,33 @@ async function createCatalog() {
 async function createNewFolder(isNew, value) {
 	selectedGroup.value = value
 	let resPost = await ky.post('', {json: {type: value, _method: 'getHTML'}}).json()
-	HTML.value = resPost.data
+	await getHTML(resPost)
 	addFolder(true)
 }
 
-async function createNewItem(value) {
+async function getHTML(data) {
+	if (data.type === 'html') {
+		HTML.value = data.data
+	} else if (data.type === 'link') {
+		let resPost = await ky.get(data.data).text()
+		HTML.value = resPost
+	} else {
+		return
+	}
+}
+
+function initCreateNewItem(value) {
 	selectedItem.value = value
-	// let resPost = await ky.post('', {json: {type: selectedItem.value, _method: 'getHTML'}}).json()
-	// HTML.value = resPost.data
-	// console.log(HTML.value)
-	let resPost = await ky.get('/admin/model/page/add?without_layout=true').text()
-	HTML.value = resPost
-	addItem()
+	isItem.value = true
+	modalCount.value++
+}
+
+async function createNewItem() {
+	getHTMLoading.value = true
+	let resPost = await ky.post('', {json: {type: selectedItem.value, _method: 'getHTML'}}).json()
+	await getHTML(resPost)
+	getHTMLoading.value = false
+	modalCount.value++
 }
 
 function saveFolder(data) {
@@ -217,20 +222,17 @@ function closeAllPopups() {
 }
 
 async function createFolder(data) {
-	console.log(data)
-	// data.data.type = selectedGroup.value
-	// let res = await ky.post('', {json: {type: selectedGroup.value, data: data, _method: 'create'}}).json()
-	// nodes.value = res.nodes
+	let res = await ky.post('', {json: {type: selectedGroup.value, data: data, _method: 'create'}}).json()
+	nodes.value = res.nodes
 }
 
 async function createItem(data) {
 	let res = await ky.post('', {json: {type: selectedItem.value, data: data, _method: 'create'}}).json()
-	console.log(res)
-	// nodes.value = res.nodes
+	nodes.value = res.nodes
 }
 
-function saveItem(data) {
-	createItem(data)
+async function saveItem(data) {
+	await createItem(data)
 	// let selectedFolderPath = slVueTreeRef.value.getSelected().filter(e => e.isLeaf === false)[0].path
 	// recurciveFindAndInsert(selectedFolderPath, false, true, itemName)
 
@@ -264,7 +266,7 @@ function toggleVisibility(event, node) {
 	const visible = !node.data || node.data.visible !== false
 	console.log(visible)
 	slVueTreeRef.value.updateNode({path: node.path, patch: {data: {visible: !visible}}})
-	lastEvent.value = `Node ${node.title} is ${visible ? 'visible' : 'invisible'} now`
+	// lastEvent.value = `Node ${node.title} is ${visible ? 'visible' : 'invisible'} now`
 }
 
 function nodeSelected(nodes, event) {
@@ -273,11 +275,12 @@ function nodeSelected(nodes, event) {
 }
 
 function nodeToggled(node, event) {
-	lastEvent.value = `Node ${node.title} is ${node.isExpanded ? 'expanded' : 'collapsed'}`
+	// lastEvent.value = `Node ${node.title} is ${node.isExpanded ? 'expanded' : 'collapsed'}`
 }
 
-function nodeDropped(nodes, position, event) {
-	lastEvent.value = `Nodes: ${nodes.map((node) => node.title).join(', ')} are dropped ${position.placement} ${position.node.title}`
+function nodeDropped(node, position, event) {
+	console.log(nodes.value)
+	// lastEvent.value = `Nodes: ${nodes.map((node) => node.title).join(', ')} are dropped ${position.placement} ${position.node.title}`
 }
 
 function showContextMenu(node, event) {
@@ -296,8 +299,25 @@ function removeNode() {
 }
 
 function closePopup() {
-	isFolder.value = false
-	isItem.value = false
+	switch (modalCount.value) {
+		case (3):
+			break;
+		case(2):
+			isFolder.value = false
+			isItem.value = false
+			break;
+		case (1):
+			isGroupRootAdd.value = false
+			isItemRootAdd.value = false
+			break;
+		default:
+			isFolder.value = false
+			isItem.value = false
+			isGroupRootAdd.value = false
+			isItemRootAdd.value = false
+			break;
+	}
+
 	modalCount.value--
 }
 </script>

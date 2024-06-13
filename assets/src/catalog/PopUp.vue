@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import {ref, onMounted, computed, reactive} from 'vue'
+import {ref, onMounted} from 'vue'
 
 const emit = defineEmits(['reset'])
 let visible = ref(false)
