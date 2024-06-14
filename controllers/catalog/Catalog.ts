@@ -21,7 +21,7 @@ export async function catalogController(req, res) {
 		switch (method) {
 			case 'POST':
 				if (data._method === 'getHTML') {
-					return res.json({'data': catalog.getAddHTML(item, req, res)})
+					return res.json(catalog.getAddHTML(item))
 				} else if (data._method === 'createCatalog') {
 					return res.json({
 						'items': catalog.getItems(),

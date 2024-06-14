@@ -20,7 +20,7 @@ switch (type) {
   %>
     <!-- FILE -->
     <script>
-      const <%=key%>FileManager = new FileUploader({
+      const <%=key+(new Date().valueOf())%>FileManager = new FileUploader({
         element: '<%=key%>-container',
         type: 'file',
         field: '<%=key%>',
@@ -40,7 +40,7 @@ switch (type) {
   %>
     <!-- FILES -->
     <script>
-      const <%=key%>FileManager = new FileUploader({
+      const <%=key+(new Date().valueOf())%>FileManager = new FileUploader({
       element: '<%=key%>-container',
       type: 'files',
       field: '<%=key%>',
@@ -63,7 +63,7 @@ switch (type) {
   <% var smallSize = 150; if (checkConfig && field.config.options.small) {smallSize = field.config.options.small}  %>
   <% var largeSize = 900; if (checkConfig && field.config.options.large) {largeSize = field.config.options.large } %>
   <script>
-      const <%=key%>FileManager = new FileUploader({
+      const <%=key+(new Date().valueOf())%>FileManager = new FileUploader({
       element: '<%=key%>-container',
       type: 'image',
       field: '<%=key%>',
@@ -104,7 +104,7 @@ switch (type) {
   <% var largeSize = 900; if (checkConfig && field.config.options.large) {largeSize = field.config.options.large } %>
 
   <script>
-      const <%=key%>FileManager = new FileUploader({
+      const <%=key+(new Date().valueOf())%>FileManager = new FileUploader({
         element: '<%=key%>-container',
         type: 'images',
         field: '<%=key%>',

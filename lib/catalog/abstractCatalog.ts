@@ -27,6 +27,11 @@ export abstract class BaseItem implements Item {
 	public abstract readonly isGroup: boolean;
 
 	/**
+	 * Is it allowed or not to add an element to the root
+	 */
+	public abstract readonly allowedRoot: boolean
+
+	/**
 	 *  icon (url or id)
 	 */
 	public abstract readonly icon: string;
@@ -61,7 +66,7 @@ export abstract class BaseItem implements Item {
 	public abstract parentId: string | number | null;
 	public abstract type: string;
 
-	public abstract getAddHTML(req:any, res:any): string
+	public abstract getAddHTML(): {type: 'link' | 'html', data: string}
 
 	public abstract getEditHTML(id: string | number): string;
 }
@@ -159,6 +164,7 @@ export abstract class AbstractCatalog {
 	 */
 	public abstract readonly maxNestingDepth: number | null
 
+
 	/**
 	 * Array of all global contexts, which will appear for all elements
 	 */
@@ -181,7 +187,10 @@ export abstract class AbstractCatalog {
 
 	public abstract getCatalog(): Promise<any>
 
-	protected constructor() {
+	protected constructor(items:BaseItem[]) {
+		for (const item of items) {
+			this.addItemsType(item)
+		}
 	}
 
 	public setID(id: string){
@@ -239,8 +248,8 @@ export abstract class AbstractCatalog {
 	/**
 	 * Receives HTML to create an element for projection into a popup
 	 */
-	public getAddHTML(item: Item, req:any, res:any): string {
-		return this.getItemType(item.type)?.getAddHTML(req, res);
+	public getAddHTML(item: Item)  {
+		return this.getItemType(item.type)?.getAddHTML();
 	}
 
 	/**

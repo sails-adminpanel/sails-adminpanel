@@ -1,16 +1,4 @@
-<% if(!field.config.options || !Boolean(field.config.options.ckeditor5)){ %>
 <textarea <%= field.config.required && 'required' %> <%= field.config.disabled && 'disabled'%> name="<%= key %>" id="form-<%= key %>"><%=value%></textarea>
-<script src="/admin/assets/build/js/ckeditor/ckeditor.js"></script>
-<script>
-    CKEDITOR.replace('form-<%= key %>');
-</script>
-<% } %>
-<% if(field.config.options && Boolean(field.config.options.ckeditor5)){ %>
-<textarea <%= field.config.required && 'required' %> <%= field.config.disabled && 'disabled'%> name="<%= key %>" id="form-<%= key %>"><%=value%></textarea>
-<script src="/admin/assets/build/js/ckeditor5/ck5.js"></script>
-<% if (req.session.UserAP.locale !== 'en') { %>
-<script src="/admin/assets/build/js/ckeditor5/translations/<%= req.session.UserAP.locale %>.js"></script>
-<% } %>
 <script>
     ClassicEditor
         .create(document.querySelector("#form-<%= key %>"), {
@@ -46,7 +34,7 @@
         .then(editor => {
             window.editor_<%= key %> = editor;
             editor_<%= key %>.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-                return new UploadAdapter(loader);
+                return new window.UploadAdapter(loader, '<%=entity.uri%>/ckeditor5/upload');
             };
         })
         .catch(error => {
@@ -56,36 +44,4 @@
             console.error(error);
         });
 
-    /*Custom upload*/
-    class UploadAdapter {
-        constructor(loader) {
-            this.loader = loader;
-        }
-
-        async upload() {
-            const data = new FormData();
-            let file = await this.loader.file
-            data.append("name", file.name);
-            data.append("image", file);
-
-            try {
-                let response = await fetch('<%=entity.uri%>/ckeditor5/upload', {
-                    method: 'POST',
-                    body: data,
-                })
-                let result = await response.json()
-                // Backstage returns data:
-                // {"code":0,"msg":"success","data":{"url":"/upload/struts2.jpeg"}}
-
-                // Method Returns data format: {Default: "URL"}
-                return {
-                    default: result.url,
-                };
-            } catch (e) {
-                console.error(e);
-            }
-
-        }
-    }
 </script>
-<% } %>

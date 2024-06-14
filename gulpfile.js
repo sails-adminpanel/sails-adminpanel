@@ -37,7 +37,8 @@ const path = {
 		ejs: './views/**/*.*'
 	},
 	watch:{
-		scss: `${srcFolder}/styles/**/*.scss`
+		scss: `${srcFolder}/styles/**/*.scss`,
+		catalogVue: `${srcFolder}/catalog/**/*.vue`
 	},
 	clean: buildFolder,
 	srcfolder: srcFolder,
@@ -484,6 +485,7 @@ function vueWidgetsWatcher(){
 function vueCaalogWatcher(){
 	gulp.watch(`${srcFolder}/catalog/**/*.*`, gulp.series(vueCatalog, reload))
 	gulp.watch(path.watch.scss, gulp.series(scss, reload))
+	gulp.watch(path.watch.catalogVue, gulp.series(scss, reload))
 }
 
 function vueInstallStepperWatcher(){
