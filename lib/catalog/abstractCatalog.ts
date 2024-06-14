@@ -172,7 +172,7 @@ export abstract class AbstractCatalog {
 	/**
 	 * List of element types
 	 */
-	public readonly itemsType: ItemType[] | GroupType[] = [];
+	public readonly itemsType: (ItemType | GroupType)[] = [];
 
 	/** Add second panel as instance of class */
 	public abstract readonly secondPanel: AbstractCatalog | null
@@ -281,8 +281,14 @@ export abstract class AbstractCatalog {
 	/**
 	 * Method for getting group elements
 	 */
-	public getItems(): ItemType[] | GroupType[] {
+	public getItems(): (ItemType | GroupType)[] {
 		return this.itemsType
 	};
+
+	/**
+	 * Method for getting group childs elements
+	 * if pass null as parentId this root
+	 */
+	public abstract getChilds(parentId: string[] | null): (ItemType | GroupType)[] 
 
 }
