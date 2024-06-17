@@ -8,9 +8,15 @@ export interface Item {
 	type: string;
 	name: string;
 	parentId: string | number | null;
-	childs: Item[];
 }
 
+
+export interface NodeModel<TDataType> {
+	title: string;
+	isLeaf?: boolean;
+	children?: NodeModel<TDataType>[];
+	data?: TDataType; // any serializable user data
+}
 
 /**
  * General Item structure that will be available for all elements, including groups
@@ -62,7 +68,6 @@ export abstract class BaseItem implements Item {
 	 */
 	public abstract deleteItem(id: string | number);
 
-	public abstract childs: Item[];
 	public abstract parentId: string | number | null;
 	public abstract type: string;
 
@@ -74,6 +79,7 @@ export abstract class BaseItem implements Item {
 export abstract class GroupType extends BaseItem {
 
 	public readonly isGroup: boolean = true;
+	public abstract childs: Item[];
 }
 
 export abstract class ItemType extends BaseItem {
@@ -182,8 +188,6 @@ export abstract class AbstractCatalog {
 
 	/** Add second panel as instance of class */
 	public abstract readonly secondPanel: AbstractCatalog | null
-
-	public abstract create(): Promise<any>;
 
 	public abstract getCatalog(): Promise<any>
 
@@ -298,6 +302,6 @@ export abstract class AbstractCatalog {
 	 * Method for getting group childs elements
 	 * if pass null as parentId this root
 	 */
-	public abstract getChilds(parentId: string[] | null): (ItemType | GroupType)[] 
+	public abstract getChilds(childIDs: number[] | null): NodeModel<any>[] | []
 
 }

@@ -1,54 +1,51 @@
 <template>
-	<button class="btn btn-add mb-4" @click="createCatalog" v-if="!catalogCreated"><i class="las la-plus"></i><span>create catalog</span>
-	</button>
-	<div v-else>
-		<div class="flex items-center gap-4">
-			<button class="btn btn-add mb-4" @click="toolAddGroup('group')"><i class="las la-plus"></i><span>create group</span>
-			</button>
-			<button class="btn btn-add mb-4" @click="toolAddGroup('item')"><i
-				class="las la-plus"></i><span>create item</span>
-			</button>
-		</div>
-		<div class="custom-catalog__container" v-show="nodes.length">
-			<sl-vue-tree-next
-				v-model="nodes"
-				ref="slVueTreeRef"
-				id="slVueTree_id"
-				:allow-multiselect="true"
-				@select="nodeSelected"
-				@drop="nodeDropped"
-				@toggle="nodeToggled"
-				@nodecontextmenu="showContextMenu"
-			>
-				<template #title="{ node }">
+	<div class="flex items-center gap-4">
+		<button class="btn btn-add mb-4" @click="toolAddGroup('group')"><i
+			class="las la-plus"></i><span>create group</span>
+		</button>
+		<button class="btn btn-add mb-4" @click="toolAddGroup('item')"><i
+			class="las la-plus"></i><span>create item</span>
+		</button>
+	</div>
+	<div class="custom-catalog__container" v-show="nodes.length">
+		<sl-vue-tree-next
+			v-model="nodes"
+			ref="slVueTreeRef"
+			id="slVueTree_id"
+			:allow-multiselect="true"
+			@select="nodeSelected"
+			@drop="nodeDropped"
+			@toggle="nodeToggled"
+			@nodecontextmenu="showContextMenu"
+		>
+			<template #title="{ node }">
                             <span class="item-icon">
                                 <i class="las la-file" v-if="node.isLeaf"></i>
                                 <i class="las la-folder" v-if="!node.isLeaf"></i>
                             </span>
 
-					{{ node.title }}
-				</template>
+				{{ node.title }}
+			</template>
 
-				<template #toggle="{ node }">
+			<template #toggle="{ node }">
                             <span v-if="!node.isLeaf">
                                 <i v-if="node.isExpanded" class="las la-angle-down"></i>
                                 <i v-if="!node.isExpanded" class="las la-angle-up"></i>
                             </span>
-				</template>
+			</template>
 
-				<template #sidebar="{ node }">
+			<template #sidebar="{ node }">
                             <span class="visible-icon" @click="event => toggleVisibility(event, node)">
                                 <i v-if="!node.data || node.data.visible !== false" class="las la-eye"></i>
                                 <i v-if="node.data && node.data.visible === false" class="las la-eye-slash"></i>
                             </span>
-				</template>
+			</template>
 
-				<template #draginfo="draginfo"> {{ selectedNodesTitle }}</template>
-			</sl-vue-tree-next>
-			<div class="json-preview">
-				<h2>JSON Preview</h2>
-				<pre>{{ nodes }}</pre>
-			</div>
+			<template #draginfo="draginfo"> {{ selectedNodesTitle }}</template>
+		</sl-vue-tree-next>
+		<div class="json-preview">
+			<h2>JSON Preview</h2>
+			<pre>{{ nodes }}</pre>
 		</div>
 	</div>
 	<div class="contextmenu" ref="contextmenu" id="contextmenu" v-show="contextMenuIsVisible">
@@ -103,7 +100,6 @@ let ItemsGroup = ref([])
 let ItemsItem = ref([])
 let selectedGroup = ref([])
 let selectedItem = ref('')
-let catalogCreated = ref(false)
 let isTollAdd = ref(false)
 let isItemRootAdd = ref(false)
 let isGroupRootAdd = ref(false)
@@ -124,7 +120,11 @@ onMounted(async () => {
 			contextMenuIsVisible.value = false
 		}
 	})
-	let {catalog, items} = await ky.post('/admin/get-catalog', {json: {slug: window.slug, id: window.id}}).json()
+	getCatalog()
+})
+
+async function getCatalog(){
+	let {catalog, items} = await ky.post('', {json: {_method: 'getCatalog'}}).json()
 	if (items) {
 		console.log(catalog, items)
 		for (const catalogItem of items) {
@@ -138,7 +138,12 @@ onMounted(async () => {
 	} else {
 		console.log(catalog)
 	}
-})
+}
+
+async function reloadCatalog(){
+	let {catalog} = await ky.post('', {json: {_method: 'getCatalog'}}).json()
+	setCatalog(catalog)
+}
 
 function toolAddGroup(type) {
 	modalCount.value++
@@ -157,18 +162,12 @@ function toolAddGroup(type) {
 
 function setCatalog(catalog) {
 	nodes.value = catalog.nodes
-	catalogCreated.value = catalog.created
 }
 
 function addFolder(isNew) {
 	newFolder.value = isNew
 	modalCount.value++
 	isFolder.value = true
-}
-
-async function createCatalog() {
-	let {catalog} = await ky.post('', {json: {_method: 'createCatalog'}}).json()
-	setCatalog(catalog)
 }
 
 async function createNewFolder(isNew, value) {
@@ -222,13 +221,13 @@ function closeAllPopups() {
 }
 
 async function createFolder(data) {
-	let res = await ky.post('', {json: {type: selectedGroup.value, data: data, _method: 'create'}}).json()
-	nodes.value = res.nodes
+	let res = await ky.post('', {json: {type: selectedGroup.value, data: data, _method: 'createItem'}}).json()
+	if(res.data.ok) reloadCatalog()
 }
 
 async function createItem(data) {
-	let res = await ky.post('', {json: {type: selectedItem.value, data: data, _method: 'create'}}).json()
-	nodes.value = res.nodes
+	let res = await ky.post('', {json: {type: selectedItem.value, data: data, _method: 'createItem'}}).json()
+	if(res.data.ok) reloadCatalog()
 }
 
 async function saveItem(data) {
@@ -279,7 +278,7 @@ function nodeToggled(node, event) {
 }
 
 function nodeDropped(node, position, event) {
-	console.log(nodes.value)
+	console.log(position.node, node)
 	// lastEvent.value = `Nodes: ${nodes.map((node) => node.title).join(', ')} are dropped ${position.placement} ${position.node.title}`
 }
 

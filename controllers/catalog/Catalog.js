@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAction = exports.getCatalog = exports.catalogController = void 0;
+exports.getAction = exports.catalogController = void 0;
 const CatalogHandler_1 = require("./CatalogHandler");
 async function catalogController(req, res) {
     if (sails.config.adminpanel.auth) {
@@ -21,54 +21,26 @@ async function catalogController(req, res) {
         const item = catalog.getItemType(data.type);
         switch (method) {
             case 'POST':
-                if (data._method === 'getHTML') {
-                    return res.json(catalog.getAddHTML(item));
+                switch (data._method) {
+                    case 'getHTML':
+                        return res.json(catalog.getAddHTML(item));
+                    case 'getCatalog':
+                        return res.json({
+                            'items': catalog.getItems(),
+                            'catalog': await catalog.getCatalog()
+                        });
+                    case 'createItem':
+                        let result = await catalog.createItem(item, data.data);
+                        return res.json({ 'data': result });
                 }
-                else if (data._method === 'createCatalog') {
-                    return res.json({
-                        'items': catalog.getItems(),
-                        'catalog': await catalog.create()
-                    });
-                }
-                else {
-                    let result = await catalog.createItem(item, data.data);
-                    return res.json({ 'nodes': result });
-                }
+                break;
             case 'PUT':
-            // return res.json({'data': catalog.getEditHTML(item)})
+                // return res.json({'data': catalog.getEditHTML(item)})
+                break;
         }
     }
 }
 exports.catalogController = catalogController;
-async function getCatalog(req, res) {
-    if (sails.config.adminpanel.auth) {
-        if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
-        }
-    }
-    const method = req.method.toUpperCase();
-    if (method === 'POST') {
-        const body = req.body;
-        try {
-            const catalog = CatalogHandler_1.CatalogHandler.getCatalog(body.slug);
-            catalog.setID(body.id);
-            if (catalog) {
-                const items = catalog.getItems();
-                return res.json({
-                    'items': items,
-                    'catalog': await catalog.getCatalog()
-                });
-            }
-            else {
-                return res.json({ 'error': true, 'message': 'No catalog found' });
-            }
-        }
-        catch (e) {
-            return e;
-        }
-    }
-}
-exports.getCatalog = getCatalog;
 async function getAction(req, res) {
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {

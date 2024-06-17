@@ -7,7 +7,12 @@ export interface Item {
     type: string;
     name: string;
     parentId: string | number | null;
-    childs: Item[];
+}
+export interface NodeModel<TDataType> {
+    title: string;
+    isLeaf?: boolean;
+    children?: NodeModel<TDataType>[];
+    data?: TDataType;
 }
 /**
  * General Item structure that will be available for all elements, including groups
@@ -48,7 +53,6 @@ export declare abstract class BaseItem implements Item {
      *  delete element
      */
     abstract deleteItem(id: string | number): any;
-    abstract childs: Item[];
     abstract parentId: string | number | null;
     abstract type: string;
     abstract getAddHTML(): {
@@ -59,6 +63,7 @@ export declare abstract class BaseItem implements Item {
 }
 export declare abstract class GroupType extends BaseItem {
     readonly isGroup: boolean;
+    abstract childs: Item[];
 }
 export declare abstract class ItemType extends BaseItem {
     readonly isGroup: boolean;
@@ -138,10 +143,9 @@ export declare abstract class AbstractCatalog {
     /**
      * List of element types
      */
-    readonly itemsType: ItemType[] | GroupType[];
+    readonly itemsType: (ItemType | GroupType)[];
     /** Add second panel as instance of class */
     abstract readonly secondPanel: AbstractCatalog | null;
-    abstract create(): Promise<any>;
     abstract getCatalog(): Promise<any>;
     protected constructor(items: BaseItem[]);
     setID(id: string): void;
@@ -180,5 +184,10 @@ export declare abstract class AbstractCatalog {
     /**
      * Method for getting group elements
      */
-    getItems(): ItemType[] | GroupType[];
+    getItems(): (ItemType | GroupType)[];
+    /**
+     * Method for getting group childs elements
+     * if pass null as parentId this root
+     */
+    abstract getChilds(childIDs: number[] | null): NodeModel<any>[] | [];
 }
