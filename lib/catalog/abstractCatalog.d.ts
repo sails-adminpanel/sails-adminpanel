@@ -6,12 +6,14 @@ export interface Item {
     id: string | number;
     type: string;
     name: string;
-    parentId: string | number | null;
+    level: number;
 }
 export interface NodeModel<TDataType> {
     title: string;
     isLeaf?: boolean;
     children?: NodeModel<TDataType>[];
+    ind?: number;
+    isExpanded: boolean;
     data?: TDataType;
 }
 /**
@@ -19,6 +21,8 @@ export interface NodeModel<TDataType> {
  */
 export declare abstract class BaseItem implements Item {
     abstract readonly id: string;
+    abstract readonly level: number;
+    abstract type: string;
     /**
      * Catalog name
      */
@@ -46,15 +50,9 @@ export declare abstract class BaseItem implements Item {
     abstract update(id: string | number, item: Item): Promise<void>;
     abstract create(data: any, id: string): Promise<any>;
     /**
-     *  Set sort value for element
-     */
-    abstract setSortOrder(id: string | number, sortOrder: number): any;
-    /**
      *  delete element
      */
     abstract deleteItem(id: string | number): any;
-    abstract parentId: string | number | null;
-    abstract type: string;
     abstract getAddHTML(): {
         type: 'link' | 'html';
         data: string;
@@ -146,7 +144,9 @@ export declare abstract class AbstractCatalog {
     readonly itemsType: (ItemType | GroupType)[];
     /** Add second panel as instance of class */
     abstract readonly secondPanel: AbstractCatalog | null;
-    abstract getCatalog(): Promise<any>;
+    abstract getCatalog(): Promise<{
+        nodes: NodeModel<any>[];
+    }>;
     protected constructor(items: BaseItem[]);
     setID(id: string): void;
     getItemType(type: string): GroupType | ItemType;
@@ -155,7 +155,7 @@ export declare abstract class AbstractCatalog {
     /**
      * Method for change sortion order for group and items
      */
-    setSortOrder(item: Item, sortOrder: number): void;
+    abstract setSortOrder(data: any): Promise<any>;
     /**
      *  Removing an element
      */
@@ -189,5 +189,7 @@ export declare abstract class AbstractCatalog {
      * Method for getting group childs elements
      * if pass null as parentId this root
      */
-    abstract getChilds(childIDs: number[] | null): NodeModel<any>[] | [];
+    abstract getChilds(data: any): Promise<{
+        nodes: NodeModel<any>[];
+    }>;
 }

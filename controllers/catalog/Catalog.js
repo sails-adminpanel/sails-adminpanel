@@ -30,13 +30,16 @@ async function catalogController(req, res) {
                             'catalog': await catalog.getCatalog()
                         });
                     case 'createItem':
-                        let result = await catalog.createItem(item, data.data);
-                        return res.json({ 'data': result });
+                        return res.json({ 'data': await catalog.createItem(item, data.data) });
+                    case 'getChilds':
+                        return res.json({ data: await catalog.getChilds(data.data) });
                 }
                 break;
             case 'PUT':
-                // return res.json({'data': catalog.getEditHTML(item)})
-                break;
+                switch (data._method) {
+                    case 'sortOrder':
+                        return res.json({ data: await catalog.setSortOrder(data.data) });
+                }
         }
     }
 }

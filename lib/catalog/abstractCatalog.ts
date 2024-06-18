@@ -7,7 +7,7 @@ export interface Item {
 	id: string | number;
 	type: string;
 	name: string;
-	parentId: string | number | null;
+	level: number;
 }
 
 
@@ -15,6 +15,8 @@ export interface NodeModel<TDataType> {
 	title: string;
 	isLeaf?: boolean;
 	children?: NodeModel<TDataType>[];
+	ind?: number
+	isExpanded: boolean
 	data?: TDataType; // any serializable user data
 }
 
@@ -23,6 +25,8 @@ export interface NodeModel<TDataType> {
  */
 export abstract class BaseItem implements Item {
 	public abstract readonly id: string;
+	public abstract readonly level: number;
+	public abstract type: string;
 	/**
 	 * Catalog name
 	 */
@@ -58,22 +62,17 @@ export abstract class BaseItem implements Item {
 
 	public abstract create(data: any, id:string): Promise<any>;
 
-	/**
-	 *  Set sort value for element
-	 */
-	public abstract setSortOrder(id: string | number, sortOrder: number);
 
 	/**
 	 *  delete element
 	 */
 	public abstract deleteItem(id: string | number);
 
-	public abstract parentId: string | number | null;
-	public abstract type: string;
 
 	public abstract getAddHTML(): {type: 'link' | 'html', data: string}
 
 	public abstract getEditHTML(id: string | number): string;
+
 }
 
 export abstract class GroupType extends BaseItem {
@@ -189,7 +188,7 @@ export abstract class AbstractCatalog {
 	/** Add second panel as instance of class */
 	public abstract readonly secondPanel: AbstractCatalog | null
 
-	public abstract getCatalog(): Promise<any>
+	public abstract getCatalog(): Promise<{ nodes: NodeModel<any>[] }>
 
 	protected constructor(items:BaseItem[]) {
 		for (const item of items) {
@@ -231,9 +230,7 @@ export abstract class AbstractCatalog {
 	/**
 	 * Method for change sortion order for group and items
 	 */
-	public setSortOrder(item: Item, sortOrder: number) {
-		this.getItemType(item.type)?.setSortOrder(item.id, sortOrder);
-	}
+	public abstract setSortOrder(data:any): Promise<any>
 
 	/**
 	 *  Removing an element
@@ -302,6 +299,6 @@ export abstract class AbstractCatalog {
 	 * Method for getting group childs elements
 	 * if pass null as parentId this root
 	 */
-	public abstract getChilds(childIDs: number[] | null): NodeModel<any>[] | []
+	public abstract getChilds(data:any): Promise<{ nodes: NodeModel<any>[] }>
 
 }

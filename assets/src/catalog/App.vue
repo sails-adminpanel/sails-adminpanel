@@ -123,7 +123,7 @@ onMounted(async () => {
 	getCatalog()
 })
 
-async function getCatalog(){
+async function getCatalog() {
 	let {catalog, items} = await ky.post('', {json: {_method: 'getCatalog'}}).json()
 	if (items) {
 		console.log(catalog, items)
@@ -140,7 +140,7 @@ async function getCatalog(){
 	}
 }
 
-async function reloadCatalog(){
+async function reloadCatalog() {
 	let {catalog} = await ky.post('', {json: {_method: 'getCatalog'}}).json()
 	setCatalog(catalog)
 }
@@ -221,13 +221,15 @@ function closeAllPopups() {
 }
 
 async function createFolder(data) {
+	data.ind = nodes.value.length
 	let res = await ky.post('', {json: {type: selectedGroup.value, data: data, _method: 'createItem'}}).json()
-	if(res.data.ok) reloadCatalog()
+	if (res.data.ok) reloadCatalog()
 }
 
 async function createItem(data) {
+	data.ind = nodes.value.length
 	let res = await ky.post('', {json: {type: selectedItem.value, data: data, _method: 'createItem'}}).json()
-	if(res.data.ok) reloadCatalog()
+	if (res.data.ok) reloadCatalog()
 }
 
 async function saveItem(data) {
@@ -273,12 +275,30 @@ function nodeSelected(nodes, event) {
 	selectedNodesType.value = nodes.map((node) => node.isLeaf)[0]
 }
 
-function nodeToggled(node, event) {
-	// lastEvent.value = `Node ${node.title} is ${node.isExpanded ? 'expanded' : 'collapsed'}`
+async function nodeToggled(node, event) {
+	if(slVueTreeRef.value.getNode(node.path)?.isExpanded){
+		let res = await ky.post('', {json: {data: node, _method: 'getChilds'}}).json()
+
+		for (const rNode of res.data.nodes) {
+			slVueTreeRef.value.insert({
+					node: node,
+					placement: 'inside'
+				},
+				rNode
+			)
+		}
+	} else {
+		for (const child of slVueTreeRef.value.getNode(node.path).children) {
+			slVueTreeRef.value.remove([child.path])
+		}
+	}
+
 }
 
-function nodeDropped(node, position, event) {
-	console.log(position.node, node)
+async function nodeDropped(node, position, event) {
+	let tree = slVueTreeRef.value.getNode(position.node.path)
+	let res = await ky.put('', {json: {data: tree, _method: 'sortOrder'}}).json()
+	console.log(res)
 	// lastEvent.value = `Nodes: ${nodes.map((node) => node.title).join(', ')} are dropped ${position.placement} ${position.node.title}`
 }
 
