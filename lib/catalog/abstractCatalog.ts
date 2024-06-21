@@ -17,6 +17,7 @@ export interface NodeModel<TDataType> {
 	children?: NodeModel<TDataType>[];
 	ind?: number
 	isExpanded: boolean
+	level: number
 	data?: TDataType; // any serializable user data
 }
 

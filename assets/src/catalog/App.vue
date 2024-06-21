@@ -34,12 +34,12 @@
                             </span>
 			</template>
 
-			<template #sidebar="{ node }">
-                            <span class="visible-icon" @click="event => toggleVisibility(event, node)">
-                                <i v-if="!node.data || node.data.visible !== false" class="las la-eye"></i>
-                                <i v-if="node.data && node.data.visible === false" class="las la-eye-slash"></i>
-                            </span>
-			</template>
+			<!--			<template #sidebar="{ node }">-->
+			<!--                            <span class="visible-icon" @click="event => toggleVisibility(event, node)">-->
+			<!--                                <i v-if="!node.data || node.data.visible !== false" class="las la-eye"></i>-->
+			<!--                                <i v-if="node.data && node.data.visible === false" class="las la-eye-slash"></i>-->
+			<!--                            </span>-->
+			<!--			</template>-->
 
 			<template #draginfo="draginfo"> {{ selectedNodesTitle }}</template>
 		</sl-vue-tree-next>
@@ -210,7 +210,6 @@ function saveFolder(data) {
 		recurciveFindAndInsert(selectedFolderPath, false, false, folderName)
 	}
 
-	slVueTreeRef.value.updateNode([0])
 	closeAllPopups()
 }
 
@@ -223,7 +222,9 @@ function closeAllPopups() {
 async function createFolder(data) {
 	data.ind = nodes.value.length
 	let res = await ky.post('', {json: {type: selectedGroup.value, data: data, _method: 'createItem'}}).json()
-	if (res.data.ok) reloadCatalog()
+	if (res.data.node) {
+		nodes.value.push(res.data.node)
+	}
 }
 
 async function createItem(data) {
@@ -237,7 +238,6 @@ async function saveItem(data) {
 	// let selectedFolderPath = slVueTreeRef.value.getSelected().filter(e => e.isLeaf === false)[0].path
 	// recurciveFindAndInsert(selectedFolderPath, false, true, itemName)
 
-	slVueTreeRef.value.updateNode([0])
 	closeAllPopups()
 }
 
@@ -276,30 +276,67 @@ function nodeSelected(nodes, event) {
 }
 
 async function nodeToggled(node, event) {
-	if(slVueTreeRef.value.getNode(node.path)?.isExpanded){
-		let res = await ky.post('', {json: {data: node, _method: 'getChilds'}}).json()
 
-		for (const rNode of res.data.nodes) {
-			slVueTreeRef.value.insert({
-					node: node,
-					placement: 'inside'
-				},
-				rNode
-			)
-		}
+	for (const child of slVueTreeRef.value.getNode(node.path).children) {
+		slVueTreeRef.value.remove([child.path])
+	}
+
+	if (slVueTreeRef.value.getNode(node.path)?.isExpanded) {
+		getChilds(node)
 	} else {
-		for (const child of slVueTreeRef.value.getNode(node.path).children) {
-			slVueTreeRef.value.remove([child.path])
-		}
+		renoveChilds(node)
 	}
 
 }
 
-async function nodeDropped(node, position, event) {
-	let tree = slVueTreeRef.value.getNode(position.node.path)
-	let res = await ky.put('', {json: {data: tree, _method: 'sortOrder'}}).json()
-	console.log(res)
-	// lastEvent.value = `Nodes: ${nodes.map((node) => node.title).join(', ')} are dropped ${position.placement} ${position.node.title}`
+function recursiveSetChilds(node, Dnodes, rNodes) {
+	let arr = Dnodes === null ? nodes.value : Dnodes
+	for (let valueElement of arr) {
+		if (valueElement.data.id === node.data.id) {
+			for (const rNode of rNodes) {
+				valueElement.children.push(rNode)
+			}
+		} else {
+			if (valueElement.children.length > 0) {
+				recursiveSetChilds(node, valueElement.children, rNodes)
+			}
+		}
+	}
+}
+
+async function getChilds(node) {
+	let res = await ky.post('', {json: {data: node, _method: 'getChilds'}}).json()
+	recursiveSetChilds(node, null, res.data.nodes)
+}
+
+async function nodeDropped(Dnode, position, event) {
+	let reqNode = null,
+		reqParent = null
+	slVueTreeRef.value.traverse((node, nodeModel, siblings) => {
+		if (node.data.id === Dnode[0].data.id) {
+			reqNode = node
+		}
+		if (node.data.id === position.node.data.id && position.placement === 'inside') {
+			reqParent = node
+		}
+		if (position.placement !== 'inside' && node.data.id === Dnode[0].data.parent) {
+			if (node.level !== 1) {
+				reqParent = node
+			}
+		}
+
+	})
+
+	console.log('Node: ', reqNode, 'parent: ', reqParent)
+
+	let res = await ky.put('', {json: {data: {reqNode: reqNode, reqParent: reqParent}, _method: 'sortOrder'}}).json()
+
+}
+
+function renoveChilds(Dnode) {
+	for (const child of slVueTreeRef.value.getNode(Dnode.path).children) {
+		slVueTreeRef.value.remove([child.path])
+	}
 }
 
 function showContextMenu(node, event) {

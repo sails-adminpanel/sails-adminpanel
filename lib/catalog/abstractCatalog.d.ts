@@ -14,6 +14,7 @@ export interface NodeModel<TDataType> {
     children?: NodeModel<TDataType>[];
     ind?: number;
     isExpanded: boolean;
+    level: number;
     data?: TDataType;
 }
 /**
@@ -168,7 +169,7 @@ export declare abstract class AbstractCatalog {
      * Receives HTML to create an element for projection into a popup
      */
     getAddHTML(item: Item): {
-        type: "link" | "html";
+        type: "html" | "link";
         data: string;
     };
     /**
