@@ -276,23 +276,16 @@ function nodeSelected(nodes, event) {
 }
 
 async function nodeToggled(node, event) {
-
-	for (const child of slVueTreeRef.value.getNode(node.path).children) {
-		slVueTreeRef.value.remove([child.path])
-	}
-
-	if (slVueTreeRef.value.getNode(node.path)?.isExpanded) {
-		getChilds(node)
-	} else {
-		renoveChilds(node)
-	}
-
+	getChilds(node)
 }
 
 function recursiveSetChilds(node, Dnodes, rNodes) {
 	let arr = Dnodes === null ? nodes.value : Dnodes
 	for (let valueElement of arr) {
 		if (valueElement.data.id === node.data.id) {
+			// console.log(valueElement.children)
+			// return
+			valueElement.children = []
 			for (const rNode of rNodes) {
 				valueElement.children.push(rNode)
 			}
@@ -310,34 +303,41 @@ async function getChilds(node) {
 }
 
 async function nodeDropped(Dnode, position, event) {
-	let reqNode = null,
+	let reqNode = Dnode[0],
 		reqParent = null
 	slVueTreeRef.value.traverse((node, nodeModel, siblings) => {
-		if (node.data.id === Dnode[0].data.id) {
-			reqNode = node
+		switch (position.placement) {
+			case 'inside':
+				if (node.data.id === position.node.data.id) {
+					reqParent = node
+					return false
+				}
+			case 'after':
+			case 'before':
+				if (node.data.id === position.node.data.id) {
+					slVueTreeRef.value.traverse((Tnode, TnodeModel, Tsiblings) => {
+						if (Tnode.data.id === node.data.parent) {
+							reqParent = Tnode
+							return false
+						}
+					})
+				}
 		}
-		if (node.data.id === position.node.data.id && position.placement === 'inside') {
-			reqParent = node
-		}
-		if (position.placement !== 'inside' && node.data.id === Dnode[0].data.parent) {
-			if (node.level !== 1) {
-				reqParent = node
-			}
-		}
-
 	})
-
+	if (reqParent === null) {
+		reqParent = {
+			children: [],
+			data: {id: 0}
+		}
+		slVueTreeRef.value.traverse((node, nodeModel, siblings) => {
+			if (node.level === 1) reqParent.children.push(node)
+		})
+	}
 	console.log('Node: ', reqNode, 'parent: ', reqParent)
 
 	let res = await ky.put('', {json: {data: {reqNode: reqNode, reqParent: reqParent}, _method: 'sortOrder'}}).json()
-
 }
 
-function renoveChilds(Dnode) {
-	for (const child of slVueTreeRef.value.getNode(Dnode.path).children) {
-		slVueTreeRef.value.remove([child.path])
-	}
-}
 
 function showContextMenu(node, event) {
 	event.preventDefault()
