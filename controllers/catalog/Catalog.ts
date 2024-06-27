@@ -32,6 +32,8 @@ export async function catalogController(req, res) {
 						return res.json({'data': await catalog.createItem(item, data.data)})
 					case 'getChilds':
 						return res.json({data: await catalog.getChilds(data.data)})
+					case 'getCreatedItems':
+						return res.json({data: await catalog.getCreatedItems(item)})
 				}
 				break;
 			case 'PUT':

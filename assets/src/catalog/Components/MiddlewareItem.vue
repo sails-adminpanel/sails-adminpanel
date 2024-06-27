@@ -1,9 +1,9 @@
 <template>
 	<div class="flex flex-col gap-2">
 		<label class="admin-panel__title" for="root-group">Select Item</label>
-		<select id="root-group" class="select min-w-[200px]">
-			<option selected disabled>Select Item</option>
-			<option v-for="item in items" :value="item">{{ item }}</option>
+		<select id="root-group" class="select min-w-[200px]" @change="createItem">
+			<option selected disabled value="">Select Item</option>
+			<option v-for="item in items" :value="item.id">{{ item.title }}</option>
 		</select>
 	</div>
 	<div>
@@ -21,15 +21,22 @@
 
 <script setup>
 import {onMounted, ref} from "vue";
+import ky from 'ky'
 
 const props = defineProps(['selectedItem', 'getHTMLoading'])
-const emits = defineEmits(['createNewItem'])
+const emit = defineEmits(['createNewItem', 'addItem'])
 
 let items = ref([])
 
-onMounted(() => {
-	items.value.push('123')
+onMounted(async () => {
+	let res = await ky.post('', {json: {type: props.selectedItem, _method: 'getCreatedItems'}}).json()
+	items.value = res.data.items
 })
+
+function createItem(event){
+	emit("addItem", event.target.value)
+	event.target.value = ''
+}
 </script>
 
 

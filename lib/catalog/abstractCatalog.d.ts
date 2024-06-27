@@ -59,6 +59,12 @@ export declare abstract class BaseItem implements Item {
         data: string;
     };
     abstract getEditHTML(id: string | number): string;
+    abstract getCreatedItems(id: string): Promise<{
+        items: {
+            id: string;
+            title: string;
+        }[];
+    }>;
 }
 export declare abstract class GroupType extends BaseItem {
     readonly isGroup: boolean;
@@ -192,5 +198,11 @@ export declare abstract class AbstractCatalog {
      */
     abstract getChilds(data: any): Promise<{
         nodes: NodeModel<any>[];
+    }>;
+    getCreatedItems(item: ItemType): Promise<{
+        items: {
+            id: string;
+            title: string;
+        }[];
     }>;
 }

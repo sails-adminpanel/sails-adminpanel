@@ -65,7 +65,7 @@
 			<folder @save-folder="saveFolder" :html="HTML"/>
 		</div>
 		<div v-if="isItem && index === 2" class="custom-catalog__form">
-			<MiddlewareItem :selectedItem="selectedItem" :getHTMLoading="getHTMLoading" @createNewItem="createNewItem"/>
+			<MiddlewareItem :selectedItem="selectedItem" :getHTMLoading="getHTMLoading" @createNewItem="createNewItem" @addItem="addCreatedItem"/>
 		</div>
 		<div v-if="isItem && index === 3" class="custom-catalog__form">
 			<Item @save-item="saveItem" :html="HTML" :itemType="selectedItem"/>
@@ -227,13 +227,22 @@ async function createFolder(data) {
 	}
 }
 
+async function addCreatedItem(id){
+	let data = {id: id, isNew: false, ind: nodes.value.length}
+	await createItem(data)
+	closeAllPopups()
+}
+
 async function createItem(data) {
 	data.ind = nodes.value.length
 	let res = await ky.post('', {json: {type: selectedItem.value, data: data, _method: 'createItem'}}).json()
-	if (res.data.ok) reloadCatalog()
+	if (res.data.node) {
+		nodes.value.push(res.data.node)
+	}
 }
 
 async function saveItem(data) {
+	data.isNew = true
 	await createItem(data)
 	// let selectedFolderPath = slVueTreeRef.value.getSelected().filter(e => e.isLeaf === false)[0].path
 	// recurciveFindAndInsert(selectedFolderPath, false, true, itemName)
@@ -289,8 +298,9 @@ function recursiveSetChilds(node, Dnodes, rNodes) {
 			for (const rNode of rNodes) {
 				valueElement.children.push(rNode)
 			}
-		} else {
-			if (valueElement.children.length > 0) {
+		}
+		else {
+			if (valueElement.children?.length > 0) {
 				recursiveSetChilds(node, valueElement.children, rNodes)
 			}
 		}
@@ -333,7 +343,7 @@ async function nodeDropped(Dnode, position, event) {
 			if (node.level === 1) reqParent.children.push(node)
 		})
 	}
-	console.log('Node: ', reqNode, 'parent: ', reqParent)
+	//console.log('Node: ', reqNode, 'parent: ', reqParent)
 
 	let res = await ky.put('', {json: {data: {reqNode: reqNode, reqParent: reqParent}, _method: 'sortOrder'}}).json()
 }

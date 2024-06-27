@@ -73,6 +73,7 @@ export abstract class BaseItem implements Item {
 	public abstract getAddHTML(): {type: 'link' | 'html', data: string}
 
 	public abstract getEditHTML(id: string | number): string;
+	public abstract getCreatedItems(id: string): Promise<{ items: {id: string, title: string}[] }>
 
 }
 
@@ -191,7 +192,7 @@ export abstract class AbstractCatalog {
 
 	public abstract getCatalog(): Promise<{ nodes: NodeModel<any>[] }>
 
-	protected constructor(items:BaseItem[]) {
+	protected constructor(items: BaseItem[]) {
 		for (const item of items) {
 			this.addItemsType(item)
 		}
@@ -301,5 +302,9 @@ export abstract class AbstractCatalog {
 	 * if pass null as parentId this root
 	 */
 	public abstract getChilds(data:any): Promise<{ nodes: NodeModel<any>[] }>
+
+	public getCreatedItems(item: ItemType){
+		return this.getItemType(item.type)?.getCreatedItems(this.id)
+	}
 
 }
