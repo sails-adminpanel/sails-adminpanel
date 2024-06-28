@@ -34,12 +34,18 @@ export async function catalogController(req, res) {
 						return res.json({data: await catalog.getChilds(data.data)})
 					case 'getCreatedItems':
 						return res.json({data: await catalog.getCreatedItems(item)})
+					case 'getActions':
+						return res.json({data: await catalog.getActions([item])})
 				}
 				break;
 			case 'PUT':
 				switch (data._method) {
 					case 'sortOrder':
 						return res.json({data: await catalog.setSortOrder(data.data)})
+					case 'action':
+						return res.json({data: await catalog.handleAction(data.data.actionID, [item], data.data.config)})
+					case 'updateItem':
+						return res.json({data: await catalog.updateItem(item, data.id, data.data)})
 				}
 		}
 	}

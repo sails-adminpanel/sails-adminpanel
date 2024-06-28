@@ -103,11 +103,20 @@ async function edit(req, res) {
     //         return res.serverError();
     //     }
     // }
-    res.viewAdmin({
-        entity: entity,
-        record: record,
-        fields: fields
-    });
+    if (req.query.without_layout) {
+        return res.viewAdmin("./../ejs/partials/content/edit.ejs", {
+            entity: entity,
+            record: record,
+            fields: fields
+        });
+    }
+    else {
+        return res.viewAdmin({
+            entity: entity,
+            record: record,
+            fields: fields
+        });
+    }
 }
 exports.default = edit;
 ;

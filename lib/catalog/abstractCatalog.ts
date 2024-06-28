@@ -59,7 +59,7 @@ export abstract class BaseItem implements Item {
 	/**
 	 * Is false because default value Group is added
 	 */
-	public abstract update(id: string | number, item: Item): Promise<void>;
+	public abstract update(id: string | number, data:any): Promise<any>;
 
 	public abstract create(data: any, id:string): Promise<any>;
 
@@ -72,7 +72,7 @@ export abstract class BaseItem implements Item {
 
 	public abstract getAddHTML(): {type: 'link' | 'html', data: string}
 
-	public abstract getEditHTML(id: string | number): string;
+	public abstract getEditHTML(id: string | number): Promise<{type: 'link' | 'html', data: string}>;
 	public abstract getCreatedItems(id: string): Promise<{ items: {id: string, title: string}[] }>
 
 }
@@ -146,7 +146,7 @@ export abstract class ActionHandler {
 	 * @param items
 	 * @param config
 	 */
-	public abstract handler(items: Item[], config?: any): Promise<void>;
+	public abstract handler(items: (ItemType | GroupType)[], config?: any): Promise<void>;
 
 }
 
@@ -206,17 +206,6 @@ export abstract class AbstractCatalog {
 		return this.itemsType.find((it) => it.type === type);
 	}
 
-	public addActionHandler(actionHandler: ActionHandler) {
-		if (actionHandler.selectedItemTypes.length > 0) {
-			for (let actionItem of actionHandler.selectedItemTypes) {
-				this.getItemType(actionItem).addActionHandler(actionHandler)
-			}
-
-		} else {
-			this.actionHandlers.push(actionHandler);
-		}
-	}
-
 
 	public addItemsType(itemType: ItemType) {
 		// Возможно что страницы будут иметь ссылки внутри
@@ -255,11 +244,22 @@ export abstract class AbstractCatalog {
 		return this.getItemType(item.type)?.getAddHTML();
 	}
 
+	public addActionHandler(actionHandler: ActionHandler) {
+		if (actionHandler.selectedItemTypes.length > 0) {
+			for (let actionItem of actionHandler.selectedItemTypes) {
+				this.getItemType(actionItem).addActionHandler(actionHandler)
+			}
+
+		} else {
+			this.actionHandlers.push(actionHandler);
+		}
+	}
+
 	/**
 	 * Method for getting group elements
 	 * If there are several Items, then the global ones will be obtained
 	 */
-	public getActions(items?: Item[]): ActionHandler[] {
+	async getActions(items?: Item[]): Promise<ActionHandler[]> {
 		if (items.length === 1) {
 			const item = items[0];
 			const itemType = this.itemsType.find((it) => it.type === item.type);
@@ -272,7 +272,7 @@ export abstract class AbstractCatalog {
 	/**
 	 * Implements search and execution of a specific action.handler
 	 */
-	public async handleAction(actionId: string, items?: Item[], config?: any): Promise<void> {
+	public async handleAction(actionId: string, items?:(ItemType | GroupType)[], config?: any): Promise<void> {
 		let action: ActionHandler = null;
 		if (items.length === 1) {
 			const item = items[0];
@@ -283,11 +283,16 @@ export abstract class AbstractCatalog {
 		}
 
 		if(!action) throw `Action with id \`${actionId}\` not found`
-		await action.handler(items, config);
+		return await action.handler(items, config);
 	}
 
 	public createItem(item: Item, data: any) {
 		return this.getItemType(item.type)?.create(data, this.id);
+	}
+
+
+	public updateItem(item: Item, id: string, data: any) {
+		return this.getItemType(item.type)?.update(id, data);
 	}
 
 	/**

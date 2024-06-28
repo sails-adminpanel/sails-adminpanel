@@ -3,11 +3,11 @@
 		<form action="" @submit.prevent="saveItem" id="form" class="flex flex-col gap-4 mt-4">
 			<div v-html="html" ref="embedded"></div>
 		</form>
-	</div>
-	<div>
-		<button class="btn btn-green" form="form" type="submit">
-			Save
-		</button>
+		<div>
+			<button class="btn btn-green" form="form" type="submit">
+				Save
+			</button>
+		</div>
 	</div>
 </template>
 

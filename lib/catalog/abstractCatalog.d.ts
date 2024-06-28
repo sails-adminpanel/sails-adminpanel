@@ -48,7 +48,7 @@ export declare abstract class BaseItem implements Item {
     /**
      * Is false because default value Group is added
      */
-    abstract update(id: string | number, item: Item): Promise<void>;
+    abstract update(id: string | number, data: any): Promise<any>;
     abstract create(data: any, id: string): Promise<any>;
     /**
      *  delete element
@@ -58,7 +58,10 @@ export declare abstract class BaseItem implements Item {
         type: 'link' | 'html';
         data: string;
     };
-    abstract getEditHTML(id: string | number): string;
+    abstract getEditHTML(id: string | number): Promise<{
+        type: 'link' | 'html';
+        data: string;
+    }>;
     abstract getCreatedItems(id: string): Promise<{
         items: {
             id: string;
@@ -117,7 +120,7 @@ export declare abstract class ActionHandler {
      * @param items
      * @param config
      */
-    abstract handler(items: Item[], config?: any): Promise<void>;
+    abstract handler(items: (ItemType | GroupType)[], config?: any): Promise<void>;
 }
 export declare abstract class AbstractCatalog {
     /**
@@ -157,7 +160,6 @@ export declare abstract class AbstractCatalog {
     protected constructor(items: BaseItem[]);
     setID(id: string): void;
     getItemType(type: string): GroupType | ItemType;
-    addActionHandler(actionHandler: ActionHandler): void;
     addItemsType(itemType: ItemType): void;
     /**
      * Method for change sortion order for group and items
@@ -178,16 +180,18 @@ export declare abstract class AbstractCatalog {
         type: "html" | "link";
         data: string;
     };
+    addActionHandler(actionHandler: ActionHandler): void;
     /**
      * Method for getting group elements
      * If there are several Items, then the global ones will be obtained
      */
-    getActions(items?: Item[]): ActionHandler[];
+    getActions(items?: Item[]): Promise<ActionHandler[]>;
     /**
      * Implements search and execution of a specific action.handler
      */
-    handleAction(actionId: string, items?: Item[], config?: any): Promise<void>;
+    handleAction(actionId: string, items?: (ItemType | GroupType)[], config?: any): Promise<void>;
     createItem(item: Item, data: any): Promise<any>;
+    updateItem(item: Item, id: string, data: any): Promise<any>;
     /**
      * Method for getting group elements
      */

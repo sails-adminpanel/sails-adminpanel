@@ -12,7 +12,7 @@
 			v-model="nodes"
 			ref="slVueTreeRef"
 			id="slVueTree_id"
-			:allow-multiselect="true"
+			:allow-multiselect="false"
 			@select="nodeSelected"
 			@drop="nodeDropped"
 			@toggle="nodeToggled"
@@ -50,8 +50,8 @@
 	</div>
 	<div class="contextmenu" ref="contextmenu" id="contextmenu" v-show="contextMenuIsVisible">
 		<ul class="custom-catalog__actions-items">
-			<li>
-				New Folder
+			<li v-for="action in actions" @click="initAction(action.id)">
+				{{ action.name }}
 			</li>
 		</ul>
 	</div>
@@ -65,10 +65,15 @@
 			<folder @save-folder="saveFolder" :html="HTML"/>
 		</div>
 		<div v-if="isItem && index === 2" class="custom-catalog__form">
-			<MiddlewareItem :selectedItem="selectedItem" :getHTMLoading="getHTMLoading" @createNewItem="createNewItem" @addItem="addCreatedItem"/>
+			<MiddlewareItem :selectedItem="selectedItem" :getHTMLoading="getHTMLoading" @createNewItem="createNewItem"
+							@addItem="addCreatedItem"/>
 		</div>
 		<div v-if="isItem && index === 3" class="custom-catalog__form">
 			<Item @save-item="saveItem" :html="HTML" :itemType="selectedItem"/>
+		</div>
+		<div v-if="isActionPopUp && index === 1">
+			<ActionPopUp @update-folder="updateFolder" :html="HTML" @update-item="updateItem" :itemType="selectedNode.data.type"
+						 :isItem="selectedNode.isLeaf"/>
 		</div>
 	</pop-up>
 </template>
@@ -81,13 +86,14 @@ import Folder from "./Components/Folder.vue";
 import Item from "./Components/Item.vue";
 import SelectItem from "./Components/SelectItem.vue";
 import MiddlewareItem from "./Components/MiddlewareItem.vue";
+import ActionPopUp from "./Components/ActionPopUp.vue";
 import ky from "ky";
 
 let nodes = ref([])
 
 let contextMenuIsVisible = ref(false)
 let selectedNodesTitle = ref('')
-let selectedNodesType = ref('')
+let selectedNode = ref('')
 let slVueTreeRef = ref(null)
 let contextmenu = ref(null)
 let modalCount = ref(0)
@@ -104,6 +110,8 @@ let isTollAdd = ref(false)
 let isItemRootAdd = ref(false)
 let isGroupRootAdd = ref(false)
 let getHTMLoading = ref(false)
+let actions = ref([])
+let isActionPopUp = ref(false)
 
 onMounted(async () => {
 	document.addEventListener('click', function (e) {
@@ -227,7 +235,22 @@ async function createFolder(data) {
 	}
 }
 
-async function addCreatedItem(id){
+async function updateFolder(data) {
+	let res = await ky.put('', {
+		json: {
+			type: selectedNode.value.data.type,
+			data: data,
+			id: selectedNode.value.data.id,
+			_method: 'updateItem'
+		}
+	}).json()
+	if (res.data.ok) {
+		closeAllPopups()
+		reloadCatalog()
+	}
+}
+
+async function addCreatedItem(id) {
 	let data = {id: id, isNew: false, ind: nodes.value.length}
 	await createItem(data)
 	closeAllPopups()
@@ -238,6 +261,21 @@ async function createItem(data) {
 	let res = await ky.post('', {json: {type: selectedItem.value, data: data, _method: 'createItem'}}).json()
 	if (res.data.node) {
 		nodes.value.push(res.data.node)
+	}
+}
+
+async function updateItem(data){
+	let res = await ky.put('', {
+		json: {
+			type: selectedNode.value.data.type,
+			data: data,
+			id: selectedNode.value.data.id,
+			_method: 'updateItem'
+		}
+	}).json()
+	if (res.data.ok) {
+		closeAllPopups()
+		reloadCatalog()
 	}
 }
 
@@ -281,7 +319,7 @@ function toggleVisibility(event, node) {
 
 function nodeSelected(nodes, event) {
 	selectedNodesTitle.value = nodes.map((node) => node.title)[0]
-	selectedNodesType.value = nodes.map((node) => node.isLeaf)[0]
+	selectedNode.value = nodes[0]
 }
 
 async function nodeToggled(node, event) {
@@ -298,8 +336,7 @@ function recursiveSetChilds(node, Dnodes, rNodes) {
 			for (const rNode of rNodes) {
 				valueElement.children.push(rNode)
 			}
-		}
-		else {
+		} else {
 			if (valueElement.children?.length > 0) {
 				recursiveSetChilds(node, valueElement.children, rNodes)
 			}
@@ -349,12 +386,37 @@ async function nodeDropped(Dnode, position, event) {
 }
 
 
-function showContextMenu(node, event) {
+async function showContextMenu(node, event) {
 	event.preventDefault()
-	contextMenuIsVisible.value = true
-	const $contextMenu = contextmenu.value
-	$contextMenu.style.left = event.clientX + 'px'
-	$contextMenu.style.top = event.clientY + 'px'
+	if (!selectedNode.value) return
+	let res = await ky.post('', {
+		json: {
+			type: selectedNode.value.data.type,
+			data: selectedNode.value.data,
+			_method: 'getActions'
+		}
+	}).json()
+	if (res.data.length) {
+		actions.value = res.data
+		contextMenuIsVisible.value = true
+		const $contextMenu = contextmenu.value
+		$contextMenu.style.left = event.clientX + 'px'
+		$contextMenu.style.top = event.clientY + 'px'
+	}
+}
+
+async function initAction(id) {
+	let data = {
+		actionID: id,
+		config: selectedNode.value.data
+	}
+	let res = await ky.put('', {json: {type: selectedNode.value.data.type, data: data, _method: 'action'}}).json()
+	if (res.data.type === 'external') {
+		await getHTML(res.data.data)
+		modalCount.value++
+		isActionPopUp.value = true
+	}
+
 }
 
 function removeNode() {
@@ -375,12 +437,16 @@ function closePopup() {
 		case (1):
 			isGroupRootAdd.value = false
 			isItemRootAdd.value = false
+			isActionPopUp.value = false
+			isTollAdd.value = false
 			break;
 		default:
 			isFolder.value = false
 			isItem.value = false
 			isGroupRootAdd.value = false
 			isItemRootAdd.value = false
+			isActionPopUp.value = false
+			isTollAdd.value = false
 			break;
 	}
 
