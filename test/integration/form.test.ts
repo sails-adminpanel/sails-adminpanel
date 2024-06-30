@@ -31,8 +31,8 @@ describe('Form test', function () {
             })
     })
 
-    it("Seeding form data", function () {
-        let VALUE = sails.config.adminpanel.forms.get("testForm","test_seed_data")
+    it("Seeding form data", async function () {
+        let VALUE = await sails.config.adminpanel.forms.get("testForm", "test_seed_data")
         console.log(VALUE)
         expect(VALUE).to.equal("VALUE");
     })

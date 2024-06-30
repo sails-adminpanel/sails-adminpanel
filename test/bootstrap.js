@@ -10,10 +10,17 @@ let sails;
 before(function (done) {
     this.timeout(50000);
     const rc = require("./fixture/app-export").rc;
-    Sails().lift(rc, function (err, _sails) {
+    function waitForEvent(sails) {
+        return new Promise((resolve) => {
+            sails.on('adminpanel:router:binded', resolve);
+        });
+    }
+    Sails().lift(rc, async function (err, _sails) {
         if (err)
             return done(err);
         sails = _sails;
+        console.log("Waiting 'adminpanel:router:binded' event ...");
+        await waitForEvent(sails);
         return done();
     });
 });

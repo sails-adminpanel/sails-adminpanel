@@ -59,15 +59,15 @@ export abstract class BaseItem implements Item {
 	/**
 	 * Is false because default value Group is added
 	 */
-	public abstract update(id: string | number, data:any): Promise<any>;
+	public abstract update<T>(itemId: string | number, data: T): Promise<T>;
 
-	public abstract create(data: any, id:string): Promise<any>;
+	public abstract create<T>(itemId: string, data: T): Promise<T>;
 
 
 	/**
 	 *  delete element
 	 */
-	public abstract deleteItem(id: string | number);
+	public abstract deleteItem(itemId: string | number): Promise<void>;
 
 
 	public abstract getAddHTML(): {type: 'link' | 'html', data: string}
@@ -107,12 +107,13 @@ export abstract class ActionHandler {
 	 */
 	public readonly displayTool: boolean
 
-	/**
-	 * Only for json-forms
-	 * ref: https://jsonforms.io/docs
-	 */
-	public abstract readonly uiSchema: any
-	public abstract readonly jsonSchema: JSONSchema4
+	// /**
+	//  * Only for json-forms
+	//  * ref: https://jsonforms.io/docs
+	//  */
+	// Currentrly we not released support JsonForms
+	// public abstract readonly uiSchema: any
+	// public abstract readonly jsonSchema: JSONSchema4
 
 	/**
 	 * For "json-forms" | "external"
@@ -286,12 +287,12 @@ export abstract class AbstractCatalog {
 		return await action.handler(items, config);
 	}
 
-	public createItem(item: Item, data: any) {
-		return this.getItemType(item.type)?.create(data, this.id);
+	public createItem<T>(item: Item, data: T): Promise<T> {
+		return this.getItemType(item.type)?.create(this.id, data);
 	}
 
 
-	public updateItem(item: Item, id: string, data: any) {
+	public updateItem<T>(item: Item, id: string, data: T) {
 		return this.getItemType(item.type)?.update(id, data);
 	}
 

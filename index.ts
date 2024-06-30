@@ -1,4 +1,7 @@
 'use strict';
+
+import { WidgetHandler } from "./lib/widgets/widgetHandler";
+
 const { MenuHelper } = require('./helper/menuHelper');
 const { ConfigHelper } = require('./helper/configHelper');
 
@@ -54,6 +57,7 @@ module.exports = function (sails) {
         getAllAccessTokens: AccessRightsHelper.getTokens,
         havePermission: AccessRightsHelper.havePermission,
         enoughPermissions: AccessRightsHelper.enoughPermissions,
-        getInstallStepper: () => InstallStepper
+        getInstallStepper: () => InstallStepper,
+        getWidgetHandler: () => WidgetHandler, 
     };
 };

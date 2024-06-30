@@ -11,14 +11,21 @@ let sails: any
 before(function (done) {
 
   this.timeout(50000);
-    const rc = require("./fixture/app-export").rc;
-    Sails().lift(rc,
-        function (err: any, _sails: any) {
-            if (err) return done(err);
-            sails = _sails;
-            return done();
-        }
-    );
+  const rc = require("./fixture/app-export").rc;
+  function waitForEvent(sails) {
+    return new Promise<void>((resolve) => {
+      sails.on('adminpanel:router:binded', resolve);
+    });
+  }
+  Sails().lift(rc,
+    async function (err: any, _sails: any) {
+      if (err) return done(err);
+      sails = _sails;
+      console.log("Waiting 'adminpanel:router:binded' event ...")
+      await waitForEvent(sails);
+      return done();
+    }
+  );
 });
 
 after(function (done) {

@@ -1,4 +1,3 @@
-import { JSONSchema4 } from "json-schema";
 /**
  * Interface `Item` describes the data that the UI will operate on
  */
@@ -48,12 +47,12 @@ export declare abstract class BaseItem implements Item {
     /**
      * Is false because default value Group is added
      */
-    abstract update(id: string | number, data: any): Promise<any>;
-    abstract create(data: any, id: string): Promise<any>;
+    abstract update<T>(itemId: string | number, data: T): Promise<T>;
+    abstract create<T>(itemId: string, data: T): Promise<T>;
     /**
      *  delete element
      */
-    abstract deleteItem(id: string | number): any;
+    abstract deleteItem(itemId: string | number): Promise<void>;
     abstract getAddHTML(): {
         type: 'link' | 'html';
         data: string;
@@ -90,12 +89,6 @@ export declare abstract class ActionHandler {
      * Will be shown in the toolbox section
      */
     readonly displayTool: boolean;
-    /**
-     * Only for json-forms
-     * ref: https://jsonforms.io/docs
-     */
-    abstract readonly uiSchema: any;
-    abstract readonly jsonSchema: JSONSchema4;
     /**
      * For "json-forms" | "external"
      */
@@ -177,7 +170,7 @@ export declare abstract class AbstractCatalog {
      * Receives HTML to create an element for projection into a popup
      */
     getAddHTML(item: Item): {
-        type: "html" | "link";
+        type: "link" | "html";
         data: string;
     };
     addActionHandler(actionHandler: ActionHandler): void;
@@ -190,8 +183,8 @@ export declare abstract class AbstractCatalog {
      * Implements search and execution of a specific action.handler
      */
     handleAction(actionId: string, items?: (ItemType | GroupType)[], config?: any): Promise<void>;
-    createItem(item: Item, data: any): Promise<any>;
-    updateItem(item: Item, id: string, data: any): Promise<any>;
+    createItem<T>(item: Item, data: T): Promise<T>;
+    updateItem<T>(item: Item, id: string, data: T): Promise<T>;
     /**
      * Method for getting group elements
      */

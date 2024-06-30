@@ -17,6 +17,8 @@ async function catalogController(req, res) {
     if (method === 'POST' || method === 'PUT') {
         const data = req.body;
         const catalog = CatalogHandler_1.CatalogHandler.getCatalog(slug);
+        if (!catalog)
+            return res.status(404);
         catalog.setID(id);
         const item = catalog.getItemType(data.type);
         switch (method) {
