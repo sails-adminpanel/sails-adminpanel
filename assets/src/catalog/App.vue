@@ -1,11 +1,16 @@
 <template>
 	<div class="flex items-center gap-4">
-		<button class="btn btn-add mb-4" @click="toolAddGroup('group')"><i
+		<button class="btn btn-add" @click="toolAddGroup('group')"><i
 			class="las la-plus"></i><span>create group</span>
 		</button>
-		<button class="btn btn-add mb-4" @click="toolAddGroup('item')"><i
+		<button class="btn btn-add" @click="toolAddGroup('item')"><i
 			class="las la-plus"></i><span>create item</span>
 		</button>
+		<div class="admin-panel__widget">
+			<div class="widget_narrow ">
+				<input class="text-input w-full input-search" type="text" placeholder="Search" value="" v-model="search" :disabled="searchDisabled"/>
+			</div>
+		</div>
 	</div>
 	<div class="custom-catalog__container" v-show="nodes.length">
 		<sl-vue-tree-next
@@ -80,7 +85,7 @@
 
 <script setup>
 import {SlVueTreeNext} from 'sl-vue-tree-next'
-import {ref, onMounted, computed, reactive} from 'vue'
+import {ref, onMounted, computed, reactive, watch} from 'vue'
 import PopUp from "./PopUp.vue";
 import Folder from "./Components/Folder.vue";
 import Item from "./Components/Item.vue";
@@ -112,6 +117,8 @@ let isGroupRootAdd = ref(false)
 let getHTMLoading = ref(false)
 let actions = ref([])
 let isActionPopUp = ref(false)
+let search = ref('')
+let searchDisabled = ref(false)
 
 onMounted(async () => {
 	document.addEventListener('click', function (e) {
@@ -130,6 +137,22 @@ onMounted(async () => {
 	})
 	getCatalog()
 })
+
+
+watch(search, async (newValue, oldValue) => {
+	if(newValue.length > 0){
+		await searchNodes()
+	} else {
+		getCatalog()
+	}
+});
+
+async function searchNodes(){
+	let res = await ky.post('', {json: {s: search.value, _method: 'search'}}).json()
+	if (res.data){
+		setCatalog(res.data)
+	}
+}
 
 async function getCatalog() {
 	let {catalog, items} = await ky.post('', {json: {_method: 'getCatalog'}}).json()
@@ -483,5 +506,8 @@ function closePopup() {
 	display: inline-block;
 	text-align: left;
 	width: 20px;
+}
+.input-search{
+	height: 36px;
 }
 </style>

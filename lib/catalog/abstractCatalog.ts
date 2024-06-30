@@ -312,4 +312,5 @@ export abstract class AbstractCatalog {
 		return this.getItemType(item.type)?.getCreatedItems(this.id)
 	}
 
+	public abstract search(s: string): Promise<{ nodes: NodeModel<any>[] }>
 }

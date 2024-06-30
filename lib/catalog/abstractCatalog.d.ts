@@ -209,4 +209,7 @@ export declare abstract class AbstractCatalog {
             title: string;
         }[];
     }>;
+    abstract search(s: string): Promise<{
+        nodes: NodeModel<any>[];
+    }>;
 }
