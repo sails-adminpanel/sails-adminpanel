@@ -7,15 +7,20 @@ export async function catalogController(req, res) {
 			return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
 		}
 	}
+
 	const slug = req.param('slug');
 	const id = req.param('id') ? req.param('id') : '';
 	const method = req.method.toUpperCase();
 	if (method === 'GET') {
 		return res.viewAdmin('catalog', {entity: "entity", slug: slug, id: id});
 	}
+
 	if (method === 'POST' || method === 'PUT') {
 		const data = req.body
 		const catalog = CatalogHandler.getCatalog(slug)
+
+		if (!catalog) return res.status(404);
+
 		catalog.setID(id)
 		const item = catalog.getItemType(data.type)
 		switch (method) {

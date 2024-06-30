@@ -4,7 +4,7 @@ import bindAccessRights from "./bindAccessRights";
 import bindDev from "./bindDev";
 import bindForms from "./bindForms";
 import bindDashboardWidgets from "./bindDashboardWidgets";
-import Router from "./bindRoutes";
+import Router from "./Router";
 export default async function () {
     // Binding list of function for rendering
     require('./bindResView').default();

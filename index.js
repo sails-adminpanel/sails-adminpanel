@@ -1,4 +1,6 @@
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
+const widgetHandler_1 = require("./lib/widgets/widgetHandler");
 const { MenuHelper } = require('./helper/menuHelper');
 const { ConfigHelper } = require('./helper/configHelper');
 const { AccessRightsHelper } = require('./helper/accessRightsHelper');
@@ -42,6 +44,7 @@ module.exports = function (sails) {
         getAllAccessTokens: AccessRightsHelper.getTokens,
         havePermission: AccessRightsHelper.havePermission,
         enoughPermissions: AccessRightsHelper.enoughPermissions,
-        getInstallStepper: () => InstallStepper
+        getInstallStepper: () => InstallStepper,
+        getWidgetHandler: () => widgetHandler_1.WidgetHandler,
     };
 };

@@ -1,5 +1,5 @@
 import { AdminpanelConfig } from "../interfaces/adminpanelConfig";
-import Router from "../lib/bindRoutes";
+import Router from "../lib/Router";
 import { getDefaultConfig, setDefaultConfig } from "../lib/defaults";
 export class ConfigHelper {
 

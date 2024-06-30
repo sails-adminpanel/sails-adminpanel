@@ -3,9 +3,9 @@
 		"url": "https://github.com/sails-adminpanel/sails-adminpanel/issues"
 	},
 	"dependencies": {
-		"@jsonforms/vue": "^3.2.1",
-		"@jsonforms/vue-vanilla": "^3.2.1",
-		"axios": "^1.6.8",
+		"@jsonforms/vue": "^3.3.0",
+		"@jsonforms/vue-vanilla": "^3.3.0",
+		"axios": "^1.7.2",
 		"db-migrate": "^0.11.14",
 		"i18n-2": "0.7.3",
 		"jimp": "^0.2.28",
