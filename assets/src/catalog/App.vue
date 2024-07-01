@@ -29,7 +29,7 @@
                                 <i class="las la-folder" v-if="!node.isLeaf"></i>
                             </span>
 
-				{{ node.title }}
+				<span :class="node.data.search ? 'search' : ''">{{ node.title }}</span>
 			</template>
 
 			<template #toggle="{ node }">
@@ -141,6 +141,7 @@ onMounted(async () => {
 
 watch(search, async (newValue, oldValue) => {
 	if(newValue.length > 0){
+		await reloadCatalog()
 		await searchNodes()
 	} else {
 		getCatalog()
@@ -150,8 +151,15 @@ watch(search, async (newValue, oldValue) => {
 async function searchNodes(){
 	let res = await ky.post('', {json: {s: search.value, _method: 'search'}}).json()
 	if (res.data){
-		setCatalog(res.data)
+		for (const node of res.data.nodes) {
+			insertFoundNodes(node)
+		}
 	}
+}
+
+function insertFoundNodes(node){
+	// let resNode = nodes.value.find(ENode => ENode.data.id === node.data.id)
+	nodes.value = nodes.value.map(ENode => ENode.data.id === node.data.id ? node : ENode)
 }
 
 async function getCatalog() {
@@ -237,8 +245,8 @@ function saveFolder(data) {
 	if (newFolder.value) {
 		createFolder(data)
 	} else {
-		let selectedFolderPath = slVueTreeRef.value.getSelected().filter(e => e.isLeaf === false)[0].path
-		recurciveFindAndInsert(selectedFolderPath, false, false, folderName)
+		// let selectedFolderPath = slVueTreeRef.value.getSelected().filter(e => e.isLeaf === false)[0].path
+		// recurciveFindAndInsert(selectedFolderPath, false, false, folderName)
 	}
 
 	closeAllPopups()
@@ -509,5 +517,8 @@ function closePopup() {
 }
 .input-search{
 	height: 36px;
+}
+.sl-vue-tree-next-title:has(> span.search){
+	background: #5d5035;
 }
 </style>
