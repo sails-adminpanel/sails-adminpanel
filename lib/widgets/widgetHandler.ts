@@ -4,18 +4,17 @@ import ActionBase from "./abstractAction";
 import LinkBase from "./abstractLink";
 import { AccessRightsHelper } from "../../helper/accessRightsHelper";
 import UserAP from "../../models/UserAP";
-import { LineAwesomeIcon } from "../../interfaces/lineAwesome";
 import CustomBase from "./abstractCustom";
+import { AdminpanelIcon } from "../../interfaces/adminpanelConfig";
 
 type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase | CustomBase);
-
 export interface WidgetConfig {
 	id: string;
 	type: string;
 	api?: string;
 	link?: string;
 	description: string;
-	icon: LineAwesomeIcon;
+	icon: AdminpanelIcon;
 	name: string;
 	backgroundCSS: string;
 	scriptUrl?: string;
@@ -69,7 +68,7 @@ export class WidgetHandler {
 							type: widget.widgetType,
 							api: `${config.routePrefix}/widgets-switch/${widget.ID}`,
 							description: widget.description,
-							icon: widget.icon,
+							icon: widget.icon as AdminpanelIcon,
 							name: widget.name,
 							backgroundCSS: widget.backgroundCSS ?? null,
 							size: widget.size ?? null
@@ -82,7 +81,7 @@ export class WidgetHandler {
 							type: widget.widgetType,
 							api: `${config.routePrefix}/widgets-info/${widget.ID}`,
 							description: widget.description,
-							icon: widget.icon,
+							icon: widget.icon as AdminpanelIcon,
 							name: widget.name,
 							backgroundCSS: widget.backgroundCSS ?? null,
 							size: widget.size ?? null
@@ -95,7 +94,7 @@ export class WidgetHandler {
 							type: widget.widgetType,
 							api: `${config.routePrefix}/widgets-action/${widget.ID}`,
 							description: widget.description,
-							icon: widget.icon,
+							icon: widget.icon as AdminpanelIcon,
 							name: widget.name,
 							backgroundCSS: widget.backgroundCSS ?? null,
 							size: widget.size ?? null
@@ -124,7 +123,7 @@ export class WidgetHandler {
 							type: widget.widgetType,
 							api: `${config.routePrefix}/widgets-custom/${widget.ID}`,
 							description: widget.description,
-							icon: widget.icon,
+							icon: widget.icon as AdminpanelIcon,
 							name: widget.name,
 							backgroundCSS: widget.backgroundCSS ?? null,
 							size: widget.size ?? null,

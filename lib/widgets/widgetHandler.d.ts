@@ -6,6 +6,7 @@ import UserAP from "../../models/UserAP";
 import { LineAwesomeIcon } from "../../interfaces/lineAwesome";
 import CustomBase from "./abstractCustom";
 type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase | CustomBase);
+export type AdminpanelIcon = LineAwesomeIcon;
 export interface WidgetConfig {
     id: string;
     type: string;
