@@ -1,20 +1,39 @@
 import { JSONSchema4 } from "json-schema";
 
+
 /**
- * Interface `Item` describes the data that the UI will operate on
- */
-export interface Item {
+ * This is a common interface for all data that is linked to the catalog
+ * This data will also be sent to crud Item
+ * */
+export interface ItemData {
 	id: string | number;
-	type: string;
 	name: string;
+	parentId: string | number | null;
+	childs: ItemData[];
+	sortOrder: number
+}
+
+/**
+ * Interface `ItemData` describes the data that the UI will operate on
+ * Here its named Packed because it prepared for work with classes
+ */
+export interface ItemPacket extends ItemData {
+	type: string;
+	/**
+	 * @deprecated level can be find by parnet id
+	 */
 	level: number;
 }
 
+export type _ItemData_ = {
+	[key: string]: boolean | string | number | object;
+};
 
 export interface NodeModel<TDataType> {
 	title: string;
 	isLeaf?: boolean;
 	children?: NodeModel<TDataType>[];
+	/** sortOrder */
 	ind?: number
 	isExpanded: boolean
 	level: number
@@ -24,10 +43,9 @@ export interface NodeModel<TDataType> {
 /**
  * General Item structure that will be available for all elements, including groups
  */
-export abstract class BaseItem implements Item {
+export abstract class BaseItem {
 	public abstract readonly id: string;
 	public abstract readonly level: number;
-	public abstract type: string;
 	/**
 	 * Catalog name
 	 */
@@ -59,9 +77,9 @@ export abstract class BaseItem implements Item {
 	/**
 	 * Is false because default value Group is added
 	 */
-	public abstract update<T>(itemId: string | number, data: T): Promise<T>;
+	public abstract update<T extends ItemData>(itemId: string | number, data: T): Promise<T>;
 
-	public abstract create<T>(itemId: string, data: T): Promise<T>;
+	public abstract create<T extends ItemData>(itemId: string, data: T): Promise<T>;
 
 
 	/**
@@ -73,14 +91,23 @@ export abstract class BaseItem implements Item {
 	public abstract getAddHTML(): {type: 'link' | 'html', data: string}
 
 	public abstract getEditHTML(id: string | number): Promise<{type: 'link' | 'html', data: string}>;
+
+	/**
+	 * @deprecated Will it be merged into getChilds? to use one method 
+	 */
 	public abstract getCreatedItems(id: string): Promise<{ items: {id: string, title: string}[] }>
+
+	/**
+	 *  Set sort value for element
+	 */
+	public abstract setSortOrder(id: string | number, sortOrder: number): Promise<void>;
 
 }
 
 export abstract class GroupType extends BaseItem {
 
 	public readonly isGroup: boolean = true;
-	public abstract childs: Item[];
+	public abstract childs: ItemPacket[];
 }
 
 export abstract class ItemType extends BaseItem {
@@ -96,7 +123,10 @@ export abstract class ActionHandler {
 	 * Three actions are possible, without configuration, configuration via pop-up, and just external action
 	 * For the first two, a handler is provided, but the third type of action simply calls the HTML in the popup; the controller will be implemented externally
 	 * */
-	public readonly type: "basic" | "json-forms" | "external" | "link"
+	public readonly type: "basic" |
+		// (!*1) "json-forms" | there was an idea to make forms so as not to make controllers every time, but it still seems complicated
+		"external" |
+		"link"
 
 	/**
 	 * Will be shown in the context menu section
@@ -107,7 +137,7 @@ export abstract class ActionHandler {
 	 */
 	public readonly displayTool: boolean
 
-	// /**
+	// /** (!*1)
 	//  * Only for json-forms
 	//  * ref: https://jsonforms.io/docs
 	//  */
@@ -147,7 +177,7 @@ export abstract class ActionHandler {
 	 * @param items
 	 * @param config
 	 */
-	public abstract handler(items: (ItemType | GroupType)[], config?: any): Promise<void>;
+	public abstract handler(items: ItemPacket[], config?: any): Promise<void>;
 
 }
 
@@ -193,7 +223,7 @@ export abstract class AbstractCatalog {
 
 	public abstract getCatalog(): Promise<{ nodes: NodeModel<any>[] }>
 
-	protected constructor(items: BaseItem[]) {
+	protected constructor(items: (GroupType | ItemType)[]) {
 		for (const item of items) {
 			this.addItemsType(item)
 		}
@@ -222,26 +252,28 @@ export abstract class AbstractCatalog {
 	/**
 	 * Method for change sortion order for group and items
 	 */
-	public abstract setSortOrder(data:any): Promise<any>
+	public async setSortOrder(item: ItemPacket, sortOrder: number): Promise<void> {
+		return await this.getItemType(item.type)?.setSortOrder(item.id, sortOrder);
+	}
 
 	/**
 	 *  Removing an element
 	 */
-	public deleteItem(item: Item) {
+	public deleteItem(item: ItemPacket) {
 		this.getItemType(item.type)?.deleteItem(item.id);
 	}
 
 	/**
 	 * Receives HTML to update an element for projection into a popup
 	 */
-	public getEditHTML(item: Item) {
+	public getEditHTML(item: ItemPacket) {
 		this.getItemType(item.type)?.getEditHTML(item.id);
 	}
 
 	/**
 	 * Receives HTML to create an element for projection into a popup
 	 */
-	public getAddHTML(item: Item)  {
+	public getAddHTML(item: ItemPacket) {
 		return this.getItemType(item.type)?.getAddHTML();
 	}
 
@@ -260,10 +292,10 @@ export abstract class AbstractCatalog {
 	 * Method for getting group elements
 	 * If there are several Items, then the global ones will be obtained
 	 */
-	async getActions(items?: Item[]): Promise<ActionHandler[]> {
+	async getActions(items?: ItemPacket[]): Promise<ActionHandler[]> {
 		if (items.length === 1) {
 			const item = items[0];
-			const itemType = this.itemsType.find((it) => it.type === item.type);
+			const itemType = this.itemsType.find((it) => it.id === item.type);
 			return itemType.actionHandlers
 		} else {
 			return this.actionHandlers
@@ -273,11 +305,11 @@ export abstract class AbstractCatalog {
 	/**
 	 * Implements search and execution of a specific action.handler
 	 */
-	public async handleAction(actionId: string, items?:(ItemType | GroupType)[], config?: any): Promise<void> {
+	public async handleAction(actionId: string, items?: ItemPacket[], config?: any): Promise<void> {
 		let action: ActionHandler = null;
 		if (items.length === 1) {
 			const item = items[0];
-			const itemType = this.itemsType.find((it) => it.type === item.type);
+			const itemType = this.itemsType.find((it) => it.id === item.type);
 			action = itemType.actionHandlers.find((it) => it.id === actionId);
 		} else {
 			action = this.actionHandlers.find((it) => it.id === actionId);
@@ -287,19 +319,19 @@ export abstract class AbstractCatalog {
 		return await action.handler(items, config);
 	}
 
-	public createItem<T>(item: Item, data: T): Promise<T> {
-		return this.getItemType(item.type)?.create(this.id, data);
+	public createItem<T extends ItemPacket>(data: T): Promise<T> {
+		return this.getItemType(data.type)?.create(this.id, data);
 	}
 
 
-	public updateItem<T>(item: Item, id: string, data: T) {
-		return this.getItemType(item.type)?.update(id, data);
+	public updateItem<T extends ItemPacket>(id: string, data: T) {
+		return this.getItemType(data.type)?.update(id, data);
 	}
 
 	/**
 	 * Method for getting group elements
 	 */
-	public getItems(): (ItemType | GroupType)[] {
+	public getItemsType(): (ItemType | GroupType)[] {
 		return this.itemsType
 	};
 
@@ -309,8 +341,8 @@ export abstract class AbstractCatalog {
 	 */
 	public abstract getChilds(data:any): Promise<{ nodes: NodeModel<any>[] }>
 
-	public getCreatedItems(item: ItemType){
-		return this.getItemType(item.type)?.getCreatedItems(this.id)
+	public getCreatedItems(itemTypeId: string) {
+		return this.getItemType(itemTypeId)?.getCreatedItems(this.id)
 	}
 
 	public abstract search(s: string): Promise<{ nodes: NodeModel<any>[] }>
