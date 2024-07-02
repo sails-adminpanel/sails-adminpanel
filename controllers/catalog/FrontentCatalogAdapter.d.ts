@@ -1,4 +1,4 @@
-import { AbstractCatalog, ItemData } from "../../lib/catalog/abstractCatalog";
+import { AbstractCatalog, ItemData } from "../../lib/catalog/AbstractCatalog";
 export interface NodeModel<TDataType> {
     title: string;
     isLeaf?: boolean;
@@ -13,18 +13,18 @@ export declare class VueCatalog {
     catalog: AbstractCatalog;
     constructor(_catalog: AbstractCatalog);
     setID(id: string): void;
-    getItemType(type: string): import("../../lib/catalog/abstractCatalog").GroupType | import("../../lib/catalog/abstractCatalog").ItemType;
+    getItemType(type: string): import("../../lib/catalog/AbstractCatalog").GroupType | import("../../lib/catalog/AbstractCatalog").ItemType;
     getAddHTML(item: any): {
         type: "link" | "html";
         data: string;
     };
-    getItems(): (import("../../lib/catalog/abstractCatalog").GroupType | import("../../lib/catalog/abstractCatalog").ItemType)[];
+    getItems(): (import("../../lib/catalog/AbstractCatalog").GroupType | import("../../lib/catalog/AbstractCatalog").ItemType)[];
     getCatalog(): Promise<{
-        nodes: import("../../lib/catalog/abstractCatalog").NodeModel<any>[];
+        nodes: import("../../lib/catalog/AbstractCatalog").NodeModel<any>[];
     }>;
     createItem(item: any, data: any): Promise<any>;
     getChilds(data: any): Promise<{
-        nodes: import("../../lib/catalog/abstractCatalog").NodeModel<any>[];
+        nodes: import("../../lib/catalog/AbstractCatalog").NodeModel<any>[];
     }>;
     getCreatedItems(item: any): Promise<{
         items: {
@@ -32,7 +32,7 @@ export declare class VueCatalog {
             title: string;
         }[];
     }>;
-    getActions(items: any[]): Promise<import("../../lib/catalog/abstractCatalog").ActionHandler[]>;
+    getActions(items: any[]): Promise<import("../../lib/catalog/AbstractCatalog").ActionHandler[]>;
     search(s: string): Promise<ItemData[]>;
     setSortOrder(data: any): Promise<void>;
     handleAction(actionID: string, items: any[], config: any): Promise<void>;

@@ -1,4 +1,4 @@
-import { AbstractCatalog, ItemData } from "../../lib/catalog/abstractCatalog";
+import { AbstractCatalog, ItemData } from "../../lib/catalog/AbstractCatalog";
 
 export interface NodeModel<TDataType> {
   title: string;
