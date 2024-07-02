@@ -72,14 +72,14 @@ export abstract class BaseItem {
 		this.actionHandlers.push(contextHandler);
 	}
 
-	public abstract find<T extends ItemData>(itemId: string | number): Promise<T & { child: undefined }>;
+	public abstract find<T extends ItemData>(itemId: string | number): Promise<T & { childs: undefined }>;
 
 	/**
 	 * Is false because default value Group is added
 	 */
-	public abstract update<T extends ItemData>(itemId: string | number, data: T): Promise<T & { child: undefined }>;
+	public abstract update<T extends ItemData>(itemId: string | number, data: T): Promise<T & { childs: undefined }>;
 
-	public abstract create<T extends ItemData>(itemId: string, data: T): Promise<T & { child: undefined }>;
+	public abstract create<T extends ItemData>(itemId: string, data: T): Promise<T & { childs: undefined }>;
 
 
 	/**
@@ -102,7 +102,7 @@ export abstract class BaseItem {
 	 */
 	public abstract setSortOrder(id: string | number, sortOrder: number): Promise<void>;
 
-	public abstract search(s: string): Promise<ItemData[]>
+	public abstract search(s: string): Promise<(ItemData & { childs: undefined })[]>
 }
 
 export abstract class GroupType extends BaseItem {
@@ -396,7 +396,7 @@ export abstract class AbstractCatalog {
 		}
 
 		// Convert the map to an array of root items
-		const rootItems = Array.from(itemsMap.values()).filter(item => item.parentId === null);
+		const rootItems = Array.from(itemsMap.values());
 		return rootItems;
 	}
 }
