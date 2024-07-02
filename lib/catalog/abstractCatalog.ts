@@ -2,6 +2,7 @@ import { JSONSchema4 } from "json-schema";
 
 
 /**
+ * Interface `ItemData` describes the data that the UI will operate on
  * This is a common interface for all data that is linked to the catalog
  * This data will also be sent to crud Item
  * */
@@ -11,19 +12,16 @@ export interface ItemData {
 	parentId: string | number | null;
 	childs: ItemData[];
 	sortOrder: number
-}
-
-/**
- * Interface `ItemData` describes the data that the UI will operate on
- * Here its named Packed because it prepared for work with classes
- */
-export interface ItemPacket extends ItemData {
+	/**
+	 * is itemType.id
+	 */
 	type: string;
 	/**
 	 * @deprecated level can be find by parnet id
 	 */
 	level: number;
 }
+
 
 export type _ItemData_ = {
 	[key: string]: boolean | string | number | object;
@@ -74,12 +72,14 @@ export abstract class BaseItem {
 		this.actionHandlers.push(contextHandler);
 	}
 
+	public abstract find<T extends ItemData>(itemId: string | number): Promise<T & { child: undefined }>;
+
 	/**
 	 * Is false because default value Group is added
 	 */
-	public abstract update<T extends ItemData>(itemId: string | number, data: T): Promise<T>;
+	public abstract update<T extends ItemData>(itemId: string | number, data: T): Promise<T & { child: undefined }>;
 
-	public abstract create<T extends ItemData>(itemId: string, data: T): Promise<T>;
+	public abstract create<T extends ItemData>(itemId: string, data: T): Promise<T & { child: undefined }>;
 
 
 	/**
@@ -102,12 +102,13 @@ export abstract class BaseItem {
 	 */
 	public abstract setSortOrder(id: string | number, sortOrder: number): Promise<void>;
 
+	public abstract search(s: string): Promise<ItemData[]>
 }
 
 export abstract class GroupType extends BaseItem {
 
 	public readonly isGroup: boolean = true;
-	public abstract childs: ItemPacket[];
+	public abstract childs: ItemData[];
 }
 
 export abstract class ItemType extends BaseItem {
@@ -177,7 +178,7 @@ export abstract class ActionHandler {
 	 * @param items
 	 * @param config
 	 */
-	public abstract handler(items: ItemPacket[], config?: any): Promise<void>;
+	public abstract handler(items: ItemData[], config?: any): Promise<void>;
 
 }
 
@@ -239,41 +240,40 @@ export abstract class AbstractCatalog {
 
 
 	public addItemsType(itemType: ItemType) {
-		// Возможно что страницы будут иметь ссылки внутри
-		// if (
-		//   itemType.isGroup === true &&
-		//   this.itemsType.find((it) => it.isGroup === true)
-		// ) {
-		//   throw new Error(`Only one type group is allowed`);
-		// }
+		if (
+			itemType.isGroup === true &&
+			this.itemsType.find((it) => it.isGroup === true)
+		) {
+			throw new Error(`Only one type group is allowed`);
+		}
 		this.itemsType.push(itemType);
 	}
 
 	/**
 	 * Method for change sortion order for group and items
 	 */
-	public async setSortOrder(item: ItemPacket, sortOrder: number): Promise<void> {
+	public async setSortOrder(item: ItemData, sortOrder: number): Promise<void> {
 		return await this.getItemType(item.type)?.setSortOrder(item.id, sortOrder);
 	}
 
 	/**
 	 *  Removing an element
 	 */
-	public deleteItem(item: ItemPacket) {
+	public deleteItem(item: ItemData) {
 		this.getItemType(item.type)?.deleteItem(item.id);
 	}
 
 	/**
 	 * Receives HTML to update an element for projection into a popup
 	 */
-	public getEditHTML(item: ItemPacket) {
+	public getEditHTML(item: ItemData) {
 		this.getItemType(item.type)?.getEditHTML(item.id);
 	}
 
 	/**
 	 * Receives HTML to create an element for projection into a popup
 	 */
-	public getAddHTML(item: ItemPacket) {
+	public getAddHTML(item: ItemData) {
 		return this.getItemType(item.type)?.getAddHTML();
 	}
 
@@ -292,7 +292,7 @@ export abstract class AbstractCatalog {
 	 * Method for getting group elements
 	 * If there are several Items, then the global ones will be obtained
 	 */
-	async getActions(items?: ItemPacket[]): Promise<ActionHandler[]> {
+	async getActions(items?: ItemData[]): Promise<ActionHandler[]> {
 		if (items.length === 1) {
 			const item = items[0];
 			const itemType = this.itemsType.find((it) => it.id === item.type);
@@ -305,7 +305,7 @@ export abstract class AbstractCatalog {
 	/**
 	 * Implements search and execution of a specific action.handler
 	 */
-	public async handleAction(actionId: string, items?: ItemPacket[], config?: any): Promise<void> {
+	public async handleAction(actionId: string, items?: ItemData[], config?: any): Promise<void> {
 		let action: ActionHandler = null;
 		if (items.length === 1) {
 			const item = items[0];
@@ -319,12 +319,12 @@ export abstract class AbstractCatalog {
 		return await action.handler(items, config);
 	}
 
-	public createItem<T extends ItemPacket>(data: T): Promise<T> {
+	public createItem<T extends ItemData>(data: T): Promise<T> {
 		return this.getItemType(data.type)?.create(this.id, data);
 	}
 
 
-	public updateItem<T extends ItemPacket>(id: string, data: T) {
+	public updateItem<T extends ItemData>(id: string, data: T): Promise<T> {
 		return this.getItemType(data.type)?.update(id, data);
 	}
 
@@ -332,6 +332,14 @@ export abstract class AbstractCatalog {
 	 * Method for getting group elements
 	 */
 	public getItemsType(): (ItemType | GroupType)[] {
+		return this.itemsType
+	};
+
+	/**
+	 * @deprecated use `getItemsType()`
+		 * Method for getting group elements
+		 */
+	public getItems(): (ItemType | GroupType)[] {
 		return this.itemsType
 	};
 
@@ -345,5 +353,50 @@ export abstract class AbstractCatalog {
 		return this.getItemType(itemTypeId)?.getCreatedItems(this.id)
 	}
 
-	public abstract search(s: string): Promise<{ nodes: NodeModel<any>[] }>
+
+
+	async search(s: string): Promise<ItemData[]> {
+		let foundItems: ItemData[] = [];
+
+		// Handle all search
+		for (const itemType of this.itemsType) {
+			const items = await itemType.search(s);
+			foundItems = foundItems.concat(items);
+		}
+
+		// Find group type
+		const groupType = this.itemsType.find((item) => item.isGroup === true);
+
+		// Recursive function to build the tree upwards
+		const buildTreeUpwards = async (item: ItemData, accumulator: ItemData[]): Promise<ItemData> => {
+			if (item.parentId === null) return item;
+
+			const parentItem = await groupType.find(item.parentId);
+			if (parentItem) {
+				accumulator.push(parentItem);
+				return buildTreeUpwards(parentItem, accumulator);
+			}
+			return item;
+		};
+
+		// Build the trees for all found items
+		const itemsMap = new Map<string | number, ItemData>();
+		const accumulator: ItemData[] = [];
+
+		for (const item of foundItems) {
+			itemsMap.set(item.id, item);
+			if (item.parentId !== null) {
+				await buildTreeUpwards(item, accumulator);
+			}
+		}
+
+		// Add accumulated items to the map
+		for (const item of accumulator) {
+			itemsMap.set(item.id, item);
+		}
+
+		// Convert the map to an array of root items
+		const rootItems = Array.from(itemsMap.values()).filter(item => item.parentId === null);
+		return rootItems;
+	}
 }

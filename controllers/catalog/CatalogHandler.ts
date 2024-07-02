@@ -1,4 +1,4 @@
-import {AbstractCatalog} from "../../lib/catalog/abstractCatalog";
+import { AbstractCatalog } from "../../lib/catalog/AbstractCatalog";
 
 export class CatalogHandler {
 	private static catalog: AbstractCatalog[] = [];
