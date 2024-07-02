@@ -1,16 +1,31 @@
 /**
- * Interface `Item` describes the data that the UI will operate on
- */
-export interface Item {
+ * Interface `ItemData` describes the data that the UI will operate on
+ * This is a common interface for all data that is linked to the catalog
+ * This data will also be sent to crud Item
+ * */
+export interface ItemData {
     id: string | number;
-    type: string;
     name: string;
+    parentId: string | number | null;
+    childs: ItemData[];
+    sortOrder: number;
+    /**
+     * is itemType.id
+     */
+    type: string;
+    /**
+     * @deprecated level can be find by parnet id
+     */
     level: number;
 }
+export type _ItemData_ = {
+    [key: string]: boolean | string | number | object;
+};
 export interface NodeModel<TDataType> {
     title: string;
     isLeaf?: boolean;
     children?: NodeModel<TDataType>[];
+    /** sortOrder */
     ind?: number;
     isExpanded: boolean;
     level: number;
@@ -19,10 +34,9 @@ export interface NodeModel<TDataType> {
 /**
  * General Item structure that will be available for all elements, including groups
  */
-export declare abstract class BaseItem implements Item {
+export declare abstract class BaseItem {
     abstract readonly id: string;
     abstract readonly level: number;
-    abstract type: string;
     /**
      * Catalog name
      */
@@ -44,11 +58,18 @@ export declare abstract class BaseItem implements Item {
      */
     abstract readonly actionHandlers: ActionHandler[];
     addActionHandler(contextHandler: ActionHandler): void;
+    abstract find<T extends ItemData>(itemId: string | number): Promise<T & {
+        childs: undefined;
+    }>;
     /**
      * Is false because default value Group is added
      */
-    abstract update<T>(itemId: string | number, data: T): Promise<T>;
-    abstract create<T>(itemId: string, data: T): Promise<T>;
+    abstract update<T extends ItemData>(itemId: string | number, data: T): Promise<T & {
+        childs: undefined;
+    }>;
+    abstract create<T extends ItemData>(itemId: string, data: T): Promise<T & {
+        childs: undefined;
+    }>;
     /**
      *  delete element
      */
@@ -61,16 +82,26 @@ export declare abstract class BaseItem implements Item {
         type: 'link' | 'html';
         data: string;
     }>;
+    /**
+     * @deprecated Will it be merged into getChilds? to use one method
+     */
     abstract getCreatedItems(id: string): Promise<{
         items: {
             id: string;
             title: string;
         }[];
     }>;
+    /**
+     *  Set sort value for element
+     */
+    abstract setSortOrder(id: string | number, sortOrder: number): Promise<void>;
+    abstract search(s: string): Promise<(ItemData & {
+        childs: undefined;
+    })[]>;
 }
 export declare abstract class GroupType extends BaseItem {
     readonly isGroup: boolean;
-    abstract childs: Item[];
+    abstract childs: ItemData[];
 }
 export declare abstract class ItemType extends BaseItem {
     readonly isGroup: boolean;
@@ -80,7 +111,7 @@ export declare abstract class ActionHandler {
      * Three actions are possible, without configuration, configuration via pop-up, and just external action
      * For the first two, a handler is provided, but the third type of action simply calls the HTML in the popup; the controller will be implemented externally
      * */
-    readonly type: "basic" | "json-forms" | "external" | "link";
+    readonly type: "basic" | "external" | "link";
     /**
      * Will be shown in the context menu section
      */
@@ -113,7 +144,7 @@ export declare abstract class ActionHandler {
      * @param items
      * @param config
      */
-    abstract handler(items: (ItemType | GroupType)[], config?: any): Promise<void>;
+    abstract handler(items: ItemData[], config?: any): Promise<void>;
 }
 export declare abstract class AbstractCatalog {
     /**
@@ -150,26 +181,26 @@ export declare abstract class AbstractCatalog {
     abstract getCatalog(): Promise<{
         nodes: NodeModel<any>[];
     }>;
-    protected constructor(items: BaseItem[]);
+    protected constructor(items: (GroupType | ItemType)[]);
     setID(id: string): void;
     getItemType(type: string): GroupType | ItemType;
     addItemsType(itemType: ItemType): void;
     /**
      * Method for change sortion order for group and items
      */
-    abstract setSortOrder(data: any): Promise<any>;
+    setSortOrder(item: ItemData, sortOrder: number): Promise<void>;
     /**
      *  Removing an element
      */
-    deleteItem(item: Item): void;
+    deleteItem(item: ItemData): void;
     /**
      * Receives HTML to update an element for projection into a popup
      */
-    getEditHTML(item: Item): void;
+    getEditHTML(item: ItemData): void;
     /**
      * Receives HTML to create an element for projection into a popup
      */
-    getAddHTML(item: Item): {
+    getAddHTML(item: ItemData): {
         type: "link" | "html";
         data: string;
     };
@@ -178,16 +209,21 @@ export declare abstract class AbstractCatalog {
      * Method for getting group elements
      * If there are several Items, then the global ones will be obtained
      */
-    getActions(items?: Item[]): Promise<ActionHandler[]>;
+    getActions(items?: ItemData[]): Promise<ActionHandler[]>;
     /**
      * Implements search and execution of a specific action.handler
      */
-    handleAction(actionId: string, items?: (ItemType | GroupType)[], config?: any): Promise<void>;
-    createItem<T>(item: Item, data: T): Promise<T>;
-    updateItem<T>(item: Item, id: string, data: T): Promise<T>;
+    handleAction(actionId: string, items?: ItemData[], config?: any): Promise<void>;
+    createItem<T extends ItemData>(data: T): Promise<T>;
+    updateItem<T extends ItemData>(id: string, data: T): Promise<T>;
     /**
      * Method for getting group elements
      */
+    getItemsType(): (ItemType | GroupType)[];
+    /**
+     * @deprecated use `getItemsType()`
+         * Method for getting group elements
+         */
     getItems(): (ItemType | GroupType)[];
     /**
      * Method for getting group childs elements
@@ -196,13 +232,11 @@ export declare abstract class AbstractCatalog {
     abstract getChilds(data: any): Promise<{
         nodes: NodeModel<any>[];
     }>;
-    getCreatedItems(item: ItemType): Promise<{
+    getCreatedItems(itemTypeId: string): Promise<{
         items: {
             id: string;
             title: string;
         }[];
     }>;
-    abstract search(s: string): Promise<{
-        nodes: NodeModel<any>[];
-    }>;
+    search(s: string): Promise<ItemData[]>;
 }

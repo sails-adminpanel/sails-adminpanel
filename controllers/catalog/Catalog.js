@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAction = exports.catalogController = void 0;
 const CatalogHandler_1 = require("./CatalogHandler");
+const FrontentCatalogAdapter_1 = require("./FrontentCatalogAdapter");
 async function catalogController(req, res) {
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
@@ -16,41 +17,42 @@ async function catalogController(req, res) {
     }
     if (method === 'POST' || method === 'PUT') {
         const data = req.body;
-        const catalog = CatalogHandler_1.CatalogHandler.getCatalog(slug);
-        if (!catalog)
+        const _catalog = CatalogHandler_1.CatalogHandler.getCatalog(slug);
+        const vueCatalog = new FrontentCatalogAdapter_1.VueCatalog(_catalog);
+        if (!vueCatalog)
             return res.status(404);
-        catalog.setID(id);
-        const item = catalog.getItemType(data.type);
+        vueCatalog.setID(id);
+        const item = vueCatalog.getItemType(data.type);
         switch (method) {
             case 'POST':
                 switch (data._method) {
                     case 'getHTML':
-                        return res.json(catalog.getAddHTML(item));
+                        return res.json(vueCatalog.getAddHTML(item));
                     case 'getCatalog':
                         return res.json({
-                            'items': catalog.getItems(),
-                            'catalog': await catalog.getCatalog()
+                            'items': vueCatalog.getItems(),
+                            'catalog': await vueCatalog.getCatalog()
                         });
                     case 'createItem':
-                        return res.json({ 'data': await catalog.createItem(item, data.data) });
+                        return res.json({ 'data': await vueCatalog.createItem(item, data.data) });
                     case 'getChilds':
-                        return res.json({ data: await catalog.getChilds(data.data) });
+                        return res.json({ data: await vueCatalog.getChilds(data.data) });
                     case 'getCreatedItems':
-                        return res.json({ data: await catalog.getCreatedItems(item) });
+                        return res.json({ data: await vueCatalog.getCreatedItems(item) });
                     case 'getActions':
-                        return res.json({ data: await catalog.getActions([item]) });
+                        return res.json({ data: await vueCatalog.getActions([item]) });
                     case 'search':
-                        return res.json({ data: await catalog.search(data.s) });
+                        return res.json({ data: await vueCatalog.search(data.s) });
                 }
                 break;
             case 'PUT':
                 switch (data._method) {
                     case 'sortOrder':
-                        return res.json({ data: await catalog.setSortOrder(data.data) });
+                        return res.json({ data: await vueCatalog.setSortOrder(data.data) });
                     case 'action':
-                        return res.json({ data: await catalog.handleAction(data.data.actionID, [item], data.data.config) });
+                        return res.json({ data: await vueCatalog.handleAction(data.data.actionID, [item], data.data.config) });
                     case 'updateItem':
-                        return res.json({ data: await catalog.updateItem(item, data.id, data.data) });
+                        return res.json({ data: await vueCatalog.updateItem(item, data.id, data.data) });
                 }
         }
     }
