@@ -27,17 +27,6 @@ export type _ItemData_ = {
 	[key: string]: boolean | string | number | object;
 };
 
-export interface NodeModel<TDataType> {
-	title: string;
-	isLeaf?: boolean;
-	children?: NodeModel<TDataType>[];
-	/** sortOrder */
-	ind?: number
-	isExpanded: boolean
-	level: number
-	data?: TDataType; // any serializable user data
-}
-
 /**
  * General Item structure that will be available for all elements, including groups
  * 
@@ -226,12 +215,25 @@ export abstract class AbstractCatalog {
 	 */
 	public abstract readonly icon: string;
 
+
+	/////////////////////////////////////////////////////////////////////////////
+	// TODO: refactor for one method
 	/**
 	 * List of element types
 	 */
 	public readonly itemsType: (ItemType | GroupType)[] = [];
 
+	/**
+	 * @deprecated use getChilds with null
+	 */
 	public abstract getCatalog(): Promise<{ nodes: NodeModel<any>[] }>
+
+	/**
+	 * Method for getting group childs elements
+	 * if pass null as parentId this root
+	 */
+	public abstract getChilds(data: any): Promise<{ nodes: NodeModel<any>[] }>
+	//////////////////////////////////////////////////////////////////////////////
 
 	protected constructor(items: (GroupType | ItemType)[]) {
 		for (const item of items) {
@@ -344,6 +346,9 @@ export abstract class AbstractCatalog {
 		return this.itemsType
 	};
 
+
+
+
 	/**
 	 * @deprecated use `getItemsType()`
 		 * Method for getting group elements
@@ -352,17 +357,9 @@ export abstract class AbstractCatalog {
 		return this.itemsType
 	};
 
-	/**
-	 * Method for getting group childs elements
-	 * if pass null as parentId this root
-	 */
-	public abstract getChilds(data: any): Promise<{ nodes: NodeModel<any>[] }>
-
 	public getCreatedItems(itemTypeId: string) {
 		return this.getItemType(itemTypeId)?.getCreatedItems(this.id)
 	}
-
-
 
 	async search(s: string): Promise<ItemData[]> {
 		let foundItems: ItemData[] = [];
