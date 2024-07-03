@@ -1,6 +1,3 @@
-
-
-
 /**
  * Interface `Item` describes the data that the UI will operate on
  * This is a common interface for all data that is linked to the catalog
@@ -17,7 +14,6 @@ export interface Item {
 	icon: string
 	type: string;
 }
-
 
 export type _Item_ = {
 	[key: string]: boolean | string | number | object;
@@ -83,7 +79,7 @@ export abstract class BaseItem {
 	/**
 	 * @deprecated Will it be merged into getChilds? to use one method 
 	 */
-	public abstract getChilds(parentId: string): Promise<Item[]>
+	public abstract getChilds(parentId: string | number | null): Promise<Item[]>
 
 	/**
 	 *  Set sort value for element
@@ -107,7 +103,6 @@ export abstract class ItemType extends BaseItem {
 
 /// ContextHandler
 export abstract class ActionHandler {
-
 	/**
 	 * Three actions are possible, without configuration, configuration via pop-up, and just external action
 	 * For the first two, a handler is provided, but the third type of action simply calls the HTML in the popup; the controller will be implemented externally
@@ -216,28 +211,21 @@ export abstract class AbstractCatalog {
 	 */
 	public readonly itemsType: (ItemType | GroupType)[] = [];
 
-	/////////////////////////////////////////////////////////////////////////////
-	// TODO: refactor for one method
-
 	/**
 	 * Method for getting childs elements
 	 * if pass null as parentId this root
 	 */
-	
-	public abstract getItems(parentId: string | number): Promise<Item[]>
-
-	/**
-	 * @deprecated use getChilds with null
-	 */
-	public abstract getCatalog(): Promise<{ nodes: NodeModel<any>[] }>
-
-	
-	public getChilds(itemTypeId: string) {
-		return this.getItemType(itemTypeId)?.getChilds(this.id)
+	public async getChilds(parentId: string | number | null, byItemType?: string): Promise<Item[]> {
+		if (byItemType) {
+			return  await this.getItemType(byItemType)?.getChilds(parentId)
+		} else {
+			let result = [];
+			for (const itemType of this.itemsType) {
+				result = result.concat(await itemType?.getChilds(parentId))
+			}	
+			return result
+		}
 	}
-
-	public abstract getChilds(data: any): Promise<{ nodes: NodeModel<any>[] }>
-	//////////////////////////////////////////////////////////////////////////////
 
 	protected constructor(items: (GroupType | ItemType)[]) {
 		for (const item of items) {
