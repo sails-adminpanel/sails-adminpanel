@@ -14,8 +14,8 @@ class VueCatalog {
     getAddHTML(item) {
         return this.catalog.getAddHTML(item);
     }
-    getItems() {
-        return this.catalog.getItems();
+    getItemsType() {
+        return this.catalog.getItemsType();
     }
     getCatalog() {
         return this.catalog.getCatalog();

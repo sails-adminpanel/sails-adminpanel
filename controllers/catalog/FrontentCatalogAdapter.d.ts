@@ -1,4 +1,7 @@
 import { AbstractCatalog, Item } from "../../lib/catalog/AbstractCatalog";
+export interface NodeData extends Item {
+    level: number;
+}
 export interface NodeModel<TDataType> {
     title: string;
     isLeaf?: boolean;
@@ -18,20 +21,11 @@ export declare class VueCatalog {
         type: "link" | "html";
         data: string;
     };
-    getItems(): (import("../../lib/catalog/AbstractCatalog").GroupType | import("../../lib/catalog/AbstractCatalog").ItemType)[];
-    getCatalog(): Promise<{
-        nodes: import("../../lib/catalog/AbstractCatalog").NodeModel<any>[];
-    }>;
+    getItemsType(): (import("../../lib/catalog/AbstractCatalog").GroupType | import("../../lib/catalog/AbstractCatalog").ItemType)[];
+    getCatalog(): any;
     createItem(item: any, data: any): Promise<any>;
-    getChilds(data: any): Promise<{
-        nodes: import("../../lib/catalog/AbstractCatalog").NodeModel<any>[];
-    }>;
-    getCreatedItems(item: any): Promise<{
-        items: {
-            id: string;
-            title: string;
-        }[];
-    }>;
+    getChilds(data: any): Promise<Item[]>;
+    getCreatedItems(item: any): any;
     getActions(items: any[]): Promise<import("../../lib/catalog/AbstractCatalog").ActionHandler[]>;
     search(s: string): Promise<Item[]>;
     setSortOrder(data: any): Promise<void>;
@@ -43,5 +37,5 @@ export declare class VueCatalogUtils {
      * Удаляет лишнее из данных с фронта
      */
     static refinement<T>(): void;
-    static toNode<T extends Item>(data: T): NodeModel<T>;
+    static toNode<T extends NodeData>(data: T): NodeModel<T>;
 }

@@ -9,28 +9,12 @@ export interface Item {
     parentId: string | number | null;
     childs: Item[];
     sortOrder: number;
-    /**
-     * is itemType.id
-     */
+    icon: string;
     type: string;
-    /**
-     * @deprecated level can be find by parnet id
-     */
-    level: number;
 }
 export type _Item_ = {
     [key: string]: boolean | string | number | object;
 };
-export interface NodeModel<TDataType> {
-    title: string;
-    isLeaf?: boolean;
-    children?: NodeModel<TDataType>[];
-    /** sortOrder */
-    ind?: number;
-    isExpanded: boolean;
-    level: number;
-    data?: TDataType;
-}
 /**
  * General Item structure that will be available for all elements, including groups
  *
@@ -87,12 +71,7 @@ export declare abstract class BaseItem {
     /**
      * @deprecated Will it be merged into getChilds? to use one method
      */
-    abstract getCreatedItems(id: string): Promise<{
-        items: {
-            id: string;
-            title: string;
-        }[];
-    }>;
+    abstract getChilds(parentId: string | number | null): Promise<Item[]>;
     /**
      *  Set sort value for element
      */
@@ -189,9 +168,11 @@ export declare abstract class AbstractCatalog {
      * List of element types
      */
     readonly itemsType: (ItemType | GroupType)[];
-    abstract getCatalog(): Promise<{
-        nodes: NodeModel<any>[];
-    }>;
+    /**
+     * Method for getting childs elements
+     * if pass null as parentId this root
+     */
+    getChilds(parentId: string | number | null, byItemType?: string): Promise<Item[]>;
     protected constructor(items: (GroupType | ItemType)[]);
     setID(id: string): void;
     getItemType(type: string): GroupType | ItemType;
@@ -231,23 +212,5 @@ export declare abstract class AbstractCatalog {
      * Method for getting group elements
      */
     getItemsType(): (ItemType | GroupType)[];
-    /**
-     * @deprecated use `getItemsType()`
-         * Method for getting group elements
-         */
-    getItems(): (ItemType | GroupType)[];
-    /**
-     * Method for getting group childs elements
-     * if pass null as parentId this root
-     */
-    abstract getChilds(data: any): Promise<{
-        nodes: NodeModel<any>[];
-    }>;
-    getCreatedItems(itemTypeId: string): Promise<{
-        items: {
-            id: string;
-            title: string;
-        }[];
-    }>;
     search(s: string): Promise<Item[]>;
 }

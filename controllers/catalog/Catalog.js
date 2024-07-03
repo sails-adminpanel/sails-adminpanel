@@ -30,7 +30,7 @@ async function catalogController(req, res) {
                         return res.json(vueCatalog.getAddHTML(item));
                     case 'getCatalog':
                         return res.json({
-                            'items': vueCatalog.getItems(),
+                            'items': vueCatalog.getItemsType(),
                             'catalog': await vueCatalog.getCatalog()
                         });
                     case 'createItem':
