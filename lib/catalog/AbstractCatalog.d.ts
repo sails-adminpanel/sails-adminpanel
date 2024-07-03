@@ -1,13 +1,13 @@
 /**
- * Interface `ItemData` describes the data that the UI will operate on
+ * Interface `Item` describes the data that the UI will operate on
  * This is a common interface for all data that is linked to the catalog
  * This data will also be sent to crud Item
  * */
-export interface ItemData {
+export interface Item {
     id: string | number;
     name: string;
     parentId: string | number | null;
-    childs: ItemData[];
+    childs: Item[];
     sortOrder: number;
     /**
      * is itemType.id
@@ -18,7 +18,7 @@ export interface ItemData {
      */
     level: number;
 }
-export type _ItemData_ = {
+export type _Item_ = {
     [key: string]: boolean | string | number | object;
 };
 export interface NodeModel<TDataType> {
@@ -60,16 +60,16 @@ export declare abstract class BaseItem {
      */
     abstract readonly actionHandlers: ActionHandler[];
     addActionHandler(contextHandler: ActionHandler): void;
-    abstract find<T extends ItemData>(itemId: string | number): Promise<T & {
+    abstract find<T extends Item>(itemId: string | number): Promise<T & {
         childs: undefined;
     }>;
     /**
      * Is false because default value Group is added
      */
-    abstract update<T extends ItemData>(itemId: string | number, data: T): Promise<T & {
+    abstract update<T extends Item>(itemId: string | number, data: T): Promise<T & {
         childs: undefined;
     }>;
-    abstract create<T extends ItemData>(itemId: string, data: T): Promise<T & {
+    abstract create<T extends Item>(itemId: string, data: T): Promise<T & {
         childs: undefined;
     }>;
     /**
@@ -97,13 +97,13 @@ export declare abstract class BaseItem {
      *  Set sort value for element
      */
     abstract setSortOrder(id: string | number, sortOrder: number): Promise<void>;
-    abstract search(s: string): Promise<(ItemData & {
+    abstract search(s: string): Promise<(Item & {
         childs: undefined;
     })[]>;
 }
 export declare abstract class GroupType extends BaseItem {
     readonly isGroup: boolean;
-    abstract childs: ItemData[];
+    abstract childs: Item[];
 }
 export declare abstract class ItemType extends BaseItem {
     readonly isGroup: boolean;
@@ -146,7 +146,7 @@ export declare abstract class ActionHandler {
      * @param items
      * @param config
      */
-    abstract handler(items: ItemData[], config?: any): Promise<void>;
+    abstract handler(items: Item[], config?: any): Promise<void>;
 }
 /**
  *
@@ -199,19 +199,19 @@ export declare abstract class AbstractCatalog {
     /**
      * Method for change sortion order for group and items
      */
-    setSortOrder(item: ItemData, sortOrder: number): Promise<void>;
+    setSortOrder(item: Item, sortOrder: number): Promise<void>;
     /**
      *  Removing an element
      */
-    deleteItem(item: ItemData): void;
+    deleteItem(item: Item): void;
     /**
      * Receives HTML to update an element for projection into a popup
      */
-    getEditHTML(item: ItemData): void;
+    getEditHTML(item: Item): void;
     /**
      * Receives HTML to create an element for projection into a popup
      */
-    getAddHTML(item: ItemData): {
+    getAddHTML(item: Item): {
         type: "link" | "html";
         data: string;
     };
@@ -220,13 +220,13 @@ export declare abstract class AbstractCatalog {
      * Method for getting group elements
      * If there are several Items, then the global ones will be obtained
      */
-    getActions(items?: ItemData[]): Promise<ActionHandler[]>;
+    getActions(items?: Item[]): Promise<ActionHandler[]>;
     /**
      * Implements search and execution of a specific action.handler
      */
-    handleAction(actionId: string, items?: ItemData[], config?: any): Promise<void>;
-    createItem<T extends ItemData>(data: T): Promise<T>;
-    updateItem<T extends ItemData>(id: string, data: T): Promise<T>;
+    handleAction(actionId: string, items?: Item[], config?: any): Promise<void>;
+    createItem<T extends Item>(data: T): Promise<T>;
+    updateItem<T extends Item>(id: string, data: T): Promise<T>;
     /**
      * Method for getting group elements
      */
@@ -249,5 +249,5 @@ export declare abstract class AbstractCatalog {
             title: string;
         }[];
     }>;
-    search(s: string): Promise<ItemData[]>;
+    search(s: string): Promise<Item[]>;
 }

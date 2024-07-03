@@ -1,4 +1,4 @@
-import { AbstractCatalog, ItemData } from "../../lib/catalog/AbstractCatalog";
+import { AbstractCatalog, Item } from "../../lib/catalog/AbstractCatalog";
 export interface NodeModel<TDataType> {
     title: string;
     isLeaf?: boolean;
@@ -33,15 +33,15 @@ export declare class VueCatalog {
         }[];
     }>;
     getActions(items: any[]): Promise<import("../../lib/catalog/AbstractCatalog").ActionHandler[]>;
-    search(s: string): Promise<ItemData[]>;
+    search(s: string): Promise<Item[]>;
     setSortOrder(data: any): Promise<void>;
     handleAction(actionID: string, items: any[], config: any): Promise<void>;
-    updateItem(item: any, id: string, data: any): Promise<ItemData>;
+    updateItem(item: any, id: string, data: any): Promise<Item>;
 }
 export declare class VueCatalogUtils {
     /**
      * Удаляет лишнее из данных с фронта
      */
     static refinement<T>(): void;
-    static toNode<T extends ItemData>(data: T): NodeModel<T>;
+    static toNode<T extends Item>(data: T): NodeModel<T>;
 }

@@ -1,4 +1,9 @@
-import { AbstractCatalog, ItemData } from "../../lib/catalog/AbstractCatalog";
+import { AbstractCatalog, Item } from "../../lib/catalog/AbstractCatalog";
+
+
+export interface NodeData extends Item {
+	level: number;
+}
 
 export interface NodeModel<TDataType> {
   title: string;
@@ -30,8 +35,8 @@ export class VueCatalog {
     return this.catalog.getAddHTML(item);
   }
 
-  getItems() {
-    return this.catalog.getItems();
+  getItemsType() {
+    return this.catalog.getItemsType();
   }
 
   getCatalog() {
@@ -78,7 +83,7 @@ export class VueCatalogUtils {
   public static refinement<T>() {
 
   }
-  public static toNode<T extends ItemData>(data: T): NodeModel<T> {
+  public static toNode<T extends NodeData>(data: T): NodeModel<T> {
     const node: NodeModel<T> = {
       children: [],// newNode.childs,
       data: data
