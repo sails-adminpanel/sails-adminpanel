@@ -181,10 +181,11 @@ export class Item2 extends Item1 {
 }
 
 export class TestCatalog extends AbstractCatalog {
-  public name: string = "test catalog";
-  public slug: string = "test";
-  public maxNestingDepth: number = null;
-  public icon: string = "box";
+  public readonly name: string = "test catalog";
+  public readonly slug: string = "test";
+  public readonly maxNestingDepth: number = null;
+  public readonly icon: string = "box";
+  public readonly itemTypes: (Item2 | Item1 | TestGroup)[];
 
   constructor() {
     super([
@@ -194,3 +195,6 @@ export class TestCatalog extends AbstractCatalog {
     ]);
   }
 }
+
+let a = new TestGroup();
+type BBB = typeof a.dataType

@@ -167,7 +167,7 @@ export declare abstract class AbstractCatalog {
     /**
      * List of element types
      */
-    readonly itemsType: (ItemType | GroupType)[];
+    readonly itemTypes: (ItemType | GroupType)[];
     /**
      * Method for getting childs elements
      * if pass null as parentId this root
@@ -176,7 +176,7 @@ export declare abstract class AbstractCatalog {
     protected constructor(items: (GroupType | ItemType)[]);
     setID(id: string): void;
     getItemType(type: string): GroupType | ItemType;
-    addItemsType(itemType: ItemType): void;
+    additemTypes(itemType: ItemType): void;
     /**
      * Method for change sortion order for group and items
      */
@@ -211,6 +211,6 @@ export declare abstract class AbstractCatalog {
     /**
      * Method for getting group elements
      */
-    getItemsType(): (ItemType | GroupType)[];
+    getitemTypes(): (ItemType | GroupType)[];
     search(s: string): Promise<Item[]>;
 }

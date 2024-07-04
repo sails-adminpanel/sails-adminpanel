@@ -10,7 +10,7 @@ export interface Item {
 	childs?: Item[];
 	sortOrder: number
 	
-	// below: ItemType layer - It means data to be mapped from itemType class 
+	// below: AbstractGroup layer - It means data to be mapped from itemType class 
 	icon: string
 	type: string;
 }
@@ -27,6 +27,14 @@ export type _Item_ = {
 export abstract class BaseItem<T> {
 	// public abstract readonly id: string;
 	public abstract readonly type: string;
+
+	/**
+	 * Used for infer T 
+	 * I haven't found an easier way to extract this type that goes into generic
+	 * If you know how to open PR	 
+	 * */
+	public readonly dataType: T 
+
 	/**
 	 * Catalog name
 	 */
@@ -95,9 +103,7 @@ export abstract class AbstractGroup<T> extends BaseItem<T> {
 }
 
 export abstract class AbstractItem<T> extends BaseItem<T> {
-
 	public readonly isGroup: boolean = false;
-
 }
 
 /// ContextHandler
@@ -208,7 +214,7 @@ export abstract class AbstractCatalog {
 	/**
 	 * List of element types
 	 */
-	public readonly itemsType: (ItemType | GroupType)[] = [];
+	public abstract readonly itemTypes: BaseItem<Item>[];
 
 	/**
 	 * Method for getting childs elements
@@ -219,16 +225,16 @@ export abstract class AbstractCatalog {
 			return  await this.getItemType(byItemType)?.getChilds(parentId)
 		} else {
 			let result = [];
-			for (const itemType of this.itemsType) {
+			for (const itemType of this.itemTypes) {
 				result = result.concat(await itemType?.getChilds(parentId))
 			}	
 			return result
 		}
 	}
 
-	protected constructor(items: (GroupType | ItemType)[]) {
+	protected constructor(items: BaseItem<any>[]) {
 		for (const item of items) {
-			this.addItemsType(item)
+			this.additemTypes(item)
 		}
 	}
 
@@ -237,18 +243,18 @@ export abstract class AbstractCatalog {
 	}
 
 	public getItemType(type: string) {
-		return this.itemsType.find((it) => it.type === type);
+		return this.itemTypes.find((it) => it.type === type);
 	}
 
 
-	public addItemsType(itemType: ItemType) {
+	public additemTypes<T extends BaseItem<any>>(itemType: T) {
 		if (
 			itemType.isGroup === true &&
-			this.itemsType.find((it) => it.isGroup === true)
+			this.itemTypes.find((it) => it.isGroup === true)
 		) {
 			throw new Error(`Only one type group is allowed`);
 		}
-		this.itemsType.push(itemType);
+		this.itemTypes.push(itemType);
 	}
 
 	/**
@@ -297,7 +303,7 @@ export abstract class AbstractCatalog {
 	async getActions(items?: Item[]): Promise<ActionHandler[]> {
 		if (items.length === 1) {
 			const item = items[0];
-			const itemType = this.itemsType.find((it) => it.type === item.type);
+			const itemType = this.itemTypes.find((it) => it.type === item.type);
 			return itemType.actionHandlers
 		} else {
 			return this.actionHandlers
@@ -311,7 +317,7 @@ export abstract class AbstractCatalog {
 		let action: ActionHandler = null;
 		if (items.length === 1) {
 			const item = items[0];
-			const itemType = this.itemsType.find((it) => it.type === item.type);
+			const itemType = this.itemTypes.find((it) => it.type === item.type);
 			action = itemType.actionHandlers.find((it) => it.id === actionId);
 		} else {
 			action = this.actionHandlers.find((it) => it.id === actionId);
@@ -322,33 +328,33 @@ export abstract class AbstractCatalog {
 	}
 
 	public createItem<T extends Item>(data: T): Promise<T> {
-		return this.getItemType(data.type)?.create(this.id, data);
+		return this.getItemType(data.type)?.create(this.id, data) as Promise<T>;
 	}
 
 
-	public updateItem<T extends Item>(id: string, data: T): Promise<T> {
-		return this.getItemType(data.type)?.update(id, data);
+	public updateItem<T extends Item>(id: string, data: any): Promise<any> {
+		return this.getItemType(data.type)?.update(id, data) as Promise<T>;
 	}
 
 	/**
 	 * Method for getting group elements
 	 */
-	public getItemsType(): (ItemType | GroupType)[] {
-		return this.itemsType
+	public getitemTypes() {
+		return this.itemTypes
 	};
 
 
-	async search(s: string): Promise<Item[]> {
+	async search<T>(s: string): Promise<T[]> {
 		let foundItems: Item[] = [];
-
+		type test = typeof this.itemTypes
 		// Handle all search
-		for (const itemType of this.itemsType) {
+		for (const itemType of this.itemTypes) {
 			const items = await itemType.search(s);
 			foundItems = foundItems.concat(items);
 		}
 
 		// Find group type
-		const groupType = this.itemsType.find((item) => item.isGroup === true);
+		const groupType = this.itemTypes.find((item) => item.isGroup === true);
 
 		// Recursive function to build the tree upwards
 		const buildTreeUpwards = async (item: Item, accumulator: Item[]): Promise<Item> => {

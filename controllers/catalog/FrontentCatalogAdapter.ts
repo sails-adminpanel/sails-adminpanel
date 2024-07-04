@@ -35,8 +35,8 @@ export class VueCatalog {
     return this.catalog.getAddHTML(item);
   }
 
-  getItemsType() {
-    return this.catalog.getItemsType();
+  getitemTypes() {
+    return this.catalog.getitemTypes();
   }
 
   getCatalog() {

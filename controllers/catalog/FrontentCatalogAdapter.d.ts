@@ -21,7 +21,7 @@ export declare class VueCatalog {
         type: "link" | "html";
         data: string;
     };
-    getItemsType(): (import("../../lib/catalog/AbstractCatalog").ItemType | import("../../lib/catalog/AbstractCatalog").GroupType)[];
+    getitemTypes(): (import("../../lib/catalog/AbstractCatalog").ItemType | import("../../lib/catalog/AbstractCatalog").GroupType)[];
     getCatalog(): any;
     createItem(item: any, data: any): Promise<any>;
     getChilds(data: any): Promise<Item[]>;
