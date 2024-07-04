@@ -7,7 +7,7 @@ export interface Item {
 	id: string | number;
 	name: string;
 	parentId: string | number | null;
-	childs: Item[];
+	childs?: Item[];
 	sortOrder: number
 	
 	// below: ItemType layer - It means data to be mapped from itemType class 
@@ -24,7 +24,7 @@ export type _Item_ = {
  * 
  * 
  */
-export abstract class BaseItem {
+export abstract class BaseItem<T> {
 	// public abstract readonly id: string;
 	public abstract readonly type: string;
 	public abstract readonly level: number;
@@ -56,14 +56,14 @@ export abstract class BaseItem {
 		this.actionHandlers.push(contextHandler);
 	}
 
-	public abstract find<T extends Item>(itemId: string | number): Promise<T & { childs: undefined }>;
+	public abstract find(itemId: string | number): Promise<T>;
 
 	/**
 	 * Is false because default value Group is added
 	 */
-	public abstract update<T extends Item>(itemId: string | number, data: T): Promise<T & { childs: undefined }>;
+	public abstract update(itemId: string | number, data: T): Promise<T>;
 
-	public abstract create<T extends Item>(itemId: string, data: T): Promise<T & { childs: undefined }>;
+	public abstract create(itemId: string, data: T): Promise<T>;
 
 
 	/**
@@ -86,16 +86,17 @@ export abstract class BaseItem {
 	 */
 	public abstract setSortOrder(id: string | number, sortOrder: number): Promise<void>;
 
-	public abstract search(s: string): Promise<(Item & { childs: undefined })[]>
+	public abstract search(s: string): Promise<T[]>
 }
 
-export abstract class GroupType extends BaseItem {
 
+export abstract class AbstractGroup<T> extends BaseItem<T> {
+	public readonly type: string = "group";
 	public readonly isGroup: boolean = true;
 	public abstract childs: Item[];
 }
 
-export abstract class ItemType extends BaseItem {
+export abstract class AbstractItem<T> extends BaseItem<T> {
 
 	public readonly isGroup: boolean = false;
 
@@ -199,7 +200,7 @@ export abstract class AbstractCatalog {
 	/**
 	 * Array of all global contexts, which will appear for all elements
 	 */
-	public abstract readonly actionHandlers: ActionHandler[]
+	public readonly actionHandlers: ActionHandler[]
 
 	/**
 	 * icon (url or id)

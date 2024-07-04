@@ -16,12 +16,12 @@ export declare class VueCatalog {
     catalog: AbstractCatalog;
     constructor(_catalog: AbstractCatalog);
     setID(id: string): void;
-    getItemType(type: string): import("../../lib/catalog/AbstractCatalog").GroupType | import("../../lib/catalog/AbstractCatalog").ItemType;
+    getItemType(type: string): import("../../lib/catalog/AbstractCatalog").ItemType | import("../../lib/catalog/AbstractCatalog").GroupType;
     getAddHTML(item: any): {
         type: "link" | "html";
         data: string;
     };
-    getItemsType(): (import("../../lib/catalog/AbstractCatalog").GroupType | import("../../lib/catalog/AbstractCatalog").ItemType)[];
+    getItemsType(): (import("../../lib/catalog/AbstractCatalog").ItemType | import("../../lib/catalog/AbstractCatalog").GroupType)[];
     getCatalog(): any;
     createItem(item: any, data: any): Promise<any>;
     getChilds(data: any): Promise<Item[]>;
