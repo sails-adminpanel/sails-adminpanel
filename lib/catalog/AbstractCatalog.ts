@@ -27,7 +27,6 @@ export type _Item_ = {
 export abstract class BaseItem<T> {
 	// public abstract readonly id: string;
 	public abstract readonly type: string;
-	public abstract readonly level: number;
 	/**
 	 * Catalog name
 	 */
@@ -50,7 +49,7 @@ export abstract class BaseItem<T> {
 	/**
 	 * Array of all global contexts, which will appear for all elements
 	 */
-	public abstract readonly actionHandlers: ActionHandler[]
+	public readonly actionHandlers: ActionHandler[]
 
 	public addActionHandler(contextHandler: ActionHandler) {
 		this.actionHandlers.push(contextHandler);
@@ -93,7 +92,6 @@ export abstract class BaseItem<T> {
 export abstract class AbstractGroup<T> extends BaseItem<T> {
 	public readonly type: string = "group";
 	public readonly isGroup: boolean = true;
-	public abstract childs: Item[];
 }
 
 export abstract class AbstractItem<T> extends BaseItem<T> {

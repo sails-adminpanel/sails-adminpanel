@@ -4,29 +4,71 @@ interface GroupTestItem extends Item {
   thisIsGroup: boolean
 }
 
-export class VirtualTree {
+/**
+ * Storage takes place in RAM
+ */
+export class StorageService {
+  private static storageMap: Map<string | number, GroupTestItem | Item> = new Map();
 
-  public static async addElementIntoGroup(parentId: string | number): Promise<void> {
-
+  public static async setElement(id: string | number, item: GroupTestItem | Item): Promise<GroupTestItem | Item> {
+    this.storageMap.set(item.id, item);
+    // This like fetch in DB
+    return this.findElementById(item.id);
   }
 
   public static async removeElementById(id: string | number): Promise<void> {
-
+    this.storageMap.delete(id);
   }
 
-  public static async findElementById(id: string | number): Promise<GroupTestItem> {
-    let item = {
-      id: "",
-      name: "",
-      parentId: "",
-      sortOrder: 0,
-      icon: "",
-      type: "",
-      thisIsGroup: true
+  public static async findElementById(id: string | number): Promise<GroupTestItem | Item | undefined> {
+    return this.storageMap.get(id);
+  }
+
+  public static async findElementsByParentId(parentId: string | number): Promise<(GroupTestItem | Item)[]> {
+    const elements: (GroupTestItem | Item)[] = [];
+    for (const item of this.storageMap.values()) {
+      // Assuming each item has a parentId property
+      if (item.parentId === parentId) {
+        elements.push(item);
+      }
     }
-    return item;
+    return elements;
+  }
+
+  public static async updateSortOrder(id: string | number, newSortOrder: number): Promise<void> {
+    if (this.storageMap.has(id)) {
+      const itemToUpdate = this.storageMap.get(id);
+      // Assuming items have a sortOrder property
+      itemToUpdate.sortOrder = newSortOrder;
+      this.storageMap.set(id, itemToUpdate);
+    } else {
+      throw new Error(`Element with id ${id} not found.`);
+    }
+  }
+
+  public static async getAllElements(): Promise<(GroupTestItem | Item)[]> {
+    return Array.from(this.storageMap.values());
+  }
+
+
+  public static async search(s: string, type: string): Promise<GroupTestItem[]> {
+    const lowerCaseQuery = s.toLowerCase(); // Convert query to lowercase for case-insensitive search
+    const matchedElements = [];
+
+    for (const item of this.storageMap.values()) {
+      // Check if item type matches the specified type
+      if (item.type === type) {
+        // Search by name
+        if (item.name.toLowerCase().includes(lowerCaseQuery)) {
+          matchedElements.push(item);
+        }
+      }
+    }
+
+    return matchedElements;
   }
 }
+
 
 /**
  * 
@@ -39,29 +81,26 @@ export class VirtualTree {
  */
 
 export class TestGroup extends AbstractGroup<GroupTestItem> {
-  public childs: Item[];
-  public level: number;
   public name: string;
   public allowedRoot: boolean;
   public icon: string;
-  public actionHandlers: ActionHandler[];
 
 
   public async find(itemId: string | number) {
-    return await VirtualTree.findElementById(itemId);
+    return await StorageService.findElementById(itemId) as GroupTestItem;
   }
 
-  public update(itemId: string | number, data: GroupTestItem): Promise<GroupTestItem> {
-    throw new Error("Method not implemented.");
+  public async update(itemId: string | number, data: GroupTestItem): Promise<GroupTestItem> {
+    return await StorageService.setElement(itemId, data) as GroupTestItem;
   };
 
 
-  public create(itemId: string, data: GroupTestItem): Promise<GroupTestItem> {
-    throw new Error("Method not implemented.");
+  public async create(itemId: string, data: GroupTestItem): Promise<GroupTestItem> {
+    return await StorageService.setElement(itemId, data) as GroupTestItem;
   }
 
-  public deleteItem(itemId: string | number): Promise<void> {
-    throw new Error("Method not implemented.");
+  public async deleteItem(itemId: string | number): Promise<void> {
+    return await StorageService.removeElementById(itemId);
   }
 
   public getAddHTML(): { type: "link" | "html"; data: string; } {
@@ -70,14 +109,16 @@ export class TestGroup extends AbstractGroup<GroupTestItem> {
   public getEditHTML(id: string | number): Promise<{ type: "link" | "html"; data: string; }> {
     throw new Error("Method not implemented.");
   }
-  public getChilds(parentId: string | number): Promise<Item[]> {
-    throw new Error("Method not implemented.");
+  public async getChilds(parentId: string | number): Promise<Item[]> {
+    return await StorageService.findElementsByParentId(parentId);
   }
-  public setSortOrder(id: string | number, sortOrder: number): Promise<void> {
-    throw new Error("Method not implemented.");
+
+  public async setSortOrder(id: string | number, sortOrder: number): Promise<void> {
+    return await StorageService.updateSortOrder(id, sortOrder);
   }
-  public search(s: string): Promise<GroupTestItem[]> {
-    throw new Error("Method not implemented.");
+
+  public async search(s: string): Promise<GroupTestItem[]> {
+    return await StorageService.search(s, this.type);
   }
 }
 
@@ -90,30 +131,26 @@ export class TestGroup extends AbstractGroup<GroupTestItem> {
  */
 
 export class Item1 extends AbstractItem<Item> {
-  public childs: Item[];
-  public type: string;
-  public level: number;
-  public name: string;
-  public allowedRoot: boolean;
-  public icon: string;
-  public actionHandlers: ActionHandler[];
-
+  public type: string = "item1";
+  public name: string = "Item 1";
+  public allowedRoot: boolean = true;
+  public icon: string = "file";
 
   public async find(itemId: string | number) {
-    return await VirtualTree.findElementById(itemId);
+    return await StorageService.findElementById(itemId);
   }
 
-  public update(itemId: string | number, data: GroupTestItem): Promise<GroupTestItem> {
-    throw new Error("Method not implemented.");
+  public async update(itemId: string | number, data: Item): Promise<Item> {
+    return await StorageService.setElement(itemId, data);
   };
 
 
-  public create(itemId: string, data: GroupTestItem): Promise<GroupTestItem> {
-    throw new Error("Method not implemented.");
+  public async create(itemId: string, data: Item): Promise<Item> {
+    return await StorageService.setElement(itemId, data);
   }
 
-  public deleteItem(itemId: string | number): Promise<void> {
-    throw new Error("Method not implemented.");
+  public async deleteItem(itemId: string | number): Promise<void> {
+    return await StorageService.removeElementById(itemId);
   }
 
   public getAddHTML(): { type: "link" | "html"; data: string; } {
@@ -122,19 +159,26 @@ export class Item1 extends AbstractItem<Item> {
   public getEditHTML(id: string | number): Promise<{ type: "link" | "html"; data: string; }> {
     throw new Error("Method not implemented.");
   }
-  public getChilds(parentId: string | number): Promise<Item[]> {
-    throw new Error("Method not implemented.");
+  public async getChilds(parentId: string | number): Promise<Item[]> {
+    return await StorageService.findElementsByParentId(parentId);
   }
-  public setSortOrder(id: string | number, sortOrder: number): Promise<void> {
-    throw new Error("Method not implemented.");
+
+  public async setSortOrder(id: string | number, sortOrder: number): Promise<void> {
+    return await StorageService.updateSortOrder(id, sortOrder);
   }
-  public search(s: string): Promise<GroupTestItem[]> {
-    throw new Error("Method not implemented.");
+
+  public async search(s: string): Promise<Item[]> {
+    return await StorageService.search(s, this.type);
   }
 }
 
 
-
+export class Item2 extends Item1 {
+  public type: string = "item2";
+  public name: string = "Item 2";
+  public allowedRoot: boolean = true;
+  public icon: string = "file";
+}
 
 export class TestCatalog extends AbstractCatalog {
   public name: string = "test catalog";
@@ -145,7 +189,8 @@ export class TestCatalog extends AbstractCatalog {
   constructor() {
     super([
       new TestGroup(),
-      new Item1()
+      new Item1(),
+      new Item2()
     ]);
   }
 }
