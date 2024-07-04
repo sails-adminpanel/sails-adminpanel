@@ -7,7 +7,7 @@ export interface Item {
     id: string | number;
     name: string;
     parentId: string | number | null;
-    childs: Item[];
+    childs?: Item[];
     sortOrder: number;
     icon: string;
     type: string;
@@ -20,9 +20,13 @@ export type _Item_ = {
  *
  *
  */
-export declare abstract class BaseItem {
+export declare abstract class BaseItem<T> {
     abstract readonly type: string;
-    abstract readonly level: number;
+    /**
+     * Used for infer T
+     * I haven't found an easier way to extract this type that goes into generic
+     * If you know how to open PR
+     * */
     /**
      * Catalog name
      */
@@ -42,20 +46,14 @@ export declare abstract class BaseItem {
     /**
      * Array of all global contexts, which will appear for all elements
      */
-    abstract readonly actionHandlers: ActionHandler[];
+    readonly actionHandlers: ActionHandler[];
     addActionHandler(contextHandler: ActionHandler): void;
-    abstract find<T extends Item>(itemId: string | number): Promise<T & {
-        childs: undefined;
-    }>;
+    abstract find(itemId: string | number): Promise<T>;
     /**
      * Is false because default value Group is added
      */
-    abstract update<T extends Item>(itemId: string | number, data: T): Promise<T & {
-        childs: undefined;
-    }>;
-    abstract create<T extends Item>(itemId: string, data: T): Promise<T & {
-        childs: undefined;
-    }>;
+    abstract update(itemId: string | number, data: T): Promise<T>;
+    abstract create(itemId: string, data: T): Promise<T>;
     /**
      *  delete element
      */
@@ -76,15 +74,13 @@ export declare abstract class BaseItem {
      *  Set sort value for element
      */
     abstract setSortOrder(id: string | number, sortOrder: number): Promise<void>;
-    abstract search(s: string): Promise<(Item & {
-        childs: undefined;
-    })[]>;
+    abstract search(s: string): Promise<T[]>;
 }
-export declare abstract class GroupType extends BaseItem {
+export declare abstract class AbstractGroup<T> extends BaseItem<T> {
+    readonly type: string;
     readonly isGroup: boolean;
-    abstract childs: Item[];
 }
-export declare abstract class ItemType extends BaseItem {
+export declare abstract class AbstractItem<T> extends BaseItem<T> {
     readonly isGroup: boolean;
 }
 export declare abstract class ActionHandler {
@@ -159,7 +155,7 @@ export declare abstract class AbstractCatalog {
     /**
      * Array of all global contexts, which will appear for all elements
      */
-    abstract readonly actionHandlers: ActionHandler[];
+    readonly actionHandlers: ActionHandler[];
     /**
      * icon (url or id)
      */
@@ -167,16 +163,16 @@ export declare abstract class AbstractCatalog {
     /**
      * List of element types
      */
-    readonly itemTypes: (ItemType | GroupType)[];
+    readonly itemTypes: BaseItem<Item>[];
     /**
      * Method for getting childs elements
      * if pass null as parentId this root
      */
     getChilds(parentId: string | number | null, byItemType?: string): Promise<Item[]>;
-    protected constructor(items: (GroupType | ItemType)[]);
+    protected constructor(items: BaseItem<any>[]);
     setID(id: string): void;
-    getItemType(type: string): GroupType | ItemType;
-    additemTypes(itemType: ItemType): void;
+    getItemType(type: string): BaseItem<Item>;
+    additemTypes<T extends BaseItem<any>>(itemType: T): void;
     /**
      * Method for change sortion order for group and items
      */
@@ -207,10 +203,10 @@ export declare abstract class AbstractCatalog {
      */
     handleAction(actionId: string, items?: Item[], config?: any): Promise<void>;
     createItem<T extends Item>(data: T): Promise<T>;
-    updateItem<T extends Item>(id: string, data: T): Promise<T>;
+    updateItem<T extends Item>(id: string, data: any): Promise<any>;
     /**
      * Method for getting group elements
      */
-    getitemTypes(): (ItemType | GroupType)[];
-    search(s: string): Promise<Item[]>;
+    getitemTypes(): BaseItem<Item>[];
+    search<T extends Item>(s: string): Promise<T[]>;
 }

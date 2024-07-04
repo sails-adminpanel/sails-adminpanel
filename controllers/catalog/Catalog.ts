@@ -1,4 +1,4 @@
-import {CatalogHandler} from "./CatalogHandler";
+import { CatalogHandler } from "../../lib/catalog/CatalogHandler";
 import {AccessRightsHelper} from "../../helper/accessRightsHelper";
 import { VueCatalog } from "./FrontentCatalogAdapter";
 

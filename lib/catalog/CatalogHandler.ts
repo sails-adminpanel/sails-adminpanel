@@ -1,4 +1,4 @@
-import { AbstractCatalog } from "../../lib/catalog/AbstractCatalog";
+import { AbstractCatalog } from "./AbstractCatalog";
 
 export class CatalogHandler {
 	private static catalog: AbstractCatalog[] = [];
@@ -8,7 +8,7 @@ export class CatalogHandler {
 		return catalog
 	}
 
-	public static getAll(){
+	public static getAll() {
 		let catalog = []
 		let config = sails.config.adminpanel;
 		if (this.catalog.length) {
@@ -21,7 +21,7 @@ export class CatalogHandler {
 		return Promise.resolve(catalog)
 	}
 
-	public static getCatalog(slug:string){
+	public static getCatalog(slug: string) {
 		return this.catalog.find((catalog) => catalog.slug === slug)
 	}
 }

@@ -33,7 +33,7 @@ export abstract class BaseItem<T> {
 	 * I haven't found an easier way to extract this type that goes into generic
 	 * If you know how to open PR	 
 	 * */
-	public readonly dataType: T 
+	// public readonly dataType: T 
 
 	/**
 	 * Catalog name
@@ -214,7 +214,7 @@ export abstract class AbstractCatalog {
 	/**
 	 * List of element types
 	 */
-	public abstract readonly itemTypes: BaseItem<Item>[];
+	public readonly itemTypes: BaseItem<Item>[] = [];
 
 	/**
 	 * Method for getting childs elements
@@ -344,7 +344,7 @@ export abstract class AbstractCatalog {
 	};
 
 
-	async search<T>(s: string): Promise<T[]> {
+	async search<T extends Item>(s: string): Promise<T[]> {
 		let foundItems: Item[] = [];
 		type test = typeof this.itemTypes
 		// Handle all search
@@ -386,6 +386,6 @@ export abstract class AbstractCatalog {
 
 		// Convert the map to an array of root items
 		const rootItems = Array.from(itemsMap.values());
-		return rootItems;
+		return rootItems as T[];
 	}
 }

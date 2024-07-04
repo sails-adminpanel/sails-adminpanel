@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAction = exports.catalogController = void 0;
-const CatalogHandler_1 = require("./CatalogHandler");
+const CatalogHandler_1 = require("../../lib/catalog/CatalogHandler");
 const FrontentCatalogAdapter_1 = require("./FrontentCatalogAdapter");
 async function catalogController(req, res) {
     if (sails.config.adminpanel.auth) {

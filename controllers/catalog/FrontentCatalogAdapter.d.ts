@@ -16,12 +16,12 @@ export declare class VueCatalog {
     catalog: AbstractCatalog;
     constructor(_catalog: AbstractCatalog);
     setID(id: string): void;
-    getItemType(type: string): import("../../lib/catalog/AbstractCatalog").ItemType | import("../../lib/catalog/AbstractCatalog").GroupType;
+    getItemType(type: string): import("../../lib/catalog/AbstractCatalog").BaseItem<Item>;
     getAddHTML(item: any): {
         type: "link" | "html";
         data: string;
     };
-    getitemTypes(): (import("../../lib/catalog/AbstractCatalog").ItemType | import("../../lib/catalog/AbstractCatalog").GroupType)[];
+    getitemTypes(): import("../../lib/catalog/AbstractCatalog").BaseItem<Item>[];
     getCatalog(): any;
     createItem(item: any, data: any): Promise<any>;
     getChilds(data: any): Promise<Item[]>;
@@ -30,7 +30,7 @@ export declare class VueCatalog {
     search(s: string): Promise<Item[]>;
     setSortOrder(data: any): Promise<void>;
     handleAction(actionID: string, items: any[], config: any): Promise<void>;
-    updateItem(item: any, id: string, data: any): Promise<Item>;
+    updateItem(item: any, id: string, data: any): Promise<any>;
 }
 export declare class VueCatalogUtils {
     /**
