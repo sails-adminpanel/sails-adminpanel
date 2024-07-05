@@ -265,6 +265,13 @@ export abstract class AbstractCatalog {
 	}
 
 	/**
+		 *  Removing an element
+		 */
+	public find(item: Item) {
+		return this.getItemType(item.type)?.find(item.id);
+	}
+
+	/**
 	 *  Removing an element
 	 */
 	public deleteItem(item: Item) {

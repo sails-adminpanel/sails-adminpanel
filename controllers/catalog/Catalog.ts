@@ -2,6 +2,12 @@ import { CatalogHandler } from "../../lib/catalog/CatalogHandler";
 import {AccessRightsHelper} from "../../helper/accessRightsHelper";
 import { VueCatalog } from "./FrontentCatalogAdapter";
 
+interface RequestData {
+	reqNode: DataNode;
+	reqParent: DataParent;
+	_method: string;
+}
+
 export async function catalogController(req, res) {
 	if (sails.config.adminpanel.auth) {
 		if (!req.session.UserAP) {
@@ -57,8 +63,12 @@ export async function catalogController(req, res) {
 				break;
 			case 'PUT':
 				switch (data._method) {
+
+					// TODO rename as updateTree
 					case 'sortOrder':
-						return res.json({ data: await vueCatalog.setSortOrder(data.data) })
+						return res.json({ data: await vueCatalog.updateTree(data.data) })
+					case 'updateTree':
+						return res.json({ data: await vueCatalog.updateTree(data.data) })
 					case 'action':
 						return res.json({ data: await vueCatalog.handleAction(data.data.actionID, [item], data.data.config) })
 					case 'updateItem':
