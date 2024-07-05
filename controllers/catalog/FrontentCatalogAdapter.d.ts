@@ -1,6 +1,5 @@
 import { AbstractCatalog, Item } from "../../lib/catalog/AbstractCatalog";
 export interface NodeData extends Item {
-    level: number;
 }
 export interface NodeModel<TDataType> {
     title: string;
@@ -9,7 +8,6 @@ export interface NodeModel<TDataType> {
     /** sortOrder */
     ind?: number;
     isExpanded: boolean;
-    level: number;
     data?: TDataType;
 }
 export declare class VueCatalog {
@@ -22,20 +20,21 @@ export declare class VueCatalog {
         data: string;
     };
     getitemTypes(): import("../../lib/catalog/AbstractCatalog").BaseItem<Item>[];
-    getCatalog(): any;
-    createItem(item: any, data: any): Promise<any>;
-    getChilds(data: any): Promise<Item[]>;
-    getCreatedItems(item: any): any;
     getActions(items: any[]): Promise<import("../../lib/catalog/AbstractCatalog").ActionHandler[]>;
+    handleAction(actionID: string, items: any[], config: any): Promise<void>;
+    getCatalog(): Promise<void>;
+    createItem(data: any): Promise<any>;
+    getChilds(data: any): Promise<Item[]>;
+    getCreatedItems(data: any): Promise<Item[]>;
     search(s: string): Promise<Item[]>;
     setSortOrder(data: any): Promise<void>;
-    handleAction(actionID: string, items: any[], config: any): Promise<void>;
     updateItem(item: any, id: string, data: any): Promise<any>;
 }
 export declare class VueCatalogUtils {
     /**
-     * Удаляет лишнее из данных с фронта
+     * Removes unnecessary data from the front
      */
-    static refinement<T>(): void;
+    static refinement<T extends NodeModel<any>>(nodeModel: T): any;
+    static arrayToNode<T extends Item>(items: T[]): NodeModel<T>[];
     static toNode<T extends NodeData>(data: T): NodeModel<T>;
 }

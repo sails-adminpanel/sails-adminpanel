@@ -1,19 +1,16 @@
 import { AbstractCatalog, Item } from "../../lib/catalog/AbstractCatalog";
 
 
-export interface NodeData extends Item {
-	level: number;
-}
+export interface NodeData extends Item { }
 
 export interface NodeModel<TDataType> {
   title: string;
   isLeaf?: boolean;
   children?: NodeModel<TDataType>[];
   /** sortOrder */
-  ind?: number
-  isExpanded: boolean
-  level: number
-  data?: TDataType; // any serializable user data
+  ind?: number;
+  isExpanded: boolean;
+  data?: TDataType;
 }
 
 export class VueCatalog {
@@ -39,37 +36,77 @@ export class VueCatalog {
     return this.catalog.getitemTypes();
   }
 
-  getCatalog() {
-    return this.catalog.getCatalog();
+  getActions(items: any[]) {
+    return this.catalog.getActions(items);
   }
 
-  createItem(item: any, data: any) {
-    return this.catalog.createItem(item, data);
+  handleAction(actionID: string, items: any[], config: any) {
+    return this.catalog.handleAction(actionID, items, config);
+  }
+
+  //Below are the methods that require action
+
+  async getCatalog() {
+    let rootItems = await this.catalog.getChilds(null);
+    VueCatalogUtils.arrayToNode(rootItems);
+  }
+
+  createItem(data: any) {
+    data = VueCatalogUtils.refinement(data);
+    return this.catalog.createItem(data);
   }
 
   getChilds(data: any) {
-    return this.catalog.getChilds(data);
+    data = VueCatalogUtils.refinement(data);
+    return this.catalog.getChilds(data.id);
   }
 
-  getCreatedItems(item: any) {
-    return this.catalog.getCreatedItems(item);
-  }
-
-  getActions(items: any[]) {
-    return this.catalog.getActions(items);
+  getCreatedItems(data: any) {
+    data = VueCatalogUtils.refinement(data);
+    return this.catalog.getChilds(data.id);
   }
 
   search(s: string) {
     return this.catalog.search(s);
   }
 
-  setSortOrder(data: any) {
-    return this.catalog.setSortOrder(data);
+  async setSortOrder(data: { reqNode: NodeModel<any>, reqParent: any }): Promise<any> {
+    try {
+      await this.setChildsDB(data.reqParent);
+      if (data.reqNode.children.length > 0) {
+        for (const child of data.reqNode.children) {
+          await this.setLevel(child);
+        }
+      }
+      if (data.reqNode.data.parent) {
+        let newNode;
+        if (data.reqNode.data.type === 'group_2' || data.reqNode.data.type === 'group_1') {
+          newNode = (await CatalogGroupNav.find({ label: this.id, groups: data.reqNode.data.id }))[0];
+        }
+        if (data.reqNode.data.type === 'page') {
+          newNode = (await CatalogPageNav.find({ label: this.id, pages: data.reqNode.data.id }))[0];
+        }
+        if (newNode.parentID !== data.reqNode.data.parent) {
+          await this.removeChildsDB(data.reqNode);
+        }
+      }
+
+      // Here we call the second setSortOrder method
+      const item: Item = {
+        id: data.reqNode.data.id,
+        type: data.reqNode.data.type,
+        // other properties of item if necessary
+      };
+      const sortOrder: number = data.reqNode.data.sortOrder; // Assuming sortOrder is a property of reqNode.data
+
+      await this.catalog.setSortOrder(item, sortOrder);
+
+      return Promise.resolve({ ok: true });
+    } catch (e) {
+      return e;
+    }
   }
 
-  handleAction(actionID: string, items: any[], config: any) {
-    return this.catalog.handleAction(actionID, items, config);
-  }
 
   updateItem(item: any, id: string, data: any) {
     return this.catalog.updateItem(item, id, data);
@@ -78,27 +115,28 @@ export class VueCatalog {
 
 export class VueCatalogUtils {
   /**
-   * Удаляет лишнее из данных с фронта
+   * Removes unnecessary data from the front
    */
-  public static refinement<T>() {
-
+  public static refinement<T extends NodeModel<any>>(nodeModel: T) {
+    return nodeModel.data;
   }
+
+  public static arrayToNode<T extends Item>(items: T[]): NodeModel<T>[] {
+    const result = [];
+    for (const node of items) {
+      result.push(this.toNode(node))
+    }
+    return result;
+  }
+
   public static toNode<T extends NodeData>(data: T): NodeModel<T> {
     const node: NodeModel<T> = {
-      children: [],// newNode.childs,
-      data: data
-      // {
-      //   ...newNode.groups.data,
-      //   id: newNode.groups.id,
-      //   type: newNode.type,
-      //   parent: newNode.parentID
-      // }
-      ,
+      children: [], // newNode.childs,
+      data: data,
       isLeaf: false,
       isExpanded: false,
       ind: data.sortOrder,
-      title: data.name,
-      level: data.level
+      title: data.name
     }
     return node;
   }

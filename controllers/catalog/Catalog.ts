@@ -37,11 +37,18 @@ export async function catalogController(req, res) {
 							'catalog': await vueCatalog.getCatalog()
 						})
 					case 'createItem':
-						return res.json({ 'data': await vueCatalog.createItem(item, data.data) })
+						return res.json({ 'data': await vueCatalog.createItem(data.data) })
 					case 'getChilds':
 						return res.json({ data: await vueCatalog.getChilds(data.data) })
+
+
+					/**
+					 * Will be moved to the navigation action because it doesn't actually refer to the directory.
+					 */
 					case 'getCreatedItems':
-						return res.json({ data: await vueCatalog.getCreatedItems(item) })
+						// return res.json({ data: await vueCatalog.getCreatedItems(item) })
+						return res.json({ data: [] })
+
 					case 'getActions':
 						return res.json({ data: await vueCatalog.getActions([item]) })
 					case 'search':

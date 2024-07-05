@@ -34,7 +34,7 @@ async function catalogController(req, res) {
                             'catalog': await vueCatalog.getCatalog()
                         });
                     case 'createItem':
-                        return res.json({ 'data': await vueCatalog.createItem(item, data.data) });
+                        return res.json({ 'data': await vueCatalog.createItem(data.data) });
                     case 'getChilds':
                         return res.json({ data: await vueCatalog.getChilds(data.data) });
                     case 'getCreatedItems':
