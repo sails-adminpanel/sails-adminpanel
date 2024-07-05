@@ -29,16 +29,21 @@ async function catalogController(req, res) {
                     case 'getHTML':
                         return res.json(vueCatalog.getAddHTML(item));
                     case 'getCatalog':
+                        const _catalog = await vueCatalog.getCatalog();
                         return res.json({
                             'items': vueCatalog.getitemTypes(),
-                            'catalog': await vueCatalog.getCatalog()
+                            'catalog': _catalog
                         });
                     case 'createItem':
                         return res.json({ 'data': await vueCatalog.createItem(data.data) });
                     case 'getChilds':
                         return res.json({ data: await vueCatalog.getChilds(data.data) });
+                    /**
+                     * Will be moved to the navigation action because it doesn't actually refer to the directory.
+                     */
                     case 'getCreatedItems':
-                        return res.json({ data: await vueCatalog.getCreatedItems(item) });
+                        // return res.json({ data: await vueCatalog.getCreatedItems(item) })
+                        return res.json({ data: [] });
                     case 'getActions':
                         return res.json({ data: await vueCatalog.getActions([item]) });
                     case 'search':
@@ -47,8 +52,11 @@ async function catalogController(req, res) {
                 break;
             case 'PUT':
                 switch (data._method) {
+                    // TODO rename as updateTree
                     case 'sortOrder':
-                        return res.json({ data: await vueCatalog.setSortOrder(data.data) });
+                        return res.json({ data: await vueCatalog.updateTree(data.data) });
+                    case 'updateTree':
+                        return res.json({ data: await vueCatalog.updateTree(data.data) });
                     case 'action':
                         return res.json({ data: await vueCatalog.handleAction(data.data.actionID, [item], data.data.config) });
                     case 'updateItem':

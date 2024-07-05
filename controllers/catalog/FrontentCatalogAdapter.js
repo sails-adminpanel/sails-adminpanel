@@ -26,7 +26,7 @@ class VueCatalog {
     //Below are the methods that require action
     async getCatalog() {
         let rootItems = await this.catalog.getChilds(null);
-        VueCatalogUtils.arrayToNode(rootItems);
+        return VueCatalogUtils.arrayToNode(rootItems);
     }
     createItem(data) {
         data = VueCatalogUtils.refinement(data);
@@ -36,15 +36,39 @@ class VueCatalog {
         data = VueCatalogUtils.refinement(data);
         return this.catalog.getChilds(data.id);
     }
-    getCreatedItems(data) {
-        data = VueCatalogUtils.refinement(data);
-        return this.catalog.getChilds(data.id);
-    }
+    // Moved into actions
+    // getCreatedItems(data: any) {
+    //   data = VueCatalogUtils.refinement(data);
+    //   return this.catalog.getChilds(data.id);
+    // }
     search(s) {
         return this.catalog.search(s);
     }
-    setSortOrder(data) {
-        return this.catalog.setSortOrder(data);
+    async updateTree(data) {
+        let reqNodes = data.reqNode;
+        if (!Array.isArray(data.reqNode)) {
+            reqNodes = [data.reqNode];
+        }
+        const reqParent = data.reqParent;
+        if (!reqParent.data.parentId) {
+            throw `reqParent.data.parentId not defined`;
+        }
+        // It’s unclear why he’s coming reqNodes
+        for (const reqNode of reqNodes) {
+            const item = await this.catalog.find(reqNode.data);
+            if (!item) {
+                throw `reqNode Item not found`;
+            }
+        }
+        // Update all items into parent (for two reason: update parent, updare sorting order)
+        let sortCount = 0;
+        for (const childNode of reqParent.children) {
+            childNode.data.sortOrder = sortCount;
+            childNode.data.parentId = reqParent.data.parentId;
+            await this.catalog.updateItem(childNode.data.id, childNode.data.type, childNode.data);
+            sortCount++;
+        }
+        // Retrun tree
     }
     updateItem(item, id, data) {
         return this.catalog.updateItem(item, id, data);
@@ -67,7 +91,6 @@ class VueCatalogUtils {
     }
     static toNode(data) {
         const node = {
-            children: [], // newNode.childs,
             data: data,
             isLeaf: false,
             isExpanded: false,

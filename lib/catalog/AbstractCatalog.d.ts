@@ -70,15 +70,12 @@ export declare abstract class BaseItem<T> {
      * @deprecated Will it be merged into getChilds? to use one method
      */
     abstract getChilds(parentId: string | number | null): Promise<Item[]>;
-    /**
-     *  Set sort value for element
-     */
-    abstract setSortOrder(id: string | number, sortOrder: number): Promise<void>;
     abstract search(s: string): Promise<T[]>;
 }
 export declare abstract class AbstractGroup<T> extends BaseItem<T> {
     readonly type: string;
     readonly isGroup: boolean;
+    icon: string;
 }
 export declare abstract class AbstractItem<T> extends BaseItem<T> {
     readonly isGroup: boolean;
@@ -174,9 +171,9 @@ export declare abstract class AbstractCatalog {
     getItemType(type: string): BaseItem<Item>;
     additemTypes<T extends BaseItem<any>>(itemType: T): void;
     /**
-     * Method for change sortion order for group and items
-     */
-    setSortOrder(item: Item, sortOrder: number): Promise<void>;
+         *  Removing an element
+         */
+    find(item: Item): Promise<Item>;
     /**
      *  Removing an element
      */
@@ -203,7 +200,7 @@ export declare abstract class AbstractCatalog {
      */
     handleAction(actionId: string, items?: Item[], config?: any): Promise<void>;
     createItem<T extends Item>(data: T): Promise<T>;
-    updateItem<T extends Item>(id: string, data: any): Promise<any>;
+    updateItem<T extends Item>(id: string | number, type: string, data: T): Promise<T>;
     /**
      * Method for getting group elements
      */

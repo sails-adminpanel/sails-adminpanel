@@ -27,17 +27,6 @@ class StorageService {
         }
         return elements;
     }
-    static async updateSortOrder(id, newSortOrder) {
-        if (this.storageMap.has(id)) {
-            const itemToUpdate = this.storageMap.get(id);
-            // Assuming items have a sortOrder property
-            itemToUpdate.sortOrder = newSortOrder;
-            this.storageMap.set(id, itemToUpdate);
-        }
-        else {
-            throw new Error(`Element with id ${id} not found.`);
-        }
-    }
     static async getAllElements() {
         return Array.from(this.storageMap.values());
     }
@@ -68,6 +57,10 @@ StorageService.storageMap = new Map();
                                         |_|
  */
 class TestGroup extends AbstractCatalog_1.AbstractGroup {
+    constructor() {
+        super(...arguments);
+        this.name = "Group";
+    }
     async find(itemId) {
         return await StorageService.findElementById(itemId);
     }
@@ -89,9 +82,6 @@ class TestGroup extends AbstractCatalog_1.AbstractGroup {
     }
     async getChilds(parentId) {
         return await StorageService.findElementsByParentId(parentId);
-    }
-    async setSortOrder(id, sortOrder) {
-        return await StorageService.updateSortOrder(id, sortOrder);
     }
     async search(s) {
         return await StorageService.search(s, this.type);
@@ -134,9 +124,6 @@ class Item1 extends AbstractCatalog_1.AbstractItem {
     }
     async getChilds(parentId) {
         return await StorageService.findElementsByParentId(parentId);
-    }
-    async setSortOrder(id, sortOrder) {
-        return await StorageService.updateSortOrder(id, sortOrder);
     }
     async search(s) {
         return await StorageService.search(s, this.type);

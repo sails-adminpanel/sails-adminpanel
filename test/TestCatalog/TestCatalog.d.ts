@@ -11,7 +11,6 @@ export declare class StorageService {
     static removeElementById(id: string | number): Promise<void>;
     static findElementById(id: string | number): Promise<GroupTestItem | Item | undefined>;
     static findElementsByParentId(parentId: string | number): Promise<(GroupTestItem | Item)[]>;
-    static updateSortOrder(id: string | number, newSortOrder: number): Promise<void>;
     static getAllElements(): Promise<(GroupTestItem | Item)[]>;
     static search(s: string, type: string): Promise<GroupTestItem[]>;
 }
@@ -41,7 +40,6 @@ export declare class TestGroup extends AbstractGroup<GroupTestItem> {
         data: string;
     }>;
     getChilds(parentId: string | number): Promise<Item[]>;
-    setSortOrder(id: string | number, sortOrder: number): Promise<void>;
     search(s: string): Promise<GroupTestItem[]>;
 }
 /**
@@ -56,7 +54,7 @@ export declare class Item1 extends AbstractItem<Item> {
     name: string;
     allowedRoot: boolean;
     icon: string;
-    find(itemId: string | number): Promise<GroupTestItem | Item>;
+    find(itemId: string | number): Promise<Item | GroupTestItem>;
     update(itemId: string | number, data: Item): Promise<Item>;
     create(itemId: string, data: Item): Promise<Item>;
     deleteItem(itemId: string | number): Promise<void>;
@@ -69,7 +67,6 @@ export declare class Item1 extends AbstractItem<Item> {
         data: string;
     }>;
     getChilds(parentId: string | number): Promise<Item[]>;
-    setSortOrder(id: string | number, sortOrder: number): Promise<void>;
     search(s: string): Promise<Item[]>;
 }
 export declare class Item2 extends Item1 {

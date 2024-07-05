@@ -38,9 +38,10 @@ export async function catalogController(req, res) {
 					case 'getHTML':
 						return res.json(vueCatalog.getAddHTML(item))
 					case 'getCatalog':
+						const _catalog = await vueCatalog.getCatalog();
 						return res.json({
 							'items': vueCatalog.getitemTypes(),
-							'catalog': await vueCatalog.getCatalog()
+							'catalog': _catalog
 						})
 					case 'createItem':
 						return res.json({ 'data': await vueCatalog.createItem(data.data) })

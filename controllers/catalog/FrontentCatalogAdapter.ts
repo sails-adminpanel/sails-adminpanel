@@ -63,7 +63,7 @@ export class VueCatalog {
 
   async getCatalog() {
     let rootItems = await this.catalog.getChilds(null);
-    VueCatalogUtils.arrayToNode(rootItems);
+    return VueCatalogUtils.arrayToNode(rootItems);
   }
 
   createItem(data: any) {
@@ -76,10 +76,11 @@ export class VueCatalog {
     return this.catalog.getChilds(data.id);
   }
 
-  getCreatedItems(data: any) {
-    data = VueCatalogUtils.refinement(data);
-    return this.catalog.getChilds(data.id);
-  }
+  // Moved into actions
+  // getCreatedItems(data: any) {
+  //   data = VueCatalogUtils.refinement(data);
+  //   return this.catalog.getChilds(data.id);
+  // }
 
   search(s: string) {
     return this.catalog.search(s);

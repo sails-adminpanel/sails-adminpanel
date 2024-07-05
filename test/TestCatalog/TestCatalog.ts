@@ -35,17 +35,6 @@ export class StorageService {
     return elements;
   }
 
-  public static async updateSortOrder(id: string | number, newSortOrder: number): Promise<void> {
-    if (this.storageMap.has(id)) {
-      const itemToUpdate = this.storageMap.get(id);
-      // Assuming items have a sortOrder property
-      itemToUpdate.sortOrder = newSortOrder;
-      this.storageMap.set(id, itemToUpdate);
-    } else {
-      throw new Error(`Element with id ${id} not found.`);
-    }
-  }
-
   public static async getAllElements(): Promise<(GroupTestItem | Item)[]> {
     return Array.from(this.storageMap.values());
   }
@@ -81,7 +70,7 @@ export class StorageService {
  */
 
 export class TestGroup extends AbstractGroup<GroupTestItem> {
-  public name: string;
+  public name: string = "Group";
   public allowedRoot: boolean;
   public icon: string;
 
@@ -111,10 +100,6 @@ export class TestGroup extends AbstractGroup<GroupTestItem> {
   }
   public async getChilds(parentId: string | number): Promise<Item[]> {
     return await StorageService.findElementsByParentId(parentId);
-  }
-
-  public async setSortOrder(id: string | number, sortOrder: number): Promise<void> {
-    return await StorageService.updateSortOrder(id, sortOrder);
   }
 
   public async search(s: string): Promise<GroupTestItem[]> {
@@ -161,10 +146,6 @@ export class Item1 extends AbstractItem<Item> {
   }
   public async getChilds(parentId: string | number): Promise<Item[]> {
     return await StorageService.findElementsByParentId(parentId);
-  }
-
-  public async setSortOrder(id: string | number, sortOrder: number): Promise<void> {
-    return await StorageService.updateSortOrder(id, sortOrder);
   }
 
   public async search(s: string): Promise<Item[]> {

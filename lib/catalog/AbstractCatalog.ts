@@ -88,11 +88,6 @@ export abstract class BaseItem<T> {
 	 */
 	public abstract getChilds(parentId: string | number | null): Promise<Item[]>
 
-	/**
-	 *  Set sort value for element
-	 */
-	public abstract setSortOrder(id: string | number, sortOrder: number): Promise<void>;
-
 	public abstract search(s: string): Promise<T[]>
 }
 
@@ -100,6 +95,7 @@ export abstract class BaseItem<T> {
 export abstract class AbstractGroup<T> extends BaseItem<T> {
 	public readonly type: string = "group";
 	public readonly isGroup: boolean = true;
+	public icon: string = "folder";
 }
 
 export abstract class AbstractItem<T> extends BaseItem<T> {
@@ -255,13 +251,6 @@ export abstract class AbstractCatalog {
 			throw new Error(`Only one type group is allowed`);
 		}
 		this.itemTypes.push(itemType);
-	}
-
-	/**
-	 * Method for change sortion order for group and items
-	 */
-	public async setSortOrder(item: Item, sortOrder: number): Promise<void> {
-		return await this.getItemType(item.type)?.setSortOrder(item.id, sortOrder);
 	}
 
 	/**

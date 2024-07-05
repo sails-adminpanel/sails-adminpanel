@@ -1,14 +1,27 @@
 import { AbstractCatalog, Item } from "../../lib/catalog/AbstractCatalog";
-export interface NodeData extends Item {
-}
-export interface NodeModel<TDataType> {
+interface NodeModel<TDataType> {
     title: string;
-    isLeaf?: boolean;
-    children?: NodeModel<TDataType>[];
-    /** sortOrder */
-    ind?: number;
+    isLeaf: boolean;
     isExpanded: boolean;
+    ind: number;
     data?: TDataType;
+    children?: NodeModel<TDataType>[];
+    isSelected?: boolean;
+    isVisible?: boolean;
+    isDraggable?: boolean;
+    isSelectable?: boolean;
+    path?: number[];
+    pathStr?: string;
+    level?: number;
+    isFirstChild?: boolean;
+    isLastChild?: boolean;
+}
+interface NodeData extends Item {
+}
+interface RequestData {
+    reqNode: NodeModel<NodeData>[];
+    reqParent: NodeModel<NodeData>;
+    _method: string;
 }
 export declare class VueCatalog {
     catalog: AbstractCatalog;
@@ -22,12 +35,11 @@ export declare class VueCatalog {
     getitemTypes(): import("../../lib/catalog/AbstractCatalog").BaseItem<Item>[];
     getActions(items: any[]): Promise<import("../../lib/catalog/AbstractCatalog").ActionHandler[]>;
     handleAction(actionID: string, items: any[], config: any): Promise<void>;
-    getCatalog(): Promise<void>;
+    getCatalog(): Promise<NodeModel<Item>[]>;
     createItem(data: any): Promise<any>;
     getChilds(data: any): Promise<Item[]>;
-    getCreatedItems(data: any): Promise<Item[]>;
     search(s: string): Promise<Item[]>;
-    setSortOrder(data: any): Promise<void>;
+    updateTree(data: RequestData): Promise<any>;
     updateItem(item: any, id: string, data: any): Promise<any>;
 }
 export declare class VueCatalogUtils {
@@ -38,3 +50,4 @@ export declare class VueCatalogUtils {
     static arrayToNode<T extends Item>(items: T[]): NodeModel<T>[];
     static toNode<T extends NodeData>(data: T): NodeModel<T>;
 }
+export {};
