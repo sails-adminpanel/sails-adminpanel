@@ -2,11 +2,7 @@ import { CatalogHandler } from "../../lib/catalog/CatalogHandler";
 import {AccessRightsHelper} from "../../helper/accessRightsHelper";
 import { VueCatalog } from "./FrontentCatalogAdapter";
 
-interface RequestData {
-	reqNode: DataNode;
-	reqParent: DataParent;
-	_method: string;
-}
+
 
 export async function catalogController(req, res) {
 	if (sails.config.adminpanel.auth) {
