@@ -4,25 +4,26 @@ import { AbstractCatalog, Item } from "../../lib/catalog/AbstractCatalog";
 interface NodeModel<TDataType> {
   title: string;
   isLeaf: boolean;
-  children?: NodeModel<TDataType>[];
-  isSelected: boolean;
   isExpanded: boolean;
-  isVisible: boolean;
-  isDraggable: boolean;
-  isSelectable: boolean;
-  data?: TDataType;
-  path: number[];
-  pathStr: string;
-  level: number;
   ind: number;
-  isFirstChild: boolean;
-  isLastChild: boolean;
+  data?: TDataType;
+  children?: NodeModel<TDataType>[];
+
+  isSelected?: boolean;
+  isVisible?: boolean;
+  isDraggable?: boolean;
+  isSelectable?: boolean;
+  path?: number[];
+  pathStr?: string;
+  level?: number;
+  isFirstChild?: boolean;
+  isLastChild?: boolean;
 }
 
 interface NodeData extends Item { }
 
 interface RequestData {
-  reqNode: NodeModel<NodeData>;
+  reqNode: NodeModel<NodeData>[];
   reqParent: NodeModel<NodeData>;
   _method: string;
 }
@@ -85,61 +86,35 @@ export class VueCatalog {
   }
 
   async updateTree(data: RequestData): Promise<any> {
-    const reqNode = data.reqNode;
-    const reqParent = data.reqParent;
+    let reqNodes = data.reqNode;
 
-    const item = await this.catalog.find(reqNode.data);
-    if (!item) {
-      throw `reqNode Item not found`
+    if (!Array.isArray(data.reqNode)) {
+      reqNodes = [data.reqNode];
     }
 
+    const reqParent = data.reqParent;
     if (!reqParent.data.parentId) {
       throw `reqParent.data.parentId not defined`
     }
 
-    // update sortOrder logic
-    if (item.parentId !== reqParent.data.parentId) {
-
+    // It’s unclear why he’s coming reqNodes
+    for (const reqNode of reqNodes) {
+      const item = await this.catalog.find(reqNode.data);
+      if (!item) {
+        throw `reqNode Item not found`
+      }
     }
-    // Change parent logic
-    else {
 
+    // Update all items into parent (for two reason: update parent, updare sorting order)
+    let sortCount = 0;
+    for (const childNode of reqParent.children) {
+      childNode.data.sortOrder = sortCount;
+      childNode.data.parentId = reqParent.data.parentId
+      await this.catalog.updateItem(childNode.data.id, childNode.data.type, childNode.data);
+      sortCount++;
     }
 
-    // try {
-    //   await this.setChildsDB(data.reqParent);
-    //   if (data.reqNode.children.length > 0) {
-    //     for (const child of data.reqNode.children) {
-    //       await this.setLevel(child);
-    //     }
-    //   }
-    //   if (data.reqNode.data.parent) {
-    //     let newNode;
-    //     if (data.reqNode.data.type === 'group_2' || data.reqNode.data.type === 'group_1') {
-    //       newNode = (await CatalogGroupNav.find({ label: this.id, groups: data.reqNode.data.id }))[0];
-    //     }
-    //     if (data.reqNode.data.type === 'page') {
-    //       newNode = (await CatalogPageNav.find({ label: this.id, pages: data.reqNode.data.id }))[0];
-    //     }
-    //     if (newNode.parentID !== data.reqNode.data.parent) {
-    //       await this.removeChildsDB(data.reqNode);
-    //     }
-    //   }
-
-    //   // Here we call the second setSortOrder method
-    //   const item: Item = {
-    //     id: data.reqNode.data.id,
-    //     type: data.reqNode.data.type,
-    //     // other properties of item if necessary
-    //   };
-    //   const sortOrder: number = data.reqNode.data.sortOrder; // Assuming sortOrder is a property of reqNode.data
-
-    //   await this.catalog.setSortOrder(item, sortOrder);
-
-    //   return Promise.resolve({ ok: true });
-    // } catch (e) {
-    //   return e;
-    // }
+    // Retrun tree
   }
 
 
@@ -166,7 +141,6 @@ export class VueCatalogUtils {
 
   public static toNode<T extends NodeData>(data: T): NodeModel<T> {
     const node: NodeModel<T> = {
-      children: [], // newNode.childs,
       data: data,
       isLeaf: false,
       isExpanded: false,

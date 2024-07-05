@@ -339,8 +339,8 @@ export abstract class AbstractCatalog {
 	}
 
 
-	public updateItem<T extends Item>(id: string, data: any): Promise<any> {
-		return this.getItemType(data.type)?.update(id, data) as Promise<T>;
+	public updateItem<T extends Item>(id: string | number, type: string, data: T): Promise<T> {
+		return this.getItemType(type)?.update(id, data) as Promise<T>;
 	}
 
 	/**
