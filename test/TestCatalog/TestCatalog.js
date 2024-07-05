@@ -17,11 +17,11 @@ class StorageService {
     static async findElementById(id) {
         return this.storageMap.get(id);
     }
-    static async findElementsByParentId(parentId) {
+    static async findElementsByParentId(parentId, type) {
         const elements = [];
         for (const item of this.storageMap.values()) {
             // Assuming each item has a parentId property
-            if (item.parentId === parentId) {
+            if (item.parentId === parentId && item.type === type) {
                 elements.push(item);
             }
         }
@@ -81,7 +81,7 @@ class TestGroup extends AbstractCatalog_1.AbstractGroup {
         throw new Error("Method not implemented.");
     }
     async getChilds(parentId) {
-        return await StorageService.findElementsByParentId(parentId);
+        return await StorageService.findElementsByParentId(parentId, this.type);
     }
     async search(s) {
         return await StorageService.search(s, this.type);
@@ -123,7 +123,7 @@ class Item1 extends AbstractCatalog_1.AbstractItem {
         throw new Error("Method not implemented.");
     }
     async getChilds(parentId) {
-        return await StorageService.findElementsByParentId(parentId);
+        return await StorageService.findElementsByParentId(parentId, this.type);
     }
     async search(s) {
         return await StorageService.search(s, this.type);

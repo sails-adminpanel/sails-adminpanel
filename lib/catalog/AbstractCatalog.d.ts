@@ -66,9 +66,6 @@ export declare abstract class BaseItem<T> {
         type: 'link' | 'html';
         data: string;
     }>;
-    /**
-     * @deprecated Will it be merged into getChilds? to use one method
-     */
     abstract getChilds(parentId: string | number | null): Promise<Item[]>;
     abstract search(s: string): Promise<T[]>;
 }

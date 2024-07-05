@@ -83,9 +83,6 @@ export abstract class BaseItem<T> {
 
 	public abstract getEditHTML(id: string | number): Promise<{ type: 'link' | 'html', data: string }>;
 
-	/**
-	 * @deprecated Will it be merged into getChilds? to use one method 
-	 */
 	public abstract getChilds(parentId: string | number | null): Promise<Item[]>
 
 	public abstract search(s: string): Promise<T[]>

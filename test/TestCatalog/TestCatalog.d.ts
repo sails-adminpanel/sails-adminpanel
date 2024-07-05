@@ -10,7 +10,7 @@ export declare class StorageService {
     static setElement(id: string | number, item: GroupTestItem | Item): Promise<GroupTestItem | Item>;
     static removeElementById(id: string | number): Promise<void>;
     static findElementById(id: string | number): Promise<GroupTestItem | Item | undefined>;
-    static findElementsByParentId(parentId: string | number): Promise<(GroupTestItem | Item)[]>;
+    static findElementsByParentId(parentId: string | number, type: string): Promise<(GroupTestItem | Item)[]>;
     static getAllElements(): Promise<(GroupTestItem | Item)[]>;
     static search(s: string, type: string): Promise<GroupTestItem[]>;
 }
@@ -54,7 +54,7 @@ export declare class Item1 extends AbstractItem<Item> {
     name: string;
     allowedRoot: boolean;
     icon: string;
-    find(itemId: string | number): Promise<Item | GroupTestItem>;
+    find(itemId: string | number): Promise<GroupTestItem | Item>;
     update(itemId: string | number, data: Item): Promise<Item>;
     create(itemId: string, data: Item): Promise<Item>;
     deleteItem(itemId: string | number): Promise<void>;

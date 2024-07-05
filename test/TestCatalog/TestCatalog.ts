@@ -24,11 +24,11 @@ export class StorageService {
     return this.storageMap.get(id);
   }
 
-  public static async findElementsByParentId(parentId: string | number): Promise<(GroupTestItem | Item)[]> {
+  public static async findElementsByParentId(parentId: string | number, type: string): Promise<(GroupTestItem | Item)[]> {
     const elements: (GroupTestItem | Item)[] = [];
     for (const item of this.storageMap.values()) {
       // Assuming each item has a parentId property
-      if (item.parentId === parentId) {
+      if (item.parentId === parentId && item.type === type) {
         elements.push(item);
       }
     }
@@ -99,7 +99,7 @@ export class TestGroup extends AbstractGroup<GroupTestItem> {
     throw new Error("Method not implemented.");
   }
   public async getChilds(parentId: string | number): Promise<Item[]> {
-    return await StorageService.findElementsByParentId(parentId);
+    return await StorageService.findElementsByParentId(parentId, this.type);
   }
 
   public async search(s: string): Promise<GroupTestItem[]> {
@@ -145,7 +145,7 @@ export class Item1 extends AbstractItem<Item> {
     throw new Error("Method not implemented.");
   }
   public async getChilds(parentId: string | number): Promise<Item[]> {
-    return await StorageService.findElementsByParentId(parentId);
+    return await StorageService.findElementsByParentId(parentId, this.type);
   }
 
   public async search(s: string): Promise<Item[]> {
