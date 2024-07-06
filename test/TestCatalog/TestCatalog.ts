@@ -94,6 +94,10 @@ export class TestGroup extends AbstractGroup<GroupTestItem> {
 	}
 
 	public getAddHTML(): { type: "link" | "html"; data: string; } {
+		// `<button id="555">`
+		// script
+		//
+		// Ad.new()
 		throw new Error("Method not implemented.");
 	}
 

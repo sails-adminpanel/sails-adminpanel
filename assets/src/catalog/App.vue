@@ -17,7 +17,7 @@
 			v-model="nodes"
 			ref="slVueTreeRef"
 			id="slVueTree_id"
-			:allow-multiselect="false"
+			:allow-multiselect="true"
 			@select="nodeSelected"
 			@drop="nodeDropped"
 			@toggle="nodeToggled"
@@ -69,11 +69,11 @@
 		<div v-if="isFolder && index === 2" class="custom-catalog__form">
 			<folder @save-folder="saveFolder" :html="HTML"/>
 		</div>
+<!--		<div v-if="isItem && index === 2" class="custom-catalog__form">-->
+<!--			<MiddlewareItem :selectedItem="selectedItem" :getHTMLoading="getHTMLoading" @createNewItem="createNewItem"-->
+<!--							@addItem="addCreatedItem"/>-->
+<!--		</div>-->
 		<div v-if="isItem && index === 2" class="custom-catalog__form">
-			<MiddlewareItem :selectedItem="selectedItem" :getHTMLoading="getHTMLoading" @createNewItem="createNewItem"
-							@addItem="addCreatedItem"/>
-		</div>
-		<div v-if="isItem && index === 3" class="custom-catalog__form">
 			<Item @save-item="saveItem" :html="HTML" :itemType="selectedItem"/>
 		</div>
 		<div v-if="isActionPopUp && index === 1">

@@ -1,175 +1,175 @@
-import { AbstractCatalog, Item } from "../../lib/catalog/AbstractCatalog";
+import {AbstractCatalog, Item} from "../../lib/catalog/AbstractCatalog";
 
 
 interface NodeModel<TDataType> {
-  title: string;
-  isLeaf: boolean;
-  isExpanded: boolean;
-  ind: number;
-  data?: TDataType;
-  children?: NodeModel<TDataType>[];
+	title: string;
+	isLeaf: boolean;
+	isExpanded: boolean;
+	ind: number;
+	data?: TDataType;
+	children?: NodeModel<TDataType>[];
 
-  isSelected?: boolean;
-  isVisible?: boolean;
-  isDraggable?: boolean;
-  isSelectable?: boolean;
-  path?: number[];
-  pathStr?: string;
-  level?: number;
-  isFirstChild?: boolean;
-  isLastChild?: boolean;
+	isSelected?: boolean;
+	isVisible?: boolean;
+	isDraggable?: boolean;
+	isSelectable?: boolean;
+	path?: number[];
+	pathStr?: string;
+	level?: number;
+	isFirstChild?: boolean;
+	isLastChild?: boolean;
 }
 
-interface NodeData extends Item { }
+interface NodeData extends Item {
+}
 
 interface RequestData {
-  reqNode: NodeModel<NodeData>[];
-  reqParent: NodeModel<NodeData>;
-  _method: string;
+	reqNode: NodeModel<NodeData>[];
+	reqParent: NodeModel<NodeData>;
+	_method: string;
 }
 
 export class VueCatalog {
-  catalog: AbstractCatalog;
+	catalog: AbstractCatalog;
 
-  constructor(_catalog: AbstractCatalog) {
-    this.catalog = _catalog;
-  }
+	constructor(_catalog: AbstractCatalog) {
+		this.catalog = _catalog;
+	}
 
-  setID(id: string) {
-    this.catalog.setID(id);
-  }
+	setID(id: string) {
+		this.catalog.setID(id);
+	}
 
-  getItemType(type: string) {
-    return this.catalog.getItemType(type);
-  }
+	getItemType(type: string) {
+		return this.catalog.getItemType(type);
+	}
 
-  getAddHTML(item: any) {
-    return this.catalog.getAddHTML(item);
-  }
+	getAddHTML(item: any) {
+		return this.catalog.getAddHTML(item);
+	}
 
-  getitemTypes() {
-    return this.catalog.getitemTypes();
-  }
+	getitemTypes() {
+		return this.catalog.getitemTypes();
+	}
 
-  getActions(items: any[]) {
-    return this.catalog.getActions(items);
-  }
+	getActions(items: any[]) {
+		return this.catalog.getActions(items);
+	}
 
-  handleAction(actionID: string, items: any[], config: any) {
-    return this.catalog.handleAction(actionID, items, config);
-  }
+	handleAction(actionID: string, items: any[], config: any) {
+		return this.catalog.handleAction(actionID, items, config);
+	}
 
-  //Below are the methods that require action
+	//Below are the methods that require action
 
-  async getCatalog() {
-    let rootItems = await this.catalog.getChilds(null);
-    return VueCatalogUtils.arrayToNode(rootItems, this.catalog.getGroupType().type);
-  }
+	async getCatalog() {
+		let rootItems = await this.catalog.getChilds(null);
+		return VueCatalogUtils.arrayToNode(rootItems, this.catalog.getGroupType().type);
+	}
 
-  createItem(data: any) {
-    data = VueCatalogUtils.refinement(data);
-    return this.catalog.createItem(data);
-  }
+	createItem(data: any) {
+		data = VueCatalogUtils.refinement(data);
+		return this.catalog.createItem(data);
+	}
 
-  async getChilds(data: any) {
-    data = VueCatalogUtils.refinement(data);
-    return VueCatalogUtils.arrayToNode(await this.catalog.getChilds(data.id), this.catalog.getGroupType().type);
-  }
+	async getChilds(data: any) {
+		data = VueCatalogUtils.refinement(data);
+		return VueCatalogUtils.arrayToNode(await this.catalog.getChilds(data.id), this.catalog.getGroupType().type);
+	}
 
-  // Moved into actions
-  // getCreatedItems(data: any) {
-  //   data = VueCatalogUtils.refinement(data);
-  //   return this.catalog.getChilds(data.id);
-  // }
+	// Moved into actions
+	// getCreatedItems(data: any) {
+	//   data = VueCatalogUtils.refinement(data);
+	//   return this.catalog.getChilds(data.id);
+	// }
 
-  search(s: string) {
-    return this.catalog.search(s);
-  }
+	search(s: string) {
+		return this.catalog.search(s);
+	}
 
-  async updateTree(data: RequestData): Promise<any> {
-    let reqNodes = data.reqNode;
+	async updateTree(data: RequestData): Promise<any> {
+		let reqNodes = data.reqNode;
 
-    if (!Array.isArray(data.reqNode)) {
-      reqNodes = [data.reqNode];
-    }
+		if (!Array.isArray(data.reqNode)) {
+			reqNodes = [data.reqNode];
+		}
 
-    let reqParent = data.reqParent;
+		let reqParent = data.reqParent;
 
-    if (reqParent.data.id === 0) {
-      reqParent.data.id = null;
-    }
+		if (reqParent.data.id === 0) {
+			reqParent.data.id = null;
+		}
 
-    if (reqParent.data.id === undefined) {
-      throw `reqParent.data.id not defined`
-    }
+		if (reqParent.data.id === undefined) {
+			throw `reqParent.data.id not defined`
+		}
 
-    // It’s unclear why he’s coming reqNodes
-    for (const reqNode of reqNodes) {
-      const item = await this.catalog.find(reqNode.data);
-      if (!item) {
-        throw `reqNode Item not found`
-      }
-    }
+		// It’s unclear why he’s coming reqNodes
+		for (const reqNode of reqNodes) {
+			const item = await this.catalog.find(reqNode.data);
+			if (!item) {
+				throw `reqNode Item not found`
+			}
+		}
 
-    // Update all items into parent (for two reason: update parent, updare sorting order)
-    let sortCount = 0;
-    for (const childNode of reqParent.children) {
-      childNode.data.sortOrder = sortCount;
-      childNode.data.parentId = reqParent.data.id
-      await this.catalog.updateItem(childNode.data.id, childNode.data.type, childNode.data);
-      sortCount++;
-    }
+		// Update all items into parent (for two reason: update parent, updare sorting order)
+		let sortCount = 0;
+		for (const childNode of reqParent.children) {
+			childNode.data.sortOrder = sortCount;
+			childNode.data.parentId = reqParent.data.id
+			await this.catalog.updateItem(childNode.data.id, childNode.data.type, childNode.data);
+			sortCount++;
+		}
 
-    // Retrun tree
-  }
+		// Retrun tree
+	}
 
 
-  updateItem(item: any, id: string, data: any) {
-    return this.catalog.updateItem(item, id, data);
-  }
+	updateItem(item: any, id: string, data: any) {
+		return this.catalog.updateItem(item, id, data);
+	}
 }
 
 export class VueCatalogUtils {
-  /**
-   * Removes unnecessary data from the front
-   */
-  public static refinement<T extends NodeModel<any>>(nodeModel: T) {
-    return nodeModel.data;
-  }
+	/**
+	 * Removes unnecessary data from the front
+	 */
+	public static refinement<T extends NodeModel<any>>(nodeModel: T) {
+		return nodeModel.data;
+	}
 
-  public static arrayToNode<T extends Item>(items: T[], groupTypeName: string): NodeModel<T>[] {
-    const result = [];
-    for (const node of items) {
-      result.push(this.toNode(node, groupTypeName))
-    }
-    return result;
-  }
+	public static arrayToNode<T extends Item>(items: T[], groupTypeName: string): NodeModel<T>[] {
+		const result = [];
+		for (const node of items) {
+			result.push(this.toNode(node, groupTypeName))
+		}
+		return result;
+	}
 
-  public static toNode<T extends NodeData>(data: T, groupTypeName: string): NodeModel<T> {
-    const node: NodeModel<T> = {
-      data: data,
-      isLeaf: data.type !== groupTypeName,
-      isExpanded: false,
-      ind: data.sortOrder,
-      title: data.name
-    }
-    return node;
-  }
+	public static toNode<T extends NodeData>(data: T, groupTypeName: string): NodeModel<T> {
+		return {
+			data: data,
+			isLeaf: data.type !== groupTypeName,
+			isExpanded: false,
+			ind: data.sortOrder,
+			title: data.name
+		};
+	}
 
-  public static expandTo<T extends NodeData>(vueCatalogData: NodeModel<T>, theseItemIdNeedToBeOpened: (string | number)[]): NodeModel<T> {
-    function expand(node: NodeModel<T>): void {
-      if (theseItemIdNeedToBeOpened.includes(node.data.id)) {
-        node.isExpanded = true;
-      }
+	public static expandTo<T extends NodeData>(vueCatalogData: NodeModel<T>, theseItemIdNeedToBeOpened: (string | number)[]): NodeModel<T> {
+		function expand(node: NodeModel<T>): void {
+			if (theseItemIdNeedToBeOpened.includes(node.data.id)) {
+				node.isExpanded = true;
+			}
 
-      if (node.children) {
-        for (const child of node.children) {
-          expand(child);
-        }
-      }
-    }
+			if (node.children) {
+				for (const child of node.children) {
+					expand(child);
+				}
+			}
+		}
 
-    expand(vueCatalogData);
-    return vueCatalogData;
-  }
+		expand(vueCatalogData);
+		return vueCatalogData;
+	}
 }

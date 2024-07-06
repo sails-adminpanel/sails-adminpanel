@@ -16,7 +16,6 @@
                 <%= __("Back to list") %>
             </button>
         </a>
-        <!--  !TODO добавить экшен на view -->
         <% if (entity.config.edit && havePermission(`update-${entity.name}-model`, req.session.UserAP)) { %>
             <a href="<%= entity.uri %>/edit/<%= record[idField] %>">
                 <button class="btn btn-green">

@@ -10,7 +10,7 @@ interface Istep {
     languages: ...
 }
 */
-// TODO: rename installStepper => jsonforms
+
  // id, uischema, jsonschema, data
 export function MountJSONForm(formData){
     console.log(formData, "FORM DATA")
@@ -19,13 +19,13 @@ export function MountJSONForm(formData){
     const appInstance = app.mount(formData.mountDivId); // '#installStep'
 
     appInstance.validationCallback = formData.validationCallback
-    
+
     // generate data object for input form
     appInstance.initializeData(formData.jsonSchema, formData.uiSchema)
 
     // if form validation is ok mountInputId have to receive value from form
     appInstance.addOutput(formData.mountDivOutput)
-    
+
     return appInstance
 }
 

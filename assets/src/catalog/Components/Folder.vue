@@ -24,6 +24,7 @@ function saveFolder(e) {
 		}
 	}
 	emit("saveFolder", data)
+
 }
 </script>
 

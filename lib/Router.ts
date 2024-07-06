@@ -95,7 +95,6 @@ export default class Router {
 
     /**
      * Do widget helper functions (for now only one case handled)
-     * @todo for custom widgets api we will have to create universal controller that will call methods from any custom widgets
      */
     sails.router.bind(baseRoute + "/widget", bindPolicies(policies, _normalizeNavigationConfig));
 
@@ -163,7 +162,6 @@ export default class Router {
     sails.router.bind(`${baseRoute}/ckeditor5/upload`, bindPolicies(policies, _uploadCKeditor5));
     /**
      * Create a default dashboard
-     * @todo define information that should be shown here
      */
     if (Boolean(config.dashboard)) {
       sails.router.bind(config.routePrefix, bindPolicies(policies, _dashboard));

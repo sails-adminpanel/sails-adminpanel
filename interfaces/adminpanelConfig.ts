@@ -81,7 +81,6 @@ export interface AdminpanelConfig {
     /**
      * @alpha
      * Models configuration
-     * @todo rewrite for EntityType
      * reference upload contoroller ~50 line
      * */
     models: {
@@ -153,7 +152,6 @@ export interface AdminpanelConfig {
          */
         path?: string
         /**
-         * TODO: (wizards) rewrite to data -> setup
          * same for model (need entity config types)
          * */
         data: {

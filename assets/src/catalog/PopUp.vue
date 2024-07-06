@@ -6,20 +6,23 @@
 
 <script setup>
 import {ref, onMounted} from 'vue'
+import {AdminPopUp} from "../pop-up/admin-pop-up";
 
 const emit = defineEmits(['reset'])
 let visible = ref(false)
-let popup = AdminPopUp.new()
+let popup = ref(null)
 let modal = ref(null)
 
 onMounted(() => {
-	popup.on('open', () => {
+	popup.value = AdminPopUp.new()
+	popup.value.on('open', () => {
 		visible.value = true
-		popup.content.appendChild(modal.value);
+		popup.value.content.appendChild(modal.value);
 	})
-	popup.on('close', () => {
+	popup.value.on('close', () => {
 		emit('reset')
 	})
+	console.log(popup.value.id)
 })
 
 function closePopup() {

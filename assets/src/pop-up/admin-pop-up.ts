@@ -132,6 +132,12 @@ export class AdminPopUp {
         return popup;
     }
 
+	public static closeAll(){
+		for (const popup of this.popups) {
+			popup.closeModal()
+		}
+	}
+
     private static offsetToggle(prevModal: HTMLElement | null) {
         if (prevModal !== null) {
             let prevModalwrapper = prevModal.querySelector('.admin-modal-pu-wrapper')
