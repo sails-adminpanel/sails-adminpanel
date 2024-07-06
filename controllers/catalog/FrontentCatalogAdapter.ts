@@ -63,7 +63,7 @@ export class VueCatalog {
 
   async getCatalog() {
     let rootItems = await this.catalog.getChilds(null);
-    return VueCatalogUtils.arrayToNode(rootItems);
+    return VueCatalogUtils.arrayToNode(rootItems, this.catalog.getGroupType().type);
   }
 
   createItem(data: any) {
@@ -73,31 +73,7 @@ export class VueCatalog {
 
   async getChilds(data: any) {
     data = VueCatalogUtils.refinement(data);
-    //return this.catalog.getChilds(data.id);
-	 return this.setDataToVue(await this.catalog.getChilds(data.id))
-  }
-
-  setDataToVue(items: Item[]){
-	  let result: NodeModel<NodeData>[] = []
-	  for (const item of items) {
-		  result.push({
-			  children: [],
-			  data: {
-				  //...item.data,
-				  id: item.id,
-				  type: item.type,
-				  parentId: item.parentId,
-				  name: item.name,
-				  sortOrder: item.sortOrder,
-				  icon: item.icon
-			  },
-			  isLeaf: item.type !== 'group',
-			  isExpanded: false,
-			  ind: item.sortOrder,
-			  title: item.name
-		  })
-	  }
-	  return result
+    return VueCatalogUtils.arrayToNode(await this.catalog.getChilds(data.id), this.catalog.getGroupType().type);
   }
 
   // Moved into actions
@@ -156,22 +132,39 @@ export class VueCatalogUtils {
     return nodeModel.data;
   }
 
-  public static arrayToNode<T extends Item>(items: T[]): NodeModel<T>[] {
+  public static arrayToNode<T extends Item>(items: T[], groupTypeName: string): NodeModel<T>[] {
     const result = [];
     for (const node of items) {
-      result.push(this.toNode(node))
+      result.push(this.toNode(node, groupTypeName))
     }
     return result;
   }
 
-  public static toNode<T extends NodeData>(data: T): NodeModel<T> {
+  public static toNode<T extends NodeData>(data: T, groupTypeName: string): NodeModel<T> {
     const node: NodeModel<T> = {
       data: data,
-      isLeaf: false,
+      isLeaf: data.type !== groupTypeName,
       isExpanded: false,
       ind: data.sortOrder,
       title: data.name
     }
     return node;
+  }
+
+  public static expandTo<T extends NodeData>(vueCatalogData: NodeModel<T>, theseItemIdNeedToBeOpened: (string | number)[]): NodeModel<T> {
+    function expand(node: NodeModel<T>): void {
+      if (theseItemIdNeedToBeOpened.includes(node.data.id)) {
+        node.isExpanded = true;
+      }
+
+      if (node.children) {
+        for (const child of node.children) {
+          expand(child);
+        }
+      }
+    }
+
+    expand(vueCatalogData);
+    return vueCatalogData;
   }
 }

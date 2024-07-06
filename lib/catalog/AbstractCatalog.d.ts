@@ -166,6 +166,7 @@ export declare abstract class AbstractCatalog {
     protected constructor(items: BaseItem<any>[]);
     setID(id: string): void;
     getItemType(type: string): BaseItem<Item>;
+    getGroupType(): BaseItem<Item>;
     additemTypes<T extends BaseItem<any>>(itemType: T): void;
     /**
          *  Removing an element

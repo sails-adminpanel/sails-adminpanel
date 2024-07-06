@@ -239,6 +239,9 @@ export abstract class AbstractCatalog {
 		return this.itemTypes.find((it) => it.type === type);
 	}
 
+	public getGroupType() {
+		return this.itemTypes.find((it) => it.isGroup === true);
+	}
 
 	public additemTypes<T extends BaseItem<any>>(itemType: T) {
 		if (

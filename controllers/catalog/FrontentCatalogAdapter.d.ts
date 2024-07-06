@@ -37,8 +37,7 @@ export declare class VueCatalog {
     handleAction(actionID: string, items: any[], config: any): Promise<void>;
     getCatalog(): Promise<NodeModel<Item>[]>;
     createItem(data: any): Promise<any>;
-    getChilds(data: any): Promise<NodeModel<NodeData>[]>;
-    setDataToVue(items: Item[]): NodeModel<NodeData>[];
+    getChilds(data: any): Promise<NodeModel<Item>[]>;
     search(s: string): Promise<Item[]>;
     updateTree(data: RequestData): Promise<any>;
     updateItem(item: any, id: string, data: any): Promise<any>;
@@ -48,7 +47,8 @@ export declare class VueCatalogUtils {
      * Removes unnecessary data from the front
      */
     static refinement<T extends NodeModel<any>>(nodeModel: T): any;
-    static arrayToNode<T extends Item>(items: T[]): NodeModel<T>[];
-    static toNode<T extends NodeData>(data: T): NodeModel<T>;
+    static arrayToNode<T extends Item>(items: T[], groupTypeName: string): NodeModel<T>[];
+    static toNode<T extends NodeData>(data: T, groupTypeName: string): NodeModel<T>;
+    static expandTo<T extends NodeData>(vueCatalogData: NodeModel<T>, theseItemIdNeedToBeOpened: (string | number)[]): NodeModel<T>;
 }
 export {};

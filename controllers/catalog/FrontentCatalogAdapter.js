@@ -26,7 +26,7 @@ class VueCatalog {
     //Below are the methods that require action
     async getCatalog() {
         let rootItems = await this.catalog.getChilds(null);
-        return VueCatalogUtils.arrayToNode(rootItems);
+        return VueCatalogUtils.arrayToNode(rootItems, this.catalog.getGroupType().type);
     }
     createItem(data) {
         data = VueCatalogUtils.refinement(data);
@@ -34,30 +34,7 @@ class VueCatalog {
     }
     async getChilds(data) {
         data = VueCatalogUtils.refinement(data);
-        //return this.catalog.getChilds(data.id);
-        return this.setDataToVue(await this.catalog.getChilds(data.id));
-    }
-    setDataToVue(items) {
-        let result = [];
-        for (const item of items) {
-            result.push({
-                children: [],
-                data: {
-                    //...item.data,
-                    id: item.id,
-                    type: item.type,
-                    parentId: item.parentId,
-                    name: item.name,
-                    sortOrder: item.sortOrder,
-                    icon: item.icon
-                },
-                isLeaf: item.type !== 'group',
-                isExpanded: false,
-                ind: item.sortOrder,
-                title: item.name
-            });
-        }
-        return result;
+        return VueCatalogUtils.arrayToNode(await this.catalog.getChilds(data.id), this.catalog.getGroupType().type);
     }
     // Moved into actions
     // getCreatedItems(data: any) {
@@ -105,22 +82,36 @@ class VueCatalogUtils {
     static refinement(nodeModel) {
         return nodeModel.data;
     }
-    static arrayToNode(items) {
+    static arrayToNode(items, groupTypeName) {
         const result = [];
         for (const node of items) {
-            result.push(this.toNode(node));
+            result.push(this.toNode(node, groupTypeName));
         }
         return result;
     }
-    static toNode(data) {
+    static toNode(data, groupTypeName) {
         const node = {
             data: data,
-            isLeaf: false,
+            isLeaf: data.type !== groupTypeName,
             isExpanded: false,
             ind: data.sortOrder,
             title: data.name
         };
         return node;
+    }
+    static expandTo(vueCatalogData, theseItemIdNeedToBeOpened) {
+        function expand(node) {
+            if (theseItemIdNeedToBeOpened.includes(node.data.id)) {
+                node.isExpanded = true;
+            }
+            if (node.children) {
+                for (const child of node.children) {
+                    expand(child);
+                }
+            }
+        }
+        expand(vueCatalogData);
+        return vueCatalogData;
     }
 }
 exports.VueCatalogUtils = VueCatalogUtils;
