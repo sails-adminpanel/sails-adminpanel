@@ -71,9 +71,33 @@ export class VueCatalog {
     return this.catalog.createItem(data);
   }
 
-  getChilds(data: any) {
+  async getChilds(data: any) {
     data = VueCatalogUtils.refinement(data);
-    return this.catalog.getChilds(data.id);
+    //return this.catalog.getChilds(data.id);
+	 return this.setDataToVue(await this.catalog.getChilds(data.id))
+  }
+
+  setDataToVue(items: Item[]){
+	  let result: NodeModel<NodeData>[] = []
+	  for (const item of items) {
+		  result.push({
+			  children: [],
+			  data: {
+				  //...item.data,
+				  id: item.id,
+				  type: item.type,
+				  parentId: item.parentId,
+				  name: item.name,
+				  sortOrder: item.sortOrder,
+				  icon: item.icon
+			  },
+			  isLeaf: item.type !== 'group',
+			  isExpanded: false,
+			  ind: item.sortOrder,
+			  title: item.name
+		  })
+	  }
+	  return result
   }
 
   // Moved into actions
@@ -150,4 +174,4 @@ export class VueCatalogUtils {
     }
     return node;
   }
-} 
+}

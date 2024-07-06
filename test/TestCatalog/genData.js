@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const TestCatalog_1 = require("./TestCatalog");
+const util = require('util');
 const createTestData = async () => {
     const group1 = {
         id: 1,
@@ -42,7 +43,7 @@ const createTestData = async () => {
                 childs: [],
                 sortOrder: j,
                 icon: `icon-group${groups[i].id}.${j}`,
-                type: 'subgroup',
+                type: 'group',
                 childGroups: []
             };
             for (let k = 1; k <= 3; k++) {
@@ -52,18 +53,19 @@ const createTestData = async () => {
                     parentId: subGroup.id,
                     sortOrder: k,
                     icon: `icon-item${groups[i].id}.${j}.${k}`,
-                    type: 'item'
+                    type: 'item1'
                 };
                 subGroup.childs?.push(item);
                 await TestCatalog_1.StorageService.setElement(item.id, item);
             }
-            groups[i].childGroups?.push(subGroup);
+            groups[i].childs?.push(subGroup);
             await TestCatalog_1.StorageService.setElement(subGroup.id, subGroup);
         }
         await TestCatalog_1.StorageService.setElement(groups[i].id, groups[i]);
     }
 };
 createTestData().then(() => {
+    //console.log(util.inspect(StorageService.getAllElements(), {showHidden: false, depth: null, colors: true}))
     console.log('Test data created successfully');
 }).catch((err) => {
     console.error('Error creating test data:', err);

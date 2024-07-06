@@ -1,83 +1,86 @@
-import { Item } from "../../lib/catalog/AbstractCatalog";
-import { StorageService } from "./TestCatalog";
+import {Item} from "../../lib/catalog/AbstractCatalog";
+import {StorageService} from "./TestCatalog";
+
+const util = require('util')
 
 interface GroupTestItem extends Item {
-  childGroups?: GroupTestItem[];
+	childGroups?: GroupTestItem[];
 }
 
 const createTestData = async () => {
-  const group1: GroupTestItem = {
-    id: 1,
-    name: 'Group 1',
-    parentId: null,
-    childs: [],
-    sortOrder: 1,
-    icon: 'icon-group1',
-    type: 'group',
-    childGroups: []
-  };
+	const group1: GroupTestItem = {
+		id: 1,
+		name: 'Group 1',
+		parentId: null,
+		childs: [],
+		sortOrder: 1,
+		icon: 'icon-group1',
+		type: 'group',
+		childGroups: []
+	};
 
-  const group2: GroupTestItem = {
-    id: 2,
-    name: 'Group 2',
-    parentId: null,
-    childs: [],
-    sortOrder: 2,
-    icon: 'icon-group2',
-    type: 'group',
-    childGroups: []
-  };
+	const group2: GroupTestItem = {
+		id: 2,
+		name: 'Group 2',
+		parentId: null,
+		childs: [],
+		sortOrder: 2,
+		icon: 'icon-group2',
+		type: 'group',
+		childGroups: []
+	};
 
-  const group3: GroupTestItem = {
-    id: 3,
-    name: 'Group 3',
-    parentId: null,
-    childs: [],
-    sortOrder: 3,
-    icon: 'icon-group3',
-    type: 'group',
-    childGroups: []
-  };
+	const group3: GroupTestItem = {
+		id: 3,
+		name: 'Group 3',
+		parentId: null,
+		childs: [],
+		sortOrder: 3,
+		icon: 'icon-group3',
+		type: 'group',
+		childGroups: []
+	};
 
-  const groups = [group1, group2, group3];
+	const groups = [group1, group2, group3];
 
-  for (let i = 0; i < groups.length; i++) {
-    for (let j = 1; j <= 2; j++) {
-      const subGroup: GroupTestItem = {
-        id: `${groups[i].id}.${j}`,
-        name: `Group ${groups[i].id}.${j}`,
-        parentId: groups[i].id,
-        childs: [],
-        sortOrder: j,
-        icon: `icon-group${groups[i].id}.${j}`,
-        type: 'subgroup',
-        childGroups: []
-      };
+	for (let i = 0; i < groups.length; i++) {
+		for (let j = 1; j <= 2; j++) {
+			const subGroup: GroupTestItem = {
+				id: `${groups[i].id}.${j}`,
+				name: `Group ${groups[i].id}.${j}`,
+				parentId: groups[i].id,
+				childs: [],
+				sortOrder: j,
+				icon: `icon-group${groups[i].id}.${j}`,
+				type: 'group',
+				childGroups: []
+			};
 
-      for (let k = 1; k <= 3; k++) {
-        const item: Item = {
-          id: `${groups[i].id}.${j}.${k}`,
-          name: `Item ${groups[i].id}.${j}.${k}`,
-          parentId: subGroup.id,
-          sortOrder: k,
-          icon: `icon-item${groups[i].id}.${j}.${k}`,
-          type: 'item'
-        };
+			for (let k = 1; k <= 3; k++) {
+				const item: Item = {
+					id: `${groups[i].id}.${j}.${k}`,
+					name: `Item ${groups[i].id}.${j}.${k}`,
+					parentId: subGroup.id,
+					sortOrder: k,
+					icon: `icon-item${groups[i].id}.${j}.${k}`,
+					type: 'item1'
+				};
 
-        subGroup.childs?.push(item);
-        await StorageService.setElement(item.id, item);
-      }
+				subGroup.childs?.push(item);
+				await StorageService.setElement(item.id, item);
+			}
 
-      groups[i].childGroups?.push(subGroup);
-      await StorageService.setElement(subGroup.id, subGroup);
-    }
+			groups[i].childs?.push(subGroup);
+			await StorageService.setElement(subGroup.id, subGroup);
+		}
 
-    await StorageService.setElement(groups[i].id, groups[i]);
-  }
+		await StorageService.setElement(groups[i].id, groups[i]);
+	}
 };
 
 createTestData().then(() => {
-  console.log('Test data created successfully');
+	//console.log(util.inspect(StorageService.getAllElements(), {showHidden: false, depth: null, colors: true}))
+	console.log('Test data created successfully');
 }).catch((err) => {
-  console.error('Error creating test data:', err);
+	console.error('Error creating test data:', err);
 });

@@ -32,9 +32,32 @@ class VueCatalog {
         data = VueCatalogUtils.refinement(data);
         return this.catalog.createItem(data);
     }
-    getChilds(data) {
+    async getChilds(data) {
         data = VueCatalogUtils.refinement(data);
-        return this.catalog.getChilds(data.id);
+        //return this.catalog.getChilds(data.id);
+        return this.setDataToVue(await this.catalog.getChilds(data.id));
+    }
+    setDataToVue(items) {
+        let result = [];
+        for (const item of items) {
+            result.push({
+                children: [],
+                data: {
+                    //...item.data,
+                    id: item.id,
+                    type: item.type,
+                    parentId: item.parentId,
+                    name: item.name,
+                    sortOrder: item.sortOrder,
+                    icon: item.icon
+                },
+                isLeaf: item.type !== 'group',
+                isExpanded: false,
+                ind: item.sortOrder,
+                title: item.name
+            });
+        }
+        return result;
     }
     // Moved into actions
     // getCreatedItems(data: any) {

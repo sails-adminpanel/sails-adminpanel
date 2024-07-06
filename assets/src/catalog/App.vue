@@ -354,7 +354,7 @@ function nodeSelected(nodes, event) {
 }
 
 async function nodeToggled(node, event) {
-	getChilds(node)
+	if(!node.isExpanded) getChilds(node)
 }
 
 function recursiveSetChilds(node, Dnodes, rNodes) {
@@ -377,7 +377,7 @@ function recursiveSetChilds(node, Dnodes, rNodes) {
 
 async function getChilds(node) {
 	let res = await ky.post('', {json: {data: node, _method: 'getChilds'}}).json()
-	recursiveSetChilds(node, null, res.data.nodes)
+	recursiveSetChilds(node, null, res.data)
 }
 
 async function nodeDropped(Dnode, position, event) {
@@ -394,7 +394,7 @@ async function nodeDropped(Dnode, position, event) {
 			case 'before':
 				if (node.data.id === position.node.data.id) {
 					slVueTreeRef.value.traverse((Tnode, TnodeModel, Tsiblings) => {
-						if (Tnode.data.id === node.data.parent) {
+						if (Tnode.data.id === node.data.parentId) {
 							reqParent = Tnode
 							return false
 						}
