@@ -215,15 +215,20 @@ export abstract class AbstractCatalog {
 	 */
 	public async getChilds(parentId: string | number | null, byItemType?: string): Promise<Item[]> {
 		if (byItemType) {
-			return  await this.getItemType(byItemType)?.getChilds(parentId)
+			const items = await this.getItemType(byItemType)?.getChilds(parentId);
+			return items ? items.sort((a, b) => a.sortOrder - b.sortOrder) : [];
 		} else {
 			let result = [];
 			for (const itemType of this.itemTypes) {
-				result = result.concat(await itemType?.getChilds(parentId))
-			}	
-			return result
+				const items = await itemType?.getChilds(parentId);
+				if (items) {
+					result = result.concat(items);
+				}
+			}
+			return result.sort((a, b) => a.sortOrder - b.sortOrder);
 		}
 	}
+
 
 	protected constructor(items: BaseItem<any>[]) {
 		for (const item of items) {

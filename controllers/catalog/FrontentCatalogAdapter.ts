@@ -93,9 +93,14 @@ export class VueCatalog {
       reqNodes = [data.reqNode];
     }
 
-    const reqParent = data.reqParent;
-    if (!reqParent.data.id) {
-      throw `reqParent.data.parentId not defined`
+    let reqParent = data.reqParent;
+
+    if (reqParent.data.id === 0) {
+      reqParent.data.id = null;
+    }
+
+    if (reqParent.data.id === undefined) {
+      throw `reqParent.data.id not defined`
     }
 
     // It’s unclear why he’s coming reqNodes
