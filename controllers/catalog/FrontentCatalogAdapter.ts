@@ -94,7 +94,7 @@ export class VueCatalog {
     }
 
     const reqParent = data.reqParent;
-    if (!reqParent.data.parentId) {
+    if (!reqParent.data.id) {
       throw `reqParent.data.parentId not defined`
     }
 
@@ -110,7 +110,7 @@ export class VueCatalog {
     let sortCount = 0;
     for (const childNode of reqParent.children) {
       childNode.data.sortOrder = sortCount;
-      childNode.data.parentId = reqParent.data.parentId
+      childNode.data.parentId = reqParent.data.id
       await this.catalog.updateItem(childNode.data.id, childNode.data.type, childNode.data);
       sortCount++;
     }
