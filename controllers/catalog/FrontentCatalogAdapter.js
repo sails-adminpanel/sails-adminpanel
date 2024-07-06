@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VueCatalogUtils = exports.VueCatalog = void 0;
+const AbstractCatalog_1 = require("../../lib/catalog/AbstractCatalog");
 class VueCatalog {
     constructor(_catalog) {
         this.catalog = _catalog;
@@ -41,8 +42,10 @@ class VueCatalog {
     //   data = VueCatalogUtils.refinement(data);
     //   return this.catalog.getChilds(data.id);
     // }
-    search(s) {
-        return this.catalog.search(s);
+    async search(s) {
+        let searchResult = await this.catalog.search(s);
+        let itemsTree = AbstractCatalog_1.AbstractCatalog.buildTree(searchResult);
+        return VueCatalogUtils.treeToNode(itemsTree, this.catalog.getGroupType().type);
     }
     async updateTree(data) {
         let reqNodes = data.reqNode;
@@ -86,11 +89,7 @@ class VueCatalogUtils {
         return nodeModel.data;
     }
     static arrayToNode(items, groupTypeName) {
-        const result = [];
-        for (const node of items) {
-            result.push(this.toNode(node, groupTypeName));
-        }
-        return result;
+        return items.map(node => VueCatalogUtils.toNode(node, groupTypeName));
     }
     static toNode(data, groupTypeName) {
         return {
@@ -101,9 +100,9 @@ class VueCatalogUtils {
             title: data.name
         };
     }
-    static expandTo(vueCatalogData, theseItemIdNeedToBeOpened) {
+    static expandTo(vueCatalogData, theseItemIdsNeedToBeOpened) {
         function expand(node) {
-            if (theseItemIdNeedToBeOpened.includes(node.data.id)) {
+            if (theseItemIdsNeedToBeOpened.includes(node.data.id)) {
                 node.isExpanded = true;
             }
             if (node.children) {
@@ -112,8 +111,25 @@ class VueCatalogUtils {
                 }
             }
         }
-        expand(vueCatalogData);
+        theseItemIdsNeedToBeOpened.forEach(id => {
+            expand(vueCatalogData);
+        });
         return vueCatalogData;
+    }
+    static treeToNode(tree, groupTypeName) {
+        function buildNodes(items) {
+            return items.map(item => {
+                const node = VueCatalogUtils.toNode(item, groupTypeName);
+                if (item.childs && item.childs.length > 0) {
+                    node.children = buildNodes(item.childs);
+                    if (!node.isLeaf) {
+                        node.isExpanded = true;
+                    }
+                }
+                return node;
+            });
+        }
+        return buildNodes(tree);
     }
 }
 exports.VueCatalogUtils = VueCatalogUtils;

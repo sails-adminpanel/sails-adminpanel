@@ -389,4 +389,28 @@ export abstract class AbstractCatalog {
 		const rootItems = Array.from(itemsMap.values());
 		return rootItems as T[];
 	}
+
+
+	public static buildTree(items: Item[]): Item[] {
+		const tree: Item[] = [];
+		const itemMap: { [key: string]: Item } = {};
+
+		items.forEach(item => {
+			item.childs = [];
+			itemMap[item.id] = item;
+		});
+
+		items.forEach(item => {
+			if (item.parentId === null) {
+				tree.push(item);
+			} else {
+				const parent = itemMap[item.parentId];
+				if (parent) {
+					parent.childs.push(item);
+				}
+			}
+		});
+
+		return tree;
+	}
 }

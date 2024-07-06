@@ -38,7 +38,7 @@ export declare class VueCatalog {
     getCatalog(): Promise<NodeModel<Item>[]>;
     createItem(data: any): Promise<any>;
     getChilds(data: any): Promise<NodeModel<Item>[]>;
-    search(s: string): Promise<Item[]>;
+    search(s: string): Promise<NodeModel<Item>[]>;
     updateTree(data: RequestData): Promise<any>;
     updateItem(item: any, id: string, data: any): Promise<any>;
 }
@@ -49,6 +49,7 @@ export declare class VueCatalogUtils {
     static refinement<T extends NodeModel<any>>(nodeModel: T): any;
     static arrayToNode<T extends Item>(items: T[], groupTypeName: string): NodeModel<T>[];
     static toNode<T extends NodeData>(data: T, groupTypeName: string): NodeModel<T>;
-    static expandTo<T extends NodeData>(vueCatalogData: NodeModel<T>, theseItemIdNeedToBeOpened: (string | number)[]): NodeModel<T>;
+    static expandTo<T extends NodeData>(vueCatalogData: NodeModel<T>, theseItemIdsNeedToBeOpened: (string | number)[]): NodeModel<T>;
+    static treeToNode(tree: Item[], groupTypeName: string): NodeModel<Item>[];
 }
 export {};

@@ -204,4 +204,5 @@ export declare abstract class AbstractCatalog {
      */
     getitemTypes(): BaseItem<Item>[];
     search<T extends Item>(s: string): Promise<T[]>;
+    static buildTree(items: Item[]): Item[];
 }

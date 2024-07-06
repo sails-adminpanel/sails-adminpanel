@@ -83,8 +83,10 @@ export class VueCatalog {
 	//   return this.catalog.getChilds(data.id);
 	// }
 
-	search(s: string) {
-		return this.catalog.search(s);
+	async search(s: string) {
+		let searchResult = await this.catalog.search(s);
+		let itemsTree = AbstractCatalog.buildTree(searchResult);
+		return VueCatalogUtils.treeToNode(itemsTree, this.catalog.getGroupType().type);
 	}
 
 	async updateTree(data: RequestData): Promise<any> {
@@ -139,11 +141,7 @@ export class VueCatalogUtils {
 	}
 
 	public static arrayToNode<T extends Item>(items: T[], groupTypeName: string): NodeModel<T>[] {
-		const result = [];
-		for (const node of items) {
-			result.push(this.toNode(node, groupTypeName))
-		}
-		return result;
+		return items.map(node => VueCatalogUtils.toNode(node, groupTypeName));
 	}
 
 	public static toNode<T extends NodeData>(data: T, groupTypeName: string): NodeModel<T> {
@@ -156,9 +154,9 @@ export class VueCatalogUtils {
 		};
 	}
 
-	public static expandTo<T extends NodeData>(vueCatalogData: NodeModel<T>, theseItemIdNeedToBeOpened: (string | number)[]): NodeModel<T> {
+	public static expandTo<T extends NodeData>(vueCatalogData: NodeModel<T>, theseItemIdsNeedToBeOpened: (string | number)[]): NodeModel<T> {
 		function expand(node: NodeModel<T>): void {
-			if (theseItemIdNeedToBeOpened.includes(node.data.id)) {
+			if (theseItemIdsNeedToBeOpened.includes(node.data.id)) {
 				node.isExpanded = true;
 			}
 
@@ -169,7 +167,28 @@ export class VueCatalogUtils {
 			}
 		}
 
-		expand(vueCatalogData);
+		theseItemIdsNeedToBeOpened.forEach(id => {
+			expand(vueCatalogData);
+		});
+
 		return vueCatalogData;
 	}
+
+	public static treeToNode(tree: Item[], groupTypeName: string): NodeModel<Item>[] {
+		function buildNodes(items: Item[]): NodeModel<Item>[] {
+			return items.map(item => {
+				const node = VueCatalogUtils.toNode(item, groupTypeName);
+				if (item.childs && item.childs.length > 0) {
+					node.children = buildNodes(item.childs);
+					if (!node.isLeaf) {
+						node.isExpanded = true;
+					}
+				}
+				return node;
+			});
+		}
+
+		return buildNodes(tree);
+	}
 }
+
