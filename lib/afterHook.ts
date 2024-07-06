@@ -68,7 +68,7 @@ export default async function () {
     if (process.env.NODE_ENV !== "production") {
         let catalog = new TestCatalog()
         CatalogHandler.add(catalog)
-        require("./../test/TestCatalog/genData")
+        require("./../test/TestCatalog/genData").createTestData()
     }
 
     return

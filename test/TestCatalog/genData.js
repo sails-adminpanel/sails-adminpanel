@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.createTestData = void 0;
 const TestCatalog_1 = require("./TestCatalog");
-const util = require('util');
-const createTestData = async () => {
+async function createTestData() {
     const group1 = {
         id: 1,
         name: 'Group 1',
@@ -63,10 +63,6 @@ const createTestData = async () => {
         }
         await TestCatalog_1.StorageService.setElement(groups[i].id, groups[i]);
     }
-};
-createTestData().then(() => {
-    //console.log(util.inspect(StorageService.getAllElements(), {showHidden: false, depth: null, colors: true}))
-    console.log('Test data created successfully');
-}).catch((err) => {
-    console.error('Error creating test data:', err);
-});
+}
+exports.createTestData = createTestData;
+;

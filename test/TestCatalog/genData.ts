@@ -1,13 +1,11 @@
 import {Item} from "../../lib/catalog/AbstractCatalog";
 import {StorageService} from "./TestCatalog";
 
-const util = require('util')
-
 interface GroupTestItem extends Item {
 	childGroups?: GroupTestItem[];
 }
 
-const createTestData = async () => {
+export async function createTestData() {
 	const group1: GroupTestItem = {
 		id: 1,
 		name: 'Group 1',
@@ -77,10 +75,3 @@ const createTestData = async () => {
 		await StorageService.setElement(groups[i].id, groups[i]);
 	}
 };
-
-createTestData().then(() => {
-	//console.log(util.inspect(StorageService.getAllElements(), {showHidden: false, depth: null, colors: true}))
-	console.log('Test data created successfully');
-}).catch((err) => {
-	console.error('Error creating test data:', err);
-});

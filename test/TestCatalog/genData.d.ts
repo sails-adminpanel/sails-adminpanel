@@ -1,1 +1,1 @@
-export {};
+export declare function createTestData(): Promise<void>;
