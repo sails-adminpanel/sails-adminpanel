@@ -75,6 +75,10 @@ class TestGroup extends AbstractCatalog_1.AbstractGroup {
         return await StorageService.removeElementById(itemId);
     }
     getAddHTML() {
+        // `<button id="555">`
+        // script
+        //
+        // Ad.new()
         throw new Error("Method not implemented.");
     }
     getEditHTML(id) {

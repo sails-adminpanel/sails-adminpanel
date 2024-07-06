@@ -302,7 +302,7 @@ interface FormFieldConfig extends BaseFieldConfig {
     value?: any
 }
 
-interface BaseFieldConfig {
+export interface BaseFieldConfig {
     title?: string
     type?: FieldsTypes
     /**
@@ -334,7 +334,7 @@ interface BaseFieldConfig {
     disabled?: boolean
 }
 
-interface NavigationOptionsField {
+export interface NavigationOptionsField {
     /**
      * max number of nested elements
      * */
@@ -414,7 +414,7 @@ export interface CreateUpdateConfig {
      *
      * Function(reqData) {return reqData}
      * */
-    entityModifier?: (reqData: string) => string
+    entityModifier?: <T>(fieldData: T) => T
     /**
      * You can change standard controller for any entity by this property
      * */

@@ -93,14 +93,13 @@ class VueCatalogUtils {
         return result;
     }
     static toNode(data, groupTypeName) {
-        const node = {
+        return {
             data: data,
             isLeaf: data.type !== groupTypeName,
             isExpanded: false,
             ind: data.sortOrder,
             title: data.name
         };
-        return node;
     }
     static expandTo(vueCatalogData, theseItemIdNeedToBeOpened) {
         function expand(node) {

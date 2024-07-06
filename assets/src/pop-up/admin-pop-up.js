@@ -103,6 +103,11 @@ class AdminPopUp {
         });
         return popup;
     }
+    static closeAll() {
+        for (const popup of this.popups) {
+            popup.closeModal();
+        }
+    }
     static offsetToggle(prevModal) {
         if (prevModal !== null) {
             let prevModalwrapper = prevModal.querySelector('.admin-modal-pu-wrapper');
