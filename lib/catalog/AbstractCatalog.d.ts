@@ -11,6 +11,7 @@ export interface Item {
     sortOrder: number;
     icon: string;
     type: string;
+    marked?: boolean;
 }
 export type _Item_ = {
     [key: string]: boolean | string | number | object;
@@ -203,6 +204,6 @@ export declare abstract class AbstractCatalog {
      * Method for getting group elements
      */
     getitemTypes(): BaseItem<Item>[];
-    search<T extends Item>(s: string): Promise<T[]>;
+    search<T extends Item>(s: string, hasExtras?: boolean): Promise<T[]>;
     static buildTree(items: Item[]): Item[];
 }

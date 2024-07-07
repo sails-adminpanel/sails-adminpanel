@@ -13,6 +13,9 @@ export interface Item {
 	// below: AbstractGroup layer - It means data to be mapped from itemType class
 	icon: string
 	type: string;
+
+	// below: service marks for Frontend Component
+	marked?: boolean
 }
 
 export type _Item_ = {
@@ -345,43 +348,56 @@ export abstract class AbstractCatalog {
 	};
 
 
-	async search<T extends Item>(s: string): Promise<T[]> {
-		let foundItems: Item[] = [];
-		type test = typeof this.itemTypes
-		// Handle all search
-		for (const itemType of this.itemTypes) {
-			const items = await itemType.search(s);
-			foundItems = foundItems.concat(items);
-		}
+	async search<T extends Item>(s: string, hasExtras: boolean = true): Promise<T[]> {
+		// Build the trees for all found items
+		const accumulator: Item[] = [];
 
 		// Find group type
 		const groupType = this.itemTypes.find((item) => item.isGroup === true);
 
 		// Recursive function to build the tree upwards
-		const buildTreeUpwards = async (item: Item, accumulator: Item[]): Promise<Item> => {
-			if (item.parentId === null) return item;
+		const buildTreeUpwards = async (item: Item, hasExtras: boolean): Promise<Item> => {
+			console.log(accumulator.length);
+			// Add extras
+			if (hasExtras) {
+				const extras = await this.getChilds(item.id);
+				accumulator.push(...extras);
+			}
 
+			if (item.parentId === null) return item;
 			const parentItem = await groupType.find(item.parentId);
 			if (parentItem) {
 				accumulator.push(parentItem);
-				return buildTreeUpwards(parentItem, accumulator);
+				return buildTreeUpwards(parentItem, hasExtras);
 			}
 			return item;
 		};
 
-		// Build the trees for all found items
-		const itemsMap = new Map<string | number, Item>();
-		const accumulator: Item[] = [];
+		let foundItems: Item[] = [];
+
+		// Handle all search
+		for (const itemType of this.itemTypes) {
+			const items = await itemType.search(s);
+			items.forEach(item => item.marked = true);
+			foundItems = foundItems.concat(items);
+		}
+
 
 		for (const item of foundItems) {
-			itemsMap.set(item.id, item);
 			if (item.parentId !== null) {
-				await buildTreeUpwards(item, accumulator);
+				await buildTreeUpwards(item, hasExtras);
 			}
 		}
 
+		// finalize
+		const itemsMap = new Map<string | number, Item>();
 		// Add accumulated items to the map
 		for (const item of accumulator) {
+			itemsMap.set(item.id, item);
+		}
+
+		// Overwrite found items
+		for (const item of foundItems) {
 			itemsMap.set(item.id, item);
 		}
 

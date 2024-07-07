@@ -179,11 +179,13 @@ export class VueCatalogUtils {
 			return items.map(item => {
 				const node = VueCatalogUtils.toNode(item, groupTypeName);
 				if (item.childs && item.childs.length > 0) {
+					// Sort the children before building their nodes
+					item.childs.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
 					node.children = buildNodes(item.childs);
-					node.isExpanded = !node.isLeaf
-				} else{
+					node.isExpanded = !node.isLeaf;
+				} else {
 					// @ts-ignore
-					node.data = {...node.data, searched: true}
+					node.data = { ...node.data, searched: true };
 				}
 				return node;
 			});
