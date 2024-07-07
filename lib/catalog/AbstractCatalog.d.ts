@@ -125,7 +125,7 @@ export declare abstract class ActionHandler {
  | |     / _ \ | | / _ \ | |  | | | | |  _
  | |___ / ___ \| |/ ___ \| |__| |_| | |_| |
   \____/_/   \_|_/_/   \_|_____\___/ \____|
-                                           
+
 
  */
 export declare abstract class AbstractCatalog {

@@ -34,7 +34,6 @@ function createNewFolder(isNew, event){
 
 function createItem(event){
 	emit("createNewItem", event.target.value)
-	event.target.value = ''
 }
 </script>
 

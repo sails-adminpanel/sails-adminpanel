@@ -10,24 +10,23 @@ import {AdminPopUp} from "../pop-up/admin-pop-up";
 
 const emit = defineEmits(['reset'])
 let visible = ref(false)
-let popup = ref(null)
+let popup = AdminPopUp.new()
 let modal = ref(null)
 
 onMounted(() => {
-	popup.value = AdminPopUp.new()
-	popup.value.on('open', () => {
+	popup.on('open', () => {
 		visible.value = true
-		popup.value.content.appendChild(modal.value);
+		popup.content.appendChild(modal.value);
 	})
-	popup.value.on('close', () => {
+	popup.on('close', () => {
 		emit('reset')
 	})
-	console.log(popup.value.id)
 })
 
 function closePopup() {
 	popup.closeModal()
 }
+
 defineExpose({
 	closePopup
 })

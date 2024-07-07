@@ -8,7 +8,8 @@
 		</button>
 		<div class="admin-panel__widget">
 			<div class="widget_narrow ">
-				<input class="text-input w-full input-search" type="text" placeholder="Search" value="" v-model="search" :disabled="searchDisabled"/>
+				<input class="text-input w-full input-search" type="text" placeholder="Search" value="" @input="search"
+					   v-model="searchText"/>
 			</div>
 		</div>
 	</div>
@@ -29,7 +30,7 @@
                                 <i class="las la-folder" v-if="!node.isLeaf"></i>
                             </span>
 
-				<span :class="node.data.search ? 'search' : ''">{{ node.title }}</span>
+				<span :class="node.data.searched ? 'search' : ''">{{ node.title }}</span>
 			</template>
 
 			<template #toggle="{ node }">
@@ -64,20 +65,17 @@
 		<div v-if="isTollAdd && index === 1" class="custom-catalog__form">
 			<SelectItem :initItemsGroup="ItemsGroup" :initItemsItem="ItemsItem" :isGroupRootAdd="isGroupRootAdd"
 						:isItemRootAdd="isItemRootAdd" @createNewFolder="createNewFolder"
-						@createNewItem="initCreateNewItem"/>
+						@createNewItem="createNewItem"/>
 		</div>
 		<div v-if="isFolder && index === 2" class="custom-catalog__form">
 			<folder @save-folder="saveFolder" :html="HTML"/>
 		</div>
-<!--		<div v-if="isItem && index === 2" class="custom-catalog__form">-->
-<!--			<MiddlewareItem :selectedItem="selectedItem" :getHTMLoading="getHTMLoading" @createNewItem="createNewItem"-->
-<!--							@addItem="addCreatedItem"/>-->
-<!--		</div>-->
 		<div v-if="isItem && index === 2" class="custom-catalog__form">
-			<Item @save-item="saveItem" :html="HTML" :itemType="selectedItem"/>
+			<Item @save-item="saveItem" :html="HTML"/>
 		</div>
 		<div v-if="isActionPopUp && index === 1">
-			<ActionPopUp @update-folder="updateFolder" :html="HTML" @update-item="updateItem" :itemType="selectedNode.data.type"
+			<ActionPopUp @update-folder="updateFolder" :html="HTML" @update-item="updateItem"
+						 :itemType="selectedNode.data.type"
 						 :isItem="selectedNode.isLeaf"/>
 		</div>
 	</pop-up>
@@ -93,6 +91,7 @@ import SelectItem from "./Components/SelectItem.vue";
 import MiddlewareItem from "./Components/MiddlewareItem.vue";
 import ActionPopUp from "./Components/ActionPopUp.vue";
 import ky from "ky";
+import debounce from "lodash/debounce"
 
 let nodes = ref([])
 
@@ -117,8 +116,7 @@ let isGroupRootAdd = ref(false)
 let getHTMLoading = ref(false)
 let actions = ref([])
 let isActionPopUp = ref(false)
-let search = ref('')
-let searchDisabled = ref(false)
+let searchText = ref('')
 
 onMounted(async () => {
 	document.addEventListener('click', function (e) {
@@ -138,26 +136,24 @@ onMounted(async () => {
 	getCatalog()
 })
 
-
-watch(search, async (newValue, oldValue) => {
-	if(newValue.length > 0){
-		await reloadCatalog()
+const search = debounce(async () => {
+	if(searchText.value.length > 0) {
 		await searchNodes()
 	} else {
 		getCatalog()
 	}
-});
+}, 500)
 
-async function searchNodes(){
-	let res = await ky.post('', {json: {s: search.value, _method: 'search'}}).json()
-	if (res.data){
-		for (const node of res.data.nodes) {
+async function searchNodes() {
+	let res = await ky.post('', {json: {s: searchText.value, _method: 'search'}}).json()
+	if (res.data) {
+		for (const node of res.data) {
 			insertFoundNodes(node)
 		}
 	}
 }
 
-function insertFoundNodes(node){
+function insertFoundNodes(node) {
 	// let resNode = nodes.value.find(ENode => ENode.data.id === node.data.id)
 	nodes.value = nodes.value.map(ENode => ENode.data.id === node.data.id ? node : ENode)
 }
@@ -227,17 +223,12 @@ async function getHTML(data) {
 	}
 }
 
-function initCreateNewItem(value) {
-	selectedItem.value = value
-	isItem.value = true
-	modalCount.value++
-}
-
-async function createNewItem() {
+async function createNewItem(value) {
 	getHTMLoading.value = true
-	let resPost = await ky.post('', {json: {type: selectedItem.value, _method: 'getHTML'}}).json()
+	let resPost = await ky.post('', {json: {type: value, _method: 'getHTML'}}).json()
 	await getHTML(resPost)
 	getHTMLoading.value = false
+	isItem.value = true
 	modalCount.value++
 }
 
@@ -295,7 +286,7 @@ async function createItem(data) {
 	}
 }
 
-async function updateItem(data){
+async function updateItem(data) {
 	let res = await ky.put('', {
 		json: {
 			type: selectedNode.value.data.type,
@@ -354,7 +345,7 @@ function nodeSelected(nodes, event) {
 }
 
 async function nodeToggled(node, event) {
-	if(!node.isExpanded) getChilds(node)
+	if (!node.isExpanded) getChilds(node)
 }
 
 function recursiveSetChilds(node, Dnodes, rNodes) {
@@ -515,10 +506,12 @@ function closePopup() {
 	text-align: left;
 	width: 20px;
 }
-.input-search{
+
+.input-search {
 	height: 36px;
 }
-.sl-vue-tree-next-title:has(> span.search){
+
+.sl-vue-tree-next-title:has(> span.search) {
 	background: #5d5035;
 }
 </style>

@@ -9,8 +9,8 @@ export interface Item {
 	parentId: string | number | null;
 	childs?: Item[];
 	sortOrder: number
-	
-	// below: AbstractGroup layer - It means data to be mapped from itemType class 
+
+	// below: AbstractGroup layer - It means data to be mapped from itemType class
 	icon: string
 	type: string;
 }
@@ -21,19 +21,19 @@ export type _Item_ = {
 
 /**
  * General Item structure that will be available for all elements, including groups
- * 
- * 
+ *
+ *
  */
 export abstract class BaseItem<T> {
 	// public abstract readonly id: string;
 	public abstract readonly type: string;
 
 	/**
-	 * Used for infer T 
+	 * Used for infer T
 	 * I haven't found an easier way to extract this type that goes into generic
-	 * If you know how to open PR	 
+	 * If you know how to open PR
 	 * */
-	// public readonly dataType: T 
+	// public readonly dataType: T
 
 	/**
 	 * Catalog name
@@ -163,14 +163,14 @@ export abstract class ActionHandler {
 
 }
 /**
- * 
+ *
 	Abstract
-   ____    _  _____  _    _     ___   ____ 
+   ____    _  _____  _    _     ___   ____
   / ___|  / \|_   _|/ \  | |   / _ \ / ___|
- | |     / _ \ | | / _ \ | |  | | | | |  _ 
+ | |     / _ \ | | / _ \ | |  | | | | |  _
  | |___ / ___ \| |/ ___ \| |__| |_| | |_| |
   \____/_/   \_|_/_/   \_|_____\___/ \____|
-                                           
+
 
  */
 export abstract class AbstractCatalog {

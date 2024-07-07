@@ -60,6 +60,7 @@ class TestGroup extends AbstractCatalog_1.AbstractGroup {
     constructor() {
         super(...arguments);
         this.name = "Group";
+        this.allowedRoot = true;
     }
     async find(itemId) {
         return await StorageService.findElementById(itemId);
@@ -75,11 +76,34 @@ class TestGroup extends AbstractCatalog_1.AbstractGroup {
         return await StorageService.removeElementById(itemId);
     }
     getAddHTML() {
-        // `<button id="555">`
-        // script
-        //
-        // Ad.new()
-        throw new Error("Method not implemented.");
+        let type = 'html';
+        return {
+            type: type,
+            data: `
+				<div class="flex flex-col gap-3">
+					<div class="admin-panel__wrapper-title">
+						<label class="admin-panel__title" for="form-title">Title</label>
+					</div>
+					<div class="admin-panel__widget">
+						<div class="widget_narrow ">
+							<input class="text-input w-full" type="text" placeholder="Title" value="" name="title" id="form-title" required/>
+						</div>
+					</div>
+				</div>
+				<div id="Add-new-PopUp" style="background: #0e6471; color: white; border-radius: 15px; height: 40px; width: 200px; margin-top: 30px; display: flex; justify-content: center;align-items: center;cursor: pointer">Add new PopUp</div>
+				<script>
+					const btn = document.getElementById('Add-new-PopUp')
+					btn.addEventListener('click', function (){
+					let popupNew = AdminPopUp.new()
+						popupNew.on('open', () => {
+							const htmlString = '<p style="margin-top:50px;margin-left:50px;">This is a paragraph.</p>';
+							const fragment = document.createRange().createContextualFragment(htmlString);
+							popupNew.content.appendChild(fragment);
+						})
+					})
+				</script>
+				`
+        };
     }
     getEditHTML(id) {
         throw new Error("Method not implemented.");
@@ -121,7 +145,11 @@ class Item1 extends AbstractCatalog_1.AbstractItem {
         return await StorageService.removeElementById(itemId);
     }
     getAddHTML() {
-        throw new Error("Method not implemented.");
+        let type = 'link';
+        return {
+            type: type,
+            data: '/admin/model/page/add?without_layout=true'
+        };
     }
     getEditHTML(id) {
         throw new Error("Method not implemented.");

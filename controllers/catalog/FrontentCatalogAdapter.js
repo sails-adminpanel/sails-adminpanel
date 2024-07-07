@@ -122,9 +122,11 @@ class VueCatalogUtils {
                 const node = VueCatalogUtils.toNode(item, groupTypeName);
                 if (item.childs && item.childs.length > 0) {
                     node.children = buildNodes(item.childs);
-                    if (!node.isLeaf) {
-                        node.isExpanded = true;
-                    }
+                    node.isExpanded = !node.isLeaf;
+                }
+                else {
+                    // @ts-ignore
+                    node.data = { ...node.data, searched: true };
                 }
                 return node;
             });
