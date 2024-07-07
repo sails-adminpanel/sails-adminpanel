@@ -17,6 +17,7 @@ describe('Catalog', function () {
                 name: 'Item 1.1.1',
                 parentId: '1.1',
                 sortOrder: 1,
+                marked: true,
                 icon: 'icon-item1.1.1',
                 type: 'item1'
             };
@@ -25,7 +26,7 @@ describe('Catalog', function () {
             (0, chai_1.expect)(results).to.be.an('array').that.is.not.empty;
             const foundItem = results.find(item => item.id === expectedItem.id);
             (0, chai_1.expect)(foundItem).to.deep.equal(expectedItem);
-            (0, chai_1.expect)(results.length).to.equal(3);
+            (0, chai_1.expect)(results.length).to.equal(6);
         });
         it('should return empty array for non-matching query', async function () {
             const searchQuery = 'Non-Existent Item';

@@ -357,7 +357,6 @@ export abstract class AbstractCatalog {
 
 		// Recursive function to build the tree upwards
 		const buildTreeUpwards = async (item: Item, hasExtras: boolean): Promise<Item> => {
-			console.log(accumulator.length);
 			// Add extras
 			if (hasExtras) {
 				const extras = await this.getChilds(item.id);
