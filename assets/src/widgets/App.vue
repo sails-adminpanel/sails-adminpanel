@@ -60,24 +60,17 @@
 	</div>
 	<pop-up @reset="closePopup" v-for="index in modalCount" :key="index" ref="child">
 		<add-widgets @addWidgets="addWidgets" v-if="index === 1" :initWidgets="widgets" :block="block"></add-widgets>
-<!--		<content-a @next="initPopup" v-if="index === 2"></content-a>-->
-<!--		<content-b @next="initPopup" v-if="index === 3" @closePopup="manualClosePopup(1)"></content-b>-->
-<!--		<content-c v-if="index === 3"></content-c>-->
 	</pop-up>
 </template>
 <script>
 import {defineComponent} from "vue";
 import PopUp from "./PopUp.vue";
-import ContentA from "./ContentA.vue";
-import ContentB from "./ContentB.vue";
-import ContentC from "./ContentC.vue";
 import AddWidgets from "./AddWidgets.vue";
 import Widget from "./Widget.vue";
-import ky from "ky";
 
 export default defineComponent({
 	name: 'App',
-	components: {PopUp, ContentA, ContentB, ContentC, Widget, AddWidgets},
+	components: {PopUp, Widget, AddWidgets},
 	data() {
 		return {
 			layout: window.widgetsInit.layout,

@@ -1,6 +1,6 @@
 <template>
 	<div class="flex items-center gap-4">
-		<button class="btn btn-add" @click="toolAddGroup('group')"><i
+		<button class="btn btn-add" @click="toolAddGroup('groupSelect')"><i
 			class="las la-plus"></i><span>create group</span>
 		</button>
 		<button class="btn btn-add" @click="toolAddGroup('item')"><i
@@ -49,10 +49,6 @@
 
 			<template #draginfo="draginfo"> {{ selectedNodesTitle }}</template>
 		</sl-vue-tree-next>
-		<div class="json-preview">
-			<h2>JSON Preview</h2>
-			<pre>{{ nodes }}</pre>
-		</div>
 	</div>
 	<div class="contextmenu" ref="contextmenu" id="contextmenu" v-show="contextMenuIsVisible">
 		<ul class="custom-catalog__actions-items">
@@ -61,37 +57,38 @@
 			</li>
 		</ul>
 	</div>
-	<pop-up @reset="closePopup" v-for="index in modalCount" :key="index" ref="parentPopUp">
-		<div v-if="isTollAdd && index === 1" class="custom-catalog__form">
-			<SelectItem :initItemsGroup="ItemsGroup" :initItemsItem="ItemsItem" :isGroupRootAdd="isGroupRootAdd"
-						:isItemRootAdd="isItemRootAdd" @createNewFolder="createNewFolder"
-						@createNewItem="createNewItem"/>
-		</div>
-		<div v-if="isFolder && index === 2" class="custom-catalog__form">
-			<folder @save-folder="saveFolder" :html="HTML"/>
-		</div>
-		<div v-if="isItem && index === 2" class="custom-catalog__form">
-			<Item @save-item="saveItem" :html="HTML"/>
-		</div>
-		<div v-if="isActionPopUp && index === 1">
-			<ActionPopUp @update-folder="updateFolder" :html="HTML" @update-item="updateItem"
-						 :itemType="selectedNode.data.type"
-						 :isItem="selectedNode.isLeaf"/>
-		</div>
-	</pop-up>
+	<!--	переписать-->
+	<!--	<pop-up @reset="closePopup" v-for="index in modalCount" :key="index" ref="parentPopUp">-->
+	<div ref="refSelectItem" v-show="isTollAdd">
+		<SelectItem :initItemsGroup="ItemsGroup" :initItemsItem="ItemsItem" :isGroupRootAdd="isGroupRootAdd"
+					:isItemRootAdd="isItemRootAdd" @createNewFolder="createNewFolder"
+					@createNewItem="createNewItem"/>
+	</div>
+	<div ref="refItemHTML" class="custom-catalog__form" v-show="isFolder">
+		<ItemHTML :html="HTML" @close-all-popups="closeAllPopups"/>
+	</div>
+	<!--		<div v-if="isFolder && index === 2" class="custom-catalog__form">-->
+	<!--			<folder @save-folder="saveFolder" :html="HTML"/>-->
+	<!--		</div>-->
+	<!--		<div v-if="isItem && index === 2" class="custom-catalog__form">-->
+	<!--			<Item @save-item="saveItem" :html="HTML"/>-->
+	<!--		</div>-->
+	<!--		<div v-if="isActionPopUp && index === 1">-->
+	<!--			<ActionPopUp @update-folder="updateFolder" :html="HTML" @update-item="updateItem"-->
+	<!--						 :itemType="selectedNode.data.type"-->
+	<!--						 :isItem="selectedNode.isLeaf"/>-->
+	<!--		</div>-->
+	<!--	</pop-up>-->
 </template>
 
 <script setup>
 import {SlVueTreeNext} from 'sl-vue-tree-next'
 import {ref, onMounted, computed, reactive, watch} from 'vue'
-import PopUp from "./PopUp.vue";
-import Folder from "./Components/Folder.vue";
-import Item from "./Components/Item.vue";
+import ItemHTML from "./Components/ItemHTML.vue";
 import SelectItem from "./Components/SelectItem.vue";
-import MiddlewareItem from "./Components/MiddlewareItem.vue";
 import ActionPopUp from "./Components/ActionPopUp.vue";
-import ky from "ky";
 import debounce from "lodash/debounce"
+import {AdminPopUp} from "../pop-up/admin-pop-up";
 
 let nodes = ref([])
 
@@ -100,7 +97,8 @@ let selectedNodesTitle = ref('')
 let selectedNode = ref('')
 let slVueTreeRef = ref(null)
 let contextmenu = ref(null)
-let modalCount = ref(0)
+let refSelectItem = ref(null)
+let refItemHTML = ref(null)
 let isFolder = ref(false)
 let isItem = ref(false)
 let parentPopUp = ref(null)
@@ -137,7 +135,7 @@ onMounted(async () => {
 })
 
 const search = debounce(async () => {
-	if(searchText.value.length > 0) {
+	if (searchText.value.length > 0) {
 		await searchNodes()
 	} else {
 		getCatalog()
@@ -161,7 +159,7 @@ function insertFoundNodes(node) {
 async function getCatalog() {
 	let {catalog, items} = await ky.post('', {json: {_method: 'getCatalog'}}).json()
 	if (items) {
-		console.log(catalog, items)
+		// console.log(catalog, items)
 		for (const catalogItem of items) {
 			if (catalogItem.isGroup) {
 				ItemsGroup.value.push(catalogItem)
@@ -171,7 +169,7 @@ async function getCatalog() {
 		}
 		setCatalog(catalog)
 	} else {
-		console.log(catalog)
+		// console.log(catalog)
 	}
 }
 
@@ -181,35 +179,35 @@ async function reloadCatalog() {
 }
 
 function toolAddGroup(type) {
-	modalCount.value++
-	switch (type) {
-		case('group'):
-			isGroupRootAdd.value = true
-			break
-		case ('item'):
-			isItemRootAdd.value = true
-			break;
-		default:
-			break;
-	}
-	isTollAdd.value = true
+	createPopup(refSelectItem.value, type)
+}
+
+function createPopup(content, event) {
+	const popup = AdminPopUp.new()
+	popup.on('open', () => {
+		switch (event) {
+			case 'groupSelect':
+				isTollAdd.value = true
+				isGroupRootAdd.value = true
+				break
+			case 'groupHTML':
+				isFolder.value = true
+				break
+		}
+		popup.content.appendChild(content);
+	})
 }
 
 function setCatalog(catalog) {
 	nodes.value = catalog.nodes
 }
 
-function addFolder(isNew) {
-	newFolder.value = isNew
-	modalCount.value++
-	isFolder.value = true
-}
 
 async function createNewFolder(isNew, value) {
 	selectedGroup.value = value
 	let resPost = await ky.post('', {json: {type: value, _method: 'getHTML'}}).json()
 	await getHTML(resPost)
-	addFolder(true)
+	createPopup(refItemHTML.value, 'groupHTML')
 }
 
 async function getHTML(data) {
@@ -244,9 +242,9 @@ function saveFolder(data) {
 }
 
 function closeAllPopups() {
-	for (const parentPopUpElement of parentPopUp.value) {
-		parentPopUpElement.closePopup()
-	}
+	isFolder.value = false
+	isTollAdd.value = false
+	AdminPopUp.closeAll()
 }
 
 async function createFolder(data) {
@@ -334,7 +332,7 @@ function recurciveFindAndInsert(path, nodesArr, isLeaf, title) {
 function toggleVisibility(event, node) {
 	event.stopPropagation()
 	const visible = !node.data || node.data.visible !== false
-	console.log(visible)
+	// console.log(visible)
 	slVueTreeRef.value.updateNode({path: node.path, patch: {data: {visible: !visible}}})
 	// lastEvent.value = `Node ${node.title} is ${visible ? 'visible' : 'invisible'} now`
 }
@@ -513,5 +511,16 @@ function closePopup() {
 
 .sl-vue-tree-next-title:has(> span.search) {
 	background: #5d5035;
+}
+
+.modal-content {
+	padding: 31px 41px;
+	overflow: auto;
+	height: 100vh;
+}
+
+.close-admin-modal-pu {
+	top: 30px;
+	right: 33px
 }
 </style>

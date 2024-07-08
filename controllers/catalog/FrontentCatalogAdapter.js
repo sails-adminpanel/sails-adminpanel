@@ -30,8 +30,9 @@ class VueCatalog {
         return VueCatalogUtils.arrayToNode(rootItems, this.catalog.getGroupType().type);
     }
     createItem(data) {
+        console.log(data);
         data = VueCatalogUtils.refinement(data);
-        return this.catalog.createItem(data);
+        //return this.catalog.createItem(data);
     }
     async getChilds(data) {
         data = VueCatalogUtils.refinement(data);
@@ -125,10 +126,6 @@ class VueCatalogUtils {
                     item.childs.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
                     node.children = buildNodes(item.childs);
                     node.isExpanded = !node.isLeaf;
-                }
-                else {
-                    // @ts-ignore
-                    node.data = { ...node.data, searched: true };
                 }
                 return node;
             });

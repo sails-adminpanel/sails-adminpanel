@@ -36,7 +36,7 @@ export declare class VueCatalog {
     getActions(items: any[]): Promise<import("../../lib/catalog/AbstractCatalog").ActionHandler[]>;
     handleAction(actionID: string, items: any[], config: any): Promise<void>;
     getCatalog(): Promise<NodeModel<Item>[]>;
-    createItem(data: any): Promise<any>;
+    createItem(data: any): void;
     getChilds(data: any): Promise<NodeModel<Item>[]>;
     search(s: string): Promise<NodeModel<Item>[]>;
     updateTree(data: RequestData): Promise<any>;

@@ -1,7 +1,5 @@
 /*! #__NO_SIDE_EFFECTS__ */
 
-/*! MIT License © Sindre Sorhus */
-
 /**
 * @vue/shared v3.4.31
 * (c) 2018-present Yuxi (Evan) You and Vue contributors

@@ -47,8 +47,8 @@ class PopUp {
         this.modal.classList.remove('admin-modal-pu--active');
         setTimeout(() => {
             this.modal.remove();
+            this.trigger('close');
         }, 300);
-        this.trigger('close');
     }
     on(event, callback) {
         if (!(event in this.eventHandlers)) {

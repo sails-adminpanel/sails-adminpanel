@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TestCatalog = exports.Item2 = exports.Item1 = exports.TestGroup = exports.StorageService = void 0;
 const AbstractCatalog_1 = require("../../lib/catalog/AbstractCatalog");
+const fs = require("node:fs");
 /**
  * Storage takes place in RAM
  */
@@ -79,30 +80,7 @@ class TestGroup extends AbstractCatalog_1.AbstractGroup {
         let type = 'html';
         return {
             type: type,
-            data: `
-				<div class="flex flex-col gap-3">
-					<div class="admin-panel__wrapper-title">
-						<label class="admin-panel__title" for="form-title">Title</label>
-					</div>
-					<div class="admin-panel__widget">
-						<div class="widget_narrow ">
-							<input class="text-input w-full" type="text" placeholder="Title" value="" name="title" id="form-title" required/>
-						</div>
-					</div>
-				</div>
-				<div id="Add-new-PopUp" style="background: #0e6471; color: white; border-radius: 15px; height: 40px; width: 200px; margin-top: 30px; display: flex; justify-content: center;align-items: center;cursor: pointer">Add new PopUp</div>
-				<script>
-					const btn = document.getElementById('Add-new-PopUp')
-					btn.addEventListener('click', function (){
-					let popupNew = AdminPopUp.new()
-						popupNew.on('open', () => {
-							const htmlString = '<p style="margin-top:50px;margin-left:50px;">This is a paragraph.</p>';
-							const fragment = document.createRange().createContextualFragment(htmlString);
-							popupNew.content.appendChild(fragment);
-						})
-					})
-				</script>
-				`
+            data: fs.readFileSync(`${__dirname}/groupAdd.html`, 'utf8'),
         };
     }
     getEditHTML(id) {
