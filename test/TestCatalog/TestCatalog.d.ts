@@ -54,7 +54,7 @@ export declare class Item1 extends AbstractItem<Item> {
     name: string;
     allowedRoot: boolean;
     icon: string;
-    find(itemId: string | number): Promise<GroupTestItem | Item>;
+    find(itemId: string | number): Promise<Item | GroupTestItem>;
     update(itemId: string | number, data: Item): Promise<Item>;
     create(itemId: string, data: Item): Promise<Item>;
     deleteItem(itemId: string | number): Promise<void>;

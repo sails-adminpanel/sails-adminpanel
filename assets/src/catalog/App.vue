@@ -27,8 +27,7 @@
                                 <i :class="`las la-${node.data.icon}`" v-if="!node.isLeaf"></i>
                             </span>
 
-<!--				<span :class="node.data.marked ? 'search' : ''">{{ node.title }}</span>-->
-				<span>{{ node.title }}</span>
+				<span :class="node.data.marked ? 'search' : ''">{{ node.title }}</span>
 			</template>
 
 			<template #toggle="{ node }">
@@ -122,7 +121,7 @@ const search = debounce(async () => {
 	if (searchText.value.length > 0) {
 		await searchNodes()
 	} else {
-		getCatalog()
+		reloadCatalog()
 	}
 }, 500)
 
@@ -136,7 +135,6 @@ async function searchNodes() {
 }
 
 function insertFoundNodes(node) {
-	// let resNode = nodes.value.find(ENode => ENode.data.id === node.data.id)
 	nodes.value = nodes.value.map(ENode => ENode.data.id === node.data.id ? node : ENode)
 }
 
@@ -187,7 +185,6 @@ function closeAllPopups() {
 }
 
 function setCatalog(catalog) {
-	console.log(catalog.nodes)
 	nodes.value = catalog.nodes
 }
 
@@ -320,6 +317,7 @@ function toggleVisibility(event, node) {
 }
 
 function nodeSelected(nodes, event) {
+	console.log(nodes)
 	selectedNodesTitle.value = nodes.map((node) => node.title)[0]
 	selectedNode.value = nodes[0]
 }

@@ -44,7 +44,6 @@ class VueCatalog {
     // }
     async search(s) {
         let searchResult = await this.catalog.search(s);
-        console.log(searchResult);
         let itemsTree = AbstractCatalog_1.AbstractCatalog.buildTree(searchResult);
         return VueCatalogUtils.treeToNode(itemsTree, this.catalog.getGroupType().type);
     }
