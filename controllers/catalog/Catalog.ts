@@ -23,7 +23,6 @@ export async function catalogController(req, res) {
 		const _catalog = CatalogHandler.getCatalog(slug)
 		const vueCatalog = new VueCatalog(_catalog);
 
-
 		if (!vueCatalog) return res.status(404);
 
 		vueCatalog.setID(id)

@@ -9,9 +9,8 @@ async function createTestData() {
         parentId: null,
         childs: [],
         sortOrder: 1,
-        icon: 'icon-group1',
+        icon: 'audio-description',
         type: 'group',
-        childGroups: []
     };
     const group2 = {
         id: 2,
@@ -19,9 +18,8 @@ async function createTestData() {
         parentId: null,
         childs: [],
         sortOrder: 2,
-        icon: 'icon-group2',
+        icon: 'audio-description',
         type: 'group',
-        childGroups: []
     };
     const group3 = {
         id: 3,
@@ -29,9 +27,8 @@ async function createTestData() {
         parentId: null,
         childs: [],
         sortOrder: 3,
-        icon: 'icon-group3',
+        icon: 'audio-description',
         type: 'group',
-        childGroups: []
     };
     const groups = [group1, group2, group3];
     for (let i = 0; i < groups.length; i++) {
@@ -42,9 +39,8 @@ async function createTestData() {
                 parentId: groups[i].id,
                 childs: [],
                 sortOrder: j,
-                icon: `icon-group${groups[i].id}.${j}`,
+                icon: 'audio-description',
                 type: 'group',
-                childGroups: []
             };
             for (let k = 1; k <= 3; k++) {
                 const item = {
@@ -52,8 +48,8 @@ async function createTestData() {
                     name: `Item ${groups[i].id}.${j}.${k}`,
                     parentId: subGroup.id,
                     sortOrder: k,
-                    icon: `icon-item${groups[i].id}.${j}.${k}`,
-                    type: 'item1'
+                    icon: 'radiation-alt',
+                    type: 'item2'
                 };
                 subGroup.childs?.push(item);
                 await TestCatalog_1.StorageService.setElement(item.id, item);
@@ -65,4 +61,3 @@ async function createTestData() {
     }
 }
 exports.createTestData = createTestData;
-;

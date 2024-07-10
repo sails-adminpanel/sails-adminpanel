@@ -68,9 +68,8 @@ export class VueCatalog {
 	}
 
 	createItem(data: any) {
-		console.log(data)
-		data = VueCatalogUtils.refinement(data);
-		//return this.catalog.createItem(data);
+		//data = VueCatalogUtils.refinement(data);
+		return this.catalog.createItem(data);
 	}
 
 	async getChilds(data: any) {
@@ -86,6 +85,7 @@ export class VueCatalog {
 
 	async search(s: string) {
 		let searchResult = await this.catalog.search(s);
+		console.log(searchResult)
 		let itemsTree = AbstractCatalog.buildTree(searchResult);
 		return VueCatalogUtils.treeToNode(itemsTree, this.catalog.getGroupType().type);
 	}

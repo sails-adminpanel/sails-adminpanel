@@ -87,7 +87,14 @@ export class TestGroup extends AbstractGroup<GroupTestItem> {
 
 
 	public async create(itemId: string, data: GroupTestItem): Promise<GroupTestItem> {
-		return await StorageService.setElement(itemId, data) as GroupTestItem;
+		let elems = await StorageService.getAllElements()
+		let id = elems.length + 1
+		let newData = {
+			...data,
+			id: id,
+			sortOrder: id
+		}
+		return await StorageService.setElement(id, newData) as GroupTestItem;
 	}
 
 	public async deleteItem(itemId: string | number): Promise<void> {
@@ -98,7 +105,7 @@ export class TestGroup extends AbstractGroup<GroupTestItem> {
 		let type: 'html' = 'html'
 		return {
 			type: type,
-			data: fs.readFileSync(`${__dirname}/groupAdd.html` , 'utf8'),
+			data: fs.readFileSync(`${__dirname}/groupAdd.html`, 'utf8'),
 		}
 	}
 
@@ -173,6 +180,25 @@ export class Item2 extends Item1 {
 	public name: string = "Item 2";
 	public allowedRoot: boolean = true;
 	public icon: string = "file";
+
+	public getAddHTML(): { type: "link" | "html"; data: string; } {
+		let type: 'html' = 'html'
+		return {
+			type: type,
+			data: fs.readFileSync(`${__dirname}/item2Add.html`, 'utf8'),
+		}
+	}
+
+	public async create(itemId: string, data: GroupTestItem): Promise<GroupTestItem> {
+		let elems = await StorageService.getAllElements()
+		let id = elems.length + 1
+		let newData = {
+			...data,
+			id: id,
+			sortOrder: id
+		}
+		return await StorageService.setElement(id, newData) as GroupTestItem;
+	}
 }
 
 export class TestCatalog extends AbstractCatalog {

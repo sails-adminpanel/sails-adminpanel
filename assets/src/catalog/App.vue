@@ -1,10 +1,7 @@
 <template>
 	<div class="flex items-center gap-4">
-		<button class="btn btn-add" @click="toolAddGroup('groupSelect')"><i
-			class="las la-plus"></i><span>create group</span>
-		</button>
-		<button class="btn btn-add" @click="toolAddGroup('item')"><i
-			class="las la-plus"></i><span>create item</span>
+		<button class="btn btn-add" @click="toolAddGroup"><i
+			class="las la-plus"></i><span>create</span>
 		</button>
 		<div class="admin-panel__widget">
 			<div class="widget_narrow ">
@@ -26,11 +23,12 @@
 		>
 			<template #title="{ node }">
                             <span class="item-icon">
-                                <i class="las la-file" v-if="node.isLeaf"></i>
-                                <i class="las la-folder" v-if="!node.isLeaf"></i>
+                                <i :class="`las la-${node.data.icon}`" v-if="node.isLeaf"></i>
+                                <i :class="`las la-${node.data.icon}`" v-if="!node.isLeaf"></i>
                             </span>
 
-				<span :class="node.data.searched ? 'search' : ''">{{ node.title }}</span>
+<!--				<span :class="node.data.marked ? 'search' : ''">{{ node.title }}</span>-->
+				<span>{{ node.title }}</span>
 			</template>
 
 			<template #toggle="{ node }">
@@ -57,28 +55,14 @@
 			</li>
 		</ul>
 	</div>
-	<!--	переписать-->
-	<!--	<pop-up @reset="closePopup" v-for="index in modalCount" :key="index" ref="parentPopUp">-->
-	<div ref="refSelectItem" v-show="isTollAdd">
-		<SelectItem :initItemsGroup="ItemsGroup" :initItemsItem="ItemsItem" :isGroupRootAdd="isGroupRootAdd"
-					:isItemRootAdd="isItemRootAdd" @createNewFolder="createNewFolder"
-					@createNewItem="createNewItem"/>
+	<div style="display: none">
+		<div ref="refSelectItem">
+			<SelectItem :initItemsItem="ItemsItem" @createNewItem="createNewItem" v-if="isTollAdd"/>
+		</div>
+		<div ref="refItemHTML" class="custom-catalog__form">
+			<ItemHTML :html="HTML" @close-all-popups="closeAllPopups" v-if="isCreate"/>
+		</div>
 	</div>
-	<div ref="refItemHTML" class="custom-catalog__form" v-show="isFolder">
-		<ItemHTML :html="HTML" @close-all-popups="closeAllPopups"/>
-	</div>
-	<!--		<div v-if="isFolder && index === 2" class="custom-catalog__form">-->
-	<!--			<folder @save-folder="saveFolder" :html="HTML"/>-->
-	<!--		</div>-->
-	<!--		<div v-if="isItem && index === 2" class="custom-catalog__form">-->
-	<!--			<Item @save-item="saveItem" :html="HTML"/>-->
-	<!--		</div>-->
-	<!--		<div v-if="isActionPopUp && index === 1">-->
-	<!--			<ActionPopUp @update-folder="updateFolder" :html="HTML" @update-item="updateItem"-->
-	<!--						 :itemType="selectedNode.data.type"-->
-	<!--						 :isItem="selectedNode.isLeaf"/>-->
-	<!--		</div>-->
-	<!--	</pop-up>-->
 </template>
 
 <script setup>
@@ -99,7 +83,7 @@ let slVueTreeRef = ref(null)
 let contextmenu = ref(null)
 let refSelectItem = ref(null)
 let refItemHTML = ref(null)
-let isFolder = ref(false)
+let isCreate = ref(false)
 let isItem = ref(false)
 let parentPopUp = ref(null)
 let newFolder = ref(false)
@@ -161,11 +145,7 @@ async function getCatalog() {
 	if (items) {
 		// console.log(catalog, items)
 		for (const catalogItem of items) {
-			if (catalogItem.isGroup) {
-				ItemsGroup.value.push(catalogItem)
-			} else {
-				ItemsItem.value.push(catalogItem)
-			}
+			ItemsItem.value.push(catalogItem)
 		}
 		setCatalog(catalog)
 	} else {
@@ -178,27 +158,36 @@ async function reloadCatalog() {
 	setCatalog(catalog)
 }
 
-function toolAddGroup(type) {
-	createPopup(refSelectItem.value, type)
+function toolAddGroup() {
+	createPopup(refSelectItem.value)
+	isTollAdd.value = true
 }
 
-function createPopup(content, event) {
+function createPopup(content) {
 	const popup = AdminPopUp.new()
 	popup.on('open', () => {
-		switch (event) {
-			case 'groupSelect':
-				isTollAdd.value = true
-				isGroupRootAdd.value = true
-				break
-			case 'groupHTML':
-				isFolder.value = true
-				break
-		}
 		popup.content.appendChild(content);
+	})
+	popup.on('close', () => {
+		switch (AdminPopUp.popups.length){
+			case 1:
+				isCreate.value = false
+				break
+			case 0:
+				isTollAdd.value = false
+		}
 	})
 }
 
+function closeAllPopups() {
+	isCreate.value = false
+	isTollAdd.value = false
+	AdminPopUp.closeAll()
+	reloadCatalog()
+}
+
 function setCatalog(catalog) {
+	console.log(catalog.nodes)
 	nodes.value = catalog.nodes
 }
 
@@ -222,12 +211,10 @@ async function getHTML(data) {
 }
 
 async function createNewItem(value) {
-	getHTMLoading.value = true
 	let resPost = await ky.post('', {json: {type: value, _method: 'getHTML'}}).json()
 	await getHTML(resPost)
-	getHTMLoading.value = false
-	isItem.value = true
-	modalCount.value++
+	createPopup(refItemHTML.value)
+	isCreate.value = true
 }
 
 function saveFolder(data) {
@@ -241,11 +228,6 @@ function saveFolder(data) {
 	closeAllPopups()
 }
 
-function closeAllPopups() {
-	isFolder.value = false
-	isTollAdd.value = false
-	AdminPopUp.closeAll()
-}
 
 async function createFolder(data) {
 	data.ind = nodes.value.length

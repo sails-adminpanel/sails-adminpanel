@@ -74,6 +74,11 @@ export declare class Item2 extends Item1 {
     name: string;
     allowedRoot: boolean;
     icon: string;
+    getAddHTML(): {
+        type: "link" | "html";
+        data: string;
+    };
+    create(itemId: string, data: GroupTestItem): Promise<GroupTestItem>;
 }
 export declare class TestCatalog extends AbstractCatalog {
     readonly name: string;

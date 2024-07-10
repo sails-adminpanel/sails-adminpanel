@@ -71,7 +71,14 @@ class TestGroup extends AbstractCatalog_1.AbstractGroup {
     }
     ;
     async create(itemId, data) {
-        return await StorageService.setElement(itemId, data);
+        let elems = await StorageService.getAllElements();
+        let id = elems.length + 1;
+        let newData = {
+            ...data,
+            id: id,
+            sortOrder: id
+        };
+        return await StorageService.setElement(id, newData);
     }
     async deleteItem(itemId) {
         return await StorageService.removeElementById(itemId);
@@ -147,6 +154,23 @@ class Item2 extends Item1 {
         this.name = "Item 2";
         this.allowedRoot = true;
         this.icon = "file";
+    }
+    getAddHTML() {
+        let type = 'html';
+        return {
+            type: type,
+            data: fs.readFileSync(`${__dirname}/item2Add.html`, 'utf8'),
+        };
+    }
+    async create(itemId, data) {
+        let elems = await StorageService.getAllElements();
+        let id = elems.length + 1;
+        let newData = {
+            ...data,
+            id: id,
+            sortOrder: id
+        };
+        return await StorageService.setElement(id, newData);
     }
 }
 exports.Item2 = Item2;
