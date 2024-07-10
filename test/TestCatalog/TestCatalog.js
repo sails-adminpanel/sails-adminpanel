@@ -16,7 +16,10 @@ class StorageService {
         this.storageMap.delete(id);
     }
     static async findElementById(id) {
-        return this.storageMap.get(id);
+        const found = this.storageMap.get(id);
+        // real orm not passed 
+        found.marked = false;
+        return found;
     }
     static async findElementsByParentId(parentId, type) {
         const elements = [];
