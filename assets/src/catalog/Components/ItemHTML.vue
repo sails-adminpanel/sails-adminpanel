@@ -5,6 +5,7 @@
 				<input type="checkbox" v-model="checkboxReady"
 					   @change="() => {if(checkboxReady) $emit('closeAllPopups')}"
 					   id="checkbox-ready" hidden>
+				<input id="selectedNode" :value="id" hidden/>
 				<div v-html="html" ref="embedded"></div>
 			</div>
 		</div>
@@ -12,12 +13,16 @@
 </template>
 
 <script setup>
-import {ref, watch, onMounted} from "vue";
+import {ref, computed, onMounted} from "vue";
 
-const props = defineProps(['html'])
+const props = defineProps(['html', 'selectedNode'])
 const emit = defineEmits(['closeAllPopups'])
 let embedded = ref(null)
 let checkboxReady = ref(false)
+
+let id = computed(() => {
+	return props.selectedNode?.length === 1 ? props.selectedNode[0].data.id : null
+})
 
 onMounted(() => {
 	setTimeout(() => {

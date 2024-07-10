@@ -59,7 +59,7 @@
 			<SelectItem :initItemsItem="ItemsItem" @createNewItem="createNewItem" v-if="isTollAdd"/>
 		</div>
 		<div ref="refItemHTML" class="custom-catalog__form">
-			<ItemHTML :html="HTML" @close-all-popups="closeAllPopups" v-if="isCreate"/>
+			<ItemHTML :html="HTML" @close-all-popups="closeAllPopups" :selectedNode="selectedNode" v-if="isCreate"/>
 		</div>
 	</div>
 </template>
@@ -167,7 +167,7 @@ function createPopup(content) {
 		popup.content.appendChild(content);
 	})
 	popup.on('close', () => {
-		switch (AdminPopUp.popups.length){
+		switch (AdminPopUp.popups.length) {
 			case 1:
 				isCreate.value = false
 				break
@@ -317,9 +317,17 @@ function toggleVisibility(event, node) {
 }
 
 function nodeSelected(nodes, event) {
-	console.log(nodes)
-	selectedNodesTitle.value = nodes.map((node) => node.title)[0]
-	selectedNode.value = nodes[0]
+	if (nodes.length === 1) {
+		let node = nodes[0]
+		if (node.isSelected) {
+			slVueTreeRef.value.updateNode({path: node.path, patch: {isSelected: false}})
+			selectedNode.value = ''
+		} else {
+			selectedNode.value = nodes
+		}
+	} else {
+		selectedNode.value
+	}
 }
 
 async function nodeToggled(node, event) {
@@ -389,20 +397,20 @@ async function nodeDropped(Dnode, position, event) {
 async function showContextMenu(node, event) {
 	event.preventDefault()
 	if (!selectedNode.value) return
-	let res = await ky.post('', {
-		json: {
-			type: selectedNode.value.data.type,
-			data: selectedNode.value.data,
-			_method: 'getActions'
-		}
-	}).json()
-	if (res.data.length) {
-		actions.value = res.data
-		contextMenuIsVisible.value = true
-		const $contextMenu = contextmenu.value
-		$contextMenu.style.left = event.clientX + 'px'
-		$contextMenu.style.top = event.clientY + 'px'
-	}
+	// let res = await ky.post('', {
+	// 	json: {
+	// 		type: selectedNode.value.data.type,
+	// 		data: selectedNode.value.data,
+	// 		_method: 'getActions'
+	// 	}
+	// }).json()
+	// if (res.data.length) {
+	// 	actions.value = res.data
+	// 	contextMenuIsVisible.value = true
+	// 	const $contextMenu = contextmenu.value
+	// 	$contextMenu.style.left = event.clientX + 'px'
+	// 	$contextMenu.style.top = event.clientY + 'px'
+	// }
 }
 
 async function initAction(id) {
@@ -426,32 +434,6 @@ function removeNode() {
 	$slVueTree.remove(paths)
 }
 
-function closePopup() {
-	switch (modalCount.value) {
-		case (3):
-			break;
-		case(2):
-			isFolder.value = false
-			isItem.value = false
-			break;
-		case (1):
-			isGroupRootAdd.value = false
-			isItemRootAdd.value = false
-			isActionPopUp.value = false
-			isTollAdd.value = false
-			break;
-		default:
-			isFolder.value = false
-			isItem.value = false
-			isGroupRootAdd.value = false
-			isItemRootAdd.value = false
-			isActionPopUp.value = false
-			isTollAdd.value = false
-			break;
-	}
-
-	modalCount.value--
-}
 </script>
 
 

@@ -1,0 +1,28 @@
+<form action="" id="customForm">
+    <%- include("add.ejs") %>
+    <div>
+        <button class="btn btn-green mb-4" id="save-group">
+            Save
+        </button>
+    </div>
+</form>
+<script>
+    document.getElementById('customForm').addEventListener('submit', function (e){
+		e.preventDefault()
+		let data = {}
+        let uri = "<%= entity.uri %>/add"
+        let checkboxReady = document.getElementById('checkbox-ready')
+		setTimeout(async () => {
+			for (const eElement of e.target.elements) {
+				if (eElement.value) {
+					data[eElement.name] = eElement.value
+				}
+			}
+			data.isPopup = true
+			let res = await ky.post(uri, {json: data}).json()
+			if (res.record && checkboxReady) {
+				checkboxReady.click()
+			}
+		}, 10)
+    })
+</script>

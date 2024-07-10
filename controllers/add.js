@@ -66,7 +66,12 @@ async function add(req, res) {
             let record = await entity.model.create(reqData).fetch();
             sails.log.debug(`A new record was created: `, record);
             req.session.messages.adminSuccess.push('Your record was created !');
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
+            if (req.body.isPopup) {
+                return res.json({ record: record });
+            }
+            else {
+                return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
+            }
         }
         catch (e) {
             sails.log.error(e);
@@ -74,8 +79,8 @@ async function add(req, res) {
             data = reqData;
         }
     }
-    if (req.query.without_layout) {
-        return res.viewAdmin("./../ejs/partials/content/add.ejs", {
+    if (req.query?.without_layout) {
+        return res.viewAdmin("./../ejs/partials/content/addPopup.ejs", {
             entity: entity,
             fields: fields,
             data: data

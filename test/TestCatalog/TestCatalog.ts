@@ -94,7 +94,12 @@ export class TestGroup extends AbstractGroup<GroupTestItem> {
 			id: id,
 			sortOrder: id
 		}
-		return await StorageService.setElement(id, newData) as GroupTestItem;
+		let item = await StorageService.setElement(id, newData) as GroupTestItem
+		if(item.parentId !== null) {
+			let parent = await StorageService.findElementById(item.parentId)
+			parent.childs.push(item)
+		}
+		return item;
 	}
 
 	public async deleteItem(itemId: string | number): Promise<void> {

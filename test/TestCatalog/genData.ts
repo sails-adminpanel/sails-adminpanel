@@ -7,7 +7,7 @@ interface GroupTestItem extends Item {
 
 export async function createTestData() {
 	const group1: GroupTestItem = {
-		id: 1,
+		id: '1',
 		name: 'Group 1',
 		parentId: null,
 		childs: [],
@@ -17,7 +17,7 @@ export async function createTestData() {
 	};
 
 	const group2: GroupTestItem = {
-		id: 2,
+		id: '2',
 		name: 'Group 2',
 		parentId: null,
 		childs: [],
@@ -27,7 +27,7 @@ export async function createTestData() {
 	};
 
 	const group3: GroupTestItem = {
-		id: 3,
+		id: '3',
 		name: 'Group 3',
 		parentId: null,
 		childs: [],

@@ -78,7 +78,12 @@ class TestGroup extends AbstractCatalog_1.AbstractGroup {
             id: id,
             sortOrder: id
         };
-        return await StorageService.setElement(id, newData);
+        let item = await StorageService.setElement(id, newData);
+        if (item.parentId !== null) {
+            let parent = await StorageService.findElementById(item.parentId);
+            parent.childs.push(item);
+        }
+        return item;
     }
     async deleteItem(itemId) {
         return await StorageService.removeElementById(itemId);

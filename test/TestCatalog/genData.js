@@ -4,7 +4,7 @@ exports.createTestData = void 0;
 const TestCatalog_1 = require("./TestCatalog");
 async function createTestData() {
     const group1 = {
-        id: 1,
+        id: '1',
         name: 'Group 1',
         parentId: null,
         childs: [],
@@ -13,7 +13,7 @@ async function createTestData() {
         type: 'group',
     };
     const group2 = {
-        id: 2,
+        id: '2',
         name: 'Group 2',
         parentId: null,
         childs: [],
@@ -22,7 +22,7 @@ async function createTestData() {
         type: 'group',
     };
     const group3 = {
-        id: 3,
+        id: '3',
         name: 'Group 3',
         parentId: null,
         childs: [],
