@@ -376,8 +376,7 @@ export abstract class AbstractCatalog {
 
 		// Handle all search
 		for (const itemType of this.itemTypes) {
-			const items = await itemType.search(s);
-			items.forEach(item => item.marked = true);
+			const items = (await itemType.search(s)).map(a => ({ ...a, marked: true }));
 			foundItems = foundItems.concat(items);
 		}
 

@@ -22,11 +22,7 @@ export class StorageService {
 	}
 
 	public static async findElementById(id: string | number): Promise<GroupTestItem | Item | undefined> {
-		const found = this.storageMap.get(id);
-		
-		// real orm not passed 
-		found.marked = false;
-		return found
+		return  this.storageMap.get(id);
 	}
 
 	public static async findElementsByParentId(parentId: string | number, type: string): Promise<(GroupTestItem | Item)[]> {
