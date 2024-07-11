@@ -21,9 +21,10 @@
 		let btn = document.getElementById('save-group')
 		btn.addEventListener('click', async function () {
 			let title = document.getElementById('group-form-title').value
+			let id = document.getElementById('selectedNode')
 			let data = {
 				name: title,
-				parentId: null,
+				parentId: id.value ? id.value : null,
 				icon: 'radiation-alt',
 				type: 'item2',
 			}

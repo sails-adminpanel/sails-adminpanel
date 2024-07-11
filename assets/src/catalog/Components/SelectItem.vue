@@ -2,7 +2,7 @@
 	<div class="modal-content">
 		<div class="custom-catalog__form">
 			<div class="flex flex-col gap-2">
-				<label class="admin-panel__title" for="root-group">Select and create root Group Item</label>
+				<label class="admin-panel__title" for="root-group">Select Item type</label>
 				<select id="root-group" class="select" @change="create($event)">
 					<option selected disabled value="">Select Group</option>
 					<option v-for="item in initItemsItem" :value="item.type">{{ item.name }}</option>

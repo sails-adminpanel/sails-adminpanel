@@ -1,8 +1,12 @@
 <template>
-	<div class="flex items-center gap-4">
-		<button class="btn btn-add" @click="toolAddGroup"><i
-			class="las la-plus"></i><span>create</span>
-		</button>
+	<div class="flex items-center justify-between">
+		<div class="flex gap-4">
+			<button class="btn btn-add" @click="toolAddGroup" :disabled="selectedNode.length > 1"><i
+				class="las la-plus"></i><span>create</span>
+			</button>
+			<button class="btn btn-green" @click="toolAddGroup" :disabled="selectedNode.length > 1"><span>edit</span>
+			</button>
+		</div>
 		<div class="admin-panel__widget">
 			<div class="widget_narrow ">
 				<input class="text-input w-full input-search" type="text" placeholder="Search" value="" @input="search"
@@ -49,6 +53,8 @@
 	</div>
 	<div class="contextmenu" ref="contextmenu" id="contextmenu" v-show="contextMenuIsVisible">
 		<ul class="custom-catalog__actions-items">
+			<li @click="toolAddGroup" :class="actionClass">Create</li>
+			<li @click="toolAddGroup" :class="actionClass">Edit</li>
 			<li v-for="action in actions" @click="initAction(action.id)">
 				{{ action.name }}
 			</li>
@@ -66,35 +72,25 @@
 
 <script setup>
 import {SlVueTreeNext} from 'sl-vue-tree-next'
-import {ref, onMounted, computed, reactive, watch} from 'vue'
+import {ref, onMounted, computed} from 'vue'
 import ItemHTML from "./Components/ItemHTML.vue";
 import SelectItem from "./Components/SelectItem.vue";
 import ActionPopUp from "./Components/ActionPopUp.vue";
 import debounce from "lodash/debounce"
-import {AdminPopUp} from "../pop-up/admin-pop-up";
 
 let nodes = ref([])
 
 let contextMenuIsVisible = ref(false)
 let selectedNodesTitle = ref('')
-let selectedNode = ref('')
+let selectedNode = ref([])
 let slVueTreeRef = ref(null)
 let contextmenu = ref(null)
 let refSelectItem = ref(null)
 let refItemHTML = ref(null)
 let isCreate = ref(false)
-let isItem = ref(false)
-let parentPopUp = ref(null)
-let newFolder = ref(false)
 let HTML = ref('')
-let ItemsGroup = ref([])
 let ItemsItem = ref([])
-let selectedGroup = ref([])
-let selectedItem = ref('')
 let isTollAdd = ref(false)
-let isItemRootAdd = ref(false)
-let isGroupRootAdd = ref(false)
-let getHTMLoading = ref(false)
 let actions = ref([])
 let isActionPopUp = ref(false)
 let searchText = ref('')
@@ -115,6 +111,10 @@ onMounted(async () => {
 		}
 	})
 	getCatalog()
+})
+
+let actionClass = computed(() => {
+	return selectedNode.value.length > 1 ? 'action-disabled' : ''
 })
 
 const search = debounce(async () => {
@@ -177,24 +177,21 @@ function createPopup(content) {
 	})
 }
 
-function closeAllPopups() {
+async function closeAllPopups() {
 	isCreate.value = false
 	isTollAdd.value = false
 	AdminPopUp.closeAll()
-	reloadCatalog()
+	if (selectedNode.value.length === 1) {
+		await getChilds(selectedNode.value[0])
+	} else {
+		reloadCatalog()
+	}
 }
 
 function setCatalog(catalog) {
 	nodes.value = catalog.nodes
 }
 
-
-async function createNewFolder(isNew, value) {
-	selectedGroup.value = value
-	let resPost = await ky.post('', {json: {type: value, _method: 'getHTML'}}).json()
-	await getHTML(resPost)
-	createPopup(refItemHTML.value, 'groupHTML')
-}
 
 async function getHTML(data) {
 	if (data.type === 'html') {
@@ -214,25 +211,6 @@ async function createNewItem(value) {
 	isCreate.value = true
 }
 
-function saveFolder(data) {
-	if (newFolder.value) {
-		createFolder(data)
-	} else {
-		// let selectedFolderPath = slVueTreeRef.value.getSelected().filter(e => e.isLeaf === false)[0].path
-		// recurciveFindAndInsert(selectedFolderPath, false, false, folderName)
-	}
-
-	closeAllPopups()
-}
-
-
-async function createFolder(data) {
-	data.ind = nodes.value.length
-	let res = await ky.post('', {json: {type: selectedGroup.value, data: data, _method: 'createItem'}}).json()
-	if (res.data.node) {
-		nodes.value.push(res.data.node)
-	}
-}
 
 async function updateFolder(data) {
 	let res = await ky.put('', {
@@ -249,64 +227,6 @@ async function updateFolder(data) {
 	}
 }
 
-async function addCreatedItem(id) {
-	let data = {id: id, isNew: false, ind: nodes.value.length}
-	await createItem(data)
-	closeAllPopups()
-}
-
-async function createItem(data) {
-	data.ind = nodes.value.length
-	let res = await ky.post('', {json: {type: selectedItem.value, data: data, _method: 'createItem'}}).json()
-	if (res.data.node) {
-		nodes.value.push(res.data.node)
-	}
-}
-
-async function updateItem(data) {
-	let res = await ky.put('', {
-		json: {
-			type: selectedNode.value.data.type,
-			data: data,
-			id: selectedNode.value.data.id,
-			_method: 'updateItem'
-		}
-	}).json()
-	if (res.data.ok) {
-		closeAllPopups()
-		reloadCatalog()
-	}
-}
-
-async function saveItem(data) {
-	data.isNew = true
-	await createItem(data)
-	// let selectedFolderPath = slVueTreeRef.value.getSelected().filter(e => e.isLeaf === false)[0].path
-	// recurciveFindAndInsert(selectedFolderPath, false, true, itemName)
-
-	closeAllPopups()
-}
-
-function recurciveFindAndInsert(path, nodesArr, isLeaf, title) {
-	let index = path.shift()
-	let result = null
-	if (nodesArr && nodesArr.children.length) {
-		result = nodesArr.children.find((e, i) => i === index)
-	} else {
-		result = nodes.find((e, i) => i === index)
-	}
-	if (path.length) {
-		recurciveFindAndInsert(path, result, isLeaf, title)
-	} else {
-		if (result.children) {
-			result.children.push({title: title, isLeaf: isLeaf})
-		} else {
-			result.children = []
-			result.children.push({title: title, isLeaf: isLeaf})
-		}
-	}
-
-}
 
 function toggleVisibility(event, node) {
 	event.stopPropagation()
@@ -321,13 +241,14 @@ function nodeSelected(nodes, event) {
 		let node = nodes[0]
 		if (node.isSelected) {
 			slVueTreeRef.value.updateNode({path: node.path, patch: {isSelected: false}})
-			selectedNode.value = ''
+			selectedNode.value = []
 		} else {
 			selectedNode.value = nodes
 		}
 	} else {
-		selectedNode.value
+		selectedNode.value = nodes
 	}
+	selectedNodesTitle.value = nodes.map((node) => node.title)[0]
 }
 
 async function nodeToggled(node, event) {
@@ -393,10 +314,22 @@ async function nodeDropped(Dnode, position, event) {
 	let res = await ky.put('', {json: {data: {reqNode: reqNode, reqParent: reqParent}, _method: 'sortOrder'}}).json()
 }
 
+function selectNodeRightClick(node) {
+	if(node.isSelected) return
+	slVueTreeRef.value.traverse((node, nodeModel, path) => {
+		nodeModel.isSelected = false
+	})
+	slVueTreeRef.value.updateNode({path: node.path, patch: {isSelected: true}})
+	selectedNode.value = [node]
+}
 
 async function showContextMenu(node, event) {
 	event.preventDefault()
-	if (!selectedNode.value) return
+	selectNodeRightClick(node)
+	contextMenuIsVisible.value = true
+	const $contextMenu = contextmenu.value
+	$contextMenu.style.left = event.clientX + 'px'
+	$contextMenu.style.top = event.clientY + 'px'
 	// let res = await ky.post('', {
 	// 	json: {
 	// 		type: selectedNode.value.data.type,
@@ -484,5 +417,11 @@ function removeNode() {
 .close-admin-modal-pu {
 	top: 30px;
 	right: 33px
+}
+
+.btn[disabled],
+.action-disabled {
+	pointer-events: none;
+	opacity: 0.7;
 }
 </style>

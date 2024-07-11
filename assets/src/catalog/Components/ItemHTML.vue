@@ -8,8 +8,10 @@
 				<input id="selectedNode" :value="id" hidden/>
 				<div v-html="html" ref="embedded"></div>
 			</div>
+			<p>parent id: {{id ? id : "null"}}</p>
 		</div>
 	</div>
+
 </template>
 
 <script setup>
@@ -21,7 +23,11 @@ let embedded = ref(null)
 let checkboxReady = ref(false)
 
 let id = computed(() => {
-	return props.selectedNode?.length === 1 ? props.selectedNode[0].data.id : null
+	if(props.selectedNode.length){
+		return !props.selectedNode[0].isLeaf ? props.selectedNode[0].data.id : ''
+	} else{
+		return ''
+	}
 })
 
 onMounted(() => {

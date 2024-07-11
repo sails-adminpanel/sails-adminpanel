@@ -91,7 +91,7 @@ export class TestGroup extends AbstractGroup<GroupTestItem> {
 		let id = elems.length + 1
 		let newData = {
 			...data,
-			id: id,
+			id: id.toString(),
 			sortOrder: id
 		}
 		let item = await StorageService.setElement(id, newData) as GroupTestItem
@@ -199,10 +199,15 @@ export class Item2 extends Item1 {
 		let id = elems.length + 1
 		let newData = {
 			...data,
-			id: id,
+			id: id.toString(),
 			sortOrder: id
 		}
-		return await StorageService.setElement(id, newData) as GroupTestItem;
+		let item = await StorageService.setElement(id, newData) as GroupTestItem
+		if(item.parentId !== null) {
+			let parent = await StorageService.findElementById(item.parentId)
+			parent.childs.push(item)
+		}
+		return item;
 	}
 }
 

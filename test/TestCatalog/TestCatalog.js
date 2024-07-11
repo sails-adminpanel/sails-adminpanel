@@ -75,7 +75,7 @@ class TestGroup extends AbstractCatalog_1.AbstractGroup {
         let id = elems.length + 1;
         let newData = {
             ...data,
-            id: id,
+            id: id.toString(),
             sortOrder: id
         };
         let item = await StorageService.setElement(id, newData);
@@ -172,10 +172,15 @@ class Item2 extends Item1 {
         let id = elems.length + 1;
         let newData = {
             ...data,
-            id: id,
+            id: id.toString(),
             sortOrder: id
         };
-        return await StorageService.setElement(id, newData);
+        let item = await StorageService.setElement(id, newData);
+        if (item.parentId !== null) {
+            let parent = await StorageService.findElementById(item.parentId);
+            parent.childs.push(item);
+        }
+        return item;
     }
 }
 exports.Item2 = Item2;
