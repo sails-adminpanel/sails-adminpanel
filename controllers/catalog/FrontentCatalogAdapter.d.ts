@@ -32,8 +32,12 @@ export declare class VueCatalog {
         type: "link" | "html";
         data: string;
     };
+    getEditHTML(item: any, id: string | number): Promise<{
+        type: "link" | "html";
+        data: string;
+    }>;
     getitemTypes(): import("../../lib/catalog/AbstractCatalog").BaseItem<Item>[];
-    getActions(items: any[]): Promise<import("../../lib/catalog/AbstractCatalog").ActionHandler[]>;
+    getActions(items: NodeModel<any>[], type: string): Promise<import("../../lib/catalog/AbstractCatalog").ActionHandler[]>;
     handleAction(actionID: string, items: any[], config: any): Promise<void>;
     getCatalog(): Promise<NodeModel<Item>[]>;
     createItem(data: any): Promise<any>;
@@ -41,6 +45,9 @@ export declare class VueCatalog {
     search(s: string): Promise<NodeModel<Item>[]>;
     updateTree(data: RequestData): Promise<any>;
     updateItem(item: any, id: string, data: any): Promise<any>;
+    deleteItem(items: NodeModel<any>[]): Promise<{
+        ok: boolean;
+    }>;
 }
 export declare class VueCatalogUtils {
     /**

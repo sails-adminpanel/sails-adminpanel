@@ -1,4 +1,4 @@
-import { AbstractCatalog, AbstractGroup, AbstractItem, Item } from "../../lib/catalog/AbstractCatalog";
+import { AbstractCatalog, ActionHandler, AbstractGroup, AbstractItem, Item } from "../../lib/catalog/AbstractCatalog";
 interface GroupTestItem extends Item {
     thisIsGroup: boolean;
 }
@@ -54,7 +54,7 @@ export declare class Item1 extends AbstractItem<Item> {
     name: string;
     allowedRoot: boolean;
     icon: string;
-    find(itemId: string | number): Promise<GroupTestItem | Item>;
+    find(itemId: string | number): Promise<Item | GroupTestItem>;
     update(itemId: string | number, data: Item): Promise<Item>;
     create(itemId: string, data: Item): Promise<Item>;
     deleteItem(itemId: string | number): Promise<void>;
@@ -78,13 +78,31 @@ export declare class Item2 extends Item1 {
         type: "link" | "html";
         data: string;
     };
+    getEditHTML(id: string | number): Promise<{
+        type: "link" | "html";
+        data: string;
+    }>;
     create(itemId: string, data: GroupTestItem): Promise<GroupTestItem>;
+    update(itemId: string | number, data: Item): Promise<Item>;
 }
 export declare class TestCatalog extends AbstractCatalog {
     readonly name: string;
     readonly slug: string;
     readonly maxNestingDepth: number;
     readonly icon: string;
+    readonly actionHandlers: any[];
     constructor();
+}
+export declare class DownloadTree extends ActionHandler {
+    readonly icon: string;
+    readonly id: string;
+    readonly name: string;
+    readonly displayTool: boolean;
+    readonly displayContext: boolean;
+    readonly type = "basic";
+    readonly selectedItemTypes: string[];
+    getLink(): Promise<string>;
+    getPopUpHTML(): Promise<string>;
+    handler(items: Item[], config?: any): Promise<any>;
 }
 export {};

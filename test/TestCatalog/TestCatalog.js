@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TestCatalog = exports.Item2 = exports.Item1 = exports.TestGroup = exports.StorageService = void 0;
+exports.DownloadTree = exports.TestCatalog = exports.Item2 = exports.Item1 = exports.TestGroup = exports.StorageService = void 0;
 const AbstractCatalog_1 = require("../../lib/catalog/AbstractCatalog");
 const fs = require("node:fs");
+const filepath = './.tmp/public/files';
 /**
  * Storage takes place in RAM
  */
@@ -86,7 +87,7 @@ class TestGroup extends AbstractCatalog_1.AbstractGroup {
         return item;
     }
     async deleteItem(itemId) {
-        return await StorageService.removeElementById(itemId);
+        await StorageService.removeElementById(itemId);
     }
     getAddHTML() {
         let type = 'html';
@@ -95,8 +96,41 @@ class TestGroup extends AbstractCatalog_1.AbstractGroup {
             data: fs.readFileSync(`${__dirname}/groupAdd.html`, 'utf8'),
         };
     }
-    getEditHTML(id) {
-        throw new Error("Method not implemented.");
+    async getEditHTML(id) {
+        let type = 'html';
+        let item = await StorageService.findElementById(id);
+        return {
+            type: type,
+            data: `<div class="custom-catalog__form">
+					<div class="flex flex-col gap-3">
+					<div class="admin-panel__wrapper-title">
+					<label class="admin-panel__title" for="form-title">Title for Group</label>
+					</div>
+					<div class="admin-panel__widget">
+					<div class="widget_narrow ">
+					<input class="text-input w-full" type="text" placeholder="Title" value="${item.name}" name="title"
+					id="group-form-title" required/>
+					</div>
+					</div>
+					</div>
+					<div>
+					<button class="btn btn-green" id="save-group">
+					Save
+					</button>
+					</div>
+					</div>
+					<script>
+					{
+						let btn = document.getElementById('save-group')
+						let item = ${JSON.stringify(item)}
+						btn.addEventListener('click', async function () {
+							item.name = document.getElementById('group-form-title').value
+							let res = await ky.put('', {json: {type: item.type, data: item, id: item.id, _method: 'updateItem'}}).json()
+							if (res.data) document.getElementById('checkbox-ready').click()
+						})
+					}
+					</script>`,
+        };
     }
     async getChilds(parentId) {
         return await StorageService.findElementsByParentId(parentId, this.type);
@@ -132,7 +166,7 @@ class Item1 extends AbstractCatalog_1.AbstractItem {
         return await StorageService.setElement(itemId, data);
     }
     async deleteItem(itemId) {
-        return await StorageService.removeElementById(itemId);
+        await StorageService.removeElementById(itemId);
     }
     getAddHTML() {
         let type = 'link';
@@ -167,6 +201,42 @@ class Item2 extends Item1 {
             data: fs.readFileSync(`${__dirname}/item2Add.html`, 'utf8'),
         };
     }
+    async getEditHTML(id) {
+        let type = 'html';
+        let item = await StorageService.findElementById(id);
+        return {
+            type: type,
+            data: `<div class="custom-catalog__form">
+					<div class="flex flex-col gap-3">
+					<div class="admin-panel__wrapper-title">
+					<label class="admin-panel__title" for="form-title">Title for Item2</label>
+					</div>
+					<div class="admin-panel__widget">
+					<div class="widget_narrow ">
+					<input class="text-input w-full" type="text" placeholder="Title" value="${item.name}" name="title"
+					id="group-form-title" required/>
+					</div>
+					</div>
+					</div>
+					<div>
+					<button class="btn btn-green" id="save-group">
+					Save
+					</button>
+					</div>
+					</div>
+					<script>
+					{
+						let btn = document.getElementById('save-group')
+						let item = ${JSON.stringify(item)}
+						btn.addEventListener('click', async function () {
+							item.name = document.getElementById('group-form-title').value
+							let res = await ky.put('', {json: {type: item.type, data: item, id: item.id, _method: 'updateItem'}}).json()
+							if (res.data) document.getElementById('checkbox-ready').click()
+						})
+					}
+					</script>`,
+        };
+    }
     async create(itemId, data) {
         let elems = await StorageService.getAllElements();
         let id = elems.length + 1;
@@ -182,6 +252,10 @@ class Item2 extends Item1 {
         }
         return item;
     }
+    async update(itemId, data) {
+        return await StorageService.setElement(itemId, data);
+    }
+    ;
 }
 exports.Item2 = Item2;
 class TestCatalog extends AbstractCatalog_1.AbstractCatalog {
@@ -196,6 +270,45 @@ class TestCatalog extends AbstractCatalog_1.AbstractCatalog {
         this.slug = "test";
         this.maxNestingDepth = null;
         this.icon = "box";
+        this.actionHandlers = [];
+        this.addActionHandler(new DownloadTree());
     }
 }
 exports.TestCatalog = TestCatalog;
+class DownloadTree extends AbstractCatalog_1.ActionHandler {
+    constructor() {
+        super(...arguments);
+        this.icon = 'cat';
+        this.id = 'download';
+        this.name = 'Download Items';
+        this.displayTool = true;
+        this.displayContext = false;
+        this.type = 'basic';
+        this.selectedItemTypes = [];
+    }
+    getLink() {
+        return Promise.resolve("");
+    }
+    getPopUpHTML() {
+        return Promise.resolve("");
+    }
+    handler(items, config) {
+        let date = new Date().valueOf();
+        if (fs.existsSync(`${filepath}`)) {
+            fs.rmSync(`${filepath}`, { recursive: true, force: true });
+            fs.mkdirSync(`${filepath}`, { recursive: true });
+        }
+        else {
+            fs.mkdirSync(`${filepath}`, { recursive: true });
+        }
+        fs.writeFileSync(`${filepath}/${date}.json`, JSON.stringify(items, null, 2));
+        // // zip archive of your folder is ready to download
+        // res.download(folderpath + '/archive.zip');
+        return Promise.resolve({
+            data: `files/${date}.json`,
+            type: this.type,
+            event: 'download'
+        });
+    }
+}
+exports.DownloadTree = DownloadTree;

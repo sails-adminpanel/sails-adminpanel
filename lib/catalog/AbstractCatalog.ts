@@ -165,6 +165,7 @@ export abstract class ActionHandler {
 	public abstract handler(items: Item[], config?: any): Promise<void>;
 
 }
+
 /**
  *
 	Abstract
@@ -262,8 +263,8 @@ export abstract class AbstractCatalog {
 	}
 
 	/**
-		 *  Removing an element
-		 */
+	 *  Removing an element
+	 */
 	public find(item: Item) {
 		return this.getItemType(item.type)?.find(item.id);
 	}
@@ -271,15 +272,19 @@ export abstract class AbstractCatalog {
 	/**
 	 *  Removing an element
 	 */
-	public deleteItem(item: Item) {
-		this.getItemType(item.type)?.deleteItem(item.id);
+	public deleteItem(type: string, id: string | number) {
+		try {
+			this.getItemType(type)?.deleteItem(id);
+		} catch (e) {
+			throw e
+		}
 	}
 
 	/**
 	 * Receives HTML to update an element for projection into a popup
 	 */
-	public getEditHTML(item: Item) {
-		this.getItemType(item.type)?.getEditHTML(item.id);
+	public getEditHTML(item: Item, id: string | number) {
+		return this.getItemType(item.type)?.getEditHTML(id);
 	}
 
 	/**
@@ -308,7 +313,8 @@ export abstract class AbstractCatalog {
 		if (items.length === 1) {
 			const item = items[0];
 			const itemType = this.itemTypes.find((it) => it.type === item.type);
-			return itemType.actionHandlers
+
+			return itemType.actionHandlers ?? this.actionHandlers
 		} else {
 			return this.actionHandlers
 		}
@@ -322,7 +328,11 @@ export abstract class AbstractCatalog {
 		if (items.length === 1) {
 			const item = items[0];
 			const itemType = this.itemTypes.find((it) => it.type === item.type);
-			action = itemType.actionHandlers.find((it) => it.id === actionId);
+			if (itemType.actionHandlers?.length) {
+				action = itemType.actionHandlers.find((it) => it.id === actionId);
+			} else {
+				action = this.actionHandlers.find((it) => it.id === actionId);
+			}
 		} else {
 			action = this.actionHandlers.find((it) => it.id === actionId);
 		}
@@ -376,7 +386,7 @@ export abstract class AbstractCatalog {
 
 		// Handle all search
 		for (const itemType of this.itemTypes) {
-			const items = (await itemType.search(s)).map(a => ({ ...a, marked: true }));
+			const items = (await itemType.search(s)).map(a => ({...a, marked: true}));
 			foundItems = foundItems.concat(items);
 		}
 

@@ -170,17 +170,20 @@ export declare abstract class AbstractCatalog {
     getGroupType(): BaseItem<Item>;
     additemTypes<T extends BaseItem<any>>(itemType: T): void;
     /**
-         *  Removing an element
-         */
+     *  Removing an element
+     */
     find(item: Item): Promise<Item>;
     /**
      *  Removing an element
      */
-    deleteItem(item: Item): void;
+    deleteItem(type: string, id: string | number): void;
     /**
      * Receives HTML to update an element for projection into a popup
      */
-    getEditHTML(item: Item): void;
+    getEditHTML(item: Item, id: string | number): Promise<{
+        type: "link" | "html";
+        data: string;
+    }>;
     /**
      * Receives HTML to create an element for projection into a popup
      */

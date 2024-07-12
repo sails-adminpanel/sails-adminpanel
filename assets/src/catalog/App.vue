@@ -4,8 +4,17 @@
 			<button class="btn btn-add" @click="toolAddGroup" :disabled="selectedNode.length > 1"><i
 				class="las la-plus"></i><span>create</span>
 			</button>
-			<button class="btn btn-green" @click="toolAddGroup" :disabled="selectedNode.length > 1"><span>edit</span>
+			<button class="btn btn-green" @click="updateItem"
+					:disabled="selectedNode.length > 1 || !selectedNode.length"><span>edit</span>
 			</button>
+			<button class="btn btn-red" @click="deleteItem"
+					:disabled="!selectedNode.length"><span>delete</span>
+			</button>
+			<template v-for="action in actionsTools">
+				<button class="btn btn-add" @click="initAction(action.id)"><i
+					:class="`las la-${action.icon}`"></i><span>{{ action.name }}</span>
+				</button>
+			</template>
 		</div>
 		<div class="admin-panel__widget">
 			<div class="widget_narrow ">
@@ -53,8 +62,9 @@
 	</div>
 	<div class="contextmenu" ref="contextmenu" id="contextmenu" v-show="contextMenuIsVisible">
 		<ul class="custom-catalog__actions-items">
-			<li @click="toolAddGroup" :class="actionClass">Create</li>
-			<li @click="toolAddGroup" :class="actionClass">Edit</li>
+			<li @click="toolAddGroup" :class="actionCreateClass">Create</li>
+			<li @click="updateItem" :class="actionEditClass">Edit</li>
+			<li @click="deleteItem" :class="actionDeleteClass">Delete</li>
 			<li v-for="action in actions" @click="initAction(action.id)">
 				{{ action.name }}
 			</li>
@@ -88,10 +98,12 @@ let contextmenu = ref(null)
 let refSelectItem = ref(null)
 let refItemHTML = ref(null)
 let isCreate = ref(false)
+let PopupEvent = ref(null)
 let HTML = ref('')
 let ItemsItem = ref([])
 let isTollAdd = ref(false)
-let actions = ref([])
+let actionsTools = ref([])
+let actionsContext = ref([])
 let isActionPopUp = ref(false)
 let searchText = ref('')
 
@@ -113,8 +125,15 @@ onMounted(async () => {
 	getCatalog()
 })
 
-let actionClass = computed(() => {
+let actionCreateClass = computed(() => {
 	return selectedNode.value.length > 1 ? 'action-disabled' : ''
+})
+
+let actionEditClass = computed(() => {
+	return selectedNode.value.length > 1 || !selectedNode.value.length ? 'action-disabled' : ''
+})
+let actionDeleteClass = computed(() => {
+	return !selectedNode.value.length ? 'action-disabled' : ''
 })
 
 const search = debounce(async () => {
@@ -173,6 +192,8 @@ function createPopup(content) {
 				break
 			case 0:
 				isTollAdd.value = false
+				isCreate.value = false
+				break
 		}
 	})
 }
@@ -181,10 +202,26 @@ async function closeAllPopups() {
 	isCreate.value = false
 	isTollAdd.value = false
 	AdminPopUp.closeAll()
-	if (selectedNode.value.length === 1) {
-		await getChilds(selectedNode.value[0])
-	} else {
-		reloadCatalog()
+	if (PopupEvent.value === 'create') {
+		if (selectedNode.value.length === 1) {
+			await getChilds(selectedNode.value[0])
+		} else {
+			reloadCatalog()
+		}
+	}
+	if (PopupEvent.value === 'update') {
+		if (selectedNode.value[0].data.parentId === null) {
+			reloadCatalog()
+		} else {
+			let parentNode = null
+			slVueTreeRef.value.traverse((node, nodeModel, siblings) => {
+				if (node.data.id === selectedNode.value[0].data.parentId) {
+					parentNode = node
+					return false
+				}
+			})
+			await getChilds(parentNode)
+		}
 	}
 }
 
@@ -205,28 +242,27 @@ async function getHTML(data) {
 }
 
 async function createNewItem(value) {
-	let resPost = await ky.post('', {json: {type: value, _method: 'getHTML'}}).json()
+	let resPost = await ky.post('', {json: {type: value, _method: 'getAddHTML'}}).json()
 	await getHTML(resPost)
+	PopupEvent.value = 'create'
 	createPopup(refItemHTML.value)
 	isCreate.value = true
 }
 
 
-async function updateFolder(data) {
-	let res = await ky.put('', {
-		json: {
-			type: selectedNode.value.data.type,
-			data: data,
-			id: selectedNode.value.data.id,
-			_method: 'updateItem'
-		}
-	}).json()
-	if (res.data.ok) {
-		closeAllPopups()
-		reloadCatalog()
-	}
+async function updateItem() {
+	let item = selectedNode.value[0]
+	let resPost = await ky.post('', {json: {type: item.data.type, id: item.data.id, _method: 'getEditHTML'}}).json()
+	await getHTML(resPost)
+	PopupEvent.value = 'update'
+	createPopup(refItemHTML.value)
+	isCreate.value = true
 }
 
+async function deleteItem() {
+	let res = await ky.delete('', {json: {data: selectedNode.value}}).json()
+	if (res.data.ok) removeNodes()
+}
 
 function toggleVisibility(event, node) {
 	event.stopPropagation()
@@ -249,7 +285,13 @@ function nodeSelected(nodes, event) {
 		selectedNode.value = nodes
 	}
 	selectedNodesTitle.value = nodes.map((node) => node.title)[0]
+	if (!selectedNode.value.length) {
+		actionsTools.value = []
+	} else {
+		if (!actionsTools.value.length) getActionsTools()
+	}
 }
+
 
 async function nodeToggled(node, event) {
 	if (!node.isExpanded) getChilds(node)
@@ -311,16 +353,53 @@ async function nodeDropped(Dnode, position, event) {
 	}
 	//console.log('Node: ', reqNode, 'parent: ', reqParent)
 
-	let res = await ky.put('', {json: {data: {reqNode: reqNode, reqParent: reqParent}, _method: 'sortOrder'}}).json()
+	let res = await ky.put('', {json: {data: {reqNode: reqNode, reqParent: reqParent}, _method: 'updateTree'}}).json()
 }
 
 function selectNodeRightClick(node) {
-	if(node.isSelected) return
+	if (node.isSelected) return
 	slVueTreeRef.value.traverse((node, nodeModel, path) => {
 		nodeModel.isSelected = false
 	})
 	slVueTreeRef.value.updateNode({path: node.path, patch: {isSelected: true}})
 	selectedNode.value = [node]
+}
+
+async function getActionsContext() {
+	let res = await ky.post('', {
+		json: {
+			items: selectedNode.value,
+			type: 'context',
+			_method: 'getActions'
+		}
+	}).json()
+	if (res.data.length) {
+		for (const re of res.data) {
+			actionsContext.value.push(re)
+		}
+	}
+	// if (res.data.length) {
+	// 	actions.value = res.data
+	// 	contextMenuIsVisible.value = true
+	// 	const $contextMenu = contextmenu.value
+	// 	$contextMenu.style.left = event.clientX + 'px'
+	// 	$contextMenu.style.top = event.clientY + 'px'
+	// }
+}
+
+async function getActionsTools() {
+	let res = await ky.post('', {
+		json: {
+			items: selectedNode.value,
+			type: 'tools',
+			_method: 'getActions'
+		}
+	}).json()
+	if (res.data.length) {
+		for (const re of res.data) {
+			actionsTools.value.push(re)
+		}
+	}
 }
 
 async function showContextMenu(node, event) {
@@ -330,6 +409,9 @@ async function showContextMenu(node, event) {
 	const $contextMenu = contextmenu.value
 	$contextMenu.style.left = event.clientX + 'px'
 	$contextMenu.style.top = event.clientY + 'px'
+
+	getActionsContext()
+	if(!actionsTools.value.length) getActionsTools()
 	// let res = await ky.post('', {
 	// 	json: {
 	// 		type: selectedNode.value.data.type,
@@ -346,21 +428,29 @@ async function showContextMenu(node, event) {
 	// }
 }
 
+
 async function initAction(id) {
 	let data = {
 		actionID: id,
-		config: selectedNode.value.data
+		items: selectedNode.value,
+		config: ''
 	}
-	let res = await ky.put('', {json: {type: selectedNode.value.data.type, data: data, _method: 'action'}}).json()
-	if (res.data.type === 'external') {
-		await getHTML(res.data.data)
-		modalCount.value++
-		isActionPopUp.value = true
+	let res = await ky.put('', {json: {data: data, _method: 'action'}}).json()
+	// console.log(res.data)
+	if(res.data){
+		if(res.data.event === 'download'){
+			window.open(`/${res.data.data}`);
+		}
 	}
+	// if (res.data.type === 'external') {
+	// 	await getHTML(res.data.data)
+	// 	modalCount.value++
+	// 	isActionPopUp.value = true
+	// }
 
 }
 
-function removeNode() {
+function removeNodes() {
 	contextMenuIsVisible.value = false
 	const $slVueTree = slVueTreeRef.value
 	const paths = $slVueTree.getSelected().map((node) => node.path)
@@ -422,6 +512,6 @@ function removeNode() {
 .btn[disabled],
 .action-disabled {
 	pointer-events: none;
-	opacity: 0.7;
+	opacity: 0.5;
 }
 </style>

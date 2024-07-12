@@ -48,16 +48,32 @@ export class VueCatalog {
 		return this.catalog.getAddHTML(item);
 	}
 
+	getEditHTML(item: any, id: string | number) {
+		return this.catalog.getEditHTML(item, id)
+	}
+
 	getitemTypes() {
 		return this.catalog.getitemTypes();
 	}
 
-	getActions(items: any[]) {
-		return this.catalog.getActions(items);
+	async getActions(items: NodeModel<any>[], type: string) {
+		let arrItems = []
+		for (const item of items) {
+			arrItems.push(await this.catalog.find(item.data))
+		}
+		if(type === 'tools'){
+			return (await this.catalog.getActions(arrItems)).filter(e => e.displayTool);
+		} else {
+			return (await this.catalog.getActions(arrItems)).filter(e => e.displayContext);
+		}
 	}
 
-	handleAction(actionID: string, items: any[], config: any) {
-		return this.catalog.handleAction(actionID, items, config);
+	async handleAction(actionID: string, items: any[], config: any) {
+		let arrItems = []
+		for (const item of items) {
+			arrItems.push(await this.catalog.find(item.data))
+		}
+		return this.catalog.handleAction(actionID, arrItems, config);
 	}
 
 	//Below are the methods that require action
@@ -128,7 +144,17 @@ export class VueCatalog {
 
 
 	updateItem(item: any, id: string, data: any) {
-		return this.catalog.updateItem(item, id, data);
+		return this.catalog.updateItem(id, item.type, data);
+	}
+
+	async deleteItem(items: NodeModel<any>[]) {
+		for (const item1 of items) {
+			if(item1.children?.length){
+				await this.deleteItem(item1.children)
+			}
+			this.catalog.deleteItem(item1.data.type, item1.data.id)
+		}
+		return {ok: true}
 	}
 }
 

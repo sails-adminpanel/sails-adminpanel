@@ -1,6 +1,9 @@
 import {AbstractCatalog, ActionHandler, AbstractGroup, AbstractItem, Item} from "../../lib/catalog/AbstractCatalog";
 import * as fs from "node:fs";
 
+const filepath = './.tmp/public/files'
+
+
 interface GroupTestItem extends Item {
 	thisIsGroup: boolean
 }
@@ -22,7 +25,7 @@ export class StorageService {
 	}
 
 	public static async findElementById(id: string | number): Promise<GroupTestItem | Item | undefined> {
-		return  this.storageMap.get(id);
+		return this.storageMap.get(id);
 	}
 
 	public static async findElementsByParentId(parentId: string | number, type: string): Promise<(GroupTestItem | Item)[]> {
@@ -81,10 +84,10 @@ export class TestGroup extends AbstractGroup<GroupTestItem> {
 		return await StorageService.findElementById(itemId) as GroupTestItem;
 	}
 
+
 	public async update(itemId: string | number, data: GroupTestItem): Promise<GroupTestItem> {
 		return await StorageService.setElement(itemId, data) as GroupTestItem;
 	};
-
 
 	public async create(itemId: string, data: GroupTestItem): Promise<GroupTestItem> {
 		let elems = await StorageService.getAllElements()
@@ -95,15 +98,15 @@ export class TestGroup extends AbstractGroup<GroupTestItem> {
 			sortOrder: id
 		}
 		let item = await StorageService.setElement(id, newData) as GroupTestItem
-		if(item.parentId !== null) {
+		if (item.parentId !== null) {
 			let parent = await StorageService.findElementById(item.parentId)
 			parent.childs.push(item)
 		}
 		return item;
 	}
 
-	public async deleteItem(itemId: string | number): Promise<void> {
-		return await StorageService.removeElementById(itemId);
+	public async deleteItem(itemId: string | number) {
+		await StorageService.removeElementById(itemId);
 	}
 
 	public getAddHTML(): { type: "link" | "html"; data: string; } {
@@ -114,8 +117,41 @@ export class TestGroup extends AbstractGroup<GroupTestItem> {
 		}
 	}
 
-	public getEditHTML(id: string | number): Promise<{ type: "link" | "html"; data: string; }> {
-		throw new Error("Method not implemented.");
+	public async getEditHTML(id: string | number): Promise<{ type: "link" | "html"; data: string; }> {
+		let type: 'html' = 'html'
+		let item = await StorageService.findElementById(id)
+		return {
+			type: type,
+			data: `<div class="custom-catalog__form">
+					<div class="flex flex-col gap-3">
+					<div class="admin-panel__wrapper-title">
+					<label class="admin-panel__title" for="form-title">Title for Group</label>
+					</div>
+					<div class="admin-panel__widget">
+					<div class="widget_narrow ">
+					<input class="text-input w-full" type="text" placeholder="Title" value="${item.name}" name="title"
+					id="group-form-title" required/>
+					</div>
+					</div>
+					</div>
+					<div>
+					<button class="btn btn-green" id="save-group">
+					Save
+					</button>
+					</div>
+					</div>
+					<script>
+					{
+						let btn = document.getElementById('save-group')
+						let item = ${JSON.stringify(item)}
+						btn.addEventListener('click', async function () {
+							item.name = document.getElementById('group-form-title').value
+							let res = await ky.put('', {json: {type: item.type, data: item, id: item.id, _method: 'updateItem'}}).json()
+							if (res.data) document.getElementById('checkbox-ready').click()
+						})
+					}
+					</script>`,
+		}
 	}
 
 	public async getChilds(parentId: string | number): Promise<Item[]> {
@@ -154,8 +190,8 @@ export class Item1 extends AbstractItem<Item> {
 		return await StorageService.setElement(itemId, data);
 	}
 
-	public async deleteItem(itemId: string | number): Promise<void> {
-		return await StorageService.removeElementById(itemId);
+	public async deleteItem(itemId: string | number) {
+		await StorageService.removeElementById(itemId);
 	}
 
 	public getAddHTML(): { type: "link" | "html"; data: string; } {
@@ -194,6 +230,43 @@ export class Item2 extends Item1 {
 		}
 	}
 
+	public async getEditHTML(id: string | number): Promise<{ type: "link" | "html"; data: string; }> {
+		let type: 'html' = 'html'
+		let item = await StorageService.findElementById(id)
+		return {
+			type: type,
+			data: `<div class="custom-catalog__form">
+					<div class="flex flex-col gap-3">
+					<div class="admin-panel__wrapper-title">
+					<label class="admin-panel__title" for="form-title">Title for Item2</label>
+					</div>
+					<div class="admin-panel__widget">
+					<div class="widget_narrow ">
+					<input class="text-input w-full" type="text" placeholder="Title" value="${item.name}" name="title"
+					id="group-form-title" required/>
+					</div>
+					</div>
+					</div>
+					<div>
+					<button class="btn btn-green" id="save-group">
+					Save
+					</button>
+					</div>
+					</div>
+					<script>
+					{
+						let btn = document.getElementById('save-group')
+						let item = ${JSON.stringify(item)}
+						btn.addEventListener('click', async function () {
+							item.name = document.getElementById('group-form-title').value
+							let res = await ky.put('', {json: {type: item.type, data: item, id: item.id, _method: 'updateItem'}}).json()
+							if (res.data) document.getElementById('checkbox-ready').click()
+						})
+					}
+					</script>`,
+		}
+	}
+
 	public async create(itemId: string, data: GroupTestItem): Promise<GroupTestItem> {
 		let elems = await StorageService.getAllElements()
 		let id = elems.length + 1
@@ -203,12 +276,17 @@ export class Item2 extends Item1 {
 			sortOrder: id
 		}
 		let item = await StorageService.setElement(id, newData) as GroupTestItem
-		if(item.parentId !== null) {
+		if (item.parentId !== null) {
 			let parent = await StorageService.findElementById(item.parentId)
 			parent.childs.push(item)
 		}
 		return item;
 	}
+
+
+	public async update(itemId: string | number, data: Item): Promise<Item> {
+		return await StorageService.setElement(itemId, data);
+	};
 }
 
 export class TestCatalog extends AbstractCatalog {
@@ -216,6 +294,7 @@ export class TestCatalog extends AbstractCatalog {
 	public readonly slug: string = "test";
 	public readonly maxNestingDepth: number = null;
 	public readonly icon: string = "box";
+	public readonly actionHandlers = []
 
 	//  public readonly itemTypes: (Item2 | Item1 | TestGroup)[];
 
@@ -225,5 +304,48 @@ export class TestCatalog extends AbstractCatalog {
 			new Item1(),
 			new Item2()
 		]);
+		this.addActionHandler(new DownloadTree())
 	}
+}
+
+export class DownloadTree extends ActionHandler {
+	readonly icon: string = 'cat';
+	readonly id: string = 'download';
+	readonly name: string = 'Download Items';
+	public readonly displayTool: boolean = true
+	public readonly displayContext: boolean = false
+	public readonly type = 'basic'
+	public readonly selectedItemTypes: string[] = []
+
+	getLink(): Promise<string> {
+		return Promise.resolve("");
+	}
+
+	getPopUpHTML(): Promise<string> {
+		return Promise.resolve("");
+	}
+
+	handler(items: Item[], config?: any): Promise<any> {
+		let date = new Date().valueOf()
+
+		if (fs.existsSync(`${filepath}`)) {
+			fs.rmSync(`${filepath}`, { recursive: true, force: true });
+			fs.mkdirSync(`${filepath}`, { recursive: true });
+		} else{
+			fs.mkdirSync(`${filepath}`, { recursive: true });
+		}
+
+
+		fs.writeFileSync(`${filepath}/${date}.json`, JSON.stringify(items, null, 2));
+
+		// // zip archive of your folder is ready to download
+		// res.download(folderpath + '/archive.zip');
+
+		return Promise.resolve({
+			data: `files/${date}.json`,
+			type: this.type,
+			event: 'download'
+		});
+	}
+
 }
