@@ -294,6 +294,60 @@ export class Item2 extends Item1 {
 	};
 }
 
+
+export class Page extends AbstractItem<Item> {
+	public type: string = "page";
+	public name: string = "Page";
+	public allowedRoot: boolean = true;
+	public icon: string = "file";
+
+	public async find(itemId: string | number) {
+		return await sails.models['page'].findOne({id: itemId});
+	}
+
+	public async update(itemId: string | number, data: Item): Promise<Item> {
+		// allowed only parentID update
+		return await sails.models['page'].update({id: itemId}, { name: data.name, parentId: data.parentId}).fetch();
+	};
+
+
+	public async create(itemId: string, data: Item): Promise<Item> {
+		throw `I dont know for what need it`
+		return await sails.models.create({ name: data.name, parentId: data.parentId}).fetch();
+		return await StorageService.setElement(itemId, data);
+	}
+
+	public async deleteItem(itemId: string | number) {
+		await sails.models['page'].destroy({id: itemId})
+	//	await StorageService.removeElementById(itemId);
+	}
+
+	public getAddHTML(): { type: "link" | "html"; data: string; } {
+		let type: 'link' = 'link'
+		return {
+			type: type,
+			data: '/admin/model/page/add?without_layout=true'
+		}
+	}
+
+
+	public async getEditHTML(id: string | number): Promise<{ type: "link" | "html"; data: string; }> {
+		let type: 'link' = 'link'
+		return {
+			type: type,
+			data: `/admin/model/page/edit/${id}?without_layout=true`
+		}
+	}
+    // TODO: Need rename (getChilds) it not intuitive
+	public async getChilds(parentId: string | number): Promise<Item[]> {
+		return await sails.models['page'].find({parentId: parentId});
+	}
+
+	public async search(s: string): Promise<Item[]> {
+		return await sails.models['page'].find({name: { contain: s}});
+	}
+}
+
 export class TestCatalog extends AbstractCatalog {
 	public readonly name: string = "test catalog";
 	public readonly slug: string = "test";
@@ -307,7 +361,8 @@ export class TestCatalog extends AbstractCatalog {
 		super([
 			new TestGroup(),
 			new Item1(),
-			new Item2()
+			new Item2(),
+			new Page()
 		]);
 		this.addActionHandler(new DownloadTree())
 	}

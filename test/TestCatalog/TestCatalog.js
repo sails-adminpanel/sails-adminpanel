@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DownloadTree = exports.TestCatalog = exports.Item2 = exports.Item1 = exports.TestGroup = exports.StorageService = void 0;
+exports.DownloadTree = exports.TestCatalog = exports.Page = exports.Item2 = exports.Item1 = exports.TestGroup = exports.StorageService = void 0;
 const AbstractCatalog_1 = require("../../lib/catalog/AbstractCatalog");
 const fs = require("node:fs");
 const filepath = './.tmp/public/files';
@@ -262,13 +262,62 @@ class Item2 extends Item1 {
     ;
 }
 exports.Item2 = Item2;
+class Page extends AbstractCatalog_1.AbstractItem {
+    constructor() {
+        super(...arguments);
+        this.type = "page";
+        this.name = "Page";
+        this.allowedRoot = true;
+        this.icon = "file";
+    }
+    async find(itemId) {
+        return await sails.models['page'].findOne({ id: itemId });
+    }
+    async update(itemId, data) {
+        // allowed only parentID update
+        return await sails.models['page'].update({ id: itemId }, { name: data.name, parentId: data.parentId }).fetch();
+    }
+    ;
+    async create(itemId, data) {
+        throw `I dont know for what need it`;
+        return await sails.models.create({ name: data.name, parentId: data.parentId }).fetch();
+        return await StorageService.setElement(itemId, data);
+    }
+    async deleteItem(itemId) {
+        await sails.models['page'].destroy({ id: itemId });
+        //	await StorageService.removeElementById(itemId);
+    }
+    getAddHTML() {
+        let type = 'link';
+        return {
+            type: type,
+            data: '/admin/model/page/add?without_layout=true'
+        };
+    }
+    async getEditHTML(id) {
+        let type = 'link';
+        return {
+            type: type,
+            data: `/admin/model/page/edit/${id}?without_layout=true`
+        };
+    }
+    // TODO: Need rename (getChilds) it not intuitive
+    async getChilds(parentId) {
+        return await sails.models['page'].find({ parentId: parentId });
+    }
+    async search(s) {
+        return await sails.models['page'].find({ name: { contain: s } });
+    }
+}
+exports.Page = Page;
 class TestCatalog extends AbstractCatalog_1.AbstractCatalog {
     //  public readonly itemTypes: (Item2 | Item1 | TestGroup)[];
     constructor() {
         super([
             new TestGroup(),
             new Item1(),
-            new Item2()
+            new Item2(),
+            new Page()
         ]);
         this.name = "test catalog";
         this.slug = "test";

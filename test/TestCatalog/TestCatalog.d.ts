@@ -54,7 +54,7 @@ export declare class Item1 extends AbstractItem<Item> {
     name: string;
     allowedRoot: boolean;
     icon: string;
-    find(itemId: string | number): Promise<Item | GroupTestItem>;
+    find(itemId: string | number): Promise<GroupTestItem | Item>;
     update(itemId: string | number, data: Item): Promise<Item>;
     create(itemId: string, data: Item): Promise<Item>;
     deleteItem(itemId: string | number): Promise<void>;
@@ -84,6 +84,26 @@ export declare class Item2 extends Item1 {
     }>;
     create(itemId: string, data: GroupTestItem): Promise<GroupTestItem>;
     update(itemId: string | number, data: Item): Promise<Item>;
+}
+export declare class Page extends AbstractItem<Item> {
+    type: string;
+    name: string;
+    allowedRoot: boolean;
+    icon: string;
+    find(itemId: string | number): Promise<any>;
+    update(itemId: string | number, data: Item): Promise<Item>;
+    create(itemId: string, data: Item): Promise<Item>;
+    deleteItem(itemId: string | number): Promise<void>;
+    getAddHTML(): {
+        type: "link" | "html";
+        data: string;
+    };
+    getEditHTML(id: string | number): Promise<{
+        type: "link" | "html";
+        data: string;
+    }>;
+    getChilds(parentId: string | number): Promise<Item[]>;
+    search(s: string): Promise<Item[]>;
 }
 export declare class TestCatalog extends AbstractCatalog {
     readonly name: string;

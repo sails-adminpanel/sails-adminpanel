@@ -33,10 +33,14 @@ export default async function () {
         bindDev(sails.config.adminpanel)
     }
 
-    sails.on('lifted', async function() {
-        //binding all routes.
+    if(process.env.NODE_ENV === "production") {
+        sails.on('lifted', async function() {
+            // Why need wait?
+            Router.bind();
+        })
+    } else {
         Router.bind();
-    })
+    }
 
     bindForms();
     bindDashboardWidgets();
