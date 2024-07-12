@@ -438,7 +438,7 @@ async function initAction(id) {
 	let res = await ky.put('', {json: {data: data, _method: 'action'}}).json()
 	// console.log(res.data)
 	if(res.data){
-		if(res.data.event === 'download'){
+		if(res.data.type === 'link'){
 			window.open(`/${res.data.data}`);
 		}
 	}

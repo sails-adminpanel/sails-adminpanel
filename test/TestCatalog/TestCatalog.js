@@ -175,8 +175,12 @@ class Item1 extends AbstractCatalog_1.AbstractItem {
             data: '/admin/model/page/add?without_layout=true'
         };
     }
-    getEditHTML(id) {
-        throw new Error("Method not implemented.");
+    async getEditHTML(id) {
+        let type = 'link';
+        return {
+            type: type,
+            data: `/admin/model/page/edit/${id}?without_layout=true`
+        };
     }
     async getChilds(parentId) {
         return await StorageService.findElementsByParentId(parentId, this.type);

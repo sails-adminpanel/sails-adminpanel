@@ -202,8 +202,13 @@ export class Item1 extends AbstractItem<Item> {
 		}
 	}
 
-	public getEditHTML(id: string | number): Promise<{ type: "link" | "html"; data: string; }> {
-		throw new Error("Method not implemented.");
+
+	public async getEditHTML(id: string | number): Promise<{ type: "link" | "html"; data: string; }> {
+		let type: 'link' = 'link'
+		return {
+			type: type,
+			data: `/admin/model/page/edit/${id}?without_layout=true`
+		}
 	}
 
 	public async getChilds(parentId: string | number): Promise<Item[]> {

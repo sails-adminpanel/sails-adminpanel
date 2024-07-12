@@ -18,9 +18,18 @@
 					data[eElement.name] = eElement.value
 				}
 			}
-			data.isPopup = true
+			data.json = true
 			let res = await ky.post(uri, {json: data}).json()
 			if (res.record && checkboxReady) {
+				// TODO finally this
+				// let data = {
+				// 	name: title,
+				// 	parentId: id.value ? id.value : null,
+				// 	childs: [],
+				// 	icon: 'audio-description',
+				// 	type: 'group',
+				// }
+				// let res = await ky.post('', {json: {data: data, _method: 'createItem'}}).json()
 				checkboxReady.click()
 			}
 		}, 10)
