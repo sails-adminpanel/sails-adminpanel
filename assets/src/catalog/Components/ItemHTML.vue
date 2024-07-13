@@ -5,13 +5,11 @@
 				<input type="checkbox" v-model="checkboxReady"
 					   @change="() => {if(checkboxReady) $emit('closeAllPopups')}"
 					   id="checkbox-ready" hidden>
-				<input id="selectedNode" :value="id" hidden/>
+				<input id="parentID" :value="id" hidden/>
 				<div v-html="html" ref="embedded"></div>
 			</div>
-			<p>parent id: {{id ? id : "null"}}</p>
 		</div>
 	</div>
-
 </template>
 
 <script setup>

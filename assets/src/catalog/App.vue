@@ -23,7 +23,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="custom-catalog__container" v-show="nodes.length">
+	<div class="custom-catalog__container h-full" v-show="nodes.length">
 		<sl-vue-tree-next
 			v-model="nodes"
 			ref="slVueTreeRef"
@@ -65,7 +65,7 @@
 			<li @click="toolAddGroup" :class="actionCreateClass">Create</li>
 			<li @click="updateItem" :class="actionEditClass">Edit</li>
 			<li @click="deleteItem" :class="actionDeleteClass">Delete</li>
-			<li v-for="action in actions" @click="initAction(action.id)">
+			<li v-for="action in actionsContext" @click="initAction(action.id)">
 				{{ action.name }}
 			</li>
 		</ul>
@@ -106,20 +106,24 @@ let actionsTools = ref([])
 let actionsContext = ref([])
 let isActionPopUp = ref(false)
 let searchText = ref('')
+let subcribeChildren = ref({})
 
 onMounted(async () => {
 	document.addEventListener('click', function (e) {
 		const contextmenu = document.getElementById('contextmenu')
 		if (!e.composedPath().includes(contextmenu)) {
 			contextMenuIsVisible.value = false
+			actionsContext.value = []
 		}
 		const slVueTree_id = document.getElementById('slVueTree_id')
 		if (!e.composedPath().includes(slVueTree_id)) {
 			contextMenuIsVisible.value = false
+			actionsContext.value = []
 		}
 		const nodesList = document.querySelector('.sl-vue-tree-next-nodes-list')
 		if (!e.composedPath().includes(nodesList)) {
 			contextMenuIsVisible.value = false
+			actionsContext.value = []
 		}
 	})
 	getCatalog()
@@ -158,7 +162,12 @@ function insertFoundNodes(node) {
 }
 
 async function getCatalog() {
-	let {catalog, items} = await ky.post('', {json: {_method: 'getCatalog'}}).json()
+	let {catalog, items, toolsActions} = await ky.post('', {json: {_method: 'getCatalog'}}).json()
+	if (toolsActions) {
+		for (const re of toolsActions) {
+			actionsTools.value.push(re)
+		}
+	}
 	if (items) {
 		// console.log(catalog, items)
 		for (const catalogItem of items) {
@@ -213,16 +222,20 @@ async function closeAllPopups() {
 		if (selectedNode.value[0].data.parentId === null) {
 			reloadCatalog()
 		} else {
-			let parentNode = null
-			slVueTreeRef.value.traverse((node, nodeModel, siblings) => {
-				if (node.data.id === selectedNode.value[0].data.parentId) {
-					parentNode = node
-					return false
-				}
-			})
-			await getChilds(parentNode)
+			await getChilds(getParent(selectedNode.value[0]))
 		}
 	}
+}
+
+function getParent(Tnode) {
+	let parentNode = null
+	slVueTreeRef.value.traverse((node, nodeModel, siblings) => {
+		if (node.data.id === Tnode.data.parentId) {
+			parentNode = node
+			return false
+		}
+	})
+	return parentNode
 }
 
 function setCatalog(catalog) {
@@ -285,16 +298,38 @@ function nodeSelected(nodes, event) {
 		selectedNode.value = nodes
 	}
 	selectedNodesTitle.value = nodes.map((node) => node.title)[0]
-	if (!selectedNode.value.length) {
-		actionsTools.value = []
-	} else {
-		if (!actionsTools.value.length) getActionsTools()
-	}
 }
 
 
 async function nodeToggled(node, event) {
-	if (!node.isExpanded) getChilds(node)
+	let parent = getParent(node)
+	if(!node.data.parentId){
+		recurciveRemoveSubcribes(node)
+	}
+	if (!node.isExpanded) {
+		getChilds(node)
+		if (parent) {
+			clearInterval(subcribeChildren.value[parent.data.id])
+		}
+		subcribeChildren.value[node.data.id] = setInterval(() => {
+			getChilds(node)
+		}, 5000)
+	} else {
+		clearInterval(subcribeChildren.value[node.data.id])
+		if (parent && parent.children.find(e => e.isExpanded) === undefined) {
+			subcribeChildren.value[parent.data.id] = setInterval(() => {
+				getChilds(parent)
+			}, 5000)
+		}
+	}
+}
+
+function recurciveRemoveSubcribes(node){
+	for (const child of node.children) {
+		let subscriber = subcribeChildren.value[child.data.id]
+		if(subscriber) clearInterval(subcribeChildren.value[child.data.id])
+		if(child.children.length) recurciveRemoveSubcribes(child)
+	}
 }
 
 function recursiveSetChilds(node, Dnodes, rNodes) {
@@ -318,6 +353,7 @@ function recursiveSetChilds(node, Dnodes, rNodes) {
 async function getChilds(node) {
 	let res = await ky.post('', {json: {data: node, _method: 'getChilds'}}).json()
 	recursiveSetChilds(node, null, res.data)
+	console.log(node.title)
 }
 
 async function nodeDropped(Dnode, position, event) {
@@ -387,21 +423,6 @@ async function getActionsContext() {
 	// }
 }
 
-async function getActionsTools() {
-	let res = await ky.post('', {
-		json: {
-			items: selectedNode.value,
-			type: 'tools',
-			_method: 'getActions'
-		}
-	}).json()
-	if (res.data.length) {
-		for (const re of res.data) {
-			actionsTools.value.push(re)
-		}
-	}
-}
-
 async function showContextMenu(node, event) {
 	event.preventDefault()
 	selectNodeRightClick(node)
@@ -409,9 +430,12 @@ async function showContextMenu(node, event) {
 	const $contextMenu = contextmenu.value
 	$contextMenu.style.left = event.clientX + 'px'
 	$contextMenu.style.top = event.clientY + 'px'
-
-	getActionsContext()
-	if(!actionsTools.value.length) getActionsTools()
+	console.log(selectedNode.value)
+	if (selectedNode.value.length <= 1) {
+		getActionsContext()
+	} else {
+		actionsContext.value = []
+	}
 	// let res = await ky.post('', {
 	// 	json: {
 	// 		type: selectedNode.value.data.type,
@@ -437,9 +461,13 @@ async function initAction(id) {
 	}
 	let res = await ky.put('', {json: {data: data, _method: 'action'}}).json()
 	// console.log(res.data)
-	if(res.data){
-		if(res.data.type === 'link'){
-			window.open(`/${res.data.data}`);
+	if (res.data) {
+		switch (res.data.type) {
+			case 'link':
+				window.open(`${res.data.data}`, '_blank').focus()
+				break
+			case 'basic':
+				break
 		}
 	}
 	// if (res.data.type === 'external') {

@@ -7,7 +7,6 @@ async function createTestData() {
         id: '1',
         name: 'Group 1',
         parentId: null,
-        childs: [],
         sortOrder: 1,
         icon: 'audio-description',
         type: 'group',
@@ -16,7 +15,6 @@ async function createTestData() {
         id: '2',
         name: 'Group 2',
         parentId: null,
-        childs: [],
         sortOrder: 2,
         icon: 'audio-description',
         type: 'group',
@@ -25,7 +23,6 @@ async function createTestData() {
         id: '3',
         name: 'Group 3',
         parentId: null,
-        childs: [],
         sortOrder: 3,
         icon: 'audio-description',
         type: 'group',
@@ -37,7 +34,6 @@ async function createTestData() {
                 id: `${groups[i].id}.${j}`,
                 name: `Group ${groups[i].id}.${j}`,
                 parentId: groups[i].id,
-                childs: [],
                 sortOrder: j,
                 icon: 'audio-description',
                 type: 'group',
@@ -51,10 +47,8 @@ async function createTestData() {
                     icon: 'radiation-alt',
                     type: 'item2'
                 };
-                subGroup.childs?.push(item);
                 await TestCatalog_1.StorageService.setElement(item.id, item);
             }
-            groups[i].childs?.push(subGroup);
             await TestCatalog_1.StorageService.setElement(subGroup.id, subGroup);
         }
         await TestCatalog_1.StorageService.setElement(groups[i].id, groups[i]);

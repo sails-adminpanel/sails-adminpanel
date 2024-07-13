@@ -314,7 +314,7 @@ export abstract class AbstractCatalog {
 			const item = items[0];
 			const itemType = this.itemTypes.find((it) => it.type === item.type);
 
-			return itemType.actionHandlers ?? this.actionHandlers
+			return itemType.actionHandlers
 		} else {
 			return this.actionHandlers
 		}

@@ -34,7 +34,8 @@ async function catalogController(req, res) {
                         const _catalog = await vueCatalog.getCatalog();
                         return res.json({
                             'items': vueCatalog.getitemTypes(),
-                            'catalog': { nodes: _catalog }
+                            'catalog': { nodes: _catalog },
+                            'toolsActions': await vueCatalog.getActions([], 'tools')
                         });
                     case 'createItem':
                         return res.json({ 'data': await vueCatalog.createItem(data.data) });

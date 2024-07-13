@@ -1,37 +1,39 @@
 <form action="" id="customForm">
     <%- include("add.ejs") %>
     <div>
-        <button class="btn btn-green mb-4" id="save-group">
+        <button class="btn btn-green mt-4" id="save-group">
             Save
         </button>
     </div>
 </form>
 <script>
-    document.getElementById('customForm').addEventListener('submit', function (e){
-		e.preventDefault()
-		let data = {}
-        let uri = "<%= entity.uri %>/add"
-        let checkboxReady = document.getElementById('checkbox-ready')
-		setTimeout(async () => {
-			for (const eElement of e.target.elements) {
-				if (eElement.value) {
-					data[eElement.name] = eElement.value
+	{
+		let modelParentIDInput = document.querySelector('input[name="parentID"]')
+		let parentID = document.getElementById('parentID')
+		if (parentID && modelParentIDInput) {
+			modelParentIDInput.setAttribute('disabled', 'disabled')
+			modelParentIDInput.style.opacity = '0.5'
+			modelParentIDInput.value = parentID.value
+		}
+		document.getElementById('customForm').addEventListener('submit', function (e) {
+			e.preventDefault()
+			let data = {}
+			let uri = "<%= entity.uri %>/add"
+			let checkboxReady = document.getElementById('checkbox-ready')
+
+			setTimeout(async () => {
+				for (const eElement of e.target.elements) {
+					if (eElement.value) {
+						data[eElement.name] = eElement.value
+					}
 				}
-			}
-			data.json = true
-			let res = await ky.post(uri, {json: data}).json()
-			if (res.record && checkboxReady) {
-				// TODO finally this
-				// let data = {
-				// 	name: title,
-				// 	parentId: id.value ? id.value : null,
-				// 	childs: [],
-				// 	icon: 'audio-description',
-				// 	type: 'group',
-				// }
-				// let res = await ky.post('', {json: {data: data, _method: 'createItem'}}).json()
-				checkboxReady.click()
-			}
-		}, 10)
-    })
+				data.json = true
+				if (parentID) data.parentID = parentID.value ? parentID.value : null
+				let res = await ky.post(uri, {json: data}).json()
+				if (res.record && checkboxReady) {
+					checkboxReady.click()
+				}
+			}, 10)
+		})
+	}
 </script>

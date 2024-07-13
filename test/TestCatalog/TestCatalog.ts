@@ -1,5 +1,7 @@
-import {AbstractCatalog, ActionHandler, AbstractGroup, AbstractItem, Item} from "../../lib/catalog/AbstractCatalog";
+import {AbstractCatalog, AbstractGroup, AbstractItem, ActionHandler, Item} from "../../lib/catalog/AbstractCatalog";
 import * as fs from "node:fs";
+import {data} from "autoprefixer";
+const ejs = require('ejs')
 
 const filepath = './.tmp/public/files'
 
@@ -77,7 +79,10 @@ export class StorageService {
 export class TestGroup extends AbstractGroup<GroupTestItem> {
 	public name: string = "Group";
 	public allowedRoot: boolean = true;
-	public icon: string;
+	public icon = 'audio-description'
+	public type = 'group'
+	public isGroup: boolean = true;
+	public readonly actionHandlers = []
 
 
 	public async find(itemId: string | number) {
@@ -97,12 +102,7 @@ export class TestGroup extends AbstractGroup<GroupTestItem> {
 			id: id.toString(),
 			sortOrder: id
 		}
-		let item = await StorageService.setElement(id, newData) as GroupTestItem
-		if (item.parentId !== null) {
-			let parent = await StorageService.findElementById(item.parentId)
-			parent.childs.push(item)
-		}
-		return item;
+		return await StorageService.setElement(id, newData) as GroupTestItem;
 	}
 
 	public async deleteItem(itemId: string | number) {
@@ -113,7 +113,7 @@ export class TestGroup extends AbstractGroup<GroupTestItem> {
 		let type: 'html' = 'html'
 		return {
 			type: type,
-			data: fs.readFileSync(`${__dirname}/groupAdd.html`, 'utf8'),
+			data: ejs.render(fs.readFileSync(`${__dirname}/groupAdd.ejs`, 'utf8')),
 		}
 	}
 
@@ -122,35 +122,7 @@ export class TestGroup extends AbstractGroup<GroupTestItem> {
 		let item = await StorageService.findElementById(id)
 		return {
 			type: type,
-			data: `<div class="custom-catalog__form">
-					<div class="flex flex-col gap-3">
-					<div class="admin-panel__wrapper-title">
-					<label class="admin-panel__title" for="form-title">Title for Group</label>
-					</div>
-					<div class="admin-panel__widget">
-					<div class="widget_narrow ">
-					<input class="text-input w-full" type="text" placeholder="Title" value="${item.name}" name="title"
-					id="group-form-title" required/>
-					</div>
-					</div>
-					</div>
-					<div>
-					<button class="btn btn-green" id="save-group">
-					Save
-					</button>
-					</div>
-					</div>
-					<script>
-					{
-						let btn = document.getElementById('save-group')
-						let item = ${JSON.stringify(item)}
-						btn.addEventListener('click', async function () {
-							item.name = document.getElementById('group-form-title').value
-							let res = await ky.put('', {json: {type: item.type, data: item, id: item.id, _method: 'updateItem'}}).json()
-							if (res.data) document.getElementById('checkbox-ready').click()
-						})
-					}
-					</script>`,
+			data: ejs.render(fs.readFileSync(`${__dirname}/groupEdit.ejs`, 'utf8'), { item: item }),
 		}
 	}
 
@@ -171,11 +143,42 @@ export class TestGroup extends AbstractGroup<GroupTestItem> {
 |___|\__\___|_| |_| |_|_|
  */
 
-export class Item1 extends AbstractItem<Item> {
-	public type: string = "item1";
-	public name: string = "Item 1";
+
+export class Item2 extends AbstractItem<Item> {
+	public type: string = "item2";
+	public name: string = "Item 2";
 	public allowedRoot: boolean = true;
-	public icon: string = "file";
+	public icon: string = "radiation-alt";
+	public readonly actionHandlers = []
+
+	public getAddHTML(): { type: "link" | "html"; data: string; } {
+		let type: 'html' = 'html'
+		return {
+			type: type,
+			data: ejs.render(fs.readFileSync(`${__dirname}/item2Add.ejs`, 'utf8')),
+		}
+	}
+
+	public async getEditHTML(id: string | number): Promise<{ type: "link" | "html"; data: string; }> {
+		let type: 'html' = 'html'
+		let item = await StorageService.findElementById(id)
+		return {
+			type: type,
+			data: ejs.render(fs.readFileSync(`${__dirname}/item2Edit.ejs`, 'utf8'), {item: item}),
+		}
+	}
+
+	public async create(itemId: string, data: GroupTestItem): Promise<GroupTestItem> {
+		let elems = await StorageService.getAllElements()
+		let id = elems.length + 1
+		let newData = {
+			...data,
+			id: id.toString(),
+			sortOrder: id
+		}
+		return  await StorageService.setElement(id, newData) as GroupTestItem
+	}
+
 
 	public async find(itemId: string | number) {
 		return await StorageService.findElementById(itemId);
@@ -186,29 +189,8 @@ export class Item1 extends AbstractItem<Item> {
 	};
 
 
-	public async create(itemId: string, data: Item): Promise<Item> {
-		return await StorageService.setElement(itemId, data);
-	}
-
 	public async deleteItem(itemId: string | number) {
 		await StorageService.removeElementById(itemId);
-	}
-
-	public getAddHTML(): { type: "link" | "html"; data: string; } {
-		let type: 'link' = 'link'
-		return {
-			type: type,
-			data: '/admin/model/page/add?without_layout=true'
-		}
-	}
-
-
-	public async getEditHTML(id: string | number): Promise<{ type: "link" | "html"; data: string; }> {
-		let type: 'link' = 'link'
-		return {
-			type: type,
-			data: `/admin/model/page/edit/${id}?without_layout=true`
-		}
 	}
 
 	public async getChilds(parentId: string | number): Promise<Item[]> {
@@ -221,85 +203,12 @@ export class Item1 extends AbstractItem<Item> {
 }
 
 
-export class Item2 extends Item1 {
-	public type: string = "item2";
-	public name: string = "Item 2";
-	public allowedRoot: boolean = true;
-	public icon: string = "file";
-
-	public getAddHTML(): { type: "link" | "html"; data: string; } {
-		let type: 'html' = 'html'
-		return {
-			type: type,
-			data: fs.readFileSync(`${__dirname}/item2Add.html`, 'utf8'),
-		}
-	}
-
-	public async getEditHTML(id: string | number): Promise<{ type: "link" | "html"; data: string; }> {
-		let type: 'html' = 'html'
-		let item = await StorageService.findElementById(id)
-		return {
-			type: type,
-			data: `<div class="custom-catalog__form">
-					<div class="flex flex-col gap-3">
-					<div class="admin-panel__wrapper-title">
-					<label class="admin-panel__title" for="form-title">Title for Item2</label>
-					</div>
-					<div class="admin-panel__widget">
-					<div class="widget_narrow ">
-					<input class="text-input w-full" type="text" placeholder="Title" value="${item.name}" name="title"
-					id="group-form-title" required/>
-					</div>
-					</div>
-					</div>
-					<div>
-					<button class="btn btn-green" id="save-group">
-					Save
-					</button>
-					</div>
-					</div>
-					<script>
-					{
-						let btn = document.getElementById('save-group')
-						let item = ${JSON.stringify(item)}
-						btn.addEventListener('click', async function () {
-							item.name = document.getElementById('group-form-title').value
-							let res = await ky.put('', {json: {type: item.type, data: item, id: item.id, _method: 'updateItem'}}).json()
-							if (res.data) document.getElementById('checkbox-ready').click()
-						})
-					}
-					</script>`,
-		}
-	}
-
-	public async create(itemId: string, data: GroupTestItem): Promise<GroupTestItem> {
-		let elems = await StorageService.getAllElements()
-		let id = elems.length + 1
-		let newData = {
-			...data,
-			id: id.toString(),
-			sortOrder: id
-		}
-		let item = await StorageService.setElement(id, newData) as GroupTestItem
-		if (item.parentId !== null) {
-			let parent = await StorageService.findElementById(item.parentId)
-			parent.childs.push(item)
-		}
-		return item;
-	}
-
-
-	public async update(itemId: string | number, data: Item): Promise<Item> {
-		return await StorageService.setElement(itemId, data);
-	};
-}
-
-
 export class Page extends AbstractItem<Item> {
 	public type: string = "page";
 	public name: string = "Page";
 	public allowedRoot: boolean = true;
 	public icon: string = "file";
+	public readonly actionHandlers = []
 
 	public async find(itemId: string | number) {
 		return await sails.models['page'].findOne({id: itemId});
@@ -313,8 +222,8 @@ export class Page extends AbstractItem<Item> {
 
 	public async create(itemId: string, data: Item): Promise<Item> {
 		throw `I dont know for what need it`
-		return await sails.models.create({ name: data.name, parentId: data.parentId}).fetch();
-		return await StorageService.setElement(itemId, data);
+		// return await sails.models.create({ name: data.name, parentId: data.parentId}).fetch();
+		// return await StorageService.setElement(itemId, data);
 	}
 
 	public async deleteItem(itemId: string | number) {
@@ -340,7 +249,7 @@ export class Page extends AbstractItem<Item> {
 	}
     // TODO: Need rename (getChilds) it not intuitive
 	public async getChilds(parentId: string | number): Promise<Item[]> {
-		return await sails.models['page'].find({parentId: parentId});
+		return await sails.models['page'].find({parentID: parentId});
 	}
 
 	public async search(s: string): Promise<Item[]> {
@@ -360,21 +269,21 @@ export class TestCatalog extends AbstractCatalog {
 	constructor() {
 		super([
 			new TestGroup(),
-			new Item1(),
 			new Item2(),
 			new Page()
 		]);
-		this.addActionHandler(new DownloadTree())
+		this.addActionHandler(new Link())
+		this.addActionHandler(new ContextAction())
 	}
 }
 
-export class DownloadTree extends ActionHandler {
+export class Link extends ActionHandler {
 	readonly icon: string = 'cat';
 	readonly id: string = 'download';
-	readonly name: string = 'Download Items';
+	readonly name: string = 'Link';
 	public readonly displayTool: boolean = true
 	public readonly displayContext: boolean = false
-	public readonly type = 'basic'
+	public readonly type = 'link'
 	public readonly selectedItemTypes: string[] = []
 
 	getLink(): Promise<string> {
@@ -386,26 +295,47 @@ export class DownloadTree extends ActionHandler {
 	}
 
 	handler(items: Item[], config?: any): Promise<any> {
-		let date = new Date().valueOf()
-
-		if (fs.existsSync(`${filepath}`)) {
-			fs.rmSync(`${filepath}`, { recursive: true, force: true });
-			fs.mkdirSync(`${filepath}`, { recursive: true });
-		} else{
-			fs.mkdirSync(`${filepath}`, { recursive: true });
-		}
-
-
-		fs.writeFileSync(`${filepath}/${date}.json`, JSON.stringify(items, null, 2));
-
-		// // zip archive of your folder is ready to download
-		// res.download(folderpath + '/archive.zip');
-
 		return Promise.resolve({
-			data: `files/${date}.json`,
-			type: this.type,
-			event: 'download'
+			data: 'http://www.example.com/',
+			type: this.type
 		});
 	}
 
+}
+export class ContextAction extends ActionHandler{
+	readonly icon: string = 'crow';
+	readonly id: string = 'context1';
+	readonly name: string = 'Rename';
+	public readonly displayTool: boolean = false
+	public readonly displayContext: boolean = true
+	public readonly type = 'basic'
+	public readonly selectedItemTypes: string[] = [
+		'group',
+		'item2'
+	]
+
+	getLink(): Promise<string> {
+		return Promise.resolve("");
+	}
+
+	getPopUpHTML(): Promise<string> {
+		return Promise.resolve("");
+	}
+
+	handler(items: Item[], config?: any): Promise<any> {
+		const generateRandomString = () => {
+			return Math.floor(Math.random() * Date.now()).toString(36);
+		};
+		setTimeout(async ()=>{
+			for (const item of items) {
+				let data = item
+				data.name = generateRandomString()
+				await StorageService.setElement(item.id, data)
+			}
+		}, 10000)
+		return Promise.resolve({
+			data: 'ok',
+			type: this.type
+		})
+	}
 }

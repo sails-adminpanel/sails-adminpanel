@@ -21,11 +21,11 @@
 		let btn = document.getElementById('save-group')
 		btn.addEventListener('click', async function () {
 			let title = document.getElementById('group-form-title').value
-			let id = document.getElementById('selectedNode')
+			let parentID = document.getElementById('parentID')
 			let data = {
 				name: title,
-				parentId: id.value ? id.value : null,
-				icon: 'radiation-alt',
+				parentId: parentID.value ? parentID.value : null,
+				icon: 'file',
 				type: 'item2',
 			}
 			let res = await ky.post('', {json: {data: data, _method: 'createItem'}}).json()

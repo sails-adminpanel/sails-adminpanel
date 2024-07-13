@@ -21,10 +21,10 @@
 		let btn = document.getElementById('save-group')
 		btn.addEventListener('click', async function () {
 			let title = document.getElementById('group-form-title').value
-			let id = document.getElementById('selectedNode')
+			let parentID = document.getElementById('parentID')
 			let data = {
 				name: title,
-				parentId: id.value ? id.value : null,
+				parentId: parentID.value ? parentID.value : null,
 				childs: [],
 				icon: 'audio-description',
 				type: 'group',

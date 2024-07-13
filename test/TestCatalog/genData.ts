@@ -10,7 +10,6 @@ export async function createTestData() {
 		id: '1',
 		name: 'Group 1',
 		parentId: null,
-		childs: [],
 		sortOrder: 1,
 		icon: 'audio-description',
 		type: 'group',
@@ -20,7 +19,6 @@ export async function createTestData() {
 		id: '2',
 		name: 'Group 2',
 		parentId: null,
-		childs: [],
 		sortOrder: 2,
 		icon: 'audio-description',
 		type: 'group',
@@ -30,7 +28,6 @@ export async function createTestData() {
 		id: '3',
 		name: 'Group 3',
 		parentId: null,
-		childs: [],
 		sortOrder: 3,
 		icon: 'audio-description',
 		type: 'group',
@@ -44,7 +41,6 @@ export async function createTestData() {
 				id: `${groups[i].id}.${j}`,
 				name: `Group ${groups[i].id}.${j}`,
 				parentId: groups[i].id,
-				childs: [],
 				sortOrder: j,
 				icon: 'audio-description',
 				type: 'group',
@@ -59,12 +55,9 @@ export async function createTestData() {
 					icon: 'radiation-alt',
 					type: 'item2'
 				};
-
-				subGroup.childs?.push(item);
 				await StorageService.setElement(item.id, item);
 			}
 
-			groups[i].childs?.push(subGroup);
 			await StorageService.setElement(subGroup.id, subGroup);
 		}
 
