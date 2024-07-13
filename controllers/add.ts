@@ -36,6 +36,10 @@ export default async function add(req, res) {
 				delete reqData[prop]
 			}
 
+			if(reqData[prop] === "" && fields[prop].model.allowNull === true) {
+				reqData[prop] = null
+			}
+
 			if (fields[prop].config.type === 'select-many') {
 				reqData[prop] = reqData[prop].split(",")
 			}

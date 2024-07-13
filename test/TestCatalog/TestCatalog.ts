@@ -173,7 +173,7 @@ export class TestCatalog extends AbstractCatalog {
 	public readonly icon: string = "box";
 
 	//  public readonly itemTypes: (Item2 | Item1 | TestGroup)[];
-
+	
 	constructor() {
 		super([
 			new TestGroup(),

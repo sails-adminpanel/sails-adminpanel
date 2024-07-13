@@ -4,6 +4,7 @@ export type Fields = {
     [key: string]: {
         config: BaseFieldConfig;
         model: {
+            allowNull: boolean;
             model: string;
             required: boolean;
             type: 'association' | 'association-many' | 'number' | 'json' | 'string' | 'boolean' | 'ref';

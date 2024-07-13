@@ -3,10 +3,6 @@ import * as fs from "node:fs";
 import {data} from "autoprefixer";
 const ejs = require('ejs')
 
-interface GroupTestItem extends Item {
-	thisIsGroup: boolean
-}
-
 
 class BaseModelItem<T extends Item>  extends AbstractItem<T> {
 	public type: string = "page";
@@ -56,6 +52,7 @@ class BaseModelItem<T extends Item>  extends AbstractItem<T> {
 	}
     // TODO: Need rename (getChilds) it not intuitive
 	public async getChilds(parentId: string | number): Promise<Item[]> {
+		if(parentId === null) parentId = ""
 		console.log(this.type, parentId, await sails.models[this.model].find({parentId: parentId}))
 		return await sails.models[this.model].find({parentId: parentId});
 	}

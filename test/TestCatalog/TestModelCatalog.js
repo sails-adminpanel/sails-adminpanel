@@ -46,6 +46,8 @@ class BaseModelItem extends AbstractCatalog_1.AbstractItem {
     }
     // TODO: Need rename (getChilds) it not intuitive
     async getChilds(parentId) {
+        if (parentId === null)
+            parentId = "";
         console.log(this.type, parentId, await sails.models[this.model].find({ parentId: parentId }));
         return await sails.models[this.model].find({ parentId: parentId });
     }

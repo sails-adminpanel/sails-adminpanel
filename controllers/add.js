@@ -29,6 +29,9 @@ async function add(req, res) {
             if (Number.isNaN(reqData[prop]) || reqData[prop] === undefined || reqData[prop] === null) {
                 delete reqData[prop];
             }
+            if (reqData[prop] === "" && fields[prop].model.allowNull === true) {
+                reqData[prop] = null;
+            }
             if (fields[prop].config.type === 'select-many') {
                 reqData[prop] = reqData[prop].split(",");
             }
