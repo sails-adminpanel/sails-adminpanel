@@ -17,7 +17,7 @@ class BaseModelItem extends AbstractCatalog_1.AbstractItem {
         return await sails.models[this.model].findOne({ id: itemId });
     }
     async update(itemId, data) {
-        // allowed only parentID update
+        // allowed only parentId update
         return await sails.models[this.model].update({ id: itemId }, { name: data.name, parentId: data.parentId }).fetch();
     }
     ;
@@ -46,7 +46,8 @@ class BaseModelItem extends AbstractCatalog_1.AbstractItem {
     }
     // TODO: Need rename (getChilds) it not intuitive
     async getChilds(parentId) {
-        return await sails.models[this.model].find({ parentID: parentId });
+        console.log(this.type, parentId, await sails.models[this.model].find({ parentId: parentId }));
+        return await sails.models[this.model].find({ parentId: parentId });
     }
     async search(s) {
         return await sails.models[this.model].find({ name: { contain: s } });

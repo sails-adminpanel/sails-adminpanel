@@ -21,10 +21,10 @@
 		let btn = document.getElementById('save-group')
 		btn.addEventListener('click', async function () {
 			let title = document.getElementById('group-form-title').value
-			let parentID = document.getElementById('parentID')
+			let parentId = document.getElementById('parentId')
 			let data = {
 				name: title,
-				parentId: parentID.value ? parentID.value : null,
+				parentId: parentId.value ? parentId.value : null,
 				icon: 'file',
 				type: 'item2',
 			}

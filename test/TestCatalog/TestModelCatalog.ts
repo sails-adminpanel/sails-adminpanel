@@ -22,7 +22,7 @@ class BaseModelItem<T extends Item>  extends AbstractItem<T> {
 	}
 
 	public async update(itemId: string | number, data: Item): Promise<T> {
-		// allowed only parentID update
+		// allowed only parentId update
 		return await sails.models[this.model].update({id: itemId}, { name: data.name, parentId: data.parentId}).fetch();
 	};
 
@@ -56,7 +56,8 @@ class BaseModelItem<T extends Item>  extends AbstractItem<T> {
 	}
     // TODO: Need rename (getChilds) it not intuitive
 	public async getChilds(parentId: string | number): Promise<Item[]> {
-		return await sails.models[this.model].find({parentID: parentId});
+		console.log(this.type, parentId, await sails.models[this.model].find({parentId: parentId}))
+		return await sails.models[this.model].find({parentId: parentId});
 	}
 
 	public async search(s: string): Promise<T[]> {

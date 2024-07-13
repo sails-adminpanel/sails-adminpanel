@@ -8,12 +8,12 @@
 </form>
 <script>
 	{
-		let modelParentIDInput = document.querySelector('input[name="parentID"]')
-		let parentID = document.getElementById('parentID')
-		if (parentID && modelParentIDInput) {
+		let modelParentIDInput = document.querySelector('input[name="parentId"]')
+		let parentId = document.getElementById('parentId')
+		if (parentId && modelParentIDInput) {
 			modelParentIDInput.setAttribute('disabled', 'disabled')
 			modelParentIDInput.style.opacity = '0.5'
-			modelParentIDInput.value = parentID.value
+			modelParentIDInput.value = parentId.value
 		}
 		document.getElementById('customForm').addEventListener('submit', function (e) {
 			e.preventDefault()
@@ -28,7 +28,7 @@
 					}
 				}
 				data.json = true
-				if (parentID) data.parentID = parentID.value ? parentID.value : null
+				if (parentId) data.parentId = parentId.value ? parentId.value : null
 				let res = await ky.post(uri, {json: data}).json()
 				if (res.record && checkboxReady) {
 					checkboxReady.click()
