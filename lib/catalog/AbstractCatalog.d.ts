@@ -76,18 +76,12 @@ export declare abstract class BaseItem<T extends Item> {
     abstract getChilds(parentId: string | number | null): Promise<Item[]>;
     abstract search(s: string): Promise<T[]>;
 }
-export declare abstract class AbstractGroup<T> extends BaseItem<T> {
-    abstract create(itemId: string, data: T): Promise<T>;
+export declare abstract class AbstractGroup<T extends Item> extends BaseItem<T> {
     readonly type: string;
     readonly isGroup: boolean;
     icon: string;
 }
-export declare abstract class AbstractItem<T> extends BaseItem<T> {
-    /**
-     *
-     * @deprecated It need for only group
-     */
-    abstract create(itemId: string, data: T): Promise<T>;
+export declare abstract class AbstractItem<T extends Item> extends BaseItem<T> {
     readonly isGroup: boolean;
 }
 export declare abstract class ActionHandler {
@@ -213,6 +207,10 @@ export declare abstract class AbstractCatalog {
      * Implements search and execution of a specific action.handler
      */
     handleAction(actionId: string, items?: Item[], config?: any): Promise<void>;
+    /**
+     *
+     * @param data @deprecated use HTML
+     */
     createItem<T extends Item>(data: T): Promise<T>;
     updateItem<T extends Item>(id: string | number, type: string, data: T): Promise<T>;
     /**

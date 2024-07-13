@@ -110,22 +110,16 @@ export abstract class BaseItem<T extends Item> {
 }
 
 
-export abstract class AbstractGroup<T> extends BaseItem<T> {
+export abstract class AbstractGroup<T extends Item> extends BaseItem<T> {
 
-	public abstract create(itemId: string, data: T): Promise<T>;
+	// public abstract create(itemId: string, data: T): Promise<T>;
 
 	public readonly type: string = "group";
 	public readonly isGroup: boolean = true;
 	public icon: string = "folder";
 }
 
-export abstract class AbstractItem<T> extends BaseItem<T> {
-	/**
-	 * 
-	 * @deprecated It need for only group
-	 */
-	public abstract create(itemId: string, data: T): Promise<T>;
-
+export abstract class AbstractItem<T extends Item> extends BaseItem<T> {
 	public readonly isGroup: boolean = false;
 }
 
@@ -368,8 +362,13 @@ export abstract class AbstractCatalog {
 		return await action.handler(items, config);
 	}
 
+	/**
+	 * 
+	 * @param data @deprecated use HTML
+	 */
 	public createItem<T extends Item>(data: T): Promise<T> {
-		return this.getItemType(data.type)?.create(this.id, data) as Promise<T>;
+		throw `Not allowed use HTML please`
+		// return this.getItemType(data.type)?.create(this.id, data) as Promise<T>;
 	}
 
 

@@ -32,7 +32,7 @@ export default class Router {
   /**
    * The idea is that all methods within the first 3 seconds after start call this method, and as soon as all have been loaded, the loading will be blocked
    */
-  @debounce(3000)
+  @debounce(2000)
   static bind(): void {
     if (this.onlyOnce) {
       sails.log.error(`This method allowed for run only one time`);
@@ -110,34 +110,49 @@ export default class Router {
     sails.router.bind(baseRoute, bindPolicies(policies, _list));
 
     if (config.models) {
-      for (let model of Object.keys(config.models)) {
+      for (let model in config.models) {
+        const modelConfig = config.models[model];
         /**
-         * Create new record
+         * Add support only routes created for boolean true
          */
-        if (config.models[model].add) {
-          let addHandler = config.models[model].add as CreateUpdateConfig;
-          if (addHandler.controller) {
-            let controller = require(addHandler.controller);
-            sails.router.bind(`${config.routePrefix}/model/${model}/add`, bindPolicies(policies, controller.default));
+        if(typeof modelConfig === "boolean" && modelConfig === true) {
+          sails.log.debug(`Adminpanel create CRUD routes for \`${model}\` by boolean true`)
+          sails.router.bind(`${config.routePrefix}/model/${model}/add`, bindPolicies(policies, _add));
+          sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, bindPolicies(policies, _edit));
+          sails.router.bind(`${config.routePrefix}/model/${model}/remove/:id`, bindPolicies(policies, _remove));
+        } else if(typeof modelConfig !== "boolean") {
+          sails.log.debug(`Adminpanel create CRUD routes for \`${model}\` by ModelConfig`)
+          
+          /**
+           * Create new record
+           */
+          if (modelConfig.add) {
+            let addHandler = modelConfig.add as CreateUpdateConfig;
+            if (addHandler.controller) {
+              let controller = require(addHandler.controller);
+              sails.router.bind(`${config.routePrefix}/model/${model}/add`, bindPolicies(policies, controller.default));
+            } else {
+              sails.router.bind(`${config.routePrefix}/model/${model}/add`, bindPolicies(policies, _add));
+            }
           } else {
             sails.router.bind(`${config.routePrefix}/model/${model}/add`, bindPolicies(policies, _add));
           }
-        } else {
-          sails.router.bind(`${config.routePrefix}/model/${model}/add`, bindPolicies(policies, _add));
-        }
-        /**
-         * Edit existing record
-         */
-        if (config.models[model].edit) {
-          let editHandler = config.models[model].edit as CreateUpdateConfig;
-          if (editHandler.controller) {
-            let controller = require(editHandler.controller);
-            sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, bindPolicies(policies, controller.default));
+          /**
+           * Edit existing record
+           */
+          if (modelConfig.edit) {
+            let editHandler = modelConfig.edit as CreateUpdateConfig;
+            if (editHandler.controller) {
+              let controller = require(editHandler.controller);
+              sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, bindPolicies(policies, controller.default));
+            } else {
+              sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, bindPolicies(policies, _edit));
+            }
           } else {
             sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, bindPolicies(policies, _edit));
           }
         } else {
-          sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, bindPolicies(policies, _edit));
+          sails.log.silly(`Adminpanel skip create CRUD routes for model: ${model}`)
         }
       }
     }

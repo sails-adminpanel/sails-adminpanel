@@ -525,3 +525,7 @@ string, password, date, datetime, time, integer, number, float, color, email, mo
 range, boolean, binary, text, longtext, mediumtext, ckeditor, wysiwyg, texteditor, word,
 jsoneditor, json, array, object, ace, html, xml, aceeditor, image, images, file, files, table
 menu, navigation, schedule, worktime, association, "association-many", select, select-many
+
+
+### Only routes create
+If the value of the model key is `true: boolean` then only add and edit routers will be created, as well as the corresponding rights for them

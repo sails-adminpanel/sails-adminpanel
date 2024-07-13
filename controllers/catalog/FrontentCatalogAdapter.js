@@ -27,10 +27,10 @@ class VueCatalog {
             arrItems.push(await this.catalog.find(item.data));
         }
         if (type === 'tools') {
-            return (await this.catalog.getActions(arrItems)).filter(e => e.displayTool);
+            return (await this.catalog.getActions(arrItems))?.filter(e => e.displayTool);
         }
         else {
-            return (await this.catalog.getActions(arrItems)).filter(e => e.displayContext);
+            return (await this.catalog.getActions(arrItems))?.filter(e => e.displayContext);
         }
     }
     async handleAction(actionID, items, config) {

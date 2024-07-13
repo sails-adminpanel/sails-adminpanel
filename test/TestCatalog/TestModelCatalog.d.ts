@@ -1,70 +1,41 @@
-import { AbstractCatalog, AbstractGroup, AbstractItem, ActionHandler, Item } from "../../lib/catalog/AbstractCatalog";
-interface GroupTestItem extends Item {
-    thisIsGroup: boolean;
+import { AbstractCatalog, AbstractItem, ActionHandler, Item } from "../../lib/catalog/AbstractCatalog";
+declare class BaseModelItem<T extends Item> extends AbstractItem<T> {
+    type: string;
+    name: string;
+    allowedRoot: boolean;
+    icon: string;
+    model: string;
+    readonly actionHandlers: any[];
+    find(itemId: string | number): Promise<any>;
+    update(itemId: string | number, data: Item): Promise<T>;
+    deleteItem(itemId: string | number): Promise<void>;
+    getAddHTML(): {
+        type: "link" | "html";
+        data: string;
+    };
+    getEditHTML(id: string | number): Promise<{
+        type: "link" | "html";
+        data: string;
+    }>;
+    getChilds(parentId: string | number): Promise<Item[]>;
+    search(s: string): Promise<T[]>;
 }
-/**
- * Storage takes place in RAM
- */
-export declare class StorageService {
-    private static storageMap;
-    static setElement(id: string | number, item: GroupTestItem | Item): Promise<GroupTestItem | Item>;
-    static removeElementById(id: string | number): Promise<void>;
-    static findElementById(id: string | number): Promise<GroupTestItem | Item | undefined>;
-    static findElementsByParentId(parentId: string | number, type: string): Promise<(GroupTestItem | Item)[]>;
-    static getAllElements(): Promise<(GroupTestItem | Item)[]>;
-    static search(s: string, type: string): Promise<GroupTestItem[]>;
-}
-/**
- *
- _____         _    ____
-|_   _|__  ___| |_ / ___|_ __ ___  _   _ _ __
-  | |/ _ \/ __| __| |  _| '__/ _ \| | | | '_ \
-  | |  __/\__ \ |_| |_| | | | (_) | |_| | |_) |
-  |_|\___||___/\__|\____|_|  \___/ \__,_| .__/
-                                        |_|
- */
-export declare class TestGroup extends AbstractGroup<GroupTestItem> {
+export declare class ModelGroup<GroupTestItem extends Item> extends BaseModelItem<GroupTestItem> {
     name: string;
     allowedRoot: boolean;
     icon: string;
     type: string;
     isGroup: boolean;
+    model: string;
     readonly actionHandlers: any[];
-    find(itemId: string | number): Promise<GroupTestItem>;
-    update(itemId: string | number, data: GroupTestItem): Promise<GroupTestItem>;
-    create(itemId: string, data: GroupTestItem): Promise<GroupTestItem>;
-    deleteItem(itemId: string | number): Promise<void>;
-    getAddHTML(): {
-        type: "link" | "html";
-        data: string;
-    };
-    getEditHTML(id: string | number): Promise<{
-        type: "link" | "html";
-        data: string;
-    }>;
-    getChilds(parentId: string | number): Promise<Item[]>;
-    search(s: string): Promise<GroupTestItem[]>;
 }
-export declare class Page extends AbstractItem<Item> {
-    type: string;
+export declare class Page<T extends Item> extends BaseModelItem<T> {
     name: string;
     allowedRoot: boolean;
     icon: string;
+    type: string;
+    model: string;
     readonly actionHandlers: any[];
-    find(itemId: string | number): Promise<any>;
-    update(itemId: string | number, data: Item): Promise<Item>;
-    create(itemId: string, data: Item): Promise<Item>;
-    deleteItem(itemId: string | number): Promise<void>;
-    getAddHTML(): {
-        type: "link" | "html";
-        data: string;
-    };
-    getEditHTML(id: string | number): Promise<{
-        type: "link" | "html";
-        data: string;
-    }>;
-    getChilds(parentId: string | number): Promise<Item[]>;
-    search(s: string): Promise<Item[]>;
 }
 export declare class TestModelCatalog extends AbstractCatalog {
     readonly name: string;
