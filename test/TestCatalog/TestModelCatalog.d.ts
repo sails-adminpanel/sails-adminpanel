@@ -45,34 +45,6 @@ export declare class TestGroup extends AbstractGroup<GroupTestItem> {
     getChilds(parentId: string | number): Promise<Item[]>;
     search(s: string): Promise<GroupTestItem[]>;
 }
-/**
- ___ _                 _
-|_ _| |_ ___ _ __ ___ / |
- | || __/ _ \ '_ ` _ \| |
- | || ||  __/ | | | | | |
-|___|\__\___|_| |_| |_|_|
- */
-export declare class Item2 extends AbstractItem<Item> {
-    type: string;
-    name: string;
-    allowedRoot: boolean;
-    icon: string;
-    readonly actionHandlers: any[];
-    getAddHTML(): {
-        type: "link" | "html";
-        data: string;
-    };
-    getEditHTML(id: string | number): Promise<{
-        type: "link" | "html";
-        data: string;
-    }>;
-    create(itemId: string, data: GroupTestItem): Promise<GroupTestItem>;
-    find(itemId: string | number): Promise<Item | GroupTestItem>;
-    update(itemId: string | number, data: Item): Promise<Item>;
-    deleteItem(itemId: string | number): Promise<void>;
-    getChilds(parentId: string | number): Promise<Item[]>;
-    search(s: string): Promise<Item[]>;
-}
 export declare class Page extends AbstractItem<Item> {
     type: string;
     name: string;
@@ -94,7 +66,7 @@ export declare class Page extends AbstractItem<Item> {
     getChilds(parentId: string | number): Promise<Item[]>;
     search(s: string): Promise<Item[]>;
 }
-export declare class TestCatalog extends AbstractCatalog {
+export declare class TestModelCatalog extends AbstractCatalog {
     readonly name: string;
     readonly slug: string;
     readonly maxNestingDepth: number;

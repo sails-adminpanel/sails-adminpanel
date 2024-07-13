@@ -9,6 +9,7 @@ import { CatalogHandler } from "./catalog/CatalogHandler";
 
 // Delete it after finish develop catalog feature
 import { TestCatalog } from "../test/TestCatalog/TestCatalog";
+import { TestModelCatalog } from "../test/TestCatalog/TestModelCatalog";
 
 export default async function () {
     // Binding list of function for rendering
@@ -73,6 +74,10 @@ export default async function () {
         let catalog = new TestCatalog()
         CatalogHandler.add(catalog)
         require("./../test/TestCatalog/genData").createTestData()
+
+        let catalogModel = new TestModelCatalog()
+        CatalogHandler.add(catalogModel)
+        // require("./../test/TestCatalog/genDataModelCatalog").createTestData()
     }
 
     return

@@ -186,14 +186,14 @@ export declare abstract class AbstractCatalog {
      * Receives HTML to update an element for projection into a popup
      */
     getEditHTML(item: Item, id: string | number): Promise<{
-        type: "html" | "link";
+        type: "link" | "html";
         data: string;
     }>;
     /**
      * Receives HTML to create an element for projection into a popup
      */
     getAddHTML(item: Item): {
-        type: "html" | "link";
+        type: "link" | "html";
         data: string;
     };
     addActionHandler(actionHandler: ActionHandler): void;

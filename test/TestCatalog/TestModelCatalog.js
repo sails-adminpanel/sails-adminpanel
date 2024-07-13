@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ContextAction = exports.Link = exports.TestCatalog = exports.Page = exports.Item2 = exports.TestGroup = exports.StorageService = void 0;
-const AbstractCatalog_2 = require("../../lib/catalog/AbstractCatalog");
+exports.ContextAction = exports.Link = exports.TestModelCatalog = exports.Page = exports.TestGroup = exports.StorageService = void 0;
+const AbstractCatalog_1 = require("../../lib/catalog/AbstractCatalog");
 const fs = require("node:fs");
 const ejs = require('ejs');
 const filepath = './.tmp/public/files';
@@ -59,7 +59,7 @@ StorageService.storageMap = new Map();
   |_|\___||___/\__|\____|_|  \___/ \__,_| .__/
                                         |_|
  */
-class TestGroup extends AbstractCatalog_2.AbstractGroup {
+class TestGroup extends AbstractCatalog_1.AbstractGroup {
     constructor() {
         super(...arguments);
         this.name = "Group";
@@ -112,66 +112,7 @@ class TestGroup extends AbstractCatalog_2.AbstractGroup {
     }
 }
 exports.TestGroup = TestGroup;
-/**
- ___ _                 _
-|_ _| |_ ___ _ __ ___ / |
- | || __/ _ \ '_ ` _ \| |
- | || ||  __/ | | | | | |
-|___|\__\___|_| |_| |_|_|
- */
-class Item2 extends AbstractCatalog_2.AbstractItem {
-    constructor() {
-        super(...arguments);
-        this.type = "item2";
-        this.name = "Item 2";
-        this.allowedRoot = true;
-        this.icon = "radiation-alt";
-        this.actionHandlers = [];
-    }
-    getAddHTML() {
-        let type = 'html';
-        return {
-            type: type,
-            data: ejs.render(fs.readFileSync(`${__dirname}/item2Add.ejs`, 'utf8')),
-        };
-    }
-    async getEditHTML(id) {
-        let type = 'html';
-        let item = await StorageService.findElementById(id);
-        return {
-            type: type,
-            data: ejs.render(fs.readFileSync(`${__dirname}/item2Edit.ejs`, 'utf8'), { item: item }),
-        };
-    }
-    async create(itemId, data) {
-        let elems = await StorageService.getAllElements();
-        let id = elems.length + 1;
-        let newData = {
-            ...data,
-            id: id.toString(),
-            sortOrder: id
-        };
-        return await StorageService.setElement(id, newData);
-    }
-    async find(itemId) {
-        return await StorageService.findElementById(itemId);
-    }
-    async update(itemId, data) {
-        return await StorageService.setElement(itemId, data);
-    }
-    ;
-    async deleteItem(itemId) {
-        await StorageService.removeElementById(itemId);
-    }
-    async getChilds(parentId) {
-        return await StorageService.findElementsByParentId(parentId, this.type);
-    }
-    async search(s) {
-        return await StorageService.search(s, this.type);
-    }
-}
-exports.Item2 = Item2;
-class Page extends AbstractCatalog_2.AbstractItem {
+class Page extends AbstractCatalog_1.AbstractItem {
     constructor() {
         super(...arguments);
         this.type = "page";
@@ -220,16 +161,15 @@ class Page extends AbstractCatalog_2.AbstractItem {
     }
 }
 exports.Page = Page;
-class TestCatalog extends AbstractCatalog_2.AbstractCatalog {
+class TestModelCatalog extends AbstractCatalog_1.AbstractCatalog {
     //  public readonly itemTypes: (Item2 | Item1 | TestGroup)[];
     constructor() {
         super([
             new TestGroup(),
-            new Item2(),
             new Page()
         ]);
-        this.name = "test catalog";
-        this.slug = "test";
+        this.name = "test model catalog";
+        this.slug = "testModel";
         this.maxNestingDepth = null;
         this.icon = "box";
         this.actionHandlers = [];
@@ -237,8 +177,8 @@ class TestCatalog extends AbstractCatalog_2.AbstractCatalog {
         this.addActionHandler(new ContextAction());
     }
 }
-exports.TestCatalog = TestCatalog;
-class Link extends AbstractCatalog_2.ActionHandler {
+exports.TestModelCatalog = TestModelCatalog;
+class Link extends AbstractCatalog_1.ActionHandler {
     constructor() {
         super(...arguments);
         this.icon = 'cat';
@@ -263,7 +203,7 @@ class Link extends AbstractCatalog_2.ActionHandler {
     }
 }
 exports.Link = Link;
-class ContextAction extends AbstractCatalog_2.ActionHandler {
+class ContextAction extends AbstractCatalog_1.ActionHandler {
     constructor() {
         super(...arguments);
         this.icon = 'crow';
@@ -273,8 +213,7 @@ class ContextAction extends AbstractCatalog_2.ActionHandler {
         this.displayContext = true;
         this.type = 'basic';
         this.selectedItemTypes = [
-            'group',
-            'item2'
+            'group'
         ];
     }
     getLink() {

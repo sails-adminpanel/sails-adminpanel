@@ -135,73 +135,6 @@ export class TestGroup extends AbstractGroup<GroupTestItem> {
 	}
 }
 
-/**
- ___ _                 _
-|_ _| |_ ___ _ __ ___ / |
- | || __/ _ \ '_ ` _ \| |
- | || ||  __/ | | | | | |
-|___|\__\___|_| |_| |_|_|
- */
-
-
-export class Item2 extends AbstractItem<Item> {
-	public type: string = "item2";
-	public name: string = "Item 2";
-	public allowedRoot: boolean = true;
-	public icon: string = "radiation-alt";
-	public readonly actionHandlers = []
-
-	public getAddHTML(): { type: "link" | "html"; data: string; } {
-		let type: 'html' = 'html'
-		return {
-			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/item2Add.ejs`, 'utf8')),
-		}
-	}
-
-	public async getEditHTML(id: string | number): Promise<{ type: "link" | "html"; data: string; }> {
-		let type: 'html' = 'html'
-		let item = await StorageService.findElementById(id)
-		return {
-			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/item2Edit.ejs`, 'utf8'), {item: item}),
-		}
-	}
-
-	public async create(itemId: string, data: GroupTestItem): Promise<GroupTestItem> {
-		let elems = await StorageService.getAllElements()
-		let id = elems.length + 1
-		let newData = {
-			...data,
-			id: id.toString(),
-			sortOrder: id
-		}
-		return  await StorageService.setElement(id, newData) as GroupTestItem
-	}
-
-
-	public async find(itemId: string | number) {
-		return await StorageService.findElementById(itemId);
-	}
-
-	public async update(itemId: string | number, data: Item): Promise<Item> {
-		return await StorageService.setElement(itemId, data);
-	};
-
-
-	public async deleteItem(itemId: string | number) {
-		await StorageService.removeElementById(itemId);
-	}
-
-	public async getChilds(parentId: string | number): Promise<Item[]> {
-		return await StorageService.findElementsByParentId(parentId, this.type);
-	}
-
-	public async search(s: string): Promise<Item[]> {
-		return await StorageService.search(s, this.type);
-	}
-}
-
 
 export class Page extends AbstractItem<Item> {
 	public type: string = "page";
@@ -257,9 +190,9 @@ export class Page extends AbstractItem<Item> {
 	}
 }
 
-export class TestCatalog extends AbstractCatalog {
-	public readonly name: string = "test catalog";
-	public readonly slug: string = "test";
+export class TestModelCatalog extends AbstractCatalog {
+	public readonly name: string = "test model catalog";
+	public readonly slug: string = "testModel";
 	public readonly maxNestingDepth: number = null;
 	public readonly icon: string = "box";
 	public readonly actionHandlers = []
@@ -269,7 +202,6 @@ export class TestCatalog extends AbstractCatalog {
 	constructor() {
 		super([
 			new TestGroup(),
-			new Item2(),
 			new Page()
 		]);
 		this.addActionHandler(new Link())
@@ -310,8 +242,7 @@ export class ContextAction extends ActionHandler{
 	public readonly displayContext: boolean = true
 	public readonly type = 'basic'
 	public readonly selectedItemTypes: string[] = [
-		'group',
-		'item2'
+		'group'
 	]
 
 	getLink(): Promise<string> {
