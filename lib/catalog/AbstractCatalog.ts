@@ -27,7 +27,7 @@ export type _Item_ = {
  *
  *
  */
-export abstract class BaseItem<T> {
+export abstract class BaseItem<T extends Item> {
 	// public abstract readonly id: string;
 	public abstract readonly type: string;
 
@@ -66,6 +66,21 @@ export abstract class BaseItem<T> {
 		this.actionHandlers.push(contextHandler);
 	}
 
+	/**
+	 * Adds the required fields
+	 * @param item 
+	 */
+	public _enrich(item: T): void {
+		item.icon = this.icon;
+		item.type = this.type;
+	}
+
+	public async _find(itemId: string | number): Promise<T> {
+		let item = await this.find(itemId);
+		this._enrich(item);
+		return item;
+	}
+
 	public abstract find(itemId: string | number): Promise<T>;
 
 	/**
@@ -82,6 +97,12 @@ export abstract class BaseItem<T> {
 	public abstract getAddHTML(): { type: 'link' | 'html', data: string }
 
 	public abstract getEditHTML(id: string | number): Promise<{ type: 'link' | 'html', data: string }>;
+
+	public async _getChilds(parentId: string | number | null): Promise<Item[]> {
+		let items = await this.getChilds(parentId)
+		items.forEach((item)=>{this._enrich(item as T)})
+		return items;
+	}
 
 	public abstract getChilds(parentId: string | number | null): Promise<Item[]>
 
@@ -225,12 +246,12 @@ export abstract class AbstractCatalog {
 	 */
 	public async getChilds(parentId: string | number | null, byItemType?: string): Promise<Item[]> {
 		if (byItemType) {
-			const items = await this.getItemType(byItemType)?.getChilds(parentId);
+			const items = await this.getItemType(byItemType)?._getChilds(parentId);
 			return items ? items.sort((a, b) => a.sortOrder - b.sortOrder) : [];
 		} else {
 			let result = [];
 			for (const itemType of this.itemTypes) {
-				const items = await itemType?.getChilds(parentId);
+				const items = await itemType?._getChilds(parentId);
 				if (items) {
 					result = result.concat(items);
 				}
@@ -269,10 +290,10 @@ export abstract class AbstractCatalog {
 	}
 
 	/**
-	 *  Removing an element
+	 *  Get an element
 	 */
 	public find(item: Item) {
-		return this.getItemType(item.type)?.find(item.id);
+		return this.getItemType(item.type)?._find(item.id);
 	}
 
 	/**
@@ -380,7 +401,7 @@ export abstract class AbstractCatalog {
 			}
 
 			if (item.parentId === null) return item;
-			const parentItem = await groupType.find(item.parentId);
+			const parentItem = await groupType._find(item.parentId);
 			if (parentItem) {
 				accumulator.push(parentItem);
 				return buildTreeUpwards(parentItem, hasExtras);

@@ -21,7 +21,7 @@ export type _Item_ = {
  *
  *
  */
-export declare abstract class BaseItem<T> {
+export declare abstract class BaseItem<T extends Item> {
     abstract readonly type: string;
     /**
      * Used for infer T
@@ -49,6 +49,12 @@ export declare abstract class BaseItem<T> {
      */
     readonly actionHandlers: ActionHandler[];
     addActionHandler(contextHandler: ActionHandler): void;
+    /**
+     * Adds the required fields
+     * @param item
+     */
+    _enrich(item: T): void;
+    _find(itemId: string | number): Promise<T>;
     abstract find(itemId: string | number): Promise<T>;
     /**
      * Is false because default value Group is added
@@ -66,6 +72,7 @@ export declare abstract class BaseItem<T> {
         type: 'link' | 'html';
         data: string;
     }>;
+    _getChilds(parentId: string | number | null): Promise<Item[]>;
     abstract getChilds(parentId: string | number | null): Promise<Item[]>;
     abstract search(s: string): Promise<T[]>;
 }
@@ -175,7 +182,7 @@ export declare abstract class AbstractCatalog {
     getGroupType(): BaseItem<Item>;
     additemTypes<T extends BaseItem<any>>(itemType: T): void;
     /**
-     *  Removing an element
+     *  Get an element
      */
     find(item: Item): Promise<Item>;
     /**
