@@ -65,6 +65,7 @@ class VueCatalog {
     }
     async updateTree(data) {
         let reqNodes = data.reqNode;
+        console.log(reqNodes);
         if (!Array.isArray(data.reqNode)) {
             reqNodes = [data.reqNode];
         }
@@ -77,6 +78,7 @@ class VueCatalog {
         }
         // It’s unclear why he’s coming reqNodes
         for (const reqNode of reqNodes) {
+            console.log(">>>>>>>>>", "this.catalog.find", reqNode);
             const item = await this.catalog.find(reqNode.data);
             if (!item) {
                 throw `reqNode Item not found`;

@@ -271,11 +271,12 @@ class Page extends AbstractCatalog_1.AbstractItem {
         this.icon = "file";
     }
     async find(itemId) {
+        console.log(itemId, "FIND");
         return await sails.models['page'].findOne({ id: itemId });
     }
     async update(itemId, data) {
         // allowed only parentID update
-        return await sails.models['page'].update({ id: itemId }, { name: data.name, parentId: data.parentId }).fetch();
+        return await sails.models['page'].update({ id: itemId }, data).fetch();
     }
     ;
     async create(itemId, data) {

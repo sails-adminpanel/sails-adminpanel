@@ -302,12 +302,13 @@ export class Page extends AbstractItem<Item> {
 	public icon: string = "file";
 
 	public async find(itemId: string | number) {
+		console.log(itemId, "FIND")
 		return await sails.models['page'].findOne({id: itemId});
 	}
 
 	public async update(itemId: string | number, data: Item): Promise<Item> {
 		// allowed only parentID update
-		return await sails.models['page'].update({id: itemId}, { name: data.name, parentId: data.parentId}).fetch();
+		return await sails.models['page'].update({id: itemId}, data).fetch();
 	};
 
 
