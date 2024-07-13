@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VueCatalogUtils = exports.VueCatalog = void 0;
-const AbstractCatalog_1 = require("../../lib/catalog/AbstractCatalog");
+const AbstractCatalog_2 = require("../../lib/catalog/AbstractCatalog");
 class VueCatalog {
     constructor(_catalog) {
         this.catalog = _catalog;
@@ -60,7 +60,7 @@ class VueCatalog {
     // }
     async search(s) {
         let searchResult = await this.catalog.search(s);
-        let itemsTree = AbstractCatalog_1.AbstractCatalog.buildTree(searchResult);
+        let itemsTree = AbstractCatalog_2.AbstractCatalog.buildTree(searchResult);
         return VueCatalogUtils.treeToNode(itemsTree, this.catalog.getGroupType().type);
     }
     async updateTree(data) {

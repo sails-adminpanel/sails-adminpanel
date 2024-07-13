@@ -1,10 +1,4 @@
-import {AbstractCatalog, AbstractGroup, AbstractItem, ActionHandler, Item} from "../../lib/catalog/AbstractCatalog";
-import * as fs from "node:fs";
-import {data} from "autoprefixer";
-const ejs = require('ejs')
-
-const filepath = './.tmp/public/files'
-
+import {AbstractCatalog, ActionHandler, AbstractGroup, AbstractItem, Item} from "../../lib/catalog/AbstractCatalog";
 
 interface GroupTestItem extends Item {
 	thisIsGroup: boolean
@@ -78,52 +72,33 @@ export class StorageService {
 
 export class TestGroup extends AbstractGroup<GroupTestItem> {
 	public name: string = "Group";
-	public allowedRoot: boolean = true;
-	public icon = 'audio-description'
-	public type = 'group'
-	public isGroup: boolean = true;
-	public readonly actionHandlers = []
+	public allowedRoot: boolean;
+	public icon: string;
 
 
 	public async find(itemId: string | number) {
 		return await StorageService.findElementById(itemId) as GroupTestItem;
 	}
 
-
 	public async update(itemId: string | number, data: GroupTestItem): Promise<GroupTestItem> {
 		return await StorageService.setElement(itemId, data) as GroupTestItem;
 	};
 
+
 	public async create(itemId: string, data: GroupTestItem): Promise<GroupTestItem> {
-		let elems = await StorageService.getAllElements()
-		let id = elems.length + 1
-		let newData = {
-			...data,
-			id: id.toString(),
-			sortOrder: id
-		}
-		return await StorageService.setElement(id, newData) as GroupTestItem;
+		return await StorageService.setElement(itemId, data) as GroupTestItem;
 	}
 
-	public async deleteItem(itemId: string | number) {
-		await StorageService.removeElementById(itemId);
+	public async deleteItem(itemId: string | number): Promise<void> {
+		return await StorageService.removeElementById(itemId);
 	}
 
 	public getAddHTML(): { type: "link" | "html"; data: string; } {
-		let type: 'html' = 'html'
-		return {
-			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/groupAdd.ejs`, 'utf8')),
-		}
+		throw new Error("Method not implemented.");
 	}
 
-	public async getEditHTML(id: string | number): Promise<{ type: "link" | "html"; data: string; }> {
-		let type: 'html' = 'html'
-		let item = await StorageService.findElementById(id)
-		return {
-			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/groupEdit.ejs`, 'utf8'), { item: item }),
-		}
+	public getEditHTML(id: string | number): Promise<{ type: "link" | "html"; data: string; }> {
+		throw new Error("Method not implemented.");
 	}
 
 	public async getChilds(parentId: string | number): Promise<Item[]> {
@@ -143,42 +118,11 @@ export class TestGroup extends AbstractGroup<GroupTestItem> {
 |___|\__\___|_| |_| |_|_|
  */
 
-
-export class Item2 extends AbstractItem<Item> {
-	public type: string = "item2";
-	public name: string = "Item 2";
+export class Item1 extends AbstractItem<Item> {
+	public type: string = "item1";
+	public name: string = "Item 1";
 	public allowedRoot: boolean = true;
-	public icon: string = "radiation-alt";
-	public readonly actionHandlers = []
-
-	public getAddHTML(): { type: "link" | "html"; data: string; } {
-		let type: 'html' = 'html'
-		return {
-			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/item2Add.ejs`, 'utf8')),
-		}
-	}
-
-	public async getEditHTML(id: string | number): Promise<{ type: "link" | "html"; data: string; }> {
-		let type: 'html' = 'html'
-		let item = await StorageService.findElementById(id)
-		return {
-			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/item2Edit.ejs`, 'utf8'), {item: item}),
-		}
-	}
-
-	public async create(itemId: string, data: GroupTestItem): Promise<GroupTestItem> {
-		let elems = await StorageService.getAllElements()
-		let id = elems.length + 1
-		let newData = {
-			...data,
-			id: id.toString(),
-			sortOrder: id
-		}
-		return  await StorageService.setElement(id, newData) as GroupTestItem
-	}
-
+	public icon: string = "file";
 
 	public async find(itemId: string | number) {
 		return await StorageService.findElementById(itemId);
@@ -189,8 +133,20 @@ export class Item2 extends AbstractItem<Item> {
 	};
 
 
-	public async deleteItem(itemId: string | number) {
-		await StorageService.removeElementById(itemId);
+	public async create(itemId: string, data: Item): Promise<Item> {
+		return await StorageService.setElement(itemId, data);
+	}
+
+	public async deleteItem(itemId: string | number): Promise<void> {
+		return await StorageService.removeElementById(itemId);
+	}
+
+	public getAddHTML(): { type: "link" | "html"; data: string; } {
+		throw new Error("Method not implemented.");
+	}
+
+	public getEditHTML(id: string | number): Promise<{ type: "link" | "html"; data: string; }> {
+		throw new Error("Method not implemented.");
 	}
 
 	public async getChilds(parentId: string | number): Promise<Item[]> {
@@ -203,58 +159,11 @@ export class Item2 extends AbstractItem<Item> {
 }
 
 
-export class Page extends AbstractItem<Item> {
-	public type: string = "page";
-	public name: string = "Page";
+export class Item2 extends Item1 {
+	public type: string = "item2";
+	public name: string = "Item 2";
 	public allowedRoot: boolean = true;
 	public icon: string = "file";
-	public readonly actionHandlers = []
-
-	public async find(itemId: string | number) {
-		return await sails.models['page'].findOne({id: itemId});
-	}
-
-	public async update(itemId: string | number, data: Item): Promise<Item> {
-		// allowed only parentID update
-		return await sails.models['page'].update({id: itemId}, { name: data.name, parentId: data.parentId}).fetch();
-	};
-
-
-	public async create(itemId: string, data: Item): Promise<Item> {
-		throw `I dont know for what need it`
-		// return await sails.models.create({ name: data.name, parentId: data.parentId}).fetch();
-		// return await StorageService.setElement(itemId, data);
-	}
-
-	public async deleteItem(itemId: string | number) {
-		await sails.models['page'].destroy({id: itemId})
-	//	await StorageService.removeElementById(itemId);
-	}
-
-	public getAddHTML(): { type: "link" | "html"; data: string; } {
-		let type: 'link' = 'link'
-		return {
-			type: type,
-			data: '/admin/model/page/add?without_layout=true'
-		}
-	}
-
-
-	public async getEditHTML(id: string | number): Promise<{ type: "link" | "html"; data: string; }> {
-		let type: 'link' = 'link'
-		return {
-			type: type,
-			data: `/admin/model/page/edit/${id}?without_layout=true`
-		}
-	}
-    // TODO: Need rename (getChilds) it not intuitive
-	public async getChilds(parentId: string | number): Promise<Item[]> {
-		return await sails.models['page'].find({parentID: parentId});
-	}
-
-	public async search(s: string): Promise<Item[]> {
-		return await sails.models['page'].find({name: { contain: s}});
-	}
 }
 
 export class TestCatalog extends AbstractCatalog {
@@ -262,80 +171,14 @@ export class TestCatalog extends AbstractCatalog {
 	public readonly slug: string = "test";
 	public readonly maxNestingDepth: number = null;
 	public readonly icon: string = "box";
-	public readonly actionHandlers = []
 
 	//  public readonly itemTypes: (Item2 | Item1 | TestGroup)[];
 
 	constructor() {
 		super([
 			new TestGroup(),
-			new Item2(),
-			new Page()
+			new Item1(),
+			new Item2()
 		]);
-		this.addActionHandler(new Link())
-		this.addActionHandler(new ContextAction())
-	}
-}
-
-export class Link extends ActionHandler {
-	readonly icon: string = 'cat';
-	readonly id: string = 'download';
-	readonly name: string = 'Link';
-	public readonly displayTool: boolean = true
-	public readonly displayContext: boolean = false
-	public readonly type = 'link'
-	public readonly selectedItemTypes: string[] = []
-
-	getLink(): Promise<string> {
-		return Promise.resolve("");
-	}
-
-	getPopUpHTML(): Promise<string> {
-		return Promise.resolve("");
-	}
-
-	handler(items: Item[], config?: any): Promise<any> {
-		return Promise.resolve({
-			data: 'http://www.example.com/',
-			type: this.type
-		});
-	}
-
-}
-export class ContextAction extends ActionHandler{
-	readonly icon: string = 'crow';
-	readonly id: string = 'context1';
-	readonly name: string = 'Rename';
-	public readonly displayTool: boolean = false
-	public readonly displayContext: boolean = true
-	public readonly type = 'basic'
-	public readonly selectedItemTypes: string[] = [
-		'group',
-		'item2'
-	]
-
-	getLink(): Promise<string> {
-		return Promise.resolve("");
-	}
-
-	getPopUpHTML(): Promise<string> {
-		return Promise.resolve("");
-	}
-
-	handler(items: Item[], config?: any): Promise<any> {
-		const generateRandomString = () => {
-			return Math.floor(Math.random() * Date.now()).toString(36);
-		};
-		setTimeout(async ()=>{
-			for (const item of items) {
-				let data = item
-				data.name = generateRandomString()
-				await StorageService.setElement(item.id, data)
-			}
-		}, 10000)
-		return Promise.resolve({
-			data: 'ok',
-			type: this.type
-		})
 	}
 }

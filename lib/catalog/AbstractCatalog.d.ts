@@ -54,7 +54,6 @@ export declare abstract class BaseItem<T> {
      * Is false because default value Group is added
      */
     abstract update(itemId: string | number, data: T): Promise<T>;
-    abstract create(itemId: string, data: T): Promise<T>;
     /**
      *  delete element
      */
@@ -71,11 +70,17 @@ export declare abstract class BaseItem<T> {
     abstract search(s: string): Promise<T[]>;
 }
 export declare abstract class AbstractGroup<T> extends BaseItem<T> {
+    abstract create(itemId: string, data: T): Promise<T>;
     readonly type: string;
     readonly isGroup: boolean;
     icon: string;
 }
 export declare abstract class AbstractItem<T> extends BaseItem<T> {
+    /**
+     *
+     * @deprecated It need for only group
+     */
+    abstract create(itemId: string, data: T): Promise<T>;
     readonly isGroup: boolean;
 }
 export declare abstract class ActionHandler {
@@ -181,14 +186,14 @@ export declare abstract class AbstractCatalog {
      * Receives HTML to update an element for projection into a popup
      */
     getEditHTML(item: Item, id: string | number): Promise<{
-        type: "link" | "html";
+        type: "html" | "link";
         data: string;
     }>;
     /**
      * Receives HTML to create an element for projection into a popup
      */
     getAddHTML(item: Item): {
-        type: "link" | "html";
+        type: "html" | "link";
         data: string;
     };
     addActionHandler(actionHandler: ActionHandler): void;

@@ -32,7 +32,7 @@ export default class Router {
   /**
    * The idea is that all methods within the first 3 seconds after start call this method, and as soon as all have been loaded, the loading will be blocked
    */
-  @debounce(5000)
+  @debounce(3000)
   static bind(): void {
     if (this.onlyOnce) {
       sails.log.error(`This method allowed for run only one time`);

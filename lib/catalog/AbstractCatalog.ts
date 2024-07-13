@@ -73,9 +73,6 @@ export abstract class BaseItem<T> {
 	 */
 	public abstract update(itemId: string | number, data: T): Promise<T>;
 
-	public abstract create(itemId: string, data: T): Promise<T>;
-
-
 	/**
 	 *  delete element
 	 */
@@ -93,12 +90,21 @@ export abstract class BaseItem<T> {
 
 
 export abstract class AbstractGroup<T> extends BaseItem<T> {
+
+	public abstract create(itemId: string, data: T): Promise<T>;
+
 	public readonly type: string = "group";
 	public readonly isGroup: boolean = true;
 	public icon: string = "folder";
 }
 
 export abstract class AbstractItem<T> extends BaseItem<T> {
+	/**
+	 * 
+	 * @deprecated It need for only group
+	 */
+	public abstract create(itemId: string, data: T): Promise<T>;
+
 	public readonly isGroup: boolean = false;
 }
 

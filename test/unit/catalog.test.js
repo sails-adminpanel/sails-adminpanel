@@ -18,8 +18,8 @@ describe('Catalog', function () {
                 parentId: '1.1',
                 sortOrder: 1,
                 marked: true,
-                icon: 'icon-item1.1.1',
-                type: 'item1'
+                icon: 'radiation-alt',
+                type: 'item2'
             };
             const results = await testCatalog.search(searchQuery);
             // Проверяем, что найденный элемент соответствует ожидаемому

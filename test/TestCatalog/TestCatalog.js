@@ -1,10 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ContextAction = exports.Link = exports.TestCatalog = exports.Page = exports.Item2 = exports.TestGroup = exports.StorageService = void 0;
+exports.TestCatalog = exports.Item2 = exports.Item1 = exports.TestGroup = exports.StorageService = void 0;
 const AbstractCatalog_1 = require("../../lib/catalog/AbstractCatalog");
-const fs = require("node:fs");
-const ejs = require('ejs');
-const filepath = './.tmp/public/files';
 /**
  * Storage takes place in RAM
  */
@@ -63,11 +60,6 @@ class TestGroup extends AbstractCatalog_1.AbstractGroup {
     constructor() {
         super(...arguments);
         this.name = "Group";
-        this.allowedRoot = true;
-        this.icon = 'audio-description';
-        this.type = 'group';
-        this.isGroup = true;
-        this.actionHandlers = [];
     }
     async find(itemId) {
         return await StorageService.findElementById(itemId);
@@ -77,32 +69,16 @@ class TestGroup extends AbstractCatalog_1.AbstractGroup {
     }
     ;
     async create(itemId, data) {
-        let elems = await StorageService.getAllElements();
-        let id = elems.length + 1;
-        let newData = {
-            ...data,
-            id: id.toString(),
-            sortOrder: id
-        };
-        return await StorageService.setElement(id, newData);
+        return await StorageService.setElement(itemId, data);
     }
     async deleteItem(itemId) {
-        await StorageService.removeElementById(itemId);
+        return await StorageService.removeElementById(itemId);
     }
     getAddHTML() {
-        let type = 'html';
-        return {
-            type: type,
-            data: ejs.render(fs.readFileSync(`${__dirname}/groupAdd.ejs`, 'utf8')),
-        };
+        throw new Error("Method not implemented.");
     }
-    async getEditHTML(id) {
-        let type = 'html';
-        let item = await StorageService.findElementById(id);
-        return {
-            type: type,
-            data: ejs.render(fs.readFileSync(`${__dirname}/groupEdit.ejs`, 'utf8'), { item: item }),
-        };
+    getEditHTML(id) {
+        throw new Error("Method not implemented.");
     }
     async getChilds(parentId) {
         return await StorageService.findElementsByParentId(parentId, this.type);
@@ -119,39 +95,13 @@ exports.TestGroup = TestGroup;
  | || ||  __/ | | | | | |
 |___|\__\___|_| |_| |_|_|
  */
-class Item2 extends AbstractCatalog_1.AbstractItem {
+class Item1 extends AbstractCatalog_1.AbstractItem {
     constructor() {
         super(...arguments);
-        this.type = "item2";
-        this.name = "Item 2";
+        this.type = "item1";
+        this.name = "Item 1";
         this.allowedRoot = true;
-        this.icon = "radiation-alt";
-        this.actionHandlers = [];
-    }
-    getAddHTML() {
-        let type = 'html';
-        return {
-            type: type,
-            data: ejs.render(fs.readFileSync(`${__dirname}/item2Add.ejs`, 'utf8')),
-        };
-    }
-    async getEditHTML(id) {
-        let type = 'html';
-        let item = await StorageService.findElementById(id);
-        return {
-            type: type,
-            data: ejs.render(fs.readFileSync(`${__dirname}/item2Edit.ejs`, 'utf8'), { item: item }),
-        };
-    }
-    async create(itemId, data) {
-        let elems = await StorageService.getAllElements();
-        let id = elems.length + 1;
-        let newData = {
-            ...data,
-            id: id.toString(),
-            sortOrder: id
-        };
-        return await StorageService.setElement(id, newData);
+        this.icon = "file";
     }
     async find(itemId) {
         return await StorageService.findElementById(itemId);
@@ -160,8 +110,17 @@ class Item2 extends AbstractCatalog_1.AbstractItem {
         return await StorageService.setElement(itemId, data);
     }
     ;
+    async create(itemId, data) {
+        return await StorageService.setElement(itemId, data);
+    }
     async deleteItem(itemId) {
-        await StorageService.removeElementById(itemId);
+        return await StorageService.removeElementById(itemId);
+    }
+    getAddHTML() {
+        throw new Error("Method not implemented.");
+    }
+    getEditHTML(id) {
+        throw new Error("Method not implemented.");
     }
     async getChilds(parentId) {
         return await StorageService.findElementsByParentId(parentId, this.type);
@@ -170,134 +129,29 @@ class Item2 extends AbstractCatalog_1.AbstractItem {
         return await StorageService.search(s, this.type);
     }
 }
-exports.Item2 = Item2;
-class Page extends AbstractCatalog_1.AbstractItem {
+exports.Item1 = Item1;
+class Item2 extends Item1 {
     constructor() {
         super(...arguments);
-        this.type = "page";
-        this.name = "Page";
+        this.type = "item2";
+        this.name = "Item 2";
         this.allowedRoot = true;
         this.icon = "file";
-        this.actionHandlers = [];
-    }
-    async find(itemId) {
-        return await sails.models['page'].findOne({ id: itemId });
-    }
-    async update(itemId, data) {
-        // allowed only parentID update
-        return await sails.models['page'].update({ id: itemId }, { name: data.name, parentId: data.parentId }).fetch();
-    }
-    ;
-    async create(itemId, data) {
-        throw `I dont know for what need it`;
-        // return await sails.models.create({ name: data.name, parentId: data.parentId}).fetch();
-        // return await StorageService.setElement(itemId, data);
-    }
-    async deleteItem(itemId) {
-        await sails.models['page'].destroy({ id: itemId });
-        //	await StorageService.removeElementById(itemId);
-    }
-    getAddHTML() {
-        let type = 'link';
-        return {
-            type: type,
-            data: '/admin/model/page/add?without_layout=true'
-        };
-    }
-    async getEditHTML(id) {
-        let type = 'link';
-        return {
-            type: type,
-            data: `/admin/model/page/edit/${id}?without_layout=true`
-        };
-    }
-    // TODO: Need rename (getChilds) it not intuitive
-    async getChilds(parentId) {
-        return await sails.models['page'].find({ parentID: parentId });
-    }
-    async search(s) {
-        return await sails.models['page'].find({ name: { contain: s } });
     }
 }
-exports.Page = Page;
+exports.Item2 = Item2;
 class TestCatalog extends AbstractCatalog_1.AbstractCatalog {
     //  public readonly itemTypes: (Item2 | Item1 | TestGroup)[];
     constructor() {
         super([
             new TestGroup(),
-            new Item2(),
-            new Page()
+            new Item1(),
+            new Item2()
         ]);
         this.name = "test catalog";
         this.slug = "test";
         this.maxNestingDepth = null;
         this.icon = "box";
-        this.actionHandlers = [];
-        this.addActionHandler(new Link());
-        this.addActionHandler(new ContextAction());
     }
 }
 exports.TestCatalog = TestCatalog;
-class Link extends AbstractCatalog_1.ActionHandler {
-    constructor() {
-        super(...arguments);
-        this.icon = 'cat';
-        this.id = 'download';
-        this.name = 'Link';
-        this.displayTool = true;
-        this.displayContext = false;
-        this.type = 'link';
-        this.selectedItemTypes = [];
-    }
-    getLink() {
-        return Promise.resolve("");
-    }
-    getPopUpHTML() {
-        return Promise.resolve("");
-    }
-    handler(items, config) {
-        return Promise.resolve({
-            data: 'http://www.example.com/',
-            type: this.type
-        });
-    }
-}
-exports.Link = Link;
-class ContextAction extends AbstractCatalog_1.ActionHandler {
-    constructor() {
-        super(...arguments);
-        this.icon = 'crow';
-        this.id = 'context1';
-        this.name = 'Rename';
-        this.displayTool = false;
-        this.displayContext = true;
-        this.type = 'basic';
-        this.selectedItemTypes = [
-            'group',
-            'item2'
-        ];
-    }
-    getLink() {
-        return Promise.resolve("");
-    }
-    getPopUpHTML() {
-        return Promise.resolve("");
-    }
-    handler(items, config) {
-        const generateRandomString = () => {
-            return Math.floor(Math.random() * Date.now()).toString(36);
-        };
-        setTimeout(async () => {
-            for (const item of items) {
-                let data = item;
-                data.name = generateRandomString();
-                await StorageService.setElement(item.id, data);
-            }
-        }, 10000);
-        return Promise.resolve({
-            data: 'ok',
-            type: this.type
-        });
-    }
-}
-exports.ContextAction = ContextAction;

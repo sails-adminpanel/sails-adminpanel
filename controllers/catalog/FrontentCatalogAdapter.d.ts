@@ -29,11 +29,11 @@ export declare class VueCatalog {
     setID(id: string): void;
     getItemType(type: string): import("../../lib/catalog/AbstractCatalog").BaseItem<Item>;
     getAddHTML(item: any): {
-        type: "link" | "html";
+        type: "html" | "link";
         data: string;
     };
     getEditHTML(item: any, id: string | number): Promise<{
-        type: "link" | "html";
+        type: "html" | "link";
         data: string;
     }>;
     getitemTypes(): import("../../lib/catalog/AbstractCatalog").BaseItem<Item>[];
