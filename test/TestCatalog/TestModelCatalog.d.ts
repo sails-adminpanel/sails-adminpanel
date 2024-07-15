@@ -13,12 +13,13 @@ declare class BaseModelItem<T extends Item> extends AbstractItem<T> {
         type: "link" | "html";
         data: string;
     };
-    getEditHTML(id: string | number): Promise<{
+    getEditHTML(id: string | number, parenId?: string | number): Promise<{
         type: "link" | "html";
         data: string;
     }>;
     getChilds(parentId: string | number): Promise<Item[]>;
     search(s: string): Promise<T[]>;
+    create(itemId: string, data: T): Promise<T>;
 }
 export declare class ModelGroup<GroupTestItem extends Item> extends BaseModelItem<GroupTestItem> {
     name: string;
@@ -36,6 +37,41 @@ export declare class Page<T extends Item> extends BaseModelItem<T> {
     type: string;
     model: string;
     readonly actionHandlers: any[];
+}
+export declare class ItemHTML extends AbstractItem<Item> {
+    readonly allowedRoot: boolean;
+    name: string;
+    icon: string;
+    type: string;
+    readonly actionHandlers: any[];
+    getAddHTML(): {
+        type: 'link' | 'html' | 'jsonForm';
+        data: string;
+    };
+    getEditHTML(id: string | number): Promise<{
+        type: 'link' | 'html' | 'jsonForm';
+        data: string;
+    }>;
+    create(itemId: string, data: Item): Promise<Item>;
+    find(itemId: string | number): Promise<Item>;
+    update(itemId: string | number, data: Item): Promise<Item>;
+    deleteItem(itemId: string | number): Promise<void>;
+    getChilds(parentId: string | number): Promise<Item[]>;
+    search(s: string): Promise<Item[]>;
+}
+export declare class ItemJsonForm extends ItemHTML {
+    readonly allowedRoot: boolean;
+    name: string;
+    icon: string;
+    type: string;
+    getAddHTML(): {
+        type: "jsonForm";
+        data: string;
+    };
+    getEditHTML(id: string | number): Promise<{
+        type: 'link' | 'html' | 'jsonForm';
+        data: string;
+    }>;
 }
 export declare class TestModelCatalog extends AbstractCatalog {
     readonly name: string;

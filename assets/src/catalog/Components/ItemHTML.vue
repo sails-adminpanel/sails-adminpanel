@@ -6,7 +6,9 @@
 					   @change="() => {if(checkboxReady) $emit('closeAllPopups')}"
 					   id="checkbox-ready" hidden>
 				<input id="parentId" :value="id" hidden/>
-				<div v-html="html" ref="embedded"></div>
+				<item-json-form v-if="isJsonForm" :schema="JSONFormSchema.schema" :UISchema="JSONFormSchema.UISchema"
+								:type="JSONFormSchema.type" :data="JSONFormSchema.data" :parentId="id" :PopupEvent="PopupEvent" @closeAllPopups="closeAllPopups"/>
+				<div v-else v-html="html" ref="embedded"></div>
 			</div>
 		</div>
 	</div>
@@ -14,8 +16,9 @@
 
 <script setup>
 import {ref, computed, onMounted} from "vue";
+import itemJsonForm from './itemJsonForm.vue'
 
-const props = defineProps(['html', 'selectedNode'])
+const props = defineProps(['html', 'selectedNode', 'isJsonForm', "JSONFormSchema", 'PopupEvent'])
 const emit = defineEmits(['closeAllPopups'])
 let embedded = ref(null)
 let checkboxReady = ref(false)
@@ -29,20 +32,26 @@ let id = computed(() => {
 })
 
 onMounted(() => {
-	setTimeout(() => {
-		const scripts = embedded.value.getElementsByTagName('script');
-		let i = 1
-		for (let script of scripts) {
-			let elem = document.getElementById(`emb_${i}`)
-			if (elem) elem.remove()
-			const newScript = document.createElement('script');
-			newScript.text = script.innerHTML;
-			newScript.setAttribute('id', `emb_${i}`);
-			document.body.appendChild(newScript)
-			i++
-		}
-	}, 0)
+	if(!props.isJsonForm) {
+		setTimeout(() => {
+			const scripts = embedded.value.getElementsByTagName('script');
+			let i = 1
+			for (let script of scripts) {
+				let elem = document.getElementById(`emb_${i}`)
+				if (elem) elem.remove()
+				const newScript = document.createElement('script');
+				newScript.text = script.innerHTML;
+				newScript.setAttribute('id', `emb_${i}`);
+				document.body.appendChild(newScript)
+				i++
+			}
+		}, 0)
+	}
 })
+
+function closeAllPopups(){
+	emit('closeAllPopups')
+}
 
 </script>
 

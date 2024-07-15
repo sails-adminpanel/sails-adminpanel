@@ -1,7 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ContextAction = exports.Link = exports.TestModelCatalog = exports.Page = exports.ModelGroup = void 0;
+exports.ContextAction = exports.Link = exports.TestModelCatalog = exports.ItemJsonForm = exports.ItemHTML = exports.Page = exports.ModelGroup = void 0;
 const AbstractCatalog_1 = require("../../lib/catalog/AbstractCatalog");
+const fs = require("node:fs");
+const TestCatalog_1 = require("./TestCatalog");
 const ejs = require('ejs');
 class BaseModelItem extends AbstractCatalog_1.AbstractItem {
     constructor() {
@@ -37,7 +39,7 @@ class BaseModelItem extends AbstractCatalog_1.AbstractItem {
             data: `/admin/model/${this.model}/add?without_layout=true`
         };
     }
-    async getEditHTML(id) {
+    async getEditHTML(id, parenId) {
         let type = 'link';
         return {
             type: type,
@@ -48,11 +50,14 @@ class BaseModelItem extends AbstractCatalog_1.AbstractItem {
     async getChilds(parentId) {
         if (parentId === null)
             parentId = "";
-        console.log(this.type, parentId, await sails.models[this.model].find({ parentId: parentId }));
+        // console.log(this.type, parentId, await sails.models[this.model].find({parentId: parentId}))
         return await sails.models[this.model].find({ parentId: parentId });
     }
     async search(s) {
-        return await sails.models[this.model].find({ name: { contain: s } });
+        return await sails.models[this.model].find({ name: { contains: s } });
+    }
+    create(itemId, data) {
+        return Promise.resolve(undefined);
     }
 }
 class ModelGroup extends BaseModelItem {
@@ -80,12 +85,161 @@ class Page extends BaseModelItem {
     }
 }
 exports.Page = Page;
+class ItemHTML extends AbstractCatalog_1.AbstractItem {
+    constructor() {
+        super(...arguments);
+        this.name = 'ItemHTML';
+        this.icon = 'cat';
+        this.type = 'itemHTML';
+        this.actionHandlers = [];
+    }
+    getAddHTML() {
+        let type = 'html';
+        return {
+            type: type,
+            data: ejs.render(fs.readFileSync(`${__dirname}/itemHMLAdd.ejs`, 'utf8')),
+        };
+    }
+    async getEditHTML(id) {
+        let type = 'html';
+        let item = await TestCatalog_1.StorageService.findElementById(id);
+        return {
+            type: type,
+            data: ejs.render(fs.readFileSync(`${__dirname}/itemHTMLEdit.ejs`, 'utf8'), { item: item }),
+        };
+    }
+    async create(itemId, data) {
+        let elems = await TestCatalog_1.StorageService.getAllElements();
+        let id = elems.length + 1;
+        let newData = {
+            ...data,
+            id: id.toString(),
+            sortOrder: id,
+            icon: this.icon
+        };
+        return await TestCatalog_1.StorageService.setElement(id, newData);
+    }
+    async find(itemId) {
+        return await TestCatalog_1.StorageService.findElementById(itemId);
+    }
+    async update(itemId, data) {
+        return await TestCatalog_1.StorageService.setElement(itemId, data);
+    }
+    ;
+    async deleteItem(itemId) {
+        await TestCatalog_1.StorageService.removeElementById(itemId);
+    }
+    async getChilds(parentId) {
+        return await TestCatalog_1.StorageService.findElementsByParentId(parentId, this.type);
+    }
+    async search(s) {
+        return await TestCatalog_1.StorageService.search(s, this.type);
+    }
+}
+exports.ItemHTML = ItemHTML;
+class ItemJsonForm extends ItemHTML {
+    constructor() {
+        super(...arguments);
+        this.name = 'ItemJsonForm';
+        this.icon = 'radiation-alt';
+        this.type = 'itemJsonForm';
+    }
+    getAddHTML() {
+        let type = 'jsonForm';
+        let schema = {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                },
+            }
+        };
+        let UISchema = {
+            "type": "VerticalLayout",
+            "elements": [
+                {
+                    "type": "Control",
+                    "label": "Item JsonForm name",
+                    "scope": "#/properties/name"
+                }
+            ]
+        };
+        let itemType = this.type;
+        return {
+            type: type,
+            data: JSON.stringify({ schema: schema, UISchema: UISchema, type: itemType }),
+        };
+    }
+    async getEditHTML(id) {
+        let item = await this.find(id);
+        let type = 'jsonForm';
+        let schema = {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                },
+                "id": {
+                    "type": "string"
+                },
+                "parentId": {
+                    "type": "string"
+                }
+            }
+        };
+        let UISchema = {
+            "type": "VerticalLayout",
+            "elements": [
+                {
+                    "type": "Control",
+                    "label": "Item JsonForm name",
+                    "scope": "#/properties/name"
+                },
+                {
+                    "type": "Control",
+                    "scope": "#/properties/id",
+                    "rule": {
+                        "effect": "DISABLE",
+                        "condition": {
+                            "scope": "#",
+                            "schema": {}
+                        }
+                    }
+                },
+                {
+                    "type": "Control",
+                    "scope": "#/properties/parentId",
+                    "rule": {
+                        "effect": "DISABLE",
+                        "condition": {
+                            "scope": "#",
+                            "schema": {}
+                        }
+                    }
+                }
+            ]
+        };
+        let data = {
+            "name": item.name,
+            "id": id,
+            "parentId": item.parentId
+        };
+        let itemType = this.type;
+        return {
+            type: type,
+            data: JSON.stringify({ schema: schema, UISchema: UISchema, type: itemType, data: data }),
+        };
+    }
+}
+exports.ItemJsonForm = ItemJsonForm;
 class TestModelCatalog extends AbstractCatalog_1.AbstractCatalog {
     //  public readonly itemTypes: (Item2 | Item1 | TestGroup)[];
     constructor() {
         super([
             new ModelGroup(),
-            new Page()
+            new Page(),
+            new ItemHTML(),
+            new ItemJsonForm()
         ]);
         this.name = "test model catalog";
         this.slug = "testModel";

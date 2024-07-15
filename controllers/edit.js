@@ -88,8 +88,13 @@ async function edit(req, res) {
         try {
             let newRecord = await entity.model.update(params, reqData).fetch();
             sails.log.debug(`Record was updated: `, newRecord);
-            req.session.messages.adminSuccess.push('Your record was updated !');
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
+            if (req.body.json) {
+                return res.json({ record: newRecord });
+            }
+            else {
+                req.session.messages.adminSuccess.push('Your record was updated !');
+                return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
+            }
         }
         catch (e) {
             sails.log.error(e);
@@ -107,7 +112,7 @@ async function edit(req, res) {
     //     }
     // }
     if (req.query.without_layout) {
-        return res.viewAdmin("./../ejs/partials/content/edit.ejs", {
+        return res.viewAdmin("./../ejs/partials/content/editPopup.ejs", {
             entity: entity,
             record: record,
             fields: fields

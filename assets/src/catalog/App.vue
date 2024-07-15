@@ -75,7 +75,7 @@
 			<SelectItem :initItemsItem="ItemsItem" @createNewItem="createNewItem" v-if="isTollAdd"/>
 		</div>
 		<div ref="refItemHTML" class="custom-catalog__form">
-			<ItemHTML :html="HTML" @close-all-popups="closeAllPopups" :selectedNode="selectedNode" v-if="isCreate"/>
+			<ItemHTML :html="HTML" @close-all-popups="closeAllPopups" :selectedNode="selectedNode" :is-json-form="isJsonForm" :JSONFormSchema="JSONFormSchema" :PopupEvent="PopupEvent" v-if="isCreate"/>
 		</div>
 	</div>
 </template>
@@ -98,8 +98,10 @@ let contextmenu = ref(null)
 let refSelectItem = ref(null)
 let refItemHTML = ref(null)
 let isCreate = ref(false)
+let isJsonForm = ref(false)
 let PopupEvent = ref(null)
 let HTML = ref('')
+let JSONFormSchema = ref(null)
 let ItemsItem = ref([])
 let isTollAdd = ref(false)
 let actionsTools = ref([])
@@ -145,6 +147,10 @@ const search = debounce(async () => {
 		await searchNodes()
 	} else {
 		reloadCatalog()
+	}
+	//remove subcribers
+	for (const key of Object.keys(subcribeChildren.value)) {
+		clearInterval(subcribeChildren.value[key])
 	}
 }, 500)
 
@@ -198,10 +204,12 @@ function createPopup(content) {
 		switch (AdminPopUp.popups.length) {
 			case 1:
 				isCreate.value = false
+				isJsonForm.value = false
 				break
 			case 0:
 				isTollAdd.value = false
 				isCreate.value = false
+				isJsonForm.value = false
 				break
 		}
 	})
@@ -210,6 +218,7 @@ function createPopup(content) {
 async function closeAllPopups() {
 	isCreate.value = false
 	isTollAdd.value = false
+	isJsonForm.value = false
 	AdminPopUp.closeAll()
 	if (PopupEvent.value === 'create') {
 		if (selectedNode.value.length === 1) {
@@ -244,13 +253,20 @@ function setCatalog(catalog) {
 
 
 async function getHTML(data) {
-	if (data.type === 'html') {
-		HTML.value = data.data
-	} else if (data.type === 'link') {
-		let resPost = await ky.get(data.data).text()
-		HTML.value = resPost
-	} else {
-		return
+	switch (data.type){
+		case 'html':
+			HTML.value = data.data
+			break
+		case 'link':
+			let resPost = await ky.get(data.data).text()
+			HTML.value = resPost
+			break
+		case 'jsonForm':
+			JSONFormSchema.value = JSON.parse(data.data)
+			isJsonForm.value = true
+			break
+		default:
+			break
 	}
 }
 
@@ -313,13 +329,13 @@ async function nodeToggled(node, event) {
 		}
 		subcribeChildren.value[node.data.id] = setInterval(() => {
 			getChilds(node)
-		}, 5000)
+		}, 15000)
 	} else {
 		clearInterval(subcribeChildren.value[node.data.id])
 		if (parent && parent.children.find(e => e.isExpanded) === undefined) {
 			subcribeChildren.value[parent.data.id] = setInterval(() => {
 				getChilds(parent)
-			}, 5000)
+			}, 15000)
 		}
 	}
 }

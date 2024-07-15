@@ -36,7 +36,7 @@ export default async function add(req, res) {
 				delete reqData[prop]
 			}
 
-			if(reqData[prop] === "" && fields[prop].model.allowNull === true) {
+			if (reqData[prop] === "" && fields[prop].model.allowNull === true) {
 				reqData[prop] = null
 			}
 
@@ -81,10 +81,10 @@ export default async function add(req, res) {
 		try {
 			let record = await entity.model.create(reqData).fetch();
 			sails.log.debug(`A new record was created: `, record);
-			req.session.messages.adminSuccess.push('Your record was created !');
 			if (req.body.json) {
-				return res.json({record: record })
+				return res.json({record: record})
 			} else {
+				req.session.messages.adminSuccess.push('Your record was created !');
 				return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
 			}
 		} catch (e) {

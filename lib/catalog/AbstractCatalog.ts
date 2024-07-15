@@ -68,7 +68,7 @@ export abstract class BaseItem<T extends Item> {
 
 	/**
 	 * Adds the required fields
-	 * @param item 
+	 * @param item
 	 */
 	public _enrich(item: T): void {
 		item.icon = this.icon;
@@ -89,14 +89,20 @@ export abstract class BaseItem<T extends Item> {
 	public abstract update(itemId: string | number, data: T): Promise<T>;
 
 	/**
+	 * For custom HTML
+	 * @param itemId
+	 * @param data
+	 */
+	public abstract create(itemId: string, data: T): Promise<T>;
+	/**
 	 *  delete element
 	 */
 	public abstract deleteItem(itemId: string | number): Promise<void>;
 
 
-	public abstract getAddHTML(): { type: 'link' | 'html', data: string }
+	public abstract getAddHTML(): { type: 'link' | 'html' | 'jsonForm', data: string }
 
-	public abstract getEditHTML(id: string | number): Promise<{ type: 'link' | 'html', data: string }>;
+	public abstract getEditHTML(id: string | number): Promise<{ type: 'link' | 'html'| 'jsonForm', data: string }>;
 
 	public async _getChilds(parentId: string | number | null): Promise<Item[]> {
 		let items = await this.getChilds(parentId)
@@ -363,12 +369,12 @@ export abstract class AbstractCatalog {
 	}
 
 	/**
-	 * 
-	 * @param data @deprecated use HTML
+	 *
+	 * @param data
 	 */
 	public createItem<T extends Item>(data: T): Promise<T> {
-		throw `Not allowed use HTML please`
-		// return this.getItemType(data.type)?.create(this.id, data) as Promise<T>;
+		//throw `Not allowed use HTML please`
+		return this.getItemType(data.type)?.create(this.id, data) as Promise<T>;
 	}
 
 

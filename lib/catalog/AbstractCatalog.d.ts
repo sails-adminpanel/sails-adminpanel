@@ -61,15 +61,21 @@ export declare abstract class BaseItem<T extends Item> {
      */
     abstract update(itemId: string | number, data: T): Promise<T>;
     /**
+     * For custom HTML
+     * @param itemId
+     * @param data
+     */
+    abstract create(itemId: string, data: T): Promise<T>;
+    /**
      *  delete element
      */
     abstract deleteItem(itemId: string | number): Promise<void>;
     abstract getAddHTML(): {
-        type: 'link' | 'html';
+        type: 'link' | 'html' | 'jsonForm';
         data: string;
     };
     abstract getEditHTML(id: string | number): Promise<{
-        type: 'link' | 'html';
+        type: 'link' | 'html' | 'jsonForm';
         data: string;
     }>;
     _getChilds(parentId: string | number | null): Promise<Item[]>;
@@ -187,14 +193,14 @@ export declare abstract class AbstractCatalog {
      * Receives HTML to update an element for projection into a popup
      */
     getEditHTML(item: Item, id: string | number): Promise<{
-        type: "link" | "html";
+        type: "link" | "html" | "jsonForm";
         data: string;
     }>;
     /**
      * Receives HTML to create an element for projection into a popup
      */
     getAddHTML(item: Item): {
-        type: "link" | "html";
+        type: "link" | "html" | "jsonForm";
         data: string;
     };
     addActionHandler(actionHandler: ActionHandler): void;
@@ -209,7 +215,7 @@ export declare abstract class AbstractCatalog {
     handleAction(actionId: string, items?: Item[], config?: any): Promise<void>;
     /**
      *
-     * @param data @deprecated use HTML
+     * @param data
      */
     createItem<T extends Item>(data: T): Promise<T>;
     updateItem<T extends Item>(id: string | number, type: string, data: T): Promise<T>;

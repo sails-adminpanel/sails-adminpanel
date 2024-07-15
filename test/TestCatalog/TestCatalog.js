@@ -74,6 +74,7 @@ class TestGroup extends AbstractCatalog_1.AbstractGroup {
     async deleteItem(itemId) {
         return await StorageService.removeElementById(itemId);
     }
+    // TODO rename this
     getAddHTML() {
         throw new Error("Method not implemented.");
     }

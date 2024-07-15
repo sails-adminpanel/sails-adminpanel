@@ -92,7 +92,7 @@ export class TestGroup extends AbstractGroup<GroupTestItem> {
 	public async deleteItem(itemId: string | number): Promise<void> {
 		return await StorageService.removeElementById(itemId);
 	}
-
+	// TODO rename this
 	public getAddHTML(): { type: "link" | "html"; data: string; } {
 		throw new Error("Method not implemented.");
 	}
@@ -173,7 +173,7 @@ export class TestCatalog extends AbstractCatalog {
 	public readonly icon: string = "box";
 
 	//  public readonly itemTypes: (Item2 | Item1 | TestGroup)[];
-	
+
 	constructor() {
 		super([
 			new TestGroup(),

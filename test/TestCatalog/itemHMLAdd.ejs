@@ -25,8 +25,7 @@
 			let data = {
 				name: title,
 				parentId: parentId.value ? parentId.value : null,
-				icon: 'file',
-				type: 'item2',
+				type: 'itemHTML',
 			}
 			let res = await ky.post('', {json: {data: data, _method: 'createItem'}}).json()
 			if (res.data) document.getElementById('checkbox-ready').click()
