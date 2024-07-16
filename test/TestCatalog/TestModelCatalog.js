@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HTMLAction = exports.ContextAction = exports.Link = exports.TestModelCatalog = exports.ItemJsonForm = exports.ItemHTML = exports.Page = exports.ModelGroup = void 0;
+exports.JsonFormAction = exports.HTMLAction = exports.ContextAction = exports.Link = exports.TestModelCatalog = exports.ItemJsonForm = exports.ItemHTML = exports.Page = exports.ModelGroup = void 0;
 const AbstractCatalog_1 = require("../../lib/catalog/AbstractCatalog");
 const fs = require("node:fs");
 const TestCatalog_1 = require("./TestCatalog");
@@ -249,6 +249,7 @@ class TestModelCatalog extends AbstractCatalog_1.AbstractCatalog {
         this.addActionHandler(new Link());
         this.addActionHandler(new ContextAction());
         this.addActionHandler(new HTMLAction());
+        this.addActionHandler(new JsonFormAction());
     }
 }
 exports.TestModelCatalog = TestModelCatalog;
@@ -315,7 +316,7 @@ class HTMLAction extends AbstractCatalog_1.ActionHandler {
         this.id = 'html_action';
         this.name = 'HTMLAction';
         this.displayTool = true;
-        this.displayContext = false;
+        this.displayContext = true;
         this.type = 'external';
         this.selectedItemTypes = [];
     }
@@ -326,6 +327,7 @@ class HTMLAction extends AbstractCatalog_1.ActionHandler {
         return Promise.resolve(ejs.render(fs.readFileSync(`${__dirname}/actionHTML.ejs`, 'utf8')));
     }
     async handler(items, config) {
+        console.log('HTMLAction handler items: ', items);
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 resolve({ ok: true });
@@ -334,3 +336,55 @@ class HTMLAction extends AbstractCatalog_1.ActionHandler {
     }
 }
 exports.HTMLAction = HTMLAction;
+class JsonFormAction extends AbstractCatalog_1.ActionHandler {
+    constructor() {
+        super(...arguments);
+        this.icon = 'crow';
+        this.id = 'json-form';
+        this.jsonSchema = {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                },
+                "secondName": {
+                    "type": "string"
+                }
+            }
+        };
+        this.name = 'JsonFormAction';
+        this.uiSchema = {
+            "type": "VerticalLayout",
+            "elements": [
+                {
+                    "type": "Control",
+                    "label": "First Name",
+                    "scope": "#/properties/name"
+                },
+                {
+                    "type": "Control",
+                    "label": "Second Name",
+                    "scope": "#/properties/secondName",
+                }
+            ]
+        };
+        this.displayTool = true;
+        this.displayContext = false;
+        this.selectedItemTypes = [];
+        this.type = 'json-forms';
+    }
+    getLink() {
+        return Promise.resolve("");
+    }
+    getPopUpHTML() {
+        return Promise.resolve(JSON.stringify({ schema: this.jsonSchema, UISchema: this.uiSchema }));
+    }
+    handler(items, config) {
+        console.log('JsonFormAction handler items: ', items);
+        console.log('JsonFormAction handler config: ', config);
+        return new Promise((resolve, reject) => {
+            resolve({ ok: true });
+        });
+    }
+}
+exports.JsonFormAction = JsonFormAction;

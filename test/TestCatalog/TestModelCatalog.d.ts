@@ -124,4 +124,18 @@ export declare class HTMLAction extends ActionHandler {
     getPopUpHTML(): Promise<string>;
     handler(items: Item[], config?: any): Promise<any>;
 }
+export declare class JsonFormAction extends ActionHandler {
+    readonly icon: string;
+    readonly id: string;
+    readonly jsonSchema: JSONSchema4;
+    readonly name: string;
+    readonly uiSchema: any;
+    readonly displayTool: boolean;
+    readonly displayContext: boolean;
+    readonly selectedItemTypes: string[];
+    readonly type: "basic" | "json-forms" | "external" | "link";
+    getLink(): Promise<string>;
+    getPopUpHTML(): Promise<string>;
+    handler(items: Item[], config?: any): Promise<any>;
+}
 export {};

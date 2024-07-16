@@ -80,7 +80,8 @@
 					  v-if="isCreate"/>
 		</div>
 		<div ref="refActionPopup" class="custom-catalog__form">
-			<ActionPopUp v-if="isPopupAction" :html="actionHTML" @closeAllPopups="closeAllPopups"/>
+			<ActionPopUp v-if="isPopupAction" :html="actionHTML" :is-json-form="isJsonForm" :selectedNode="selectedNode"
+						 :JSONFormSchema="actionJsonFormSchema" :actionId="actionId" @closeAllPopups="closeAllPopups"/>
 		</div>
 	</div>
 </template>
@@ -109,6 +110,7 @@ let isJsonForm = ref(false)
 let PopupEvent = ref(null)
 let HTML = ref('')
 let actionHTML = ref('')
+let actionJsonFormSchema = ref(null)
 let JSONFormSchema = ref(null)
 let ItemsItem = ref([])
 let isTollAdd = ref(false)
@@ -117,6 +119,7 @@ let actionsContext = ref([])
 let isActionPopUp = ref(false)
 let searchText = ref('')
 let subcribeChildren = ref({})
+let actionId = ref(null)
 
 onMounted(async () => {
 	document.addEventListener('click', function (e) {
@@ -253,6 +256,7 @@ async function closeAllPopups() {
 			await getChilds(getParent(selectedNode.value[0]))
 		}
 	}
+	PopupEvent.value = ''
 }
 
 function getParent(Tnode) {
@@ -312,14 +316,6 @@ async function deleteItem() {
 	if (res.data.ok) removeNodes()
 }
 
-function toggleVisibility(event, node) {
-	event.stopPropagation()
-	const visible = !node.data || node.data.visible !== false
-	// console.log(visible)
-	slVueTreeRef.value.updateNode({path: node.path, patch: {data: {visible: !visible}}})
-	// lastEvent.value = `Node ${node.title} is ${visible ? 'visible' : 'invisible'} now`
-}
-
 function nodeSelected(nodes, event) {
 	if (nodes.length === 1) {
 		let node = nodes[0]
@@ -334,7 +330,6 @@ function nodeSelected(nodes, event) {
 	}
 	selectedNodesTitle.value = nodes.map((node) => node.title)[0]
 }
-
 
 async function nodeToggled(node, event) {
 	let parent = getParent(node)
@@ -466,13 +461,6 @@ async function getActionsContext() {
 			actionsContext.value.push(re)
 		}
 	}
-	// if (res.data.length) {
-	// 	actions.value = res.data
-	// 	contextMenuIsVisible.value = true
-	// 	const $contextMenu = contextmenu.value
-	// 	$contextMenu.style.left = event.clientX + 'px'
-	// 	$contextMenu.style.top = event.clientY + 'px'
-	// }
 }
 
 async function showContextMenu(node, event) {
@@ -482,26 +470,7 @@ async function showContextMenu(node, event) {
 	const $contextMenu = contextmenu.value
 	$contextMenu.style.left = event.clientX + 'px'
 	$contextMenu.style.top = event.clientY + 'px'
-	// console.log(selectedNode.value)
-	if (selectedNode.value.length <= 1) {
-		getActionsContext()
-	} else {
-		actionsContext.value = []
-	}
-	// let res = await ky.post('', {
-	// 	json: {
-	// 		type: selectedNode.value.data.type,
-	// 		data: selectedNode.value.data,
-	// 		_method: 'getActions'
-	// 	}
-	// }).json()
-	// if (res.data.length) {
-	// 	actions.value = res.data
-	// 	contextMenuIsVisible.value = true
-	// 	const $contextMenu = contextmenu.value
-	// 	$contextMenu.style.left = event.clientX + 'px'
-	// 	$contextMenu.style.top = event.clientY + 'px'
-	// }
+	getActionsContext()
 }
 
 
@@ -513,6 +482,7 @@ async function initAction(id) {
 		case 'link':
 			res = await ky.put('', {json: {actionId: action.id, _method: 'getLink'}}).json()
 			if (res.data) window.open(`${res.data}`, '_blank').focus()
+			break
 		case 'basic':
 			let data = {
 				actionID: action.id,
@@ -520,13 +490,22 @@ async function initAction(id) {
 				config: ''
 			}
 			await ky.put('', {json: {data: data, _method: 'handleAction'}}).json()
+			break
 		case 'external':
 			res = await ky.put('', {json: {actionId: action.id, _method: 'getPopUpHTML'}}).json()
-			if(res.data){
+			if (res.data) {
 				actionHTML.value = res.data
 				createPopup(refActionPopup.value)
 				isPopupAction.value = true
 			}
+			break
+		case 'json-forms':
+			res = await ky.put('', {json: {actionId: action.id, _method: 'getPopUpHTML'}}).json()
+			actionJsonFormSchema.value = JSON.parse(res.data)
+			actionId.value= action.id
+			createPopup(refActionPopup.value)
+			isJsonForm.value = true
+			isPopupAction.value = true
 	}
 }
 

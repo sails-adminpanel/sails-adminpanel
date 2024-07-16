@@ -96,15 +96,15 @@ export declare abstract class ActionHandler {
      * Three actions are possible, without configuration, configuration via pop-up, and just external action
      * For the first two, a handler is provided, but the third type of action simply calls the HTML in the popup; the controller will be implemented externally
      * */
-    readonly type: "basic" | "json-forms" | "external" | "link";
+    abstract readonly type: "basic" | "json-forms" | "external" | "link";
     /**
      * Will be shown in the context menu section
      */
-    readonly displayContext: boolean;
+    abstract readonly displayContext: boolean;
     /**
      * Will be shown in the toolbox section
      */
-    readonly displayTool: boolean;
+    abstract readonly displayTool: boolean;
     /** (!*1)
      * Only for json-forms
      * ref: https://jsonforms.io/docs

@@ -19,17 +19,6 @@ const props = defineProps(['schema', 'UISchema', 'type', 'parentId', 'data', 'Po
 const emit = defineEmits(['closeAllPopups'])
 let refJsonForm = ref(null)
 
-let UISchema = {
-	"type": "VerticalLayout",
-	"elements": [
-		{
-			"type": "Control",
-			"label": "Item JsonForm name",
-			"scope": "#/properties/name"
-		}
-	]
-}
-
 onMounted(() => {
 	refJsonForm.value.initializeData(props.schema, props.UISchema)
 })
@@ -37,14 +26,14 @@ onMounted(() => {
 async function save() {
 	let data = JSON.parse(document.getElementById('installStepOutput').value)
 	data.type = props.type
-	let res = null
+	let res
 	if (props.PopupEvent === 'create') {
 		data.parentId = props.parentId ? props.parentId : null
 		res = await ky.post('', {json: {data: data, _method: 'createItem'}}).json()
 	} else {
 		res = await ky.put('', {json: {type: props.type, data: data, id: data.id, _method: 'updateItem'}}).json()
 	}
-	if (res.data) document.getElementById('checkbox-ready').click()
+	if (res.data) emit('closeAllPopups')
 }
 </script>
 

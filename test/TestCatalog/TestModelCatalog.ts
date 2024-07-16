@@ -268,6 +268,7 @@ export class TestModelCatalog extends AbstractCatalog {
 		this.addActionHandler(new Link())
 		this.addActionHandler(new ContextAction())
 		this.addActionHandler(new HTMLAction())
+		this.addActionHandler(new JsonFormAction())
 	}
 }
 
@@ -341,7 +342,7 @@ export class HTMLAction extends ActionHandler {
 	readonly jsonSchema: JSONSchema4;
 	readonly uiSchema: any;
 	public readonly displayTool: boolean = true
-	public readonly displayContext: boolean = false
+	public readonly displayContext: boolean = true
 	public readonly type = 'external'
 	public readonly selectedItemTypes: string[] = []
 
@@ -354,11 +355,65 @@ export class HTMLAction extends ActionHandler {
 	}
 
 	async handler(items: Item[], config?: any): Promise<any> {
+		console.log('HTMLAction handler items: ', items)
 		return new Promise((resolve, reject) => {
 			setTimeout(() => {
 				resolve({ok: true})
 			}, 5000)
 		})
 	}
+}
+
+export class JsonFormAction extends ActionHandler {
+	readonly icon: string = 'crow';
+	readonly id: string = 'json-form';
+	readonly jsonSchema: JSONSchema4 = {
+		"type": "object",
+		"properties": {
+			"name": {
+				"type": "string",
+			},
+			"secondName": {
+				"type": "string"
+			}
+		}
+	};
+	readonly name: string = 'JsonFormAction';
+	readonly uiSchema: any = {
+		"type": "VerticalLayout",
+		"elements": [
+			{
+				"type": "Control",
+				"label": "First Name",
+				"scope": "#/properties/name"
+			},
+			{
+				"type": "Control",
+				"label": "Second Name",
+				"scope": "#/properties/secondName",
+			}
+		]
+	};
+	public readonly displayTool: boolean = true
+	public readonly displayContext: boolean = false
+	public readonly selectedItemTypes: string[] = []
+	readonly type: "basic" | "json-forms" | "external" | "link" = 'json-forms';
+
+	getLink(): Promise<string> {
+		return Promise.resolve("");
+	}
+
+	getPopUpHTML(): Promise<string> {
+		return Promise.resolve(JSON.stringify({schema: this.jsonSchema, UISchema: this.uiSchema}));
+	}
+
+	handler(items: Item[], config?: any): Promise<any> {
+		console.log('JsonFormAction handler items: ', items)
+		console.log('JsonFormAction handler config: ', config)
+		return new Promise((resolve, reject) => {
+			resolve({ok: true})
+		})
+	}
+
 
 }

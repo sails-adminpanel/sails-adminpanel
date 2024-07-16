@@ -137,7 +137,7 @@ export abstract class ActionHandler {
 	 * Three actions are possible, without configuration, configuration via pop-up, and just external action
 	 * For the first two, a handler is provided, but the third type of action simply calls the HTML in the popup; the controller will be implemented externally
 	 * */
-	public readonly type: "basic" |
+	public abstract readonly type: "basic" |
 		"json-forms" |
 		"external" |
 		"link"
@@ -145,11 +145,11 @@ export abstract class ActionHandler {
 	/**
 	 * Will be shown in the context menu section
 	 */
-	public readonly displayContext: boolean
+	public abstract readonly displayContext: boolean
 	/**
 	 * Will be shown in the toolbox section
 	 */
-	public readonly displayTool: boolean
+	public abstract readonly displayTool: boolean
 
 	/** (!*1)
 	 * Only for json-forms

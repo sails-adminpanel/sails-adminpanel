@@ -16,12 +16,13 @@
 	{
 		const answer = document.getElementById('action-html')
 		const info = document.getElementById('action-html-info')
+        const selectedNode = document.getElementById('selectedNode')
 		if (answer) {
 			answer.addEventListener('input', async function () {
 				if (+this.value === 7) {
 					let data = {
 						actionID: 'html_action',
-						items: [],
+						items: JSON.parse(selectedNode.value),
 						config: ''
 					}
 					info.innerHTML = 'Done. Wait 5 seconds before the popup closes...'
