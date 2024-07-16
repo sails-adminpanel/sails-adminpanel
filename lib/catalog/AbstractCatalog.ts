@@ -1,3 +1,5 @@
+import { JSONSchema4 } from "json-schema";
+
 /**
  * Interface `Item` describes the data that the UI will operate on
  * This is a common interface for all data that is linked to the catalog
@@ -136,7 +138,7 @@ export abstract class ActionHandler {
 	 * For the first two, a handler is provided, but the third type of action simply calls the HTML in the popup; the controller will be implemented externally
 	 * */
 	public readonly type: "basic" |
-		// (!*1) "json-forms" | there was an idea to make forms so as not to make controllers every time, but it still seems complicated
+		"json-forms" |
 		"external" |
 		"link"
 
@@ -149,13 +151,12 @@ export abstract class ActionHandler {
 	 */
 	public readonly displayTool: boolean
 
-	// /** (!*1)
-	//  * Only for json-forms
-	//  * ref: https://jsonforms.io/docs
-	//  */
-	// Currentrly we not released support JsonForms
-	// public abstract readonly uiSchema: any
-	// public abstract readonly jsonSchema: JSONSchema4
+	/** (!*1)
+	 * Only for json-forms
+	 * ref: https://jsonforms.io/docs
+	 */
+	public abstract readonly uiSchema: any
+	public abstract readonly jsonSchema: JSONSchema4
 
 	/**
 	 * For "json-forms" | "external"
@@ -366,6 +367,22 @@ export abstract class AbstractCatalog {
 
 		if (!action) throw `Action with id \`${actionId}\` not found`
 		return await action.handler(items, config);
+	}
+
+	/**
+	 * Only For a Link action
+	 * @param actionId
+	 */
+	public async getLink(actionId: string){
+		return this.actionHandlers.find((it) => it.id === actionId)?.getLink();
+	}
+
+	/**
+	 * For Extermal and JsonForms actions
+	 * @param actionId
+	 */
+	public async getPopUpHTML(actionId: string){
+		return this.actionHandlers.find((it) => it.id === actionId)?.getPopUpHTML();
 	}
 
 	/**

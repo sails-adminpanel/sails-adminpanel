@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ContextAction = exports.Link = exports.TestModelCatalog = exports.ItemJsonForm = exports.ItemHTML = exports.Page = exports.ModelGroup = void 0;
+exports.HTMLAction = exports.ContextAction = exports.Link = exports.TestModelCatalog = exports.ItemJsonForm = exports.ItemHTML = exports.Page = exports.ModelGroup = void 0;
 const AbstractCatalog_1 = require("../../lib/catalog/AbstractCatalog");
 const fs = require("node:fs");
 const TestCatalog_1 = require("./TestCatalog");
@@ -248,6 +248,7 @@ class TestModelCatalog extends AbstractCatalog_1.AbstractCatalog {
         this.actionHandlers = [];
         this.addActionHandler(new Link());
         this.addActionHandler(new ContextAction());
+        this.addActionHandler(new HTMLAction());
     }
 }
 exports.TestModelCatalog = TestModelCatalog;
@@ -263,16 +264,13 @@ class Link extends AbstractCatalog_1.ActionHandler {
         this.selectedItemTypes = [];
     }
     getLink() {
-        return Promise.resolve("");
+        return Promise.resolve('https://www.example.com/');
     }
     getPopUpHTML() {
         return Promise.resolve("");
     }
     handler(items, config) {
-        return Promise.resolve({
-            data: 'http://www.example.com/',
-            type: this.type
-        });
+        return Promise.resolve(undefined);
     }
 }
 exports.Link = Link;
@@ -296,20 +294,43 @@ class ContextAction extends AbstractCatalog_1.ActionHandler {
         return Promise.resolve("");
     }
     handler(items, config) {
+        console.log(items, config);
         const generateRandomString = () => {
             return Math.floor(Math.random() * Date.now()).toString(36);
         };
         setTimeout(async () => {
             for (const item of items) {
-                let data = item;
-                data.name = generateRandomString();
-                console.log("await StorageService.setElement(item.id, data) <<<");
+                let name = generateRandomString();
+                await sails.models['group'].update({ id: item.id }, { name: name });
             }
         }, 10000);
-        return Promise.resolve({
-            data: 'ok',
-            type: this.type
-        });
+        return Promise.resolve(undefined);
     }
 }
 exports.ContextAction = ContextAction;
+class HTMLAction extends AbstractCatalog_1.ActionHandler {
+    constructor() {
+        super(...arguments);
+        this.icon = 'cat';
+        this.id = 'html_action';
+        this.name = 'HTMLAction';
+        this.displayTool = true;
+        this.displayContext = false;
+        this.type = 'external';
+        this.selectedItemTypes = [];
+    }
+    getLink() {
+        return Promise.resolve("");
+    }
+    getPopUpHTML() {
+        return Promise.resolve(ejs.render(fs.readFileSync(`${__dirname}/actionHTML.ejs`, 'utf8')));
+    }
+    async handler(items, config) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve({ ok: true });
+            }, 5000);
+        });
+    }
+}
+exports.HTMLAction = HTMLAction;

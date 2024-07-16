@@ -1,4 +1,5 @@
 import { AbstractCatalog, AbstractItem, ActionHandler, Item } from "../../lib/catalog/AbstractCatalog";
+import { JSONSchema4 } from "json-schema";
 declare class BaseModelItem<T extends Item> extends AbstractItem<T> {
     type: string;
     name: string;
@@ -92,6 +93,8 @@ export declare class Link extends ActionHandler {
     getLink(): Promise<string>;
     getPopUpHTML(): Promise<string>;
     handler(items: Item[], config?: any): Promise<any>;
+    readonly jsonSchema: JSONSchema4;
+    readonly uiSchema: any;
 }
 export declare class ContextAction extends ActionHandler {
     readonly icon: string;
@@ -100,6 +103,22 @@ export declare class ContextAction extends ActionHandler {
     readonly displayTool: boolean;
     readonly displayContext: boolean;
     readonly type = "basic";
+    readonly selectedItemTypes: string[];
+    getLink(): Promise<string>;
+    getPopUpHTML(): Promise<string>;
+    handler(items: Item[], config?: any): Promise<any>;
+    readonly jsonSchema: JSONSchema4;
+    readonly uiSchema: any;
+}
+export declare class HTMLAction extends ActionHandler {
+    readonly icon: string;
+    readonly id: string;
+    readonly name: string;
+    readonly jsonSchema: JSONSchema4;
+    readonly uiSchema: any;
+    readonly displayTool: boolean;
+    readonly displayContext: boolean;
+    readonly type = "external";
     readonly selectedItemTypes: string[];
     getLink(): Promise<string>;
     getPopUpHTML(): Promise<string>;

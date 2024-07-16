@@ -66,7 +66,7 @@
 			<li @click="updateItem" :class="actionEditClass">Edit</li>
 			<li @click="deleteItem" :class="actionDeleteClass">Delete</li>
 			<li v-for="action in actionsContext" @click="initAction(action.id)">
-				{{ action.name }}
+				<i v-if="action.icon" :class="`las la-${action.icon}`"></i>&nbsp;{{ action.name }}
 			</li>
 		</ul>
 	</div>
@@ -75,14 +75,19 @@
 			<SelectItem :initItemsItem="ItemsItem" @createNewItem="createNewItem" v-if="isTollAdd"/>
 		</div>
 		<div ref="refItemHTML" class="custom-catalog__form">
-			<ItemHTML :html="HTML" @close-all-popups="closeAllPopups" :selectedNode="selectedNode" :is-json-form="isJsonForm" :JSONFormSchema="JSONFormSchema" :PopupEvent="PopupEvent" v-if="isCreate"/>
+			<ItemHTML :html="HTML" @close-all-popups="closeAllPopups" :selectedNode="selectedNode"
+					  :is-json-form="isJsonForm" :JSONFormSchema="JSONFormSchema" :PopupEvent="PopupEvent"
+					  v-if="isCreate"/>
+		</div>
+		<div ref="refActionPopup" class="custom-catalog__form">
+			<ActionPopUp v-if="isPopupAction" :html="actionHTML" @closeAllPopups="closeAllPopups"/>
 		</div>
 	</div>
 </template>
 
 <script setup>
 import {SlVueTreeNext} from 'sl-vue-tree-next'
-import {ref, onMounted, computed} from 'vue'
+import {ref, onMounted, computed, reactive} from 'vue'
 import ItemHTML from "./Components/ItemHTML.vue";
 import SelectItem from "./Components/SelectItem.vue";
 import ActionPopUp from "./Components/ActionPopUp.vue";
@@ -97,10 +102,13 @@ let slVueTreeRef = ref(null)
 let contextmenu = ref(null)
 let refSelectItem = ref(null)
 let refItemHTML = ref(null)
+let refActionPopup = ref(null)
+let isPopupAction = ref(false)
 let isCreate = ref(false)
 let isJsonForm = ref(false)
 let PopupEvent = ref(null)
 let HTML = ref('')
+let actionHTML = ref('')
 let JSONFormSchema = ref(null)
 let ItemsItem = ref([])
 let isTollAdd = ref(false)
@@ -144,14 +152,18 @@ let actionDeleteClass = computed(() => {
 
 const search = debounce(async () => {
 	if (searchText.value.length > 0) {
+		//remove subcribers
+		for (const key of Object.keys(subcribeChildren.value)) {
+			clearInterval(subcribeChildren.value[key])
+		}
 		await searchNodes()
 	} else {
 		reloadCatalog()
+		subcribeChildren.value['root'] = setInterval(() => { // add root subscribe
+			reloadCatalog()
+		}, 15000)
 	}
-	//remove subcribers
-	for (const key of Object.keys(subcribeChildren.value)) {
-		clearInterval(subcribeChildren.value[key])
-	}
+
 }, 500)
 
 async function searchNodes() {
@@ -180,6 +192,9 @@ async function getCatalog() {
 			ItemsItem.value.push(catalogItem)
 		}
 		setCatalog(catalog)
+		subcribeChildren.value['root'] = setInterval(() => { // add root subscribe
+			reloadCatalog()
+		}, 15000)
 	} else {
 		// console.log(catalog)
 	}
@@ -188,6 +203,7 @@ async function getCatalog() {
 async function reloadCatalog() {
 	let {catalog} = await ky.post('', {json: {_method: 'getCatalog'}}).json()
 	setCatalog(catalog)
+	console.log('root reloaded')
 }
 
 function toolAddGroup() {
@@ -205,11 +221,13 @@ function createPopup(content) {
 			case 1:
 				isCreate.value = false
 				isJsonForm.value = false
+				isPopupAction.value = false
 				break
 			case 0:
 				isTollAdd.value = false
 				isCreate.value = false
 				isJsonForm.value = false
+				isPopupAction.value = false
 				break
 		}
 	})
@@ -219,6 +237,7 @@ async function closeAllPopups() {
 	isCreate.value = false
 	isTollAdd.value = false
 	isJsonForm.value = false
+	isPopupAction.value = false
 	AdminPopUp.closeAll()
 	if (PopupEvent.value === 'create') {
 		if (selectedNode.value.length === 1) {
@@ -253,7 +272,7 @@ function setCatalog(catalog) {
 
 
 async function getHTML(data) {
-	switch (data.type){
+	switch (data.type) {
 		case 'html':
 			HTML.value = data.data
 			break
@@ -319,33 +338,50 @@ function nodeSelected(nodes, event) {
 
 async function nodeToggled(node, event) {
 	let parent = getParent(node)
-	if(!node.data.parentId){
+	if (!node.data.parentId) {
 		recurciveRemoveSubcribes(node)
 	}
-	if (!node.isExpanded) {
+	if (!node.isExpanded) { //if group open
 		getChilds(node)
 		if (parent) {
-			clearInterval(subcribeChildren.value[parent.data.id])
+			clearInterval(subcribeChildren.value[parent.data.id]) //remove subscribe from parent
 		}
 		subcribeChildren.value[node.data.id] = setInterval(() => {
 			getChilds(node)
 		}, 15000)
 	} else {
 		clearInterval(subcribeChildren.value[node.data.id])
-		if (parent && parent.children.find(e => e.isExpanded) === undefined) {
+		if (parent && parent.children.find(e => e.isExpanded) === undefined) { // if there is a parent and the parent has all groups closed
 			subcribeChildren.value[parent.data.id] = setInterval(() => {
 				getChilds(parent)
 			}, 15000)
 		}
 	}
+
+	// for root subcriber
+	let openТodes = false
+	slVueTreeRef.value.traverse((node, nodeModel, siblings) => {
+		if (node.isExpanded) {
+			openТodes = true
+			return false
+		}
+	})
+	if (openТodes) { // if isset open groups
+		clearInterval(subcribeChildren.value['root']) // remove root subscribe
+	} else {
+		subcribeChildren.value['root'] = setInterval(() => { // add root subscribe
+			reloadCatalog()
+		}, 15000)
+	}
 }
 
-function recurciveRemoveSubcribes(node){
+function recurciveRemoveSubcribes(node) {
 	for (const child of node.children) {
 		let subscriber = subcribeChildren.value[child.data.id]
-		if(subscriber) clearInterval(subcribeChildren.value[child.data.id])
-		if(child.children.length) recurciveRemoveSubcribes(child)
+		if (subscriber) clearInterval(subcribeChildren.value[child.data.id])
+		if (child.children.length) recurciveRemoveSubcribes(child)
 	}
+
 }
 
 function recursiveSetChilds(node, Dnodes, rNodes) {
@@ -446,7 +482,7 @@ async function showContextMenu(node, event) {
 	const $contextMenu = contextmenu.value
 	$contextMenu.style.left = event.clientX + 'px'
 	$contextMenu.style.top = event.clientY + 'px'
-	console.log(selectedNode.value)
+	// console.log(selectedNode.value)
 	if (selectedNode.value.length <= 1) {
 		getActionsContext()
 	} else {
@@ -470,28 +506,28 @@ async function showContextMenu(node, event) {
 
 
 async function initAction(id) {
-	let data = {
-		actionID: id,
-		items: selectedNode.value,
-		config: ''
+	let action = actionsTools.value.find(e => e.id === id) ?? actionsContext.value.find(e => e.id === id)
+	if (!action) return
+	let res
+	switch (action.type) {
+		case 'link':
+			res = await ky.put('', {json: {actionId: action.id, _method: 'getLink'}}).json()
+			if (res.data) window.open(`${res.data}`, '_blank').focus()
+		case 'basic':
+			let data = {
+				actionID: action.id,
+				items: selectedNode.value,
+				config: ''
+			}
+			await ky.put('', {json: {data: data, _method: 'handleAction'}}).json()
+		case 'external':
+			res = await ky.put('', {json: {actionId: action.id, _method: 'getPopUpHTML'}}).json()
+			if(res.data){
+				actionHTML.value = res.data
+				createPopup(refActionPopup.value)
+				isPopupAction.value = true
+			}
 	}
-	let res = await ky.put('', {json: {data: data, _method: 'action'}}).json()
-	// console.log(res.data)
-	if (res.data) {
-		switch (res.data.type) {
-			case 'link':
-				window.open(`${res.data.data}`, '_blank').focus()
-				break
-			case 'basic':
-				break
-		}
-	}
-	// if (res.data.type === 'external') {
-	// 	await getHTML(res.data.data)
-	// 	modalCount.value++
-	// 	isActionPopUp.value = true
-	// }
-
 }
 
 function removeNodes() {

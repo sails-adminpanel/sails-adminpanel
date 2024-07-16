@@ -38,7 +38,9 @@ export declare class VueCatalog {
     }>;
     getitemTypes(): import("../../lib/catalog/AbstractCatalog").BaseItem<Item>[];
     getActions(items: NodeModel<any>[], type: string): Promise<import("../../lib/catalog/AbstractCatalog").ActionHandler[]>;
-    handleAction(actionID: string, items: any[], config: any): Promise<void>;
+    handleAction(actionId: string, items: any[], config: any): Promise<void>;
+    getPopUpHTML(actionId: string): Promise<string>;
+    getLink(actionId: string): Promise<string>;
     getCatalog(): Promise<NodeModel<Item>[]>;
     createItem(data: any): Promise<any>;
     getChilds(data: any): Promise<NodeModel<Item>[]>;

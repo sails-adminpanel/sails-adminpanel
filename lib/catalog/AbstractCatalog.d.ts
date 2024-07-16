@@ -1,3 +1,4 @@
+import { JSONSchema4 } from "json-schema";
 /**
  * Interface `Item` describes the data that the UI will operate on
  * This is a common interface for all data that is linked to the catalog
@@ -95,7 +96,7 @@ export declare abstract class ActionHandler {
      * Three actions are possible, without configuration, configuration via pop-up, and just external action
      * For the first two, a handler is provided, but the third type of action simply calls the HTML in the popup; the controller will be implemented externally
      * */
-    readonly type: "basic" | "external" | "link";
+    readonly type: "basic" | "json-forms" | "external" | "link";
     /**
      * Will be shown in the context menu section
      */
@@ -104,6 +105,12 @@ export declare abstract class ActionHandler {
      * Will be shown in the toolbox section
      */
     readonly displayTool: boolean;
+    /** (!*1)
+     * Only for json-forms
+     * ref: https://jsonforms.io/docs
+     */
+    abstract readonly uiSchema: any;
+    abstract readonly jsonSchema: JSONSchema4;
     /**
      * For "json-forms" | "external"
      */
@@ -213,6 +220,16 @@ export declare abstract class AbstractCatalog {
      * Implements search and execution of a specific action.handler
      */
     handleAction(actionId: string, items?: Item[], config?: any): Promise<void>;
+    /**
+     * Only For a Link action
+     * @param actionId
+     */
+    getLink(actionId: string): Promise<string>;
+    /**
+     * For Extermal and JsonForms actions
+     * @param actionId
+     */
+    getPopUpHTML(actionId: string): Promise<string>;
     /**
      *
      * @param data

@@ -57,8 +57,12 @@ async function catalogController(req, res) {
                 switch (data._method) {
                     case 'updateTree':
                         return res.json({ data: await vueCatalog.updateTree(data.data) });
-                    case 'action':
+                    case 'getLink':
+                        return res.json({ data: await vueCatalog.getLink(data.actionId) });
+                    case 'handleAction':
                         return res.json({ data: await vueCatalog.handleAction(data.data.actionID, data.data.items, data.data.config) });
+                    case 'getPopUpHTML':
+                        return res.json({ data: await vueCatalog.getPopUpHTML(data.actionId) });
                     case 'updateItem':
                         return res.json({ data: await vueCatalog.updateItem(item, data.id, data.data) });
                 }

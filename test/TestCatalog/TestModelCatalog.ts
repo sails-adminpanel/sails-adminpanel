@@ -1,10 +1,12 @@
 import {AbstractCatalog, AbstractGroup, AbstractItem, ActionHandler, Item} from "../../lib/catalog/AbstractCatalog";
 import * as fs from "node:fs";
 import {StorageService} from "./TestCatalog";
+import {JSONSchema4} from "json-schema";
+
 const ejs = require('ejs')
 
 
-class BaseModelItem<T extends Item>  extends AbstractItem<T> {
+class BaseModelItem<T extends Item> extends AbstractItem<T> {
 	public type: string = "page";
 	public name: string = "Page";
 	public allowedRoot: boolean = true;
@@ -19,7 +21,7 @@ class BaseModelItem<T extends Item>  extends AbstractItem<T> {
 
 	public async update(itemId: string | number, data: Item): Promise<T> {
 		// allowed only parentId update
-		return await sails.models[this.model].update({id: itemId}, { name: data.name, parentId: data.parentId}).fetch();
+		return await sails.models[this.model].update({id: itemId}, {name: data.name, parentId: data.parentId}).fetch();
 	};
 
 
@@ -31,7 +33,7 @@ class BaseModelItem<T extends Item>  extends AbstractItem<T> {
 
 	public async deleteItem(itemId: string | number) {
 		await sails.models[this.model].destroy({id: itemId})
-	//	await StorageService.removeElementById(itemId);
+		//	await StorageService.removeElementById(itemId);
 	}
 
 	public getAddHTML(): { type: "link" | "html"; data: string; } {
@@ -43,22 +45,26 @@ class BaseModelItem<T extends Item>  extends AbstractItem<T> {
 	}
 
 
-	public async getEditHTML(id: string | number, parenId?: string | number): Promise<{ type: "link" | "html"; data: string; }> {
+	public async getEditHTML(id: string | number, parenId?: string | number): Promise<{
+		type: "link" | "html";
+		data: string;
+	}> {
 		let type: 'link' = 'link'
 		return {
 			type: type,
 			data: `/admin/model/${this.model}/edit/${id}?without_layout=true`
 		}
 	}
-    // TODO: Need rename (getChilds) it not intuitive
+
+	// TODO: Need rename (getChilds) it not intuitive
 	public async getChilds(parentId: string | number): Promise<Item[]> {
-		if(parentId === null) parentId = ""
+		if (parentId === null) parentId = ""
 		// console.log(this.type, parentId, await sails.models[this.model].find({parentId: parentId}))
 		return await sails.models[this.model].find({parentId: parentId});
 	}
 
 	public async search(s: string): Promise<T[]> {
-		return await sails.models[this.model].find({name: { contains: s}});
+		return await sails.models[this.model].find({name: {contains: s}});
 	}
 
 	create(itemId: string, data: T): Promise<T> {
@@ -89,7 +95,7 @@ export class Page<T extends Item> extends BaseModelItem<T> {
 }
 
 
-export class ItemHTML extends AbstractItem<Item>{
+export class ItemHTML extends AbstractItem<Item> {
 	readonly allowedRoot: boolean;
 	public name: string = 'ItemHTML'
 	public icon = 'cat'
@@ -104,7 +110,7 @@ export class ItemHTML extends AbstractItem<Item>{
 		}
 	}
 
-	public async getEditHTML(id: string | number): Promise<{ type: 'link' | 'html'| 'jsonForm', data: string }> {
+	public async getEditHTML(id: string | number): Promise<{ type: 'link' | 'html' | 'jsonForm', data: string }> {
 		let type: 'html' = 'html'
 		let item = await StorageService.findElementById(id)
 		return {
@@ -122,7 +128,7 @@ export class ItemHTML extends AbstractItem<Item>{
 			sortOrder: id,
 			icon: this.icon
 		}
-		return  await StorageService.setElement(id, newData) as Item
+		return await StorageService.setElement(id, newData) as Item
 	}
 
 
@@ -148,7 +154,7 @@ export class ItemHTML extends AbstractItem<Item>{
 	}
 }
 
-export class ItemJsonForm extends ItemHTML{
+export class ItemJsonForm extends ItemHTML {
 	readonly allowedRoot: boolean;
 	public name: string = 'ItemJsonForm'
 	public icon = 'radiation-alt'
@@ -181,7 +187,7 @@ export class ItemJsonForm extends ItemHTML{
 		}
 	}
 
-	public async getEditHTML(id: string | number):Promise<{ type: 'link' | 'html' | 'jsonForm', data: string }> {
+	public async getEditHTML(id: string | number): Promise<{ type: 'link' | 'html' | 'jsonForm', data: string }> {
 		let item = await this.find(id)
 		let type: 'jsonForm' = 'jsonForm'
 		let schema = {
@@ -261,6 +267,7 @@ export class TestModelCatalog extends AbstractCatalog {
 		]);
 		this.addActionHandler(new Link())
 		this.addActionHandler(new ContextAction())
+		this.addActionHandler(new HTMLAction())
 	}
 }
 
@@ -274,7 +281,7 @@ export class Link extends ActionHandler {
 	public readonly selectedItemTypes: string[] = []
 
 	getLink(): Promise<string> {
-		return Promise.resolve("");
+		return Promise.resolve('https://www.example.com/');
 	}
 
 	getPopUpHTML(): Promise<string> {
@@ -282,14 +289,15 @@ export class Link extends ActionHandler {
 	}
 
 	handler(items: Item[], config?: any): Promise<any> {
-		return Promise.resolve({
-			data: 'http://www.example.com/',
-			type: this.type
-		});
+		return Promise.resolve(undefined);
 	}
 
+	readonly jsonSchema: JSONSchema4;
+	readonly uiSchema: any;
+
 }
-export class ContextAction extends ActionHandler{
+
+export class ContextAction extends ActionHandler {
 	readonly icon: string = 'crow';
 	readonly id: string = 'context1';
 	readonly name: string = 'Rename';
@@ -309,19 +317,48 @@ export class ContextAction extends ActionHandler{
 	}
 
 	handler(items: Item[], config?: any): Promise<any> {
+		console.log(items, config)
 		const generateRandomString = () => {
 			return Math.floor(Math.random() * Date.now()).toString(36);
 		};
-		setTimeout(async ()=>{
+		setTimeout(async () => {
 			for (const item of items) {
-				let data = item
-				data.name = generateRandomString()
-				console.log("await StorageService.setElement(item.id, data) <<<")
+				let name = generateRandomString()
+				await sails.models['group'].update({id: item.id}, {name: name})
 			}
 		}, 10000)
-		return Promise.resolve({
-			data: 'ok',
-			type: this.type
+		return Promise.resolve(undefined)
+	}
+
+	readonly jsonSchema: JSONSchema4;
+	readonly uiSchema: any;
+}
+
+export class HTMLAction extends ActionHandler {
+	readonly icon: string = 'cat';
+	readonly id: string = 'html_action';
+	readonly name: string = 'HTMLAction';
+	readonly jsonSchema: JSONSchema4;
+	readonly uiSchema: any;
+	public readonly displayTool: boolean = true
+	public readonly displayContext: boolean = false
+	public readonly type = 'external'
+	public readonly selectedItemTypes: string[] = []
+
+	getLink(): Promise<string> {
+		return Promise.resolve("");
+	}
+
+	getPopUpHTML(): Promise<string> {
+		return Promise.resolve(ejs.render(fs.readFileSync(`${__dirname}/actionHTML.ejs`, 'utf8')));
+	}
+
+	async handler(items: Item[], config?: any): Promise<any> {
+		return new Promise((resolve, reject) => {
+			setTimeout(() => {
+				resolve({ok: true})
+			}, 5000)
 		})
 	}
+
 }

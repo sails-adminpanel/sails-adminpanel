@@ -33,12 +33,18 @@ class VueCatalog {
             return (await this.catalog.getActions(arrItems))?.filter(e => e.displayContext);
         }
     }
-    async handleAction(actionID, items, config) {
+    async handleAction(actionId, items, config) {
         let arrItems = [];
         for (const item of items) {
             arrItems.push(await this.catalog.find(item.data));
         }
-        return this.catalog.handleAction(actionID, arrItems, config);
+        return this.catalog.handleAction(actionId, arrItems, config);
+    }
+    async getPopUpHTML(actionId) {
+        return this.catalog.getPopUpHTML(actionId);
+    }
+    async getLink(actionId) {
+        return this.catalog.getLink(actionId);
     }
     //Below are the methods that require action
     async getCatalog() {
@@ -65,7 +71,6 @@ class VueCatalog {
     }
     async updateTree(data) {
         let reqNodes = data.reqNode;
-        console.log(reqNodes);
         if (!Array.isArray(data.reqNode)) {
             reqNodes = [data.reqNode];
         }
