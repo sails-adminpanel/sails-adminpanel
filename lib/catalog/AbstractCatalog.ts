@@ -1,4 +1,5 @@
 import { JSONSchema4 } from "json-schema";
+import {AccessRightsHelper} from "../../helper/accessRightsHelper";
 
 /**
  * Interface `Item` describes the data that the UI will operate on
@@ -140,7 +141,8 @@ export abstract class ActionHandler {
 	public abstract readonly type: "basic" |
 		"json-forms" |
 		"external" |
-		"link"
+		"link" |
+		"partial"
 
 	/**
 	 * Will be shown in the context menu section
@@ -161,13 +163,13 @@ export abstract class ActionHandler {
 	/**
 	 * For "json-forms" | "external"
 	 */
-	public abstract getPopUpHTML(): Promise<string>
+	public abstract getPopUpHTML(data?: any): Promise<string>
 
 
 	/**
 	 * Only for link type
 	 */
-	public abstract getLink(): Promise<string>
+	public abstract getLink(data?: any): Promise<string>
 
 
 	/**
@@ -190,7 +192,7 @@ export abstract class ActionHandler {
 	 * @param items
 	 * @param config
 	 */
-	public abstract handler(items: Item[], config?: any): Promise<void>;
+	public abstract handler(items: Item[], data?: any): Promise<void>;
 
 }
 
@@ -261,11 +263,23 @@ export abstract class AbstractCatalog {
 		}
 	}
 
+	private _bindAccessRight(){
+		setTimeout(() => {
+			const postfix = this.id ? `${this.slug}-${this.id}` : `${this.slug}`
+			AccessRightsHelper.registerToken({
+				id: `catalog-${postfix}`,
+				name: this.name,
+				description: `Access to edit catalog for ${postfix}`,
+				department: 'catalog'
+			});
+		}, 100)
+	}
 
 	protected constructor(items: BaseItem<any>[]) {
 		for (const item of items) {
 			this.additemTypes(item)
 		}
+		this._bindAccessRight()
 	}
 
 	public setID(id: string) {
@@ -364,7 +378,7 @@ export abstract class AbstractCatalog {
 		} else {
 			action = this.actionHandlers.find((it) => it.id === actionId);
 		}
-
+		// console.log(this.actionHandlers)
 		if (!action) throw `Action with id \`${actionId}\` not found`
 		return await action.handler(items, config);
 	}

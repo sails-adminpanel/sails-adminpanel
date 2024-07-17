@@ -2,15 +2,20 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAction = exports.catalogController = void 0;
 const CatalogHandler_1 = require("../../lib/catalog/CatalogHandler");
+const accessRightsHelper_1 = require("../../helper/accessRightsHelper");
 const FrontentCatalogAdapter_1 = require("./FrontentCatalogAdapter");
 async function catalogController(req, res) {
+    const slug = req.param('slug');
+    const id = req.param('id') ? req.param('id') : '';
+    const postfix = id ? `${slug}-${id}` : `${slug}`;
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
             return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
         }
+        else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`catalog-${postfix}`, req.session.UserAP)) {
+            return res.sendStatus(403);
+        }
     }
-    const slug = req.param('slug');
-    const id = req.param('id') ? req.param('id') : '';
     const method = req.method.toUpperCase();
     if (method === 'GET') {
         return res.viewAdmin('catalog', { entity: "entity", slug: slug, id: id });

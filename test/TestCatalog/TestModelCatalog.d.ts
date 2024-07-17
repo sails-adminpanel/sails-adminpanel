@@ -92,7 +92,7 @@ export declare class Link extends ActionHandler {
     readonly selectedItemTypes: string[];
     getLink(): Promise<string>;
     getPopUpHTML(): Promise<string>;
-    handler(items: Item[], config?: any): Promise<any>;
+    handler(items: Item[], data?: any): Promise<any>;
     readonly jsonSchema: JSONSchema4;
     readonly uiSchema: any;
 }
@@ -106,7 +106,7 @@ export declare class ContextAction extends ActionHandler {
     readonly selectedItemTypes: string[];
     getLink(): Promise<string>;
     getPopUpHTML(): Promise<string>;
-    handler(items: Item[], config?: any): Promise<any>;
+    handler(items: Item[], data?: any): Promise<any>;
     readonly jsonSchema: JSONSchema4;
     readonly uiSchema: any;
 }
@@ -122,7 +122,7 @@ export declare class HTMLAction extends ActionHandler {
     readonly selectedItemTypes: string[];
     getLink(): Promise<string>;
     getPopUpHTML(): Promise<string>;
-    handler(items: Item[], config?: any): Promise<any>;
+    handler(items: Item[], data?: any): Promise<any>;
 }
 export declare class JsonFormAction extends ActionHandler {
     readonly icon: string;
@@ -136,6 +136,6 @@ export declare class JsonFormAction extends ActionHandler {
     readonly type: "basic" | "json-forms" | "external" | "link";
     getLink(): Promise<string>;
     getPopUpHTML(): Promise<string>;
-    handler(items: Item[], config?: any): Promise<any>;
+    handler(items: Item[], data?: any): Promise<any>;
 }
 export {};

@@ -4,13 +4,16 @@ import {VueCatalog} from "./FrontentCatalogAdapter";
 
 
 export async function catalogController(req, res) {
+	const slug = req.param('slug');
+	const id = req.param('id') ? req.param('id') : '';
+	const postfix = id ? `${slug}-${id}` : `${slug}`
 	if (sails.config.adminpanel.auth) {
 		if (!req.session.UserAP) {
 			return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+		}else if (!AccessRightsHelper.havePermission(`catalog-${postfix}`, req.session.UserAP)) {
+			return res.sendStatus(403);
 		}
 	}
-	const slug = req.param('slug');
-	const id = req.param('id') ? req.param('id') : '';
 	const method = req.method.toUpperCase();
 	if (method === 'GET') {
 		return res.viewAdmin('catalog', {entity: "entity", slug: slug, id: id});

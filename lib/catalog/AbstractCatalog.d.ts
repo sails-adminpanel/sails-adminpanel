@@ -96,7 +96,7 @@ export declare abstract class ActionHandler {
      * Three actions are possible, without configuration, configuration via pop-up, and just external action
      * For the first two, a handler is provided, but the third type of action simply calls the HTML in the popup; the controller will be implemented externally
      * */
-    abstract readonly type: "basic" | "json-forms" | "external" | "link";
+    abstract readonly type: "basic" | "json-forms" | "external" | "link" | "partial";
     /**
      * Will be shown in the context menu section
      */
@@ -114,11 +114,11 @@ export declare abstract class ActionHandler {
     /**
      * For "json-forms" | "external"
      */
-    abstract getPopUpHTML(): Promise<string>;
+    abstract getPopUpHTML(data?: any): Promise<string>;
     /**
      * Only for link type
      */
-    abstract getLink(): Promise<string>;
+    abstract getLink(data?: any): Promise<string>;
     /**
      * For which elements the action can be used
      */
@@ -135,7 +135,7 @@ export declare abstract class ActionHandler {
      * @param items
      * @param config
      */
-    abstract handler(items: Item[], config?: any): Promise<void>;
+    abstract handler(items: Item[], data?: any): Promise<void>;
 }
 /**
  *
@@ -183,6 +183,7 @@ export declare abstract class AbstractCatalog {
      * if pass null as parentId this root
      */
     getChilds(parentId: string | number | null, byItemType?: string): Promise<Item[]>;
+    private _bindAccessRight;
     protected constructor(items: BaseItem<any>[]);
     setID(id: string): void;
     getItemType(type: string): BaseItem<Item>;

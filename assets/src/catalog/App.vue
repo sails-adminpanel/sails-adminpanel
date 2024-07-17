@@ -72,7 +72,7 @@
 	</div>
 	<div style="display: none">
 		<div ref="refSelectItem">
-			<SelectItem :initItemsItem="ItemsItem" @createNewItem="createNewItem" v-if="isTollAdd"/>
+			<SelectItem :initItemsItem="ItemsItem" @createNewItem="createNewItem" v-if="isTollAdd" :selectedNode="selectedNode"/>
 		</div>
 		<div ref="refItemHTML" class="custom-catalog__form">
 			<ItemHTML :html="HTML" @close-all-popups="closeAllPopups" :selectedNode="selectedNode"
@@ -331,6 +331,7 @@ function nodeSelected(nodes, event) {
 	selectedNodesTitle.value = nodes.map((node) => node.title)[0]
 }
 
+//TODO we need make service for bound all subcsribed dirs into single request or ours socket
 async function nodeToggled(node, event) {
 	let parent = getParent(node)
 	if (!node.data.parentId) {
@@ -376,7 +377,6 @@ function recurciveRemoveSubcribes(node) {
 		if (subscriber) clearInterval(subcribeChildren.value[child.data.id])
 		if (child.children.length) recurciveRemoveSubcribes(child)
 	}
-
 }
 
 function recursiveSetChilds(node, Dnodes, rNodes) {

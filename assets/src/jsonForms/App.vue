@@ -84,7 +84,7 @@ export default defineComponent({
 				//  }
 				console.log("Data on change: ", this.data)
 
-				setTimeout(() => {
+				setTimeout(() => {// TODO refactor use this.outputId
 					document.getElementById("installStepOutput").value = JSON.stringify(this.data);
 				}, 0)
 			}
@@ -171,6 +171,7 @@ export default defineComponent({
 		}
 	}
 });
+
 </script>
 
 <style scoped>

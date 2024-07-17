@@ -5,7 +5,7 @@
 				<label class="admin-panel__title" for="root-group">Select Item type</label>
 				<select id="root-group" class="select" @change="create($event)">
 					<option selected disabled value="">Select Group</option>
-					<option v-for="item in initItemsItem" :value="item.type">{{ item.name }}</option>
+					<option v-for="item in ItemsItem" :value="item.type">{{ item.name }}</option>
 				</select>
 			</div>
 		</div>
@@ -15,12 +15,16 @@
 <script setup>
 import {computed} from "vue";
 
-const props = defineProps(['initItemsGroup', 'initItemsItem', 'isItemRootAdd', 'isGroupRootAdd'])
+const props = defineProps(['initItemsItem', 'selectedNode'])
 const emit = defineEmits(['createNewItem'])
 
 
 let ItemsItem = computed(() => {
-	return props.initItemsItem.filter((item) => item.allowedRoot === true)
+	if (props.selectedNode) {
+		return props.initItemsItem
+	} else {
+		return props.initItemsItem.filter((item) => item.allowedRoot === true)
+	}
 })
 
 function create(event) {

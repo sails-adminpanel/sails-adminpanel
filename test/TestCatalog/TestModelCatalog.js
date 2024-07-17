@@ -88,6 +88,7 @@ exports.Page = Page;
 class ItemHTML extends AbstractCatalog_1.AbstractItem {
     constructor() {
         super(...arguments);
+        this.allowedRoot = false;
         this.name = 'ItemHTML';
         this.icon = 'cat';
         this.type = 'itemHTML';
@@ -199,7 +200,7 @@ class ItemJsonForm extends ItemHTML {
                     "type": "Control",
                     "scope": "#/properties/id",
                     "rule": {
-                        "effect": "DISABLE",
+                        "effect": "HIDE",
                         "condition": {
                             "scope": "#",
                             "schema": {}
@@ -210,7 +211,7 @@ class ItemJsonForm extends ItemHTML {
                     "type": "Control",
                     "scope": "#/properties/parentId",
                     "rule": {
-                        "effect": "DISABLE",
+                        "effect": "HIDE",
                         "condition": {
                             "scope": "#",
                             "schema": {}
@@ -270,7 +271,7 @@ class Link extends AbstractCatalog_1.ActionHandler {
     getPopUpHTML() {
         return Promise.resolve("");
     }
-    handler(items, config) {
+    handler(items, data) {
         return Promise.resolve(undefined);
     }
 }
@@ -294,8 +295,8 @@ class ContextAction extends AbstractCatalog_1.ActionHandler {
     getPopUpHTML() {
         return Promise.resolve("");
     }
-    handler(items, config) {
-        console.log(items, config);
+    handler(items, data) {
+        console.log(items, data);
         const generateRandomString = () => {
             return Math.floor(Math.random() * Date.now()).toString(36);
         };
@@ -326,7 +327,7 @@ class HTMLAction extends AbstractCatalog_1.ActionHandler {
     getPopUpHTML() {
         return Promise.resolve(ejs.render(fs.readFileSync(`${__dirname}/actionHTML.ejs`, 'utf8')));
     }
-    async handler(items, config) {
+    async handler(items, data) {
         console.log('HTMLAction handler items: ', items);
         return new Promise((resolve, reject) => {
             setTimeout(() => {
@@ -379,9 +380,9 @@ class JsonFormAction extends AbstractCatalog_1.ActionHandler {
     getPopUpHTML() {
         return Promise.resolve(JSON.stringify({ schema: this.jsonSchema, UISchema: this.uiSchema }));
     }
-    handler(items, config) {
+    handler(items, data) {
         console.log('JsonFormAction handler items: ', items);
-        console.log('JsonFormAction handler config: ', config);
+        console.log('JsonFormAction handler data: ', data);
         return new Promise((resolve, reject) => {
             resolve({ ok: true });
         });

@@ -96,7 +96,7 @@ export class Page<T extends Item> extends BaseModelItem<T> {
 
 
 export class ItemHTML extends AbstractItem<Item> {
-	readonly allowedRoot: boolean;
+	readonly allowedRoot: boolean = false;
 	public name: string = 'ItemHTML'
 	public icon = 'cat'
 	public type = 'itemHTML'
@@ -216,7 +216,7 @@ export class ItemJsonForm extends ItemHTML {
 					"type": "Control",
 					"scope": "#/properties/id",
 					"rule": {
-						"effect": "DISABLE",
+						"effect": "HIDE",
 						"condition": {
 							"scope": "#",
 							"schema": {}
@@ -227,7 +227,7 @@ export class ItemJsonForm extends ItemHTML {
 					"type": "Control",
 					"scope": "#/properties/parentId",
 					"rule": {
-						"effect": "DISABLE",
+						"effect": "HIDE",
 						"condition": {
 							"scope": "#",
 							"schema": {}
@@ -289,7 +289,7 @@ export class Link extends ActionHandler {
 		return Promise.resolve("");
 	}
 
-	handler(items: Item[], config?: any): Promise<any> {
+	handler(items: Item[], data?: any): Promise<any> {
 		return Promise.resolve(undefined);
 	}
 
@@ -317,8 +317,8 @@ export class ContextAction extends ActionHandler {
 		return Promise.resolve("");
 	}
 
-	handler(items: Item[], config?: any): Promise<any> {
-		console.log(items, config)
+	handler(items: Item[], data?: any): Promise<any> {
+		console.log(items, data)
 		const generateRandomString = () => {
 			return Math.floor(Math.random() * Date.now()).toString(36);
 		};
@@ -354,7 +354,7 @@ export class HTMLAction extends ActionHandler {
 		return Promise.resolve(ejs.render(fs.readFileSync(`${__dirname}/actionHTML.ejs`, 'utf8')));
 	}
 
-	async handler(items: Item[], config?: any): Promise<any> {
+	async handler(items: Item[], data?: any): Promise<any> {
 		console.log('HTMLAction handler items: ', items)
 		return new Promise((resolve, reject) => {
 			setTimeout(() => {
@@ -407,9 +407,9 @@ export class JsonFormAction extends ActionHandler {
 		return Promise.resolve(JSON.stringify({schema: this.jsonSchema, UISchema: this.uiSchema}));
 	}
 
-	handler(items: Item[], config?: any): Promise<any> {
+	handler(items: Item[], data?: any): Promise<any> {
 		console.log('JsonFormAction handler items: ', items)
-		console.log('JsonFormAction handler config: ', config)
+		console.log('JsonFormAction handler data: ', data)
 		return new Promise((resolve, reject) => {
 			resolve({ok: true})
 		})
