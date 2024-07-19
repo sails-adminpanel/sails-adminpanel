@@ -24,6 +24,9 @@ class BaseModelItem<T extends Item> extends AbstractItem<T> {
 		return await sails.models[this.model].update({id: itemId}, {name: data.name, parentId: data.parentId}).fetch();
 	};
 
+	create(catalogId: string, data: T): Promise<T> {
+		return Promise.resolve(undefined);
+	}
 
 	// public async create(itemId: string, data: Item): Promise<Item> {
 	// 	throw `I dont know for what need it`
@@ -67,9 +70,6 @@ class BaseModelItem<T extends Item> extends AbstractItem<T> {
 		return await sails.models[this.model].find({name: {contains: s}});
 	}
 
-	create(itemId: string, data: T): Promise<T> {
-		return Promise.resolve(undefined);
-	}
 }
 
 

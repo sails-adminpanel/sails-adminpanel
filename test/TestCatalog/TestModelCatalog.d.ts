@@ -9,6 +9,7 @@ declare class BaseModelItem<T extends Item> extends AbstractItem<T> {
     readonly actionHandlers: any[];
     find(itemId: string | number): Promise<any>;
     update(itemId: string | number, data: Item): Promise<T>;
+    create(catalogId: string, data: T): Promise<T>;
     deleteItem(itemId: string | number): Promise<void>;
     getAddHTML(): {
         type: "link" | "html";
@@ -20,7 +21,6 @@ declare class BaseModelItem<T extends Item> extends AbstractItem<T> {
     }>;
     getChilds(parentId: string | number): Promise<Item[]>;
     search(s: string): Promise<T[]>;
-    create(itemId: string, data: T): Promise<T>;
 }
 export declare class ModelGroup<GroupTestItem extends Item> extends BaseModelItem<GroupTestItem> {
     name: string;

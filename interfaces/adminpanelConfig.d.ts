@@ -164,6 +164,10 @@ export interface AdminpanelConfig {
      * System field for store absolute root path adminpanel hookfolder
      */
     rootPath?: string;
+    /**
+     *  Navigation
+     */
+    navigation?: NavigationConfig;
 }
 export interface ModelConfig {
     title: string;
@@ -273,6 +277,9 @@ export interface BaseFieldConfig {
     /** Show as disabled element HTML */
     disabled?: boolean;
 }
+/**
+ * @deprecated
+ */
 export interface NavigationOptionsField {
     /**
      * max number of nested elements
@@ -375,5 +382,21 @@ export interface HrefConfig {
      * For menu items only
      * */
     subItems?: HrefConfig[];
+}
+export interface NavigationItemTypeConfig {
+    model: string;
+    name: string;
+    groupField: string;
+    /**
+     *  /page/:slug
+     */
+    urlPath: string;
+}
+export interface NavigationConfig {
+    model: string;
+    dataField?: string;
+    allowContentInGroup?: boolean;
+    items: NavigationItemTypeConfig[];
+    groupItem: NavigationItemTypeConfig;
 }
 export {};

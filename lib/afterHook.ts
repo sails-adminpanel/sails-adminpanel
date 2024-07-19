@@ -10,6 +10,7 @@ import { CatalogHandler } from "./catalog/CatalogHandler";
 // Delete it after finish develop catalog feature
 import { TestCatalog } from "../test/TestCatalog/TestCatalog";
 import { TestModelCatalog } from "../test/TestCatalog/TestModelCatalog";
+import bindNavigation from "./bindNavigation";
 
 export default async function () {
     // Binding list of function for rendering
@@ -45,6 +46,8 @@ export default async function () {
 
     bindForms();
     bindDashboardWidgets();
+
+	bindNavigation();
 
     //bind access rights
     bindAccessRights();

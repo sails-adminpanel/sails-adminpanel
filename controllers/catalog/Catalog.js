@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAction = exports.catalogController = void 0;
+exports.catalogController = void 0;
 const CatalogHandler_1 = require("../../lib/catalog/CatalogHandler");
 const accessRightsHelper_1 = require("../../helper/accessRightsHelper");
 const FrontentCatalogAdapter_1 = require("./FrontentCatalogAdapter");
@@ -78,16 +78,3 @@ async function catalogController(req, res) {
     }
 }
 exports.catalogController = catalogController;
-async function getAction(req, res) {
-    if (sails.config.adminpanel.auth) {
-        if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
-        }
-    }
-    const method = req.method.toUpperCase();
-    if (method === 'POST') {
-        const body = req.body;
-        const catalog = CatalogHandler_1.CatalogHandler.getCatalog(body.slug);
-    }
-}
-exports.getAction = getAction;

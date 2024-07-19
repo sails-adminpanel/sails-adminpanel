@@ -255,8 +255,8 @@ export class AdminUtil {
         };
         if (entityType === "model") {
             entity.config = this.findModelConfig(req, entityName);
-            console.log(entityName, entity)
-            
+            // console.log(entityName, entity)
+
             entity.model = this.findModel(req, entity.config);
         }
         return entity;

@@ -66,7 +66,7 @@ export declare abstract class BaseItem<T extends Item> {
      * @param itemId
      * @param data
      */
-    abstract create(itemId: string, data: T): Promise<T>;
+    abstract create(catalogId: string, data: T): Promise<T>;
     /**
      *  delete element
      */

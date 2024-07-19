@@ -96,7 +96,7 @@ export abstract class BaseItem<T extends Item> {
 	 * @param itemId
 	 * @param data
 	 */
-	public abstract create(itemId: string, data: T): Promise<T>;
+	public abstract create(catalogId: string, data: T): Promise<T>;
 	/**
 	 *  delete element
 	 */
@@ -404,7 +404,6 @@ export abstract class AbstractCatalog {
 	 * @param data
 	 */
 	public createItem<T extends Item>(data: T): Promise<T> {
-		//throw `Not allowed use HTML please`
 		return this.getItemType(data.type)?.create(this.id, data) as Promise<T>;
 	}
 

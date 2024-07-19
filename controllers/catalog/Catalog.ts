@@ -80,16 +80,3 @@ export async function catalogController(req, res) {
 		}
 	}
 }
-
-export async function getAction(req, res) {
-	if (sails.config.adminpanel.auth) {
-		if (!req.session.UserAP) {
-			return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
-		}
-	}
-	const method = req.method.toUpperCase();
-	if (method === 'POST') {
-		const body = req.body
-		const catalog = CatalogHandler.getCatalog(body.slug)
-	}
-}

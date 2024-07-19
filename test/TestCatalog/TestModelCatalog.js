@@ -23,6 +23,9 @@ class BaseModelItem extends AbstractCatalog_1.AbstractItem {
         return await sails.models[this.model].update({ id: itemId }, { name: data.name, parentId: data.parentId }).fetch();
     }
     ;
+    create(catalogId, data) {
+        return Promise.resolve(undefined);
+    }
     // public async create(itemId: string, data: Item): Promise<Item> {
     // 	throw `I dont know for what need it`
     // 	// return await sails.models.create({ name: data.name, parentId: data.parentId}).fetch();
@@ -55,9 +58,6 @@ class BaseModelItem extends AbstractCatalog_1.AbstractItem {
     }
     async search(s) {
         return await sails.models[this.model].find({ name: { contains: s } });
-    }
-    create(itemId, data) {
-        return Promise.resolve(undefined);
     }
 }
 class ModelGroup extends BaseModelItem {
