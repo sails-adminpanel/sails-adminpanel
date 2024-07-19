@@ -15,7 +15,6 @@ export default async function(sails: any, cb) {
      * List of hooks that required for adminpanel to work
      */
     let requiredHooks: string[] = [
-        'blueprints',
         'http',
         'orm',
         'policies',
