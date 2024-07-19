@@ -31,6 +31,8 @@
 				if (parentId) data.parentId = parentId.value ? parentId.value : null
 				let res = await ky.post(uri, {json: data}).json()
 				if (res.record && checkboxReady) {
+					let data = res.record
+                    data.type = "<%= entity.config.model %>"
 					ky.post('', {json: {data: res.record, _method: 'createItem'}}).then(r => {
 						checkboxReady.click()
 					})

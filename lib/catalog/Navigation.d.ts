@@ -14,8 +14,9 @@ export declare class NavigationItem<T extends Item> extends AbstractItem<T> {
     readonly name: string;
     readonly type: string;
     protected model: string;
+    protected navigationModel: string;
     readonly actionHandlers: any[];
-    constructor(name: string, model: string);
+    constructor(name: string, model: string, navigationModel: string);
     find(itemId: string | number): Promise<T>;
     create(catalogId: string, data: T): Promise<T>;
     deleteItem(itemId: string | number): Promise<void>;
@@ -34,5 +35,5 @@ export declare class NavigationItem<T extends Item> extends AbstractItem<T> {
 export declare class NavigationGroup<T extends Item> extends NavigationItem<T> {
     readonly icon: string;
     isGroup: boolean;
-    constructor(name: string, model: string);
+    constructor(name: string, model: string, navigationModel: string);
 }

@@ -12,10 +12,11 @@ export class Navigation extends AbstractCatalog{
 		for (const configElement of config.items) {
 			items.push(new NavigationItem(
 				configElement.name,
-				configElement.model
+				configElement.model,
+				config.model
 			))
 		}
-		items.push(new NavigationGroup(config.groupItem.name, config.groupItem.model))
+		items.push(new NavigationGroup(config.groupItem.name, config.groupItem.model, config.model))
 		super(items);
 	}
 }
@@ -26,11 +27,13 @@ export class NavigationItem <T extends Item> extends AbstractItem<T>{
 	readonly name: string;
 	readonly type: string;
 	protected model: string;
+	protected navigationModel: string;
 	public readonly actionHandlers = []
 
-	constructor(name: string, model: string) {
+	constructor(name: string, model: string, navigationModel:string) {
 		super();
 		this.name = name
+		this.navigationModel = navigationModel
 		this.model = model.toLowerCase()
 		this.type = model.toLowerCase()
 	}
@@ -80,7 +83,7 @@ export class NavigationGroup<T extends Item > extends NavigationItem<T>{
 	readonly icon: string = 'layer-group';
 	public isGroup: boolean = true;
 
-	constructor(name: string, model: string) {
-		super(name, model)
+	constructor(name: string, model: string, navigationModel:string) {
+		super(name, model, navigationModel)
 	}
 }
