@@ -38,6 +38,7 @@ Key Features and Components:
 - **Forms:** Create and manage forms for data input and manipulation.
 - **NavigationWidget:** Utilize a widget to enhance navigation capabilities.
 - **Widget:** General reference to customizable and extensible components.
+- **Installer:** Product ready. Create an installer as a wizard
 
 This comprehensive set of features and components makes the admin panel a powerful tool for managing and controlling various aspects of your application with a focus on simplicity and a modern user interface.
 
