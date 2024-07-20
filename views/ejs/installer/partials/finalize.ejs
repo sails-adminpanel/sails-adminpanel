@@ -51,6 +51,11 @@
     <p id="status-text" class="mt-4 text-gray-600"><%= __("Status: Loading...") %></p>
 
     <ul id="finalize-list" class="mt-4"></ul>
+
+    <br />
+    <button class="btn btn-red" id="skip" onclick="skipStep()"  <% if (!currentStep.canBeSkipped) { %> style="display: none;" <% } %>>
+        <%= __("Skip") %>
+    </button>
 </div>
 
 <!-- Include JavaScript for AJAX -->
@@ -137,4 +142,21 @@
 
     // Initial call to update progress bar
     updateProgressBar();
+
+    $("#skipButton").on('click', function () {
+			console.log("Skip Button was clicked");
+
+			$.post(`<%- sails.config.adminpanel.routePrefix %>/install/<%=stepperId%>`, {
+				action: "skip",
+				currentStepId: currentStepData.id
+			})
+				.done(function () {
+					console.log("Step successfully skipped");
+					location.reload();
+				})
+				.fail(function () {
+					console.log("Step was not skipped");
+				});
+    });
+
 </script>
