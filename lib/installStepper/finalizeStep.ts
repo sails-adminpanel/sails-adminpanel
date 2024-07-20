@@ -18,11 +18,18 @@ export default class FinalizeStep extends InstallStepAbstract {
     isProcessed = false;
 
     async check() {
-        return this.isProcessed;
+        if(this.isProcessed){
+            return true
+        } else { 
+            let installStepper = InstallStepper.getInstance();
+            if (!installStepper.hasUnfinalizedSteps()) {
+                this.canBeSkipped = true;
+            }   
+        }
     }
 
     async process(data) {
-		let installStepper = InstallStepper.getInstance();
+        let installStepper = InstallStepper.getInstance();
         if (!installStepper.hasUnfinalizedSteps()) {
             this.isProcessed = true;
         }
