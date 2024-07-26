@@ -9,7 +9,7 @@
 **Only for use sails  > v1.5**
 
 ## SailsJS Discord community
-**Community Link:** [Join SailsJS Discord Community](https://discord.gg/VDH2yT6C)
+**Community Link:** [Join SailsJS Discord Community](http://discord-sails.42.pub)
 Feel free to use this link to connect with the community and engage in discussions or ask any questions you may have.
 
 
@@ -28,7 +28,6 @@ Key Features and Components:
 - **Links:** Manage and organize links within the admin panel.
 - **ScheduleWidget:** Incorporate a widget for scheduling and time-related functionalities.
 - **Configuration:** Configure various settings and options for the admin panel.
-- **Migrations:** Handle database migrations to manage changes in the data structure.
 - **Sections:** Organize and manage different sections of the admin panel.
 - **Dashboard:** View and customize the admin panel dashboard for a personalized experience.
 - **ModifierCallbacks:** Implement callbacks for modifying data and behavior.
@@ -92,24 +91,6 @@ module.exports.adminpanel = {
 ```
 
 And your admin panel will be accessible under: `http://127.0.0.1:port/admin`
-
-## Migrations
-
-The migration block is responsible for determining when the admin panel migrations should be executed. The conditions for running migrations are as follows:
-
-1. If the environment is set to production (`process.env.NODE_ENV === "production"`) and the datastore is PostgreSQL (`process.env.DATASTORE === "postgres"`).
-2. OR if the environment variable `ADMINPANEL_MIGRATIONS_FORCE` is set to "TRUE" (`process.env.ADMINPANEL_MIGRATIONS_FORCE === "TRUE"`).
-
-If these conditions are met, and the environment variable `ADMINPANEL_MIGRATIONS_SKIP` is not set to "TRUE" (`process.env.ADMINPANEL_MIGRATIONS_SKIP !== "TRUE"`), the following action will be performed:
-
-- The `MigrationsHelper.addToProcessMigrationsQueue` function is called to add migrations from the specified path (`${sails.config.adminpanel.rootPath}/migrations`) to the process migrations queue.
-- The migration direction is set to "up", indicating that migrations should be executed.
-
-This block ensures that admin panel migrations are run under specific conditions, providing flexibility and control over the migration process.
-
-
-Admin panel migrations will run if some conditions will be done. Set `process.env.NODE_ENV = "production"` and `process.env.DATASTORE = "postgres"` or use `process.env.ADMINPANEL_MIGRATIONS_FORCE = "TRUE"`. But if you want to forbid migrations and cancel all these conditions use `process.env.ADMINPANEL_MIGRATIONS_SKIP = "TRUE"`
-
 ## Documentation & Types
 
 For comprehensive information on configuration and usage, it is highly recommended to refer to the [docs](https://github.com/sails-adminpanel/sails-adminpanel/tree/master/docs) folder within the project repository. The documentation provides detailed insights into various aspects of the admin panel, including configuration options and usage guidelines.

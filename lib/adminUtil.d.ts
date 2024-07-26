@@ -1,5 +1,5 @@
 import { Entity } from "../interfaces/types";
-import { AdminpanelConfig, ModelConfig } from "../interfaces/adminpanelConfig";
+import { ActionType, AdminpanelConfig, ModelConfig } from "../interfaces/adminpanelConfig";
 import StrippedORMModel from "../interfaces/StrippedORMModel";
 export declare class AdminUtil {
     /**
@@ -59,14 +59,14 @@ export declare class AdminUtil {
      * @param {Request} req
      * @returns {?string}
      */
-    static findEntityType(req: any): string;
+    static findEntityType(req: ReqType): string;
     /**
      * Get entity name
      *
      * @param {Request} req
      * @returns {?string}
      */
-    static findEntityName(req: any): string;
+    static findEntityName(req: ReqType): string;
     /**
      * Searches for config from admin panel
      *
@@ -74,7 +74,7 @@ export declare class AdminUtil {
      * @param {String} entityName
      * @returns {?Object}
      */
-    static findModelConfig(req: any, entityName: any): ModelConfig;
+    static findModelConfig(req: ReqType, entityName: string): ModelConfig;
     /**
      * Will get action config from configuration file depending to given action
      *
@@ -98,7 +98,7 @@ export declare class AdminUtil {
      * @param {string} actionType Type of action that config should be loaded for. Example: list, edit, add, remove, view.
      * @returns {Object} Will return object with configs or default configs.
      */
-    static findActionConfig(entity: any, actionType: any): any;
+    static findActionConfig(entity: Entity, actionType: ActionType): any;
     /**
      * Trying to find model by request
      *
@@ -107,7 +107,7 @@ export declare class AdminUtil {
      * @param {Object} ModelConfig
      * @returns {?Model}
      */
-    static findModel(req: any, ModelConfig: any): StrippedORMModel;
+    static findModel(req: ReqType, ModelConfig: ModelConfig): StrippedORMModel;
     /**
      * Will create entity object from request.
      *
@@ -126,5 +126,5 @@ export declare class AdminUtil {
      * @param req
      * @returns {Object}
      */
-    static findEntityObject(req: any): Entity;
+    static findEntityObject(req: ReqType): Entity;
 }

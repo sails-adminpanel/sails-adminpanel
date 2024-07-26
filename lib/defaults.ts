@@ -95,10 +95,10 @@ var adminpanelConfig: AdminpanelConfig = {
     forms: {
         path: `api/adminpanel-forms`,
         data: {},
-        get: function (slug, key) {
+        get: async function (slug, key) {
             return FileStorageHelper.get(slug, key)
         },
-        set: function (slug, key, value) {
+        set: async function (slug, key, value) {
             FileStorageHelper.set(slug, key, value)
         }
     },
@@ -109,14 +109,7 @@ var adminpanelConfig: AdminpanelConfig = {
     sections: [],
     package: packageJson,
     showVersion: true,
-    timezones: timezones,
-    migrations: {
-        path: `${process.cwd()}/migrations`,
-        config: path.resolve(__dirname + "./../database.json")
-    },
-    globalSettings: {
-        enableMigrations: false
-    }
+    timezones: timezones
 }
 
 

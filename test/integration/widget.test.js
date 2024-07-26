@@ -6,7 +6,7 @@ const abstractCustom_1 = require("../../lib/widgets/abstractCustom");
 class CustomOne extends abstractCustom_1.default {
     constructor(ID) {
         super();
-        this.icon = "box";
+        this.icon = "dog";
         this.department = 'test';
         this.description = 'Widget Custom One';
         this.name = 'Site Custom';

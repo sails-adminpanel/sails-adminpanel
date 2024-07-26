@@ -41,7 +41,7 @@ async function default_1(req, res) {
             user = await UserAP.create({ login: req.body.login, fullName: req.body.fullName, email: req.body.email,
                 password: req.body.userPassword, timezone: req.body.timezone, expires: req.body.date,
                 locale: locale, isAdministrator: isAdministrator, groups: userGroups }).fetch();
-            sails.log(`A new user was created: `, user);
+            sails.log.debug(`A new user was created: `, user);
             req.session.messages.adminSuccess.push('A new user was created !');
             return res.redirect(`${sails.config.adminpanel.routePrefix}/model/usersap`);
         }

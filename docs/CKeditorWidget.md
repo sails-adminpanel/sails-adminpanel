@@ -1,6 +1,6 @@
 # WYSIWYG widge
 
-The WYSIWYG widget uses CKEditor. By default, the 4th version of the editor is used. To enable the 5th version, use the following settings:
+The WYSIWYG widget uses CKEditor. Settings:
 
 ```javascript
 module.exports.adminpanel = {
@@ -8,11 +8,10 @@ module.exports.adminpanel = {
 		title: "Title",
 		ckeditor5: {
 			type: "wysiwyg",
-			title: "CKedito 5",
-			options: { // required for CKeditor5
-				ckeditor5: boolean, // CKeditor5 enabled/disabled
+			title: "CKeditor",
+			options: {
 				removePlugins: [],
-				toolbar: { 
+				toolbar: {
 					items: []
 				},
 				image: {
@@ -31,7 +30,7 @@ module.exports.adminpanel = {
 If you want to disable some plugins, list them separated by commas in array. Example:
 
 ```javascript
-removePlugins: [ 
+removePlugins: [
 	'Table',
 	'TableCaption',
 	'TableCellProperties',
@@ -95,7 +94,7 @@ builtinPlugins = [
 In the builds that contain toolbars an optimal default configuration is defined for it. You may need a different toolbar arrangement, though, and this can be achieved through configuration. Toolbar configuration is a strict UI-related setting. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their respective plugins. Check removing features for more information. More info https://ckeditor.com/docs/ckeditor5/latest/features/toolbar/toolbar.html
 By default:
 ```javascript
-toolbar: { 
+toolbar: {
     items: [
         'heading',
         '|',

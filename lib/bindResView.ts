@@ -77,7 +77,6 @@ export default function bindResView() {
     };
 
     // Bind to /admin
-    console.log('admin > route bind > ', sails.config.adminpanel.routePrefix);
     sails.router.bind(sails.config.adminpanel.routePrefix, bindResFunctions);
     // Bind to /admin/*
     sails.router.bind(sails.config.adminpanel.routePrefix + '\/*', bindResFunctions);

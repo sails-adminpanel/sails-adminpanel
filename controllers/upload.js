@@ -6,7 +6,7 @@ const path = require("path");
 const Jimp = require('jimp');
 // !TODO for images resizing need usage parameters to get request cat.jpg?150. It makes image inscribed in square 150*150px
 function upload(req, res) {
-    // console.log('admin > upload');
+    // sails.log.debug('admin > upload');
     let entity = adminUtil_1.AdminUtil.findEntityObject(req);
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
@@ -112,7 +112,6 @@ function upload(req, res) {
         /**
          * Saving in file
          */
-        console.log(fieldConfig);
         if (fieldConfig.type !== 'file' && fieldConfig.options.file !== undefined) {
             return res.serverError('Only file full destination allowed');
         }
@@ -195,7 +194,6 @@ function upload(req, res) {
                                     sizes: resizes
                                 };
                                 res.status(201);
-                                console.log(result);
                                 res.send(result);
                             });
                         });

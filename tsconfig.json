@@ -6,6 +6,8 @@
     "declaration": true,
     "removeComments": false,
     "skipLibCheck": true,
+    "experimentalDecorators": true,
+
     "lib": [
       "dom"
     ],

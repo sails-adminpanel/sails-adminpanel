@@ -11,13 +11,9 @@ export interface Links {
 
 export default abstract class LinkBase extends BaseWidget {
 
-	public abstract readonly  links: Links[]
+	public readonly widgetType = "link"
 
-	/** Widget size */
-	public readonly size: {
-		h: 1
-		w: 1
-	} 
+	readonly abstract links: Links[]
 
 	/** Get info */
 	public abstract getLinks(): Promise<Links[]>

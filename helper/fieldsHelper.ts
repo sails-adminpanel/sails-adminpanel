@@ -1,4 +1,18 @@
+import { ActionType, BaseFieldConfig } from "../interfaces/adminpanelConfig";
+import { Entity } from "../interfaces/types";
 import { AdminUtil } from "../lib/adminUtil";
+
+
+export type Fields = {
+    [key: string]: {
+        config: BaseFieldConfig
+        model: {
+            model: string,
+            required: boolean
+            type: 'association' | 'association-many' | 'number' | 'json' | 'string' | 'boolean' | 'ref'
+        }
+    }
+}
 
 export class FieldsHelper {
     /**
@@ -170,7 +184,7 @@ export class FieldsHelper {
          * @param {string} key
          * @param {function=} [cb]
          */
-        let loadAssoc = async function(key) {
+        let loadAssoc = async function (key) {
             if (fields[key].config.type !== 'association' && fields[key].config.type !== 'association-many') {
                 return;
             }
@@ -252,7 +266,7 @@ export class FieldsHelper {
      * @param {string=} [type] Type of action that config should be loaded for. Example: list, edit, add, remove, view. Defaut: list
      * @returns {Object} Empty object or pbject with list of properties
      */
-    public static getFields(req, entity, type) {
+    public static getFields(req: ReqType, entity: Entity, type: ActionType): Fields {
         if (!entity.model || !entity.model.attributes) {
             return {};
         }
@@ -294,7 +308,7 @@ export class FieldsHelper {
                 modelField.type = 'association-many';
             }
 
-            if (type === 'add' && key === req._sails.config.adminpanel.identifierField) {
+            if (type === 'add' && key === sails.config.adminpanel.identifierField) {
                 return;
             }
             //Getting config form configuration file
@@ -308,7 +322,7 @@ export class FieldsHelper {
                 }
                 else {
                     let tmpCfg = that._normalizeFieldConfig(fieldsConfig[key], key, modelField);
-                    fldConfig = {...fldConfig, ...tmpCfg};
+                    fldConfig = { ...fldConfig, ...tmpCfg };
                 }
             }
             //Checking inaction entity fields configuration. Should overwrite global one
@@ -320,7 +334,7 @@ export class FieldsHelper {
                 else {
                     let tmpCfg = that._normalizeFieldConfig(actionConfig.fields[key], key, modelField);
                     ignoreField = false;
-                    fldConfig = {...fldConfig, ...tmpCfg};
+                    fldConfig = { ...fldConfig, ...tmpCfg };
                 }
             }
             if (ignoreField) {

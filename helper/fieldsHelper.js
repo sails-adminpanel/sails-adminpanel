@@ -284,7 +284,7 @@ class FieldsHelper {
             if (typeof modelField === "object" && modelField !== null && modelField.collection) {
                 modelField.type = 'association-many';
             }
-            if (type === 'add' && key === req._sails.config.adminpanel.identifierField) {
+            if (type === 'add' && key === sails.config.adminpanel.identifierField) {
                 return;
             }
             //Getting config form configuration file

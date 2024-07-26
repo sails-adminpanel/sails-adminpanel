@@ -1,0 +1,12 @@
+<%- include("head") %>
+<%- include("headContent") %>
+<script>
+    window.slug = '<%= slug %>'
+    window.id = '<%= id %>'
+</script>
+<script src="/admin/assets/build/js/vue-catalog.js" defer></script>
+<div class="custom-catalog">
+    <div id="catalog"></div>
+</div>
+
+<%- include("footer") %>

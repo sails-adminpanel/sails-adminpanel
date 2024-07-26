@@ -1,5 +1,5 @@
 import {Entity} from "../interfaces/types";
-import {AdminpanelConfig, ModelConfig} from "../interfaces/adminpanelConfig";
+import {ActionType, AdminpanelConfig, ModelConfig} from "../interfaces/adminpanelConfig";
 import StrippedORMModel from "../interfaces/StrippedORMModel";
 
 export class AdminUtil {
@@ -99,7 +99,7 @@ export class AdminUtil {
         let Model = sails.models[name.toLowerCase()];
         if (!Model) {
             if (!sails) {
-                console.log('No model found in sails.');
+                sails.log.error('No model found in sails.');
             } else {
                 sails.log.error('No model found in sails.');
             }
@@ -114,7 +114,7 @@ export class AdminUtil {
      * @param {Request} req
      * @returns {?string}
      */
-    public static findEntityType(req): string {
+    public static findEntityType(req: ReqType): string {
         if (!req.param('entityType')) {
             let entityType = req.originalUrl.split('/')[2];
             if (!["form", "model", "wizard"].includes(entityType)) {
@@ -132,7 +132,7 @@ export class AdminUtil {
      * @param {Request} req
      * @returns {?string}
      */
-    public static findEntityName(req): string {
+    public static findEntityName(req: ReqType): string {
       if (!req.param('entityName')) {
           let entityType = req.originalUrl.split('/')[2];
           let entityName = req.originalUrl.split('/')[3];
@@ -154,9 +154,9 @@ export class AdminUtil {
      * @param {String} entityName
      * @returns {?Object}
      */
-    public static findModelConfig(req, entityName): ModelConfig {
+    public static findModelConfig(req: ReqType, entityName: string): ModelConfig {
         if (!this.config().models || !this.config().models[entityName]) {
-            req._sails.log.error('No such route exists');
+            sails.log.error('No such route exists');
             return null;
         }
         return this._normalizeModelConfig(this.config().models[entityName] || {});
@@ -185,7 +185,7 @@ export class AdminUtil {
      * @param {string} actionType Type of action that config should be loaded for. Example: list, edit, add, remove, view.
      * @returns {Object} Will return object with configs or default configs.
      */
-    public static findActionConfig(entity, actionType) {
+    public static findActionConfig(entity: Entity, actionType: ActionType) {
         if (!entity || !actionType) {
             throw new Error('No `entity` or `actionType` passed !');
         }
@@ -211,7 +211,7 @@ export class AdminUtil {
      * @param {Object} ModelConfig
      * @returns {?Model}
      */
-    public static findModel(req, ModelConfig): StrippedORMModel {
+    public static findModel(req: ReqType, ModelConfig: ModelConfig): StrippedORMModel {
         if (!this._isValidModelConfig(ModelConfig)) {
             return null;
         }
@@ -236,7 +236,7 @@ export class AdminUtil {
      * @param req
      * @returns {Object}
      */
-    public static findEntityObject(req): Entity {
+    public static findEntityObject(req: ReqType): Entity {
         let entityName = this.findEntityName(req);
         let entityType = this.findEntityType(req);
         let entityUri = `${this.config().routePrefix}/${entityType}/${entityName}`;

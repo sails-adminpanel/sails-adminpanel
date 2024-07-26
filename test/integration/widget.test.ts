@@ -4,7 +4,7 @@ import CustomBase from '../../lib/widgets/abstractCustom';
 import { LineAwesomeIcon } from "../../interfaces/lineAwesome";
 
 class CustomOne extends CustomBase {
-    public icon?: LineAwesomeIcon = "box";
+    public icon?: LineAwesomeIcon = "dog";
     constructor(ID) {
         super();
         this.ID = ID;

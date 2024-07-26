@@ -1,0 +1,155 @@
+<div class="p-6 flex justify-between items-center" id="controls">
+    <div>
+        <button class="btn btn-green" id="submit" onclick="processStep()">
+            <%= __("Next") %>
+        </button>
+        <button class="btn btn-grey" id="skip" onclick="skipStep()">
+            <%= __("Skip") %>
+        </button>
+    </div>
+</div>
+
+<script>
+    let skipButton = document.getElementById("skip");
+    if (!currentStepData.canBeSkipped) {
+        skipButton.setAttribute("hidden", true);
+    } else {
+        skipButton.removeAttribute("hidden");
+    }
+
+
+    function processStep() {
+        let formData = new FormData();
+
+        if (currentStepData.renderer === "jsonforms") {
+            let installStepOutput = document.getElementById("installStepOutput").value;
+            let dataToSend = JSON.parse(installStepOutput);
+
+            let inputData = {}
+            if (currentStepData.payload.type === "single") {
+                inputData[currentStepData.payload.data.key] = dataToSend;
+            }
+
+            if (currentStepData.payload.type === "multi") {
+                for (let key in dataToSend) {
+                    inputData[key] = dataToSend[key];
+                }
+            }
+
+            formData.append('inputData', JSON.stringify(inputData));
+            formData.append('action', 'next');
+            formData.append('currentStepId', currentStepData.id);
+
+        } else {
+            const form = document.getElementsByTagName('form')[0];
+            const formElements = form.elements;
+            let inputData = {}; // object to collect another fields
+            let filesCounter = 0;
+
+            formData.append('inputData', JSON.stringify(inputData));
+            formData.append('action', 'next');
+            formData.append('currentStepId', currentStepData.id);
+            formData.append('filesCounter', filesCounter); // will be >0 if formData contains files
+
+            for (let i = 0; i < formElements.length; i++) {
+                const element = formElements[i];
+
+                if (element.tagName === 'INPUT' && element.type === 'file') {
+                    const files = element.files;
+
+                    if (files.length > 0) {
+                        for (let j = 0; j < files.length; j++) {
+                            const file = files[j];
+                            // add files to files_${filesCounter} fields to recognize them on backend
+                            formData.append(`files_${filesCounter}`, file, `${element.name}_${filesCounter}_${file.name.replace(/\s+/g, '')}`);
+                            filesCounter++;
+                        }
+                    }
+
+                } else {
+                    if (element.name) {
+                        inputData[element.name] = element.value;
+                    }
+                }
+            }
+
+            // reset field that will be added before (because appending files should be after appending other fields)
+            formData.set('inputData', JSON.stringify(inputData));
+            formData.set('filesCounter', filesCounter);
+
+            for (let [key, value] of formData.entries()) {
+                console.log(key, value);
+            }
+        }
+
+        fetch(`<%- sails.config.adminpanel.routePrefix %>/install/<%=stepperId%>`, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                } else {
+                    location.reload();
+                    console.log('Data sent successfully:', data);
+                }
+            })
+            .catch(error => {
+                console.error('Error sending data:', error);
+            });
+    }
+
+    function skipStep() {
+        // currentStepData.canBeSkipped
+        const data = {
+            action: "skip",
+            currentStepId: currentStepData.id
+        };
+
+        fetch(`<%- sails.config.adminpanel.routePrefix %>/install/<%=stepperId%>`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                } else {
+                    location.reload();
+                    console.log('Data sent successfully');
+                }
+            })
+            .catch(error => {
+                console.error('Error sending data:', error);
+            });
+
+    }
+
+    let submitButton = document.getElementById("submit");
+    if (currentStepData.renderer === "ejs") {
+        let inputs = document.querySelectorAll('input[required], textarea[required], select[required]');
+        if (inputs.length) {
+            submitButton.setAttribute("disabled", true);
+            document.addEventListener("input", checkRequiredInputs);
+        }
+    } else {
+        submitButton.setAttribute("disabled", true);
+    }
+
+    function checkRequiredInputs() {
+        let submitButton = document.getElementById("submit");
+        let inputs = document.querySelectorAll('input[required], textarea[required], select[required]');
+
+        for (let input of inputs) {
+            if (!input.value.trim()) {
+                submitButton.setAttribute("disabled", true);
+                return;
+            }
+        }
+
+        submitButton.removeAttribute("disabled");
+    }
+
+</script>

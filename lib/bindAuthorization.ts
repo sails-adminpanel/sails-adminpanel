@@ -1,4 +1,6 @@
 import _login from "../controllers/login";
+import _initUser from "../controllers/initUser";
+
 import {AdminpanelConfig} from "../interfaces/adminpanelConfig";
 import bindPolicies from "../lib/bindPolicies"
 
@@ -12,8 +14,18 @@ export default async function bindAuthorization() {
         return;
     }
 
+
+    /**
+     * Router
+     */
+    let policies = sails.config.adminpanel.policies || '';
+    let baseRoute = sails.config.adminpanel.routePrefix + '/model/:entity';
+
+
     let adminsCredentials = [];
     // if we have administrator profiles
+    let config: AdminpanelConfig = sails.config.adminpanel;
+
     if (admins && admins.length) {
         for (let admin of admins) {
             adminsCredentials.push({
@@ -22,8 +34,10 @@ export default async function bindAuthorization() {
                 password: admin.password
             })
         }
-    } else { // try to create one if we don't
-        let config: AdminpanelConfig = sails.config.adminpanel;
+
+        sails.log.debug(`Has Administrators with login [${adminsCredentials[0].login}]`)
+
+    } else if(process.env.ADMINPANEL_LAZY_GEN_ADMIN_DISABLE === undefined ) {
         let adminData;
 
         if (config.administrator && config.administrator.login && config.administrator.password) {
@@ -44,38 +58,35 @@ export default async function bindAuthorization() {
             return;
         }
 
-        adminsCredentials.push(adminData)
+        console.group("Administrators credentials")
+        console.table(adminsCredentials);
+        console.groupEnd()
+
+    } else { // try to create one if we don't
+        if (sails.config.adminpanel.auth) {
+            sails.log.debug(`Adminpanel does not have an administrator`)
+            sails.config.adminpanel.policies.push(initUserPolicy)
+            sails.router.bind(sails.config.adminpanel.routePrefix + '/init_user', _initUser);
+        }
     }
 
-    console.log("------------------------------------------------------------")
-    console.group("Administrators credentials")
-
-    console.table(adminsCredentials);
-
-    console.groupEnd()
-
-    console.log('-------------------------------------------------------------')
-
-    // ------------------------------------------------------------------------------------------------
-
-    /**
-     * Router
-     */
-    let policies = sails.config.adminpanel.policies || '';
-    let baseRoute = sails.config.adminpanel.routePrefix + '/model/:entity';
-    sails.router.bind(baseRoute + '/login', bindPolicies(policies, _login));
-    sails.router.bind(baseRoute + '/logout', bindPolicies(policies, _login));
+    if (sails.config.adminpanel.auth) {
+        sails.router.bind(baseRoute + '/login', bindPolicies(policies, _login));
+        sails.router.bind(baseRoute + '/logout', bindPolicies(policies, _login));
+    }
 };
-
-sails.on('lifted', async function () {
-
-    // Only in dev mode after drop
-    if (sails.config.models.migrate !== 'drop') return;
-
-});
 
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min)) + min;
+}
+
+
+async function initUserPolicy (req: ReqType, res: ResType, proceed: any) {
+    let admins = await UserAP.find({isAdministrator: true});
+    if(!admins.length){
+        return res.redirect(`${sails.config.adminpanel.routePrefix}/init_user`)
+    }
+    return proceed()
 }

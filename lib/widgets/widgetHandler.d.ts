@@ -2,9 +2,9 @@ import SwitcherBase from "./abstractSwitch";
 import InfoBase from "./abstractInfo";
 import ActionBase from "./abstractAction";
 import LinkBase from "./abstractLink";
-import CustomBase from "./abstractCustom";
 import UserAP from "../../models/UserAP";
-import { LineAwesomeIcon } from "../../interfaces/lineAwesome";
+import CustomBase from "./abstractCustom";
+import { AdminpanelIcon } from "../../interfaces/adminpanelConfig";
 type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase | CustomBase);
 export interface WidgetConfig {
     id: string;
@@ -12,12 +12,16 @@ export interface WidgetConfig {
     api?: string;
     link?: string;
     description: string;
-    icon: LineAwesomeIcon;
+    icon: AdminpanelIcon;
     name: string;
     scriptUrl?: string;
     constructorName?: string;
     constructorOption?: string;
     backgroundCSS: string;
+    scriptUrl?: string;
+    constructorName?: string;
+    constructorOption?: any;
+    hideAdminPanelUI?: boolean;
     size?: {
         h: number;
         w: number;

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TranslationHelper = void 0;
 const path = require("path");
 const fs = require("fs");
+let i18nFactory = require('i18n-2');
 class TranslationHelper {
     static loadTranslations(translationsPath) {
         let translationsConfig = sails.config.adminpanel.translation;
@@ -32,13 +33,40 @@ class TranslationHelper {
                     }
                 }
                 else {
-                    sails.log.error(`Adminpanel > Cannot find ${locale} locale in translations directory`);
+                    sails.log.debug(`Adminpanel > Cannot find ${locale} locale in translations directory`);
                 }
             }
         }
         catch (e) {
             sails.log.error("Adminpanel > Error when loading translations", e);
         }
+    }
+    static translateProperties(object, locale, fields) {
+        const i18n = this.getI18nInstance(locale);
+        const translateObject = (obj) => {
+            if (typeof obj !== 'object' || obj === null) {
+                return obj;
+            }
+            Object.keys(obj).forEach((key) => {
+                const value = obj[key];
+                if (fields.includes(key) && typeof value !== 'object') {
+                    obj[key] = i18n.__(value);
+                }
+                else {
+                    obj[key] = translateObject(value);
+                }
+            });
+            return obj;
+        };
+        return translateObject(object);
+    }
+    static getI18nInstance(locale) {
+        if (typeof sails.config.adminpanel.translation === "boolean") {
+            throw `Transaltion is disabled`;
+        }
+        const i18n = new i18nFactory({ ...sails.config.i18n, directory: sails.config.i18n.localesDirectory, extension: ".json" });
+        i18n.setLocale(locale);
+        return i18n;
     }
 }
 exports.TranslationHelper = TranslationHelper;

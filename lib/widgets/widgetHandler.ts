@@ -2,25 +2,28 @@ import SwitcherBase from "./abstractSwitch";
 import InfoBase from "./abstractInfo";
 import ActionBase from "./abstractAction";
 import LinkBase from "./abstractLink";
-import CustomBase from "./abstractCustom";
-import {AccessRightsHelper} from "../../helper/accessRightsHelper";
+import { AccessRightsHelper } from "../../helper/accessRightsHelper";
 import UserAP from "../../models/UserAP";
-import { LineAwesomeIcon } from "../../interfaces/lineAwesome";
+import CustomBase from "./abstractCustom";
+import { AdminpanelIcon } from "../../interfaces/adminpanelConfig";
 
 type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase | CustomBase);
-
 export interface WidgetConfig {
 	id: string;
 	type: string;
 	api?: string;
 	link?: string;
 	description: string;
-	icon: LineAwesomeIcon;
+	icon: AdminpanelIcon;
 	name: string;
 	scriptUrl?: string;
 	constructorName?: string;
 	constructorOption?: string;
 	backgroundCSS: string;
+	scriptUrl?: string;
+	constructorName?: string,
+	constructorOption?:  any,
+	hideAdminPanelUI?: boolean
 	size?: { h: number; w: number; };
 	added?: boolean;
 	hideAdminPanelUI?:boolean
@@ -69,7 +72,7 @@ export class WidgetHandler {
 							type: widget.widgetType,
 							api: `${config.routePrefix}/widgets-switch/${widget.ID}`,
 							description: widget.description,
-							icon: widget.icon,
+							icon: widget.icon as AdminpanelIcon,
 							name: widget.name,
 							backgroundCSS: widget.backgroundCSS ?? null,
 							size: widget.size ?? null
@@ -82,7 +85,7 @@ export class WidgetHandler {
 							type: widget.widgetType,
 							api: `${config.routePrefix}/widgets-info/${widget.ID}`,
 							description: widget.description,
-							icon: widget.icon,
+							icon: widget.icon as AdminpanelIcon,
 							name: widget.name,
 							backgroundCSS: widget.backgroundCSS ?? null,
 							size: widget.size ?? null
@@ -95,7 +98,7 @@ export class WidgetHandler {
 							type: widget.widgetType,
 							api: `${config.routePrefix}/widgets-action/${widget.ID}`,
 							description: widget.description,
-							icon: widget.icon,
+							icon: widget.icon as AdminpanelIcon,
 							name: widget.name,
 							backgroundCSS: widget.backgroundCSS ?? null,
 							size: widget.size ?? null
@@ -124,7 +127,7 @@ export class WidgetHandler {
 							type: widget.widgetType,
 							api: `${config.routePrefix}/widgets-custom/${widget.ID}`,
 							description: widget.description,
-							icon: widget.icon,
+							icon: widget.icon as AdminpanelIcon,
 							name: widget.name,
 							backgroundCSS: widget.backgroundCSS ?? null,
 							size: widget.size ?? null,
@@ -146,7 +149,7 @@ export class WidgetHandler {
 		let user: UserAP;
 		let widgets: WidgetConfig[];
 		if (!auth) {
-			user = await UserAP.findOne({ login: sails.config.adminpanel.administrator.login })
+			user = await UserAP.findOne({ login: sails.config.adminpanel.administrator?.login ?? 'admin' })
 		} else {
 			user = await UserAP.findOne({ id: id })
 		}
@@ -162,13 +165,12 @@ export class WidgetHandler {
 				})
 			}
 		}
-		console.log(widgets,123)
 		return widgets
 	}
 
 	public static async setWidgetsDB(id: number, widgets: WidgetConfig[], auth: boolean): Promise<number> {
 		if (!auth) {
-			let updatedUser = await UserAP.updateOne({ login: sails.config.adminpanel.administrator.login }, { widgets: widgets })
+			let updatedUser = await UserAP.updateOne({ login: sails.config.adminpanel.administrator?.login ?? 'admin' }, { widgets: widgets })
 			return updatedUser.id
 		} else {
 			let updatedUser = await UserAP.updateOne({ id: id }, { widgets: widgets })

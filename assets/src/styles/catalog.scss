@@ -1,0 +1,19 @@
+.custom-catalog {
+	@apply p-6;
+	&__container {
+		@apply mt-4 grid grid-cols-2 gap-4;
+	}
+
+	&__actions-items {
+		li {
+			@apply p-2.5 hover:bg-[rgba(100,_100,_255,_0.5)] whitespace-nowrap;
+		}
+	}
+	&__form{
+		@apply flex flex-col gap-4;
+	}
+	&__form-input{
+		@apply flex gap-4 flex-col;
+	}
+}
+

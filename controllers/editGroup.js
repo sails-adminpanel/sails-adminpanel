@@ -28,8 +28,8 @@ async function editGroup(req, res) {
         group = await GroupAP.findOne(req.param('id')).populate("users");
     }
     catch (e) {
-        req._sails.log.error('Admin edit error: ');
-        req._sails.log.error(e);
+        sails.log.error('Admin edit error: ');
+        sails.log.error(e);
         return res.serverError();
     }
     let departments = accessRightsHelper_1.AccessRightsHelper.getAllDepartments();
@@ -63,7 +63,7 @@ async function editGroup(req, res) {
         try {
             updatedGroup = await GroupAP.update({ id: group.id }, { name: req.body.name, description: req.body.description,
                 users: usersInThisGroup, tokens: tokensOfThisGroup }).fetch();
-            sails.log(`Group was updated: `, updatedGroup);
+            sails.log.debug(`Group was updated: `, updatedGroup);
             req.session.messages.adminSuccess.push('Group was updated !');
         }
         catch (e) {
@@ -77,8 +77,8 @@ async function editGroup(req, res) {
             group = await GroupAP.findOne(req.param('id')).populate("users");
         }
         catch (e) {
-            req._sails.log.error('Admin edit error: ');
-            req._sails.log.error(e);
+            sails.log.error('Admin edit error: ');
+            sails.log.error(e);
             return res.serverError();
         }
         try {

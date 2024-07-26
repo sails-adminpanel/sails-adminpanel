@@ -18,12 +18,17 @@
 			});
 		});
 		var table = $('#list').DataTable({
-			"ajax": '<%= entity.uri %>/json',
-			"sDom": 'Rfrtlip',
+			ajax:{
+        url : '<%= entity.uri %>/json',
+        type : "POST"
+			},
+			sDom: 'Rfrtlip',
 			fixedHeader: true,
 			fixedColumns: true,
 			scrollX: true,
 			responsive: true,
+			processing: true,
+	    serverSide: true,
 			language: {
 				url: '/admin/assets/datatables/i18n/<%= req.session.UserAP.locale !== undefined ? req.session.UserAP.locale : "en" %>.json'
 			},

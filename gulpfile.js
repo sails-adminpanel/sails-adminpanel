@@ -37,7 +37,8 @@ const path = {
 		ejs: './views/**/*.*'
 	},
 	watch:{
-		scss: `${srcFolder}/styles/**/*.scss`
+		scss: `${srcFolder}/styles/**/*.scss`,
+		catalogVue: `${srcFolder}/catalog/**/*.vue`
 	},
 	clean: buildFolder,
 	srcfolder: srcFolder,
@@ -212,6 +213,82 @@ const vueWidgets = () => {
 		.pipe(gulp.dest(`${path.build.js}/`))
 }
 
+const vueInstallStepper = () => {
+	return gulp.src(`${srcFolder}/jsonForms/app.js`, { sourcemaps: true })
+		.pipe(webpackStream({
+			mode: 'development',
+			entry: `${srcFolder}/jsonForms/app.js`,
+			output: {
+				path: Fpath.resolve('./assets/build/js/'),
+				filename: 'vue-installStepper.js'
+			},
+			module: {
+				rules: [
+					{
+						test: /\.vue$/,
+						loader: 'vue-loader'
+					},
+					{
+						test: /\.css$/,
+						use: [
+						  'vue-style-loader',
+						  'css-loader',
+						]
+					  }
+				],
+			},
+			experiments: {
+				topLevelAwait: true
+			},
+			plugins: [
+				new VueLoaderPlugin(),
+				new webpack.DefinePlugin({
+					__VUE_PROD_DEVTOOLS__: true,
+					__VUE_OPTIONS_API__: true
+				  })
+			]
+		}))
+		.pipe(gulp.dest(`${path.build.js}/`))
+}
+
+const vueInstallStepperProd = () => {
+	return gulp.src(`${srcFolder}/jsonForms/app.js`, { sourcemaps: true })
+		.pipe(webpackStream({
+			mode: 'production',
+			entry: `${srcFolder}/jsonForms/app.js`,
+			output: {
+				path: Fpath.resolve('./assets/build/js/'),
+				filename: 'vue-installStepper.js'
+			},
+			module: {
+				rules: [
+					{
+						test: /\.vue$/,
+						loader: 'vue-loader'
+					},
+					{
+						test: /\.css$/,
+						use: [
+							'vue-style-loader',
+							'css-loader',
+						]
+					}
+				],
+			},
+			experiments: {
+				topLevelAwait: true
+			},
+			plugins: [
+				new VueLoaderPlugin(),
+				new webpack.DefinePlugin({
+					__VUE_PROD_DEVTOOLS__: false,
+					__VUE_OPTIONS_API__: true
+				})
+			]
+		}))
+		.pipe(gulp.dest(`${path.build.js}/`))
+}
+
 const vueWidgetsProd = () => {
 	return gulp.src(`${srcFolder}/widgets/app.js`, { sourcemaps: true })
 		.pipe(webpackStream({
@@ -220,6 +297,82 @@ const vueWidgetsProd = () => {
 			output: {
 				path: Fpath.resolve('./assets/build/js/'),
 				filename: 'vue-widgets.js'
+			},
+			module: {
+				rules: [
+					{
+						test: /\.vue$/,
+						loader: 'vue-loader'
+					},
+					{
+						test: /\.css$/,
+						use: [
+							'vue-style-loader',
+							'css-loader',
+						]
+					}
+				],
+			},
+			experiments: {
+				topLevelAwait: true
+			},
+			plugins: [
+				new VueLoaderPlugin(),
+				new webpack.DefinePlugin({
+					__VUE_PROD_DEVTOOLS__: false,
+					__VUE_OPTIONS_API__: true
+				})
+			]
+		}))
+		.pipe(gulp.dest(`${path.build.js}/`))
+}
+
+const vueCatalog = () => {
+	return gulp.src(`${srcFolder}/catalog/app.js`, { sourcemaps: true })
+		.pipe(webpackStream({
+			mode: 'development',
+			entry: `${srcFolder}/catalog/app.js`,
+			output: {
+				path: Fpath.resolve('./assets/build/js/'),
+				filename: 'vue-catalog.js'
+			},
+			module: {
+				rules: [
+					{
+						test: /\.vue$/,
+						loader: 'vue-loader'
+					},
+					{
+						test: /\.css$/,
+						use: [
+							'vue-style-loader',
+							'css-loader',
+						]
+					}
+				],
+			},
+			experiments: {
+				topLevelAwait: true
+			},
+			plugins: [
+				new VueLoaderPlugin(),
+				new webpack.DefinePlugin({
+					__VUE_PROD_DEVTOOLS__: true,
+					__VUE_OPTIONS_API__: true
+				})
+			]
+		}))
+		.pipe(gulp.dest(`${path.build.js}/`))
+}
+
+const vueCatalogProd = () => {
+	return gulp.src(`${srcFolder}/catalog/app.js`, { sourcemaps: true })
+		.pipe(webpackStream({
+			mode: 'production',
+			entry: `${srcFolder}/catalog/app.js`,
+			output: {
+				path: Fpath.resolve('./assets/build/js/'),
+				filename: 'vue-catalog.js'
 			},
 			module: {
 				rules: [
@@ -329,14 +482,26 @@ function vueWidgetsWatcher(){
 	gulp.watch(`${srcFolder}/widgets/**/*.*`, gulp.series(vueWidgets, reload))
 	gulp.watch(path.watch.scss, gulp.series(scss, reload))
 }
+function vueCaalogWatcher(){
+	gulp.watch(`${srcFolder}/catalog/**/*.*`, gulp.series(vueCatalog, reload))
+	gulp.watch(path.watch.scss, gulp.series(scss, reload))
+	gulp.watch(path.watch.catalogVue, gulp.series(scss, reload))
+}
+
+function vueInstallStepperWatcher(){
+	gulp.watch(`${srcFolder}/installStepper/**/*.*`, gulp.series(vueInstallStepper, reload))
+	gulp.watch(path.watch.scss, gulp.series(scss, reload))
+}
 
 const build = gulp.series(reset, copy_styles_files, scss, js, ckeditorBuild);
 //const build = gulp.series(reset, copy_styles_files, scss, js);
 
-const prod = gulp.series(reset, copy_styles_files, scssProd, jsProd, ckeditorBuild, vueWidgetsProd);
+const prod = gulp.series(reset, copy_styles_files, scssProd, ckeditorBuild, vueWidgetsProd, vueInstallStepperProd, vueCatalogProd, jsProd);
+// const prodInstallStepper = gulp.series(reset, copy_styles_files, scssProd, jsProd, ckeditorBuild, vueInstallStepperProd);
 
 gulp.task('default', build);
 gulp.task('prod', prod);
+// gulp.task('prodInstallStepper', prodInstallStepper);
 gulp.task('ckeditorBuild', ckeditorBuild);
 
 gulp.task('js', js);
@@ -344,4 +509,5 @@ gulp.task('jsProd', jsProd);
 gulp.task('styles-prod', scssProd);
 gulp.task('styles', gulp.series(scss, gulp.parallel(serve, watcher)))
 
-gulp.task('vue', gulp.series(vueWidgets, gulp.parallel(serve, vueWidgetsWatcher)))
+gulp.task('vue', gulp.series(vueWidgets, gulp.parallel(serve, vueWidgetsWatcher) ,gulp.parallel(serve, vueInstallStepperWatcher)))
+gulp.task('catalog', gulp.series(vueCatalog, gulp.parallel(serve, vueCaalogWatcher)))

@@ -6,7 +6,9 @@ const chaiHttp = require("chai-http");
 chai.use(chaiHttp);
 const { expect } = chai;
 describe('Edit Test Entity', function () {
+    //this.timeout(10000)
     it("Should create, update and save every field in Test entity", async function () {
+        //await isLoadedRouter();
         let newTestData = {
             title: "Test Title",
             title_2: "Test Title 2",
@@ -75,3 +77,8 @@ describe('Edit Test Entity', function () {
         }
     });
 });
+async function isLoadedRouter() {
+    return new Promise((resolve, reject) => {
+        sails.on("adminpanel:router:binded", resolve);
+    });
+}
