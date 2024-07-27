@@ -105,7 +105,6 @@ export class RequestProcessor {
         //         booleanFields[key] = Boolean(data[key]);
         //     }
         // }
-		console.log(req.body)
         let data = req.allParams();
         let postParams = {};
         // Only fileds data

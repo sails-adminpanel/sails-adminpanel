@@ -386,17 +386,16 @@ export interface HrefConfig {
 export interface NavigationItemTypeConfig {
     model: string;
     name: string;
-    groupField: string;
     /**
      *  /page/:slug
      */
-    urlPath: string;
+    urlPath: string | ((v: any) => string);
 }
 export interface NavigationConfig {
     model: string;
-    dataField?: string;
+    sections: string[];
+    groupField: string[];
     allowContentInGroup?: boolean;
     items: NavigationItemTypeConfig[];
-    groupItem: NavigationItemTypeConfig;
 }
 export {};

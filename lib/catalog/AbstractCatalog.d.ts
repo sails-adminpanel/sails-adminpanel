@@ -55,22 +55,22 @@ export declare abstract class BaseItem<T extends Item> {
      * @param item
      */
     _enrich(item: T): void;
-    _find(itemId: string | number): Promise<T>;
-    abstract find(itemId: string | number): Promise<T>;
+    _find(itemId: string | number, catalogId: string): Promise<T>;
+    abstract find(itemId: string | number, catalogId: string): Promise<T>;
     /**
      * Is false because default value Group is added
      */
-    abstract update(itemId: string | number, data: T): Promise<T>;
+    abstract update(itemId: string | number, data: T, catalogId: string): Promise<T>;
     /**
      * For custom HTML
      * @param itemId
      * @param data
      */
-    abstract create(catalogId: string, data: T): Promise<T>;
+    abstract create(data: T, catalogId: string): Promise<T>;
     /**
      *  delete element
      */
-    abstract deleteItem(itemId: string | number): Promise<void>;
+    abstract deleteItem(itemId: string | number, catalogId: string): Promise<void>;
     abstract getAddHTML(): {
         type: 'link' | 'html' | 'jsonForm';
         data: string;
@@ -79,9 +79,9 @@ export declare abstract class BaseItem<T extends Item> {
         type: 'link' | 'html' | 'jsonForm';
         data: string;
     }>;
-    _getChilds(parentId: string | number | null): Promise<Item[]>;
-    abstract getChilds(parentId: string | number | null): Promise<Item[]>;
-    abstract search(s: string): Promise<T[]>;
+    _getChilds(parentId: string | number | null, catalogId: string): Promise<Item[]>;
+    abstract getChilds(parentId: string | number | null, catalogId: string): Promise<Item[]>;
+    abstract search(s: string, catalogId: string): Promise<T[]>;
 }
 export declare abstract class AbstractGroup<T extends Item> extends BaseItem<T> {
     readonly type: string;

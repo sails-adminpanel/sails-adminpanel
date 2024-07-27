@@ -78,44 +78,44 @@ export abstract class BaseItem<T extends Item> {
 		item.type = this.type;
 	}
 
-	public async _find(itemId: string | number): Promise<T> {
-		let item = await this.find(itemId);
+	public async _find(itemId: string | number, catalogId: string): Promise<T> {
+		let item = await this.find(itemId, catalogId);
 		this._enrich(item);
 		return item;
 	}
 
-	public abstract find(itemId: string | number): Promise<T>;
+	public abstract find(itemId: string | number, catalogId: string): Promise<T>;
 
 	/**
 	 * Is false because default value Group is added
 	 */
-	public abstract update(itemId: string | number, data: T): Promise<T>;
+	public abstract update(itemId: string | number, data: T, catalogId: string): Promise<T>;
 
 	/**
 	 * For custom HTML
 	 * @param itemId
 	 * @param data
 	 */
-	public abstract create(catalogId: string, data: T): Promise<T>;
+	public abstract create(data: T, catalogId: string): Promise<T>;
 	/**
 	 *  delete element
 	 */
-	public abstract deleteItem(itemId: string | number): Promise<void>;
+	public abstract deleteItem(itemId: string | number, catalogId: string): Promise<void>;
 
 
 	public abstract getAddHTML(): { type: 'link' | 'html' | 'jsonForm', data: string }
 
 	public abstract getEditHTML(id: string | number): Promise<{ type: 'link' | 'html'| 'jsonForm', data: string }>;
 
-	public async _getChilds(parentId: string | number | null): Promise<Item[]> {
-		let items = await this.getChilds(parentId)
+	public async _getChilds(parentId: string | number | null, catalogId: string): Promise<Item[]> {
+		let items = await this.getChilds(parentId, catalogId)
 		items.forEach((item)=>{this._enrich(item as T)})
 		return items;
 	}
 
-	public abstract getChilds(parentId: string | number | null): Promise<Item[]>
+	public abstract getChilds(parentId: string | number | null, catalogId: string): Promise<Item[]>
 
-	public abstract search(s: string): Promise<T[]>
+	public abstract search(s: string, catalogId: string): Promise<T[]>
 }
 
 
@@ -249,12 +249,12 @@ export abstract class AbstractCatalog {
 	 */
 	public async getChilds(parentId: string | number | null, byItemType?: string): Promise<Item[]> {
 		if (byItemType) {
-			const items = await this.getItemType(byItemType)?._getChilds(parentId);
+			const items = await this.getItemType(byItemType)?._getChilds(parentId, this.id);
 			return items ? items.sort((a, b) => a.sortOrder - b.sortOrder) : [];
 		} else {
 			let result = [];
 			for (const itemType of this.itemTypes) {
-				const items = await itemType?._getChilds(parentId);
+				const items = await itemType?._getChilds(parentId, this.id);
 				if (items) {
 					result = result.concat(items);
 				}
@@ -308,7 +308,7 @@ export abstract class AbstractCatalog {
 	 *  Get an element
 	 */
 	public find(item: Item) {
-		return this.getItemType(item.type)?._find(item.id);
+		return this.getItemType(item.type)?._find(item.id, this.id);
 	}
 
 	/**
@@ -316,7 +316,7 @@ export abstract class AbstractCatalog {
 	 */
 	public deleteItem(type: string, id: string | number) {
 		try {
-			this.getItemType(type)?.deleteItem(id);
+			this.getItemType(type)?.deleteItem(id, this.id);
 		} catch (e) {
 			throw e
 		}
@@ -404,12 +404,12 @@ export abstract class AbstractCatalog {
 	 * @param data
 	 */
 	public createItem<T extends Item>(data: T): Promise<T> {
-		return this.getItemType(data.type)?.create(this.id, data) as Promise<T>;
+		return this.getItemType(data.type)?.create(data, this.id) as Promise<T>;
 	}
 
 
 	public updateItem<T extends Item>(id: string | number, type: string, data: T): Promise<T> {
-		return this.getItemType(type)?.update(id, data) as Promise<T>;
+		return this.getItemType(type)?.update(id, data, this.id) as Promise<T>;
 	}
 
 	/**
@@ -436,7 +436,7 @@ export abstract class AbstractCatalog {
 			}
 
 			if (item.parentId === null) return item;
-			const parentItem = await groupType._find(item.parentId);
+			const parentItem = await groupType._find(item.parentId, this.id);
 			if (parentItem) {
 				accumulator.push(parentItem);
 				return buildTreeUpwards(parentItem, hasExtras);
@@ -448,7 +448,7 @@ export abstract class AbstractCatalog {
 
 		// Handle all search
 		for (const itemType of this.itemTypes) {
-			const items = (await itemType.search(s)).map(a => ({...a, marked: true}));
+			const items = (await itemType.search(s, this.id)).map(a => ({...a, marked: true}));
 			foundItems = foundItems.concat(items);
 		}
 
