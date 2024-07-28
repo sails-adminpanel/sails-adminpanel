@@ -23,7 +23,7 @@ class BaseModelItem<T extends Item> extends AbstractItem<T> {
 		// allowed only parentId update
 		return await sails.models[this.model].update({id: itemId}, {name: data.name, parentId: data.parentId}).fetch();
 	};
-
+	// @ts-ignore
 	create(catalogId: string, data: T): Promise<T> {
 		return Promise.resolve(undefined);
 	}
@@ -118,7 +118,7 @@ export class ItemHTML extends AbstractItem<Item> {
 			data: ejs.render(fs.readFileSync(`${__dirname}/itemHTMLEdit.ejs`, 'utf8'), {item: item}),
 		}
 	}
-
+// @ts-ignore
 	public async create(itemId: string, data: Item): Promise<Item> {
 		let elems = await StorageService.getAllElements()
 		let id = elems.length + 1
@@ -261,8 +261,8 @@ export class TestModelCatalog extends AbstractCatalog {
 	constructor() {
 		super([
 			new ModelGroup(),
-			new Page(),
-			new ItemHTML(),
+			new Page(),// @ts-ignore
+			new ItemHTML(),// @ts-ignore
 			new ItemJsonForm()
 		]);
 		this.addActionHandler(new Link())

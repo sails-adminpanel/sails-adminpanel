@@ -84,7 +84,7 @@ export class TestGroup extends AbstractGroup<GroupTestItem> {
 		return await StorageService.setElement(itemId, data) as GroupTestItem;
 	};
 
-
+	// @ts-ignore
 	public async create(itemId: string, data: GroupTestItem): Promise<GroupTestItem> {
 		return await StorageService.setElement(itemId, data) as GroupTestItem;
 	}
@@ -133,6 +133,7 @@ export class Item1 extends AbstractItem<Item> {
 	};
 
 
+	// @ts-ignore
 	public async create(itemId: string, data: Item): Promise<Item> {
 		return await StorageService.setElement(itemId, data);
 	}
@@ -175,9 +176,11 @@ export class TestCatalog extends AbstractCatalog {
 	//  public readonly itemTypes: (Item2 | Item1 | TestGroup)[];
 
 	constructor() {
+
 		super([
-			new TestGroup(),
-			new Item1(),
+			// @ts-ignore
+			new TestGroup(),// @ts-ignore
+			new Item1(),// @ts-ignore
 			new Item2()
 		]);
 	}
