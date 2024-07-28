@@ -1,5 +1,6 @@
-import {Navigation} from "./catalog/Navigation";
+import {Navigation, createTestData} from "./catalog/Navigation";
 import {CatalogHandler} from "./catalog/CatalogHandler";
+
 
 export default async function bindNavigation() {
 	// for (let form in sails.config.adminpanel.forms.data) {
@@ -11,4 +12,6 @@ export default async function bindNavigation() {
 	// }
 	let navigation = new Navigation(sails.config.adminpanel.navigation)
 	CatalogHandler.add(navigation)
+
+	//await createTestData()
 }

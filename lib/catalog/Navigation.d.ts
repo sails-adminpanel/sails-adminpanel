@@ -19,6 +19,16 @@ export declare class NavigationItem extends AbstractItem<Item> {
     readonly urlPath: any;
     constructor(name: string, model: string, navigationModel: string, urlPath: any);
     create(data: any, catalogId: string): Promise<Item>;
+    protected dataPreparation(data: any, catalogId: string, sortOrder?: number): Promise<{
+        id: any;
+        name: any;
+        parentId: any;
+        sortOrder: number;
+        icon: string;
+        type: string;
+        urlPath: any;
+    }>;
+    update(itemId: string | number, data: any, catalogId: string): Promise<Item>;
     deleteItem(itemId: string | number, catalogId: string): Promise<void>;
     find(itemId: string | number, catalogId: string): Promise<Item>;
     getAddHTML(): {
@@ -31,7 +41,6 @@ export declare class NavigationItem extends AbstractItem<Item> {
         data: string;
     }>;
     search(s: string, catalogId: string): Promise<Item[]>;
-    update(itemId: string | number, data: any, catalogId: string): Promise<Item>;
 }
 export declare class NavigationGroup extends AbstractGroup<Item> {
     readonly allowedRoot: boolean;
@@ -39,8 +48,17 @@ export declare class NavigationGroup extends AbstractGroup<Item> {
     readonly groupField: string[];
     constructor(groupField: string[]);
     create(data: any, catalogId: string): Promise<Item>;
+    protected dataPreparation(data: any, catalogId: string, sortOrder?: number): Promise<{
+        id: any;
+        name: any;
+        parentId: any;
+        sortOrder: number;
+        icon: string;
+        type: string;
+    }>;
     deleteItem(itemId: string | number, catalogId: string): Promise<void>;
     find(itemId: string | number, catalogId: string): Promise<Item>;
+    update(itemId: string | number, data: any, catalogId: string): Promise<Item>;
     getAddHTML(): {
         type: "link" | "html" | "jsonForm";
         data: string;
@@ -51,5 +69,5 @@ export declare class NavigationGroup extends AbstractGroup<Item> {
         data: string;
     }>;
     search(s: string, catalogId: string): Promise<Item[]>;
-    update(itemId: string | number, data: any, catalogId: string): Promise<Item>;
 }
+export declare function createTestData(): Promise<void>;

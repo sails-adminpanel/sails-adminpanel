@@ -7,33 +7,118 @@ import {v4 as uuid} from "uuid";
 class StorageService {
 	protected storageMap: Map<string | number,  Item> = new Map();
 	protected id: string
-
-	constructor(id: string) {
+	protected model: string
+	constructor(id: string, model: string) {
 		this.id = id
+		this.model = model.toLowerCase()
+		this.initModel()
 	}
 
+	protected initModel(){
+		sails.models[this.model].findOrCreate({ label: this.id, }, { label: this.id, tree: [] })
+			.exec(async(err: any, navigation: any, wasCreated: any)=> {
+				if (err) { throw err}
+
+				if(wasCreated) {
+					sails.log(`Created a new navigation: ${this.id}`);
+				}
+				else {
+					sails.log(`Found existing navigation: ${this.id}`);
+					await this.populateFromTree(navigation.tree)
+				}
+			});
+	}
 	public getId(){
 		return this.id
 	}
 
+	public async buildTree(): Promise<any> {
+		const rootElements: Item[] = await this.findElementsByParentId(null, null);
+		const buildSubTree = async (elements: Item[]): Promise<any[]> => {
+			const tree = [];
+			for (const element of elements) {
+				const children = await this.findElementsByParentId(element.id, null);
+				tree.push({
+					...element,
+					children: await buildSubTree(children)
+				});
+			}
+			return tree;
+		};
+
+		let tree = await buildSubTree(rootElements);
+
+		function sortTree(items: any[]) {
+			items.sort((a, b) => a.sortOrder - b.sortOrder);
+
+			for (let i = 0; i < items.length; i++) {
+				const item = items[i];
+				if (item.children) {
+					sortTree(item.children);
+				}
+			}
+		}
+		sortTree(tree)
+		return tree
+	}
+
+
+	public async populateFromTree(tree: any[]): Promise<void> {
+		const traverseTree = async (node: any, parentId: string | number | null = null): Promise<void> => {
+			const { children, ...itemData } = node;
+			const item = { ...itemData, parentId } as Item;
+			await this.setElement(item.id, item);
+
+			if (children && children.length > 0) {
+				for (const child of children) {
+					await traverseTree(child, item.id);
+				}
+			}
+		};
+
+		for (const node of tree) {
+			await traverseTree(node);
+		}
+	}
+
+
 	public async setElement(id: string | number, item: Item): Promise<Item> {
 		this.storageMap.set(item.id, item);
+		await this.saveToDB()
 		// This like fetch in DB
 		return this.findElementById(item.id);
 	}
 
 	public async removeElementById(id: string | number): Promise<void> {
 		this.storageMap.delete(id);
+		await this.saveToDB()
 	}
 
 	public async findElementById(id: string | number): Promise< Item | undefined> {
 		return this.storageMap.get(id);
 	}
 
-	public async findElementsByParentId(parentId: string | number, type: string): Promise<Item[]> {
+	public async saveToDB(){
+		let tree = await this.buildTree()
+		try{
+			await sails.models[this.model].update(
+				{label: this.id},
+				{tree: tree}
+			)
+		} catch (e){
+			console.log(e)
+			throw 'navigation model update error'
+		}
+	}
+
+	public async findElementsByParentId(parentId: string | number, type: string | null): Promise<Item[]> {
 		const elements: Item[] = [];
 		for (const item of this.storageMap.values()) {
 			// Assuming each item has a parentId property
+			if(type === null && item.parentId === parentId){
+				elements.push(item)
+				continue
+			}
 			if (item.parentId === parentId && item.type === type) {
 				elements.push(item);
 			}
@@ -94,7 +179,7 @@ export class Navigation extends AbstractCatalog{
 		items.push(new NavigationGroup(config.groupField))
 
 		for (const section of config.sections) {
-			StorageServices.add(new StorageService(section))
+			StorageServices.add(new StorageService(section, config.model))
 		}
 
 		super(items);
@@ -122,23 +207,32 @@ export class NavigationItem extends AbstractItem<Item>{
 
 	async create(data: any, catalogId: string): Promise<Item> {
 		let storage = StorageServices.get(catalogId)
+		let storageData = await this.dataPreparation(data, catalogId)
+		return await storage.setElement(data.id, storageData) as Item;
+	}
 
+	protected async dataPreparation(data: any, catalogId: string, sortOrder?: number){
 		let urlPath = eval('`' + this.urlPath + '`')
-
-		let storageData = {
+		let parentId = data.parentId ? data.parentId : null
+		return  {
 			id: data.record.id,
 			name: data.record.name ?? data.record.title ?? data.record.id,
-			parentId: data.parentId ? data.parentId : null,
-			sortOrder: 0,
+			parentId: parentId,
+			sortOrder: sortOrder ?? (await this.getChilds(parentId, catalogId)).length,
 			icon: this.icon,
 			type: this.type,
 			urlPath: urlPath
 		}
-		return await storage.setElement(data.id, storageData) as Item;
 	}
 
-	deleteItem(itemId: string | number, catalogId: string): Promise<void> {
-		return Promise.resolve(undefined);
+	async update(itemId: string | number, data: any, catalogId: string): Promise<Item> {
+		let storage = StorageServices.get(catalogId)
+		return await storage.setElement(itemId, data);
+	}
+
+	async deleteItem(itemId: string | number, catalogId: string): Promise<void> {
+		let storage = StorageServices.get(catalogId)
+		return await storage.removeElementById(itemId);
 	}
 
 	async find(itemId: string | number, catalogId: string): Promise<Item> {
@@ -163,13 +257,10 @@ export class NavigationItem extends AbstractItem<Item>{
 		return Promise.resolve({data: "", type: undefined});
 	}
 
-	search(s: string, catalogId: string): Promise<Item[]> {
+	async search(s: string, catalogId: string): Promise<Item[]> {
 		return Promise.resolve([]);
 	}
 
-	update(itemId: string | number, data: any, catalogId: string): Promise<Item> {
-		return Promise.resolve(undefined);
-	}
 
 }
 
@@ -185,14 +276,7 @@ export class NavigationGroup extends AbstractGroup<Item>{
 	async create(data: any, catalogId: string): Promise<Item> {
 		let storage = StorageServices.get(catalogId)
 
-		let storageData = {
-			id: uuid(),
-			name: data.name,
-			parentId: data.parentId ? data.parentId : null,
-			sortOrder: 0,
-			icon: this.icon,
-			type: this.type
-		}
+		let storageData = await this.dataPreparation(data, catalogId)
 		delete data.name
 		delete data.parentId
 		storageData = {...storageData, ...data}
@@ -200,12 +284,31 @@ export class NavigationGroup extends AbstractGroup<Item>{
 		return await storage.setElement(storageData.id, storageData) as Item;
 	}
 
-	deleteItem(itemId: string | number, catalogId: string): Promise<void> {
-		return Promise.resolve(undefined);
+	protected async dataPreparation(data: any, catalogId: string, sortOrder?: number){
+		let parentId = data.parentId ? data.parentId : null
+		return  {
+			id: uuid(),
+			name: data.name,
+			parentId: parentId,
+			sortOrder: sortOrder ?? (await this.getChilds(parentId, catalogId)).length,
+			icon: this.icon,
+			type: this.type
+		}
 	}
 
-	find(itemId: string | number, catalogId: string): Promise<Item> {
-		return Promise.resolve(undefined);
+	async deleteItem(itemId: string | number, catalogId: string): Promise<void> {
+		let storage = StorageServices.get(catalogId)
+		return await storage.removeElementById(itemId);
+	}
+
+	async find(itemId: string | number, catalogId: string): Promise<Item> {
+		let storage = StorageServices.get(catalogId)
+		return await storage.findElementById(itemId);
+	}
+
+	async update(itemId: string | number, data: any, catalogId: string): Promise<Item> {
+		let storage = StorageServices.get(catalogId)
+		return await storage.setElement(itemId, data);
 	}
 
 	getAddHTML(): { type: "link" | "html" | "jsonForm"; data: string } {
@@ -229,10 +332,65 @@ export class NavigationGroup extends AbstractGroup<Item>{
 		return Promise.resolve([]);
 	}
 
-	update(itemId: string | number, data: any, catalogId: string): Promise<Item> {
-		return Promise.resolve(undefined);
+}
+
+
+export async function createTestData() {
+	const group1: Item = {
+		id: '1',
+		name: 'Group 1',
+		parentId: null,
+		sortOrder: 1,
+		icon: 'folder',
+		type: 'group',
+	};
+
+	const group2: Item = {
+		id: '2',
+		name: 'Group 2',
+		parentId: null,
+		sortOrder: 2,
+		icon: 'folder',
+		type: 'group',
+	};
+
+	const group3: Item = {
+		id: '3',
+		name: 'Group 3',
+		parentId: null,
+		sortOrder: 3,
+		icon: 'folder',
+		type: 'group',
+	};
+
+	const groups = [group1, group2, group3];
+	let storage = StorageServices.get('header')
+	for (let i = 0; i < groups.length; i++) {
+		for (let j = 1; j <= 2; j++) {
+			const subGroup: Item = {
+				id: `${groups[i].id}.${j}`,
+				name: `Group ${groups[i].id}.${j}`,
+				parentId: groups[i].id,
+				sortOrder: j,
+				icon: 'folder',
+				type: 'group',
+			};
+
+			for (let k = 1; k <= 3; k++) {
+				const item: Item = {
+					id: `${groups[i].id}.${j}.${k}`,
+					name: `Item ${groups[i].id}.${j}.${k}`,
+					parentId: subGroup.id,
+					sortOrder: k,
+					icon: 'file',
+					type: 'page'
+				};
+				await storage.setElement(item.id, item);
+			}
+
+			await storage.setElement(subGroup.id, subGroup);
+		}
+
+		await storage.setElement(groups[i].id, groups[i]);
 	}
-
-
-
 }

@@ -78,8 +78,8 @@ export default async function () {
         // CatalogHandler.add(catalog)
         // require("./../test/TestCatalog/genData").createTestData()
 
-        let catalogModel = new TestModelCatalog()
-        CatalogHandler.add(catalogModel)
+        // let catalogModel = new TestModelCatalog()
+        // CatalogHandler.add(catalogModel)
         // require("./../test/TestCatalog/genDataModelCatalog").createTestData()
     }
 

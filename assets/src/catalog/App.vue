@@ -456,7 +456,7 @@ async function getActionsContext() {
 			_method: 'getActions'
 		}
 	}).json()
-	if (res.data.length) {
+	if (res.data && res.data.length) {
 		for (const re of res.data) {
 			actionsContext.value.push(re)
 		}
@@ -514,6 +514,9 @@ function removeNodes() {
 	const $slVueTree = slVueTreeRef.value
 	const paths = $slVueTree.getSelected().map((node) => node.path)
 	$slVueTree.remove(paths)
+	if(!nodes.value.length){
+		selectedNode.value = []
+	}
 }
 
 </script>
