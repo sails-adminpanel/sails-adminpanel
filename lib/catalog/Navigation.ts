@@ -4,8 +4,14 @@ import * as fs from "node:fs";
 const ejs = require('ejs')
 import {v4 as uuid} from "uuid";
 
+interface NavItem extends Item {
+	urlPath?: any;
+	modelId?: string | number;
+}
+
+
 class StorageService {
-	protected storageMap: Map<string | number,  Item> = new Map();
+	protected storageMap: Map<string | number,  NavItem> = new Map();
 	protected id: string
 	protected model: string
 	constructor(id: string, model: string) {
@@ -33,8 +39,8 @@ class StorageService {
 	}
 
 	public async buildTree(): Promise<any> {
-		const rootElements: Item[] = await this.findElementsByParentId(null, null);
-		const buildSubTree = async (elements: Item[]): Promise<any[]> => {
+		const rootElements: NavItem[] = await this.findElementsByParentId(null, null);
+		const buildSubTree = async (elements: NavItem[]): Promise<any[]> => {
 			const tree = [];
 			for (const element of elements) {
 				const children = await this.findElementsByParentId(element.id, null);
@@ -66,7 +72,7 @@ class StorageService {
 	public async populateFromTree(tree: any[]): Promise<void> {
 		const traverseTree = async (node: any, parentId: string | number | null = null): Promise<void> => {
 			const { children, ...itemData } = node;
-			const item = { ...itemData, parentId } as Item;
+			const item = { ...itemData, parentId } as NavItem;
 			await this.setElement(item.id, item);
 
 			if (children && children.length > 0) {
@@ -82,7 +88,7 @@ class StorageService {
 	}
 
 
-	public async setElement(id: string | number, item: Item): Promise<Item> {
+	public async setElement(id: string | number, item: NavItem): Promise<NavItem> {
 		this.storageMap.set(item.id, item);
 		await this.saveToDB()
 		// This like fetch in DB
@@ -94,8 +100,18 @@ class StorageService {
 		await this.saveToDB()
 	}
 
-	public async findElementById(id: string | number): Promise< Item | undefined> {
+	public async findElementById(id: string | number): Promise< NavItem | undefined> {
 		return this.storageMap.get(id);
+	}
+
+	public async findElementByModelId(id: string | number): Promise<NavItem[] | undefined> {
+		const elements: NavItem[] = [];
+		for (const item of this.storageMap.values()) {
+			if( item.modelId === id){
+				elements.push(item)
+			}
+		}
+		return elements;
 	}
 
 	public async saveToDB(){
@@ -111,8 +127,8 @@ class StorageService {
 		}
 	}
 
-	public async findElementsByParentId(parentId: string | number, type: string | null): Promise<Item[]> {
-		const elements: Item[] = [];
+	public async findElementsByParentId(parentId: string | number, type: string | null): Promise<NavItem[]> {
+		const elements: NavItem[] = [];
 		for (const item of this.storageMap.values()) {
 			// Assuming each item has a parentId property
 			if(type === null && item.parentId === parentId){
@@ -127,14 +143,14 @@ class StorageService {
 		return elements;
 	}
 
-	public async getAllElements(): Promise<Item[]> {
+	public async getAllElements(): Promise<NavItem[]> {
 		return Array.from(this.storageMap.values());
 	}
 
 
-	public async search(s: string, type: string): Promise<Item[]> {
+	public async search(s: string, type: string): Promise<NavItem[]> {
 		const lowerCaseQuery = s.toLowerCase(); // Convert query to lowercase for case-insensitive search
-		const matchedElements: Item[] = [];
+		const matchedElements: NavItem[] = [];
 
 		for (const item of this.storageMap.values()) {
 			// Check if item type matches the specified type
@@ -186,7 +202,7 @@ export class Navigation extends AbstractCatalog{
 	}
 }
 
-export class NavigationItem extends AbstractItem<Item>{
+export class NavigationItem extends AbstractItem<NavItem>{
 	readonly allowedRoot: boolean = true;
 	readonly icon: string = 'file';
 	readonly name: string;
@@ -205,27 +221,50 @@ export class NavigationItem extends AbstractItem<Item>{
 		this.urlPath = urlPath
 	}
 
-	async create(data: any, catalogId: string): Promise<Item> {
+	async create(data: any, catalogId: string): Promise<NavItem> {
 		let storage = StorageServices.get(catalogId)
-		let storageData = await this.dataPreparation(data, catalogId)
-		return await storage.setElement(data.id, storageData) as Item;
+		let storageData = null
+		if(data._method === 'select'){
+			let record = await sails.models[this.model].findOne({id: data.record})
+			storageData = await this.dataPreparation({
+				record: record,
+				parentId: data.parentId
+			}, catalogId)
+		} else {
+			storageData = await this.dataPreparation(data, catalogId)
+		}
+		return await storage.setElement(data.id, storageData) as NavItem;
 	}
 
 	protected async dataPreparation(data: any, catalogId: string, sortOrder?: number){
+		let storage = StorageServices.get(catalogId)
 		let urlPath = eval('`' + this.urlPath + '`')
 		let parentId = data.parentId ? data.parentId : null
 		return  {
-			id: data.record.id,
+			id: uuid(),
+			modelId: data.record.id,
 			name: data.record.name ?? data.record.title ?? data.record.id,
 			parentId: parentId,
-			sortOrder: sortOrder ?? (await this.getChilds(parentId, catalogId)).length,
+			sortOrder: sortOrder ?? (await storage.findElementsByParentId(parentId, null)).length,
 			icon: this.icon,
 			type: this.type,
 			urlPath: urlPath
 		}
 	}
 
-	async update(itemId: string | number, data: any, catalogId: string): Promise<Item> {
+	async updateModelItems(itemId: string | number, data: any, catalogId: string): Promise<NavItem> {
+		let storage = StorageServices.get(catalogId)
+		let items = await storage.findElementByModelId(itemId)
+		let urlPath = eval('`' + this.urlPath + '`')
+		for (const item of items) {
+			item.name = data.record.name
+			item.urlPath = urlPath
+			await storage.setElement(item.id, item);
+		}
+		return Promise.resolve(undefined)
+	}
+
+	async update(itemId: string | number, data: any, catalogId: string): Promise<NavItem> {
 		let storage = StorageServices.get(catalogId)
 		return await storage.setElement(itemId, data);
 	}
@@ -235,36 +274,42 @@ export class NavigationItem extends AbstractItem<Item>{
 		return await storage.removeElementById(itemId);
 	}
 
-	async find(itemId: string | number, catalogId: string): Promise<Item> {
+	async find(itemId: string | number, catalogId: string): Promise<NavItem> {
 		let storage = StorageServices.get(catalogId)
 		return await storage.findElementById(itemId);
 	}
 
-	getAddHTML(): { type: "link" | "html" | "jsonForm"; data: string } {
-		let type: 'link' = 'link'
+	async getAddHTML(): Promise<{ type: "link" | "html" | "jsonForm"; data: string }> {
+		let type: 'html' = 'html'
+		let items = await sails.models[this.model].find()
 		return {
 			type: type,
-			data: `/admin/model/${this.model}/add?without_layout=true`
+			data: ejs.render(fs.readFileSync(`${__dirname}/itemHTMLAdd.ejs`, 'utf8'), {items: items, item:{name: this.name, type: this.type, model: this.model}}),
 		}
 	}
 
-	async getChilds(parentId: string | number | null, catalogId: string): Promise<Item[]> {
+	async getChilds(parentId: string | number | null, catalogId: string): Promise<NavItem[]> {
 		let storage = StorageServices.get(catalogId)
 		return await storage.findElementsByParentId(parentId, this.type);
 	}
 
-	getEditHTML(id: string | number): Promise<{ type: "link" | "html" | "jsonForm"; data: string }> {
-		return Promise.resolve({data: "", type: undefined});
+	async getEditHTML(id: string | number): Promise<{ type: "link" | "html" | "jsonForm"; data: string }> {
+		let type: 'link' = 'link'
+		return Promise.resolve({
+			type: type,
+			data: `/admin/model/${this.model}/edit/${id}?without_layout=true`
+		})
 	}
 
-	async search(s: string, catalogId: string): Promise<Item[]> {
-		return Promise.resolve([]);
+	async search(s: string, catalogId: string): Promise<NavItem[]> {
+		let storage = StorageServices.get(catalogId)
+		return await storage.search(s, this.type);
 	}
 
 
 }
 
-export class NavigationGroup extends AbstractGroup<Item>{
+export class NavigationGroup extends AbstractGroup<NavItem>{
 	readonly allowedRoot: boolean = true;
 	readonly name: string = "Group";
 	readonly groupField: string[]
@@ -273,7 +318,7 @@ export class NavigationGroup extends AbstractGroup<Item>{
 		super();
 		this.groupField = groupField
 	}
-	async create(data: any, catalogId: string): Promise<Item> {
+	async create(data: any, catalogId: string): Promise<NavItem> {
 		let storage = StorageServices.get(catalogId)
 
 		let storageData = await this.dataPreparation(data, catalogId)
@@ -281,16 +326,17 @@ export class NavigationGroup extends AbstractGroup<Item>{
 		delete data.parentId
 		storageData = {...storageData, ...data}
 
-		return await storage.setElement(storageData.id, storageData) as Item;
+		return await storage.setElement(storageData.id, storageData) as NavItem;
 	}
 
 	protected async dataPreparation(data: any, catalogId: string, sortOrder?: number){
+		let storage = StorageServices.get(catalogId)
 		let parentId = data.parentId ? data.parentId : null
 		return  {
 			id: uuid(),
 			name: data.name,
 			parentId: parentId,
-			sortOrder: sortOrder ?? (await this.getChilds(parentId, catalogId)).length,
+			sortOrder: sortOrder ?? (await storage.findElementsByParentId(parentId, null)).length,
 			icon: this.icon,
 			type: this.type
 		}
@@ -301,42 +347,53 @@ export class NavigationGroup extends AbstractGroup<Item>{
 		return await storage.removeElementById(itemId);
 	}
 
-	async find(itemId: string | number, catalogId: string): Promise<Item> {
+	async find(itemId: string | number, catalogId: string): Promise<NavItem> {
 		let storage = StorageServices.get(catalogId)
 		return await storage.findElementById(itemId);
 	}
 
-	async update(itemId: string | number, data: any, catalogId: string): Promise<Item> {
+	async update(itemId: string | number, data: any, catalogId: string): Promise<NavItem> {
 		let storage = StorageServices.get(catalogId)
 		return await storage.setElement(itemId, data);
 	}
 
-	getAddHTML(): { type: "link" | "html" | "jsonForm"; data: string } {
-		let type: 'html' = 'html'
-		return {
-			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/GroupHTMLAdd.ejs`, 'utf8'), {fields: this.groupField}),
-		}
+	updateModelItems(itemId: string | number, data: NavItem, catalogId: string): Promise<NavItem> {
+		return Promise.resolve(undefined);
 	}
 
-	async getChilds(parentId: string | number | null, catalogId: string): Promise<Item[]> {
+	getAddHTML(): Promise<{ type: "link" | "html" | "jsonForm"; data: string }> {
+		let type: 'html' = 'html'
+		return Promise.resolve({
+			type: type,
+			data: ejs.render(fs.readFileSync(`${__dirname}/GroupHTMLAdd.ejs`, 'utf8'), {fields: this.groupField}),
+		})
+	}
+
+	async getChilds(parentId: string | number | null, catalogId: string): Promise<NavItem[]> {
 		let storage = StorageServices.get(catalogId)
 		return await storage.findElementsByParentId(parentId, this.type);
 	}
 
-	getEditHTML(id: string | number): Promise<{ type: "link" | "html" | "jsonForm"; data: string }> {
-		return Promise.resolve({data: "", type: undefined});
+	async getEditHTML(id: string | number, catalogId: string): Promise<{ type: "link" | "html" | "jsonForm"; data: string }> {
+		let type: 'html' = 'html'
+		let item = await this.find(id, catalogId)
+		return Promise.resolve({
+			type: type,
+			data: ejs.render(fs.readFileSync(`${__dirname}/GroupHTMLEdit.ejs`, 'utf8'), {fields: this.groupField, item: item}),
+		})
 	}
 
-	search(s: string, catalogId: string): Promise<Item[]> {
-		return Promise.resolve([]);
+	async search(s: string, catalogId: string): Promise<NavItem[]> {
+		let storage = StorageServices.get(catalogId)
+		return await storage.search(s, this.type);
 	}
+
 
 }
 
 
 export async function createTestData() {
-	const group1: Item = {
+	const group1: NavItem = {
 		id: '1',
 		name: 'Group 1',
 		parentId: null,
@@ -345,7 +402,7 @@ export async function createTestData() {
 		type: 'group',
 	};
 
-	const group2: Item = {
+	const group2: NavItem = {
 		id: '2',
 		name: 'Group 2',
 		parentId: null,
@@ -354,7 +411,7 @@ export async function createTestData() {
 		type: 'group',
 	};
 
-	const group3: Item = {
+	const group3: NavItem = {
 		id: '3',
 		name: 'Group 3',
 		parentId: null,
@@ -367,7 +424,7 @@ export async function createTestData() {
 	let storage = StorageServices.get('header')
 	for (let i = 0; i < groups.length; i++) {
 		for (let j = 1; j <= 2; j++) {
-			const subGroup: Item = {
+			const subGroup: NavItem = {
 				id: `${groups[i].id}.${j}`,
 				name: `Group ${groups[i].id}.${j}`,
 				parentId: groups[i].id,
@@ -377,9 +434,9 @@ export async function createTestData() {
 			};
 
 			for (let k = 1; k <= 3; k++) {
-				const item: Item = {
+				const item: NavItem = {
 					id: `${groups[i].id}.${j}.${k}`,
-					name: `Item ${groups[i].id}.${j}.${k}`,
+					name: `NavItem ${groups[i].id}.${j}.${k}`,
 					parentId: subGroup.id,
 					sortOrder: k,
 					icon: 'file',

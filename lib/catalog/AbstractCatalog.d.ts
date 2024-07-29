@@ -62,6 +62,13 @@ export declare abstract class BaseItem<T extends Item> {
      */
     abstract update(itemId: string | number, data: T, catalogId: string): Promise<T>;
     /**
+     *
+     * @param itemId
+     * @param data
+     * @param catalogId
+     */
+    abstract updateModelItems(itemId: string | number, data: T, catalogId: string): Promise<T>;
+    /**
      * For custom HTML
      * @param itemId
      * @param data
@@ -71,11 +78,11 @@ export declare abstract class BaseItem<T extends Item> {
      *  delete element
      */
     abstract deleteItem(itemId: string | number, catalogId: string): Promise<void>;
-    abstract getAddHTML(): {
+    abstract getAddHTML(): Promise<{
         type: 'link' | 'html' | 'jsonForm';
         data: string;
-    };
-    abstract getEditHTML(id: string | number): Promise<{
+    }>;
+    abstract getEditHTML(id: string | number, catalogId: string): Promise<{
         type: 'link' | 'html' | 'jsonForm';
         data: string;
     }>;
@@ -207,10 +214,10 @@ export declare abstract class AbstractCatalog {
     /**
      * Receives HTML to create an element for projection into a popup
      */
-    getAddHTML(item: Item): {
+    getAddHTML(item: Item): Promise<{
         type: "link" | "html" | "jsonForm";
         data: string;
-    };
+    }>;
     addActionHandler(actionHandler: ActionHandler): void;
     /**
      * Method for getting group elements
@@ -237,6 +244,13 @@ export declare abstract class AbstractCatalog {
      */
     createItem<T extends Item>(data: T): Promise<T>;
     updateItem<T extends Item>(id: string | number, type: string, data: T): Promise<T>;
+    /**
+     * To update all items in the tree after updating the model
+     * @param id
+     * @param type
+     * @param data
+     */
+    updateModelItems<T extends Item>(id: string | number, type: string, data: T): Promise<T>;
     /**
      * Method for getting group elements
      */

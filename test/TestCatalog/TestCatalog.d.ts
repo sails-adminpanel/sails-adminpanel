@@ -41,6 +41,7 @@ export declare class TestGroup extends AbstractGroup<GroupTestItem> {
     }>;
     getChilds(parentId: string | number): Promise<Item[]>;
     search(s: string): Promise<GroupTestItem[]>;
+    updateModelItems(itemId: string | number, data: GroupTestItem, catalogId: string): Promise<GroupTestItem>;
 }
 /**
  ___ _                 _
@@ -54,7 +55,7 @@ export declare class Item1 extends AbstractItem<Item> {
     name: string;
     allowedRoot: boolean;
     icon: string;
-    find(itemId: string | number): Promise<Item | GroupTestItem>;
+    find(itemId: string | number): Promise<GroupTestItem | Item>;
     update(itemId: string | number, data: Item): Promise<Item>;
     create(itemId: string, data: Item): Promise<Item>;
     deleteItem(itemId: string | number): Promise<void>;
@@ -68,6 +69,7 @@ export declare class Item1 extends AbstractItem<Item> {
     }>;
     getChilds(parentId: string | number): Promise<Item[]>;
     search(s: string): Promise<Item[]>;
+    updateModelItems(itemId: string | number, data: Item, catalogId: string): Promise<Item>;
 }
 export declare class Item2 extends Item1 {
     type: string;

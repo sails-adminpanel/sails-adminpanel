@@ -11,10 +11,10 @@ declare class BaseModelItem<T extends Item> extends AbstractItem<T> {
     update(itemId: string | number, data: Item): Promise<T>;
     create(catalogId: string, data: T): Promise<T>;
     deleteItem(itemId: string | number): Promise<void>;
-    getAddHTML(): {
+    getAddHTML(): Promise<{
         type: "link" | "html";
         data: string;
-    };
+    }>;
     getEditHTML(id: string | number, parenId?: string | number): Promise<{
         type: "link" | "html";
         data: string;
@@ -45,10 +45,10 @@ export declare class ItemHTML extends AbstractItem<Item> {
     icon: string;
     type: string;
     readonly actionHandlers: any[];
-    getAddHTML(): {
+    getAddHTML(): Promise<{
         type: 'link' | 'html' | 'jsonForm';
         data: string;
-    };
+    }>;
     getEditHTML(id: string | number): Promise<{
         type: 'link' | 'html' | 'jsonForm';
         data: string;
@@ -65,10 +65,7 @@ export declare class ItemJsonForm extends ItemHTML {
     name: string;
     icon: string;
     type: string;
-    getAddHTML(): {
-        type: "jsonForm";
-        data: string;
-    };
+    getAddHTML(): Promise<any>;
     getEditHTML(id: string | number): Promise<{
         type: 'link' | 'html' | 'jsonForm';
         data: string;

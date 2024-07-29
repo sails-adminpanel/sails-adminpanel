@@ -219,7 +219,7 @@ function createPopup(content) {
 	popup.on('open', () => {
 		popup.content.appendChild(content);
 	})
-	popup.on('close', () => {
+	popup.on('close', async () => {
 		switch (AdminPopUp.popups.length) {
 			case 1:
 				isCreate.value = false
@@ -232,6 +232,11 @@ function createPopup(content) {
 				isJsonForm.value = false
 				isPopupAction.value = false
 				break
+		}
+		if (selectedNode.value.length === 1) {
+			await getChilds(selectedNode.value[0])
+		} else {
+			reloadCatalog()
 		}
 	})
 }
@@ -304,7 +309,8 @@ async function createNewItem(value) {
 
 async function updateItem() {
 	let item = selectedNode.value[0]
-	let resPost = await ky.post('', {json: {type: item.data.type, id: item.data.id, _method: 'getEditHTML'}}).json()
+	let id = item.data.modelId ?? item.data.id
+	let resPost = await ky.post('', {json: {type: item.data.type, id: id, _method: 'getEditHTML'}}).json()
 	await getHTML(resPost)
 	PopupEvent.value = 'update'
 	createPopup(refItemHTML.value)

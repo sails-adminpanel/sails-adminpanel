@@ -29,7 +29,16 @@
 				data.json = true
 				let res = await ky.post(uri, {json: data}).json()
 				if (res.record && checkboxReady) {
-					checkboxReady.click()
+					ky.put('', {
+						json: {
+							type: "<%= entity.config.model %>",
+							data: { record: res.record[0] },
+							id: data.id,
+							_method: 'updateItem'
+						}
+					}).then(r => {
+						checkboxReady.click()
+					})
 				}
 			}, 10)
 		})

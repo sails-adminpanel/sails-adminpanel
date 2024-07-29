@@ -93,6 +93,7 @@ export class TestGroup extends AbstractGroup<GroupTestItem> {
 		return await StorageService.removeElementById(itemId);
 	}
 	// TODO rename this
+	// @ts-ignore
 	public getAddHTML(): { type: "link" | "html"; data: string; } {
 		throw new Error("Method not implemented.");
 	}
@@ -107,6 +108,10 @@ export class TestGroup extends AbstractGroup<GroupTestItem> {
 
 	public async search(s: string): Promise<GroupTestItem[]> {
 		return await StorageService.search(s, this.type);
+	}
+
+	updateModelItems(itemId: string | number, data: GroupTestItem, catalogId: string): Promise<GroupTestItem> {
+		return Promise.resolve(undefined);
 	}
 }
 
@@ -142,6 +147,7 @@ export class Item1 extends AbstractItem<Item> {
 		return await StorageService.removeElementById(itemId);
 	}
 
+	// @ts-ignore
 	public getAddHTML(): { type: "link" | "html"; data: string; } {
 		throw new Error("Method not implemented.");
 	}
@@ -156,6 +162,10 @@ export class Item1 extends AbstractItem<Item> {
 
 	public async search(s: string): Promise<Item[]> {
 		return await StorageService.search(s, this.type);
+	}
+
+	updateModelItems(itemId: string | number, data: Item, catalogId: string): Promise<Item> {
+		return Promise.resolve(undefined);
 	}
 }
 

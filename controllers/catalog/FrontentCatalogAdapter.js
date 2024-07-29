@@ -99,8 +99,8 @@ class VueCatalog {
         }
         // Retrun tree
     }
-    updateItem(item, id, data) {
-        return this.catalog.updateItem(id, item.type, data);
+    async updateItem(item, id, data) {
+        return await this.catalog.updateModelItems(id, item.type, data);
     }
     async deleteItem(items) {
         for (const item1 of items) {

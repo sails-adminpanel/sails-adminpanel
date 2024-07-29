@@ -39,12 +39,12 @@ class BaseModelItem<T extends Item> extends AbstractItem<T> {
 		//	await StorageService.removeElementById(itemId);
 	}
 
-	public getAddHTML(): { type: "link" | "html"; data: string; } {
+	public getAddHTML(): Promise<{ type: "link" | "html"; data: string; }> {
 		let type: 'link' = 'link'
-		return {
+		return Promise.resolve({
 			type: type,
 			data: `/admin/model/${this.model}/add?without_layout=true`
-		}
+		})
 	}
 
 
@@ -102,12 +102,12 @@ export class ItemHTML extends AbstractItem<Item> {
 	public type = 'itemHTML'
 	public readonly actionHandlers = []
 
-	public getAddHTML(): { type: 'link' | 'html' | 'jsonForm', data: string } {
+	public getAddHTML(): Promise<{ type: 'link' | 'html' | 'jsonForm', data: string }> {
 		let type: 'html' = 'html'
-		return {
+		return Promise.resolve({
 			type: type,
 			data: ejs.render(fs.readFileSync(`${__dirname}/itemHMLAdd.ejs`, 'utf8')),
-		}
+		})
 	}
 
 	public async getEditHTML(id: string | number): Promise<{ type: 'link' | 'html' | 'jsonForm', data: string }> {
@@ -160,7 +160,7 @@ export class ItemJsonForm extends ItemHTML {
 	public icon = 'radiation-alt'
 	public type = 'itemJsonForm'
 
-	public getAddHTML() {
+	public getAddHTML(): Promise<any> {
 		let type: 'jsonForm' = 'jsonForm'
 		let schema = {
 			"type": "object",
@@ -181,10 +181,10 @@ export class ItemJsonForm extends ItemHTML {
 			]
 		}
 		let itemType = this.type
-		return {
+		return Promise.resolve({
 			type: type,
 			data: JSON.stringify({schema: schema, UISchema: UISchema, type: itemType}),
-		}
+		})
 	}
 
 	public async getEditHTML(id: string | number): Promise<{ type: 'link' | 'html' | 'jsonForm', data: string }> {

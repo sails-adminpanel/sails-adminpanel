@@ -131,7 +131,7 @@ export class VueCatalog {
 
 		// It’s unclear why he’s coming reqNodes
 		for (const reqNode of reqNodes) {
-			// console.log(">>>>>>>>>", "this.catalog.find", reqNode)
+			 // console.log(">>>>>>>>>", "this.catalog.find", reqNode)
 			const item = await this.catalog.find(reqNode.data);
 			if (!item) {
 				throw `reqNode Item not found`
@@ -151,8 +151,8 @@ export class VueCatalog {
 	}
 
 
-	updateItem(item: any, id: string, data: any) {
-		return this.catalog.updateItem(id, item.type, data);
+	async updateItem(item: any, id: string, data: any) {
+		return await this.catalog.updateModelItems(id, item.type, data);
 	}
 
 	async deleteItem(items: NodeModel<any>[]) {

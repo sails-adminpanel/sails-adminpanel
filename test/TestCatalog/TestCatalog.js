@@ -68,6 +68,7 @@ class TestGroup extends AbstractCatalog_1.AbstractGroup {
         return await StorageService.setElement(itemId, data);
     }
     ;
+    // @ts-ignore
     async create(itemId, data) {
         return await StorageService.setElement(itemId, data);
     }
@@ -75,6 +76,7 @@ class TestGroup extends AbstractCatalog_1.AbstractGroup {
         return await StorageService.removeElementById(itemId);
     }
     // TODO rename this
+    // @ts-ignore
     getAddHTML() {
         throw new Error("Method not implemented.");
     }
@@ -86,6 +88,9 @@ class TestGroup extends AbstractCatalog_1.AbstractGroup {
     }
     async search(s) {
         return await StorageService.search(s, this.type);
+    }
+    updateModelItems(itemId, data, catalogId) {
+        return Promise.resolve(undefined);
     }
 }
 exports.TestGroup = TestGroup;
@@ -111,12 +116,14 @@ class Item1 extends AbstractCatalog_1.AbstractItem {
         return await StorageService.setElement(itemId, data);
     }
     ;
+    // @ts-ignore
     async create(itemId, data) {
         return await StorageService.setElement(itemId, data);
     }
     async deleteItem(itemId) {
         return await StorageService.removeElementById(itemId);
     }
+    // @ts-ignore
     getAddHTML() {
         throw new Error("Method not implemented.");
     }
@@ -128,6 +135,9 @@ class Item1 extends AbstractCatalog_1.AbstractItem {
     }
     async search(s) {
         return await StorageService.search(s, this.type);
+    }
+    updateModelItems(itemId, data, catalogId) {
+        return Promise.resolve(undefined);
     }
 }
 exports.Item1 = Item1;
@@ -145,8 +155,9 @@ class TestCatalog extends AbstractCatalog_1.AbstractCatalog {
     //  public readonly itemTypes: (Item2 | Item1 | TestGroup)[];
     constructor() {
         super([
-            new TestGroup(),
-            new Item1(),
+            // @ts-ignore
+            new TestGroup(), // @ts-ignore
+            new Item1(), // @ts-ignore
             new Item2()
         ]);
         this.name = "test catalog";

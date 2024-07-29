@@ -28,10 +28,10 @@ export declare class VueCatalog {
     constructor(_catalog: AbstractCatalog);
     setID(id: string): void;
     getItemType(type: string): import("../../lib/catalog/AbstractCatalog").BaseItem<Item>;
-    getAddHTML(item: any): {
+    getAddHTML(item: any): Promise<{
         type: "link" | "html" | "jsonForm";
         data: string;
-    };
+    }>;
     getEditHTML(item: any, id: string | number): Promise<{
         type: "link" | "html" | "jsonForm";
         data: string;

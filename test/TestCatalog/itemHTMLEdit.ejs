@@ -20,10 +20,10 @@
 	{
 		let btn = document.getElementById('save-group')
 		let item = <%- JSON.stringify(item) %>;
-			btn.addEventListener('click', async function () {
-				item.name = document.getElementById('group-form-title').value
-				let res = await ky.put('', {json: {type: item.type, data: item, id: item.id, _method: 'updateItem'}}).json()
-				if (res.data) document.getElementById('checkbox-ready').click()
-			})
+		btn.addEventListener('click', async function () {
+			item.name = document.getElementById('group-form-title').value
+			let res = await ky.put('', {json: {type: item.type, data: item, id: item.id, _method: 'updateItem'}}).json()
+			if (res.data) document.getElementById('checkbox-ready').click()
+		})
 	}
 </script>

@@ -23,6 +23,7 @@ class BaseModelItem extends AbstractCatalog_1.AbstractItem {
         return await sails.models[this.model].update({ id: itemId }, { name: data.name, parentId: data.parentId }).fetch();
     }
     ;
+    // @ts-ignore
     create(catalogId, data) {
         return Promise.resolve(undefined);
     }
@@ -37,10 +38,10 @@ class BaseModelItem extends AbstractCatalog_1.AbstractItem {
     }
     getAddHTML() {
         let type = 'link';
-        return {
+        return Promise.resolve({
             type: type,
             data: `/admin/model/${this.model}/add?without_layout=true`
-        };
+        });
     }
     async getEditHTML(id, parenId) {
         let type = 'link';
@@ -96,10 +97,10 @@ class ItemHTML extends AbstractCatalog_1.AbstractItem {
     }
     getAddHTML() {
         let type = 'html';
-        return {
+        return Promise.resolve({
             type: type,
             data: ejs.render(fs.readFileSync(`${__dirname}/itemHMLAdd.ejs`, 'utf8')),
-        };
+        });
     }
     async getEditHTML(id) {
         let type = 'html';
@@ -109,6 +110,7 @@ class ItemHTML extends AbstractCatalog_1.AbstractItem {
             data: ejs.render(fs.readFileSync(`${__dirname}/itemHTMLEdit.ejs`, 'utf8'), { item: item }),
         };
     }
+    // @ts-ignore
     async create(itemId, data) {
         let elems = await TestCatalog_1.StorageService.getAllElements();
         let id = elems.length + 1;
@@ -166,10 +168,10 @@ class ItemJsonForm extends ItemHTML {
             ]
         };
         let itemType = this.type;
-        return {
+        return Promise.resolve({
             type: type,
             data: JSON.stringify({ schema: schema, UISchema: UISchema, type: itemType }),
-        };
+        });
     }
     async getEditHTML(id) {
         let item = await this.find(id);
@@ -238,8 +240,8 @@ class TestModelCatalog extends AbstractCatalog_1.AbstractCatalog {
     constructor() {
         super([
             new ModelGroup(),
-            new Page(),
-            new ItemHTML(),
+            new Page(), // @ts-ignore
+            new ItemHTML(), // @ts-ignore
             new ItemJsonForm()
         ]);
         this.name = "test model catalog";

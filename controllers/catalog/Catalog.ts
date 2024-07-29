@@ -32,7 +32,7 @@ export async function catalogController(req, res) {
 			case 'POST':
 				switch (data._method) {
 					case 'getAddHTML':
-						return res.json(vueCatalog.getAddHTML(item))
+						return res.json(await vueCatalog.getAddHTML(item))
 					case 'getEditHTML':
 						return res.json(await vueCatalog.getEditHTML(item, data.id))
 					case 'getCatalog':
@@ -46,15 +46,6 @@ export async function catalogController(req, res) {
 						return res.json({'data': await vueCatalog.createItem(data.data)})
 					case 'getChilds':
 						return res.json({data: await vueCatalog.getChilds(data.data)})
-
-
-					/**
-					 * Will be moved to the navigation action because it doesn't actually refer to the directory.
-					 */
-					case 'getCreatedItems':
-						// return res.json({ data: await vueCatalog.getCreatedItems(item) })
-						return res.json({data: []})
-
 					case 'getActions':
 						return res.json({data: await vueCatalog.getActions(data.items, data.type)})
 					case 'search':
@@ -72,6 +63,7 @@ export async function catalogController(req, res) {
 					case 'getPopUpHTML':
 						return  res.json({data: await vueCatalog.getPopUpHTML(data.actionId)})
 					case 'updateItem':
+						console.log(data)
 						return res.json({data: await vueCatalog.updateItem(item, data.id, data.data)})
 				}
 				break
