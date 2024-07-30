@@ -4,6 +4,7 @@ const adminUtil_1 = require("../lib/adminUtil");
 const requestProcessor_1 = require("../lib/requestProcessor");
 const fieldsHelper_1 = require("../helper/fieldsHelper");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
+const CatalogHandler_1 = require("../lib/catalog/CatalogHandler");
 async function edit(req, res) {
     //Check id
     if (!req.param('id')) {
@@ -92,6 +93,15 @@ async function edit(req, res) {
                 return res.json({ record: newRecord });
             }
             else {
+                // update navigation tree after model updated
+                if (sails.config.adminpanel.navigation) {
+                    for (const section of sails.config.adminpanel.navigation.sections) {
+                        let navigation = CatalogHandler_1.CatalogHandler.getCatalog('navigation');
+                        navigation.setID(section);
+                        let navItem = navigation.itemTypes.find(item => item.type === entity.name);
+                        await navItem.updateModelItems(newRecord[0].id, { record: newRecord[0] }, section);
+                    }
+                }
                 req.session.messages.adminSuccess.push('Your record was updated !');
                 return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
             }

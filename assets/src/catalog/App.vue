@@ -206,6 +206,7 @@ async function getCatalog() {
 async function reloadCatalog() {
 	let {catalog} = await ky.post('', {json: {_method: 'getCatalog'}}).json()
 	setCatalog(catalog)
+	selectedNode.value = []
 	console.log('root reloaded')
 }
 
@@ -309,8 +310,7 @@ async function createNewItem(value) {
 
 async function updateItem() {
 	let item = selectedNode.value[0]
-	let id = item.data.modelId ?? item.data.id
-	let resPost = await ky.post('', {json: {type: item.data.type, id: id, _method: 'getEditHTML'}}).json()
+	let resPost = await ky.post('', {json: {type: item.data.type, modelId: item.data.modelId ?? null, id: item.data.id, _method: 'getEditHTML'}}).json()
 	await getHTML(resPost)
 	PopupEvent.value = 'update'
 	createPopup(refItemHTML.value)
@@ -406,7 +406,6 @@ function recursiveSetChilds(node, Dnodes, rNodes) {
 async function getChilds(node) {
 	let res = await ky.post('', {json: {data: node, _method: 'getChilds'}}).json()
 	recursiveSetChilds(node, null, res.data)
-	console.log(node.title)
 }
 
 async function nodeDropped(Dnode, position, event) {

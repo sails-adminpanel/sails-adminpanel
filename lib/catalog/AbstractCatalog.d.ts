@@ -67,7 +67,7 @@ export declare abstract class BaseItem<T extends Item> {
      * @param data
      * @param catalogId
      */
-    abstract updateModelItems(itemId: string | number, data: T, catalogId: string): Promise<T>;
+    abstract updateModelItems(modelId: string | number, data: any, catalogId: string): Promise<T>;
     /**
      * For custom HTML
      * @param itemId
@@ -82,7 +82,7 @@ export declare abstract class BaseItem<T extends Item> {
         type: 'link' | 'html' | 'jsonForm';
         data: string;
     }>;
-    abstract getEditHTML(id: string | number, catalogId: string): Promise<{
+    abstract getEditHTML(id: string | number, catalogId: string, modelId?: string | number): Promise<{
         type: 'link' | 'html' | 'jsonForm';
         data: string;
     }>;
@@ -207,7 +207,7 @@ export declare abstract class AbstractCatalog {
     /**
      * Receives HTML to update an element for projection into a popup
      */
-    getEditHTML(item: Item, id: string | number): Promise<{
+    getEditHTML(item: Item, id: string | number, modelId?: string | number): Promise<{
         type: "link" | "html" | "jsonForm";
         data: string;
     }>;
@@ -250,7 +250,7 @@ export declare abstract class AbstractCatalog {
      * @param type
      * @param data
      */
-    updateModelItems<T extends Item>(id: string | number, type: string, data: T): Promise<T>;
+    updateModelItems<T extends Item>(modelId: string | number, type: string, data: T): Promise<T>;
     /**
      * Method for getting group elements
      */

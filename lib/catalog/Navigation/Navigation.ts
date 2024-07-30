@@ -1,40 +1,45 @@
-import {AbstractCatalog, AbstractGroup, AbstractItem, Item} from "./AbstractCatalog";
-import {NavigationConfig} from "../../interfaces/adminpanelConfig";
+import {AbstractCatalog, AbstractGroup, AbstractItem, Item} from "../AbstractCatalog";
+import {ModelConfig, NavigationConfig} from "../../../interfaces/adminpanelConfig";
 import * as fs from "node:fs";
+
 const ejs = require('ejs')
 import {v4 as uuid} from "uuid";
 
-interface NavItem extends Item {
+export interface NavItem extends Item {
 	urlPath?: any;
 	modelId?: string | number;
+	targetBlank?: boolean
 }
 
 
 class StorageService {
-	protected storageMap: Map<string | number,  NavItem> = new Map();
+	protected storageMap: Map<string | number, NavItem> = new Map();
 	protected id: string
 	protected model: string
+
 	constructor(id: string, model: string) {
 		this.id = id
 		this.model = model.toLowerCase()
 		this.initModel()
 	}
 
-	protected initModel(){
-		sails.models[this.model].findOrCreate({ label: this.id, }, { label: this.id, tree: [] })
-			.exec(async(err: any, navigation: any, wasCreated: any)=> {
-				if (err) { throw err}
-
-				if(wasCreated) {
-					sails.log(`Created a new navigation: ${this.id}`);
+	protected initModel() {
+		sails.models[this.model].findOrCreate({label: this.id,}, {label: this.id, tree: []})
+			.exec(async (err: any, navigation: any, wasCreated: any) => {
+				if (err) {
+					throw err
 				}
-				else {
+
+				if (wasCreated) {
+					sails.log(`Created a new navigation: ${this.id}`);
+				} else {
 					sails.log(`Found existing navigation: ${this.id}`);
 					await this.populateFromTree(navigation.tree)
 				}
 			});
 	}
-	public getId(){
+
+	public getId() {
 		return this.id
 	}
 
@@ -64,6 +69,7 @@ class StorageService {
 				}
 			}
 		}
+
 		sortTree(tree)
 		return tree
 	}
@@ -71,8 +77,8 @@ class StorageService {
 
 	public async populateFromTree(tree: any[]): Promise<void> {
 		const traverseTree = async (node: any, parentId: string | number | null = null): Promise<void> => {
-			const { children, ...itemData } = node;
-			const item = { ...itemData, parentId } as NavItem;
+			const {children, ...itemData} = node;
+			const item = {...itemData, parentId} as NavItem;
 			await this.setElement(item.id, item);
 
 			if (children && children.length > 0) {
@@ -97,31 +103,34 @@ class StorageService {
 
 	public async removeElementById(id: string | number): Promise<void> {
 		this.storageMap.delete(id);
-		await this.saveToDB()
+		setTimeout(async () => {
+			await this.saveToDB()
+		}, 500)
+
 	}
 
-	public async findElementById(id: string | number): Promise< NavItem | undefined> {
+	public async findElementById(id: string | number): Promise<NavItem | undefined> {
 		return this.storageMap.get(id);
 	}
 
-	public async findElementByModelId(id: string | number): Promise<NavItem[] | undefined> {
+	public async findElementByModelId(modelId: string | number): Promise<NavItem[] | undefined> {
 		const elements: NavItem[] = [];
 		for (const item of this.storageMap.values()) {
-			if( item.modelId === id){
+			if (item.modelId === modelId) {
 				elements.push(item)
 			}
 		}
 		return elements;
 	}
 
-	public async saveToDB(){
+	public async saveToDB() {
 		let tree = await this.buildTree()
-		try{
+		try {
 			await sails.models[this.model].update(
 				{label: this.id},
 				{tree: tree}
 			)
-		} catch (e){
+		} catch (e) {
 			console.log(e)
 			throw 'navigation model update error'
 		}
@@ -131,7 +140,7 @@ class StorageService {
 		const elements: NavItem[] = [];
 		for (const item of this.storageMap.values()) {
 			// Assuming each item has a parentId property
-			if(type === null && item.parentId === parentId){
+			if (type === null && item.parentId === parentId) {
 				elements.push(item)
 				continue
 			}
@@ -166,22 +175,29 @@ class StorageService {
 	}
 }
 
-class StorageServices{
+export class StorageServices {
 	protected static storages: StorageService[] = []
-	public static add(storage: StorageService){
+
+	public static add(storage: StorageService) {
 		this.storages.push(storage)
 	}
-	public static get(id: string){
+
+	public static get(id: string) {
 		return this.storages.find(storage => storage.getId() === id)
+	}
+
+	public static getAll() {
+		return this.storages
 	}
 }
 
-export class Navigation extends AbstractCatalog{
+export class Navigation extends AbstractCatalog {
 	readonly maxNestingDepth: number | null;
 	readonly name: string = 'Navigation';
 	readonly slug: string = 'navigation';
 	public readonly icon: string = "box";
 	public readonly actionHandlers = []
+
 	constructor(config: NavigationConfig) {
 		let items = []
 		for (const configElement of config.items) {
@@ -193,7 +209,7 @@ export class Navigation extends AbstractCatalog{
 			))
 		}
 		items.push(new NavigationGroup(config.groupField))
-
+		items.push(new LinkItem())
 		for (const section of config.sections) {
 			StorageServices.add(new StorageService(section, config.model))
 		}
@@ -202,9 +218,9 @@ export class Navigation extends AbstractCatalog{
 	}
 }
 
-export class NavigationItem extends AbstractItem<NavItem>{
+class NavigationItem extends AbstractItem<NavItem> {
 	readonly allowedRoot: boolean = true;
-	readonly icon: string = 'file';
+	readonly icon: string;
 	readonly name: string;
 	readonly type: string;
 	protected model: string;
@@ -212,23 +228,26 @@ export class NavigationItem extends AbstractItem<NavItem>{
 	public readonly actionHandlers = []
 	public readonly urlPath: any;
 
-	constructor(name: string, model: string, navigationModel:string, urlPath:any) {
+	constructor(name: string, model: string, navigationModel: string, urlPath: any) {
 		super();
 		this.name = name
 		this.navigationModel = navigationModel
 		this.model = model.toLowerCase()
 		this.type = model.toLowerCase()
 		this.urlPath = urlPath
+		let configModel = sails.config.adminpanel.models[this.model] as ModelConfig
+		this.icon = configModel.icon ?? 'file'
 	}
 
 	async create(data: any, catalogId: string): Promise<NavItem> {
 		let storage = StorageServices.get(catalogId)
 		let storageData = null
-		if(data._method === 'select'){
+		if (data._method === 'select') {
 			let record = await sails.models[this.model].findOne({id: data.record})
 			storageData = await this.dataPreparation({
 				record: record,
-				parentId: data.parentId
+				parentId: data.parentId,
+				targetBlank: data.targetBlank
 			}, catalogId)
 		} else {
 			storageData = await this.dataPreparation(data, catalogId)
@@ -236,13 +255,14 @@ export class NavigationItem extends AbstractItem<NavItem>{
 		return await storage.setElement(data.id, storageData) as NavItem;
 	}
 
-	protected async dataPreparation(data: any, catalogId: string, sortOrder?: number){
+	protected async dataPreparation(data: any, catalogId: string, sortOrder?: number) {
 		let storage = StorageServices.get(catalogId)
 		let urlPath = eval('`' + this.urlPath + '`')
 		let parentId = data.parentId ? data.parentId : null
-		return  {
+		return {
 			id: uuid(),
 			modelId: data.record.id,
+			targetBlank: data.targetBlank ?? data.record.targetBlank,
 			name: data.record.name ?? data.record.title ?? data.record.id,
 			parentId: parentId,
 			sortOrder: sortOrder ?? (await storage.findElementsByParentId(parentId, null)).length,
@@ -252,13 +272,16 @@ export class NavigationItem extends AbstractItem<NavItem>{
 		}
 	}
 
-	async updateModelItems(itemId: string | number, data: any, catalogId: string): Promise<NavItem> {
+	async updateModelItems(modelId: string | number, data: any, catalogId: string): Promise<NavItem> {
 		let storage = StorageServices.get(catalogId)
-		let items = await storage.findElementByModelId(itemId)
+		let items = await storage.findElementByModelId(modelId)
 		let urlPath = eval('`' + this.urlPath + '`')
 		for (const item of items) {
 			item.name = data.record.name
 			item.urlPath = urlPath
+			if (item.id === data.record.treeId) {
+				item.targetBlank = data.record.targetBlank
+			}
 			await storage.setElement(item.id, item);
 		}
 		return Promise.resolve(undefined)
@@ -284,7 +307,10 @@ export class NavigationItem extends AbstractItem<NavItem>{
 		let items = await sails.models[this.model].find()
 		return {
 			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/itemHTMLAdd.ejs`, 'utf8'), {items: items, item:{name: this.name, type: this.type, model: this.model}}),
+			data: ejs.render(fs.readFileSync(`${__dirname}/itemHTMLAdd.ejs`, 'utf8'), {
+				items: items,
+				item: {name: this.name, type: this.type, model: this.model}
+			}),
 		}
 	}
 
@@ -293,11 +319,15 @@ export class NavigationItem extends AbstractItem<NavItem>{
 		return await storage.findElementsByParentId(parentId, this.type);
 	}
 
-	async getEditHTML(id: string | number): Promise<{ type: "link" | "html" | "jsonForm"; data: string }> {
-		let type: 'link' = 'link'
+	async getEditHTML(id: string | number, catalogId: string, modelId: string | number): Promise<{
+		type: "link" | "html" | "jsonForm";
+		data: string
+	}> {
+		let item = await this.find(id, catalogId)
+		let type: 'html' = 'html'
 		return Promise.resolve({
 			type: type,
-			data: `/admin/model/${this.model}/edit/${id}?without_layout=true`
+			data: ejs.render(fs.readFileSync(`${__dirname}/itemHTMLEdit.ejs`, 'utf8'), {item: item})
 		})
 	}
 
@@ -306,10 +336,9 @@ export class NavigationItem extends AbstractItem<NavItem>{
 		return await storage.search(s, this.type);
 	}
 
-
 }
 
-export class NavigationGroup extends AbstractGroup<NavItem>{
+class NavigationGroup extends AbstractGroup<NavItem> {
 	readonly allowedRoot: boolean = true;
 	readonly name: string = "Group";
 	readonly groupField: string[]
@@ -318,6 +347,7 @@ export class NavigationGroup extends AbstractGroup<NavItem>{
 		super();
 		this.groupField = groupField
 	}
+
 	async create(data: any, catalogId: string): Promise<NavItem> {
 		let storage = StorageServices.get(catalogId)
 
@@ -329,12 +359,13 @@ export class NavigationGroup extends AbstractGroup<NavItem>{
 		return await storage.setElement(storageData.id, storageData) as NavItem;
 	}
 
-	protected async dataPreparation(data: any, catalogId: string, sortOrder?: number){
+	protected async dataPreparation(data: any, catalogId: string, sortOrder?: number) {
 		let storage = StorageServices.get(catalogId)
 		let parentId = data.parentId ? data.parentId : null
-		return  {
+		return {
 			id: uuid(),
 			name: data.name,
+			targetBlank: data.targetBlank,
 			parentId: parentId,
 			sortOrder: sortOrder ?? (await storage.findElementsByParentId(parentId, null)).length,
 			icon: this.icon,
@@ -357,8 +388,9 @@ export class NavigationGroup extends AbstractGroup<NavItem>{
 		return await storage.setElement(itemId, data);
 	}
 
-	updateModelItems(itemId: string | number, data: NavItem, catalogId: string): Promise<NavItem> {
-		return Promise.resolve(undefined);
+	async updateModelItems(modelId: string | number, data: NavItem, catalogId: string): Promise<NavItem> {
+		let storage = StorageServices.get(catalogId)
+		return await storage.setElement(modelId, data);
 	}
 
 	getAddHTML(): Promise<{ type: "link" | "html" | "jsonForm"; data: string }> {
@@ -374,12 +406,18 @@ export class NavigationGroup extends AbstractGroup<NavItem>{
 		return await storage.findElementsByParentId(parentId, this.type);
 	}
 
-	async getEditHTML(id: string | number, catalogId: string): Promise<{ type: "link" | "html" | "jsonForm"; data: string }> {
+	async getEditHTML(id: string | number, catalogId: string): Promise<{
+		type: "link" | "html" | "jsonForm";
+		data: string
+	}> {
 		let type: 'html' = 'html'
 		let item = await this.find(id, catalogId)
 		return Promise.resolve({
 			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/GroupHTMLEdit.ejs`, 'utf8'), {fields: this.groupField, item: item}),
+			data: ejs.render(fs.readFileSync(`${__dirname}/GroupHTMLEdit.ejs`, 'utf8'), {
+				fields: this.groupField,
+				item: item
+			}),
 		})
 	}
 
@@ -391,63 +429,38 @@ export class NavigationGroup extends AbstractGroup<NavItem>{
 
 }
 
+class LinkItem extends NavigationGroup {
+	readonly allowedRoot: boolean = true;
+	readonly icon: string = 'external-link-alt';
+	readonly name: string = 'Link';
+	readonly type: string = 'link';
+	readonly isGroup: boolean = false;
 
-export async function createTestData() {
-	const group1: NavItem = {
-		id: '1',
-		name: 'Group 1',
-		parentId: null,
-		sortOrder: 1,
-		icon: 'folder',
-		type: 'group',
-	};
-
-	const group2: NavItem = {
-		id: '2',
-		name: 'Group 2',
-		parentId: null,
-		sortOrder: 2,
-		icon: 'folder',
-		type: 'group',
-	};
-
-	const group3: NavItem = {
-		id: '3',
-		name: 'Group 3',
-		parentId: null,
-		sortOrder: 3,
-		icon: 'folder',
-		type: 'group',
-	};
-
-	const groups = [group1, group2, group3];
-	let storage = StorageServices.get('header')
-	for (let i = 0; i < groups.length; i++) {
-		for (let j = 1; j <= 2; j++) {
-			const subGroup: NavItem = {
-				id: `${groups[i].id}.${j}`,
-				name: `Group ${groups[i].id}.${j}`,
-				parentId: groups[i].id,
-				sortOrder: j,
-				icon: 'folder',
-				type: 'group',
-			};
-
-			for (let k = 1; k <= 3; k++) {
-				const item: NavItem = {
-					id: `${groups[i].id}.${j}.${k}`,
-					name: `NavItem ${groups[i].id}.${j}.${k}`,
-					parentId: subGroup.id,
-					sortOrder: k,
-					icon: 'file',
-					type: 'page'
-				};
-				await storage.setElement(item.id, item);
-			}
-
-			await storage.setElement(subGroup.id, subGroup);
-		}
-
-		await storage.setElement(groups[i].id, groups[i]);
+	constructor() {
+		super([]);
 	}
+
+	getAddHTML(): Promise<{ type: "link" | "html" | "jsonForm"; data: string }> {
+		let type: 'html' = 'html'
+		return Promise.resolve({
+			type: type,
+			data: ejs.render(fs.readFileSync(`${__dirname}/LinkItemAdd.ejs`, 'utf8')),
+		})
+	}
+
+	async getEditHTML(id: string | number, catalogId: string): Promise<{
+		type: "link" | "html" | "jsonForm";
+		data: string
+	}> {
+		let type: 'html' = 'html'
+		let item = await this.find(id, catalogId)
+		return Promise.resolve({
+			type: type,
+			data: ejs.render(fs.readFileSync(`${__dirname}/LinkItemEdit.ejs`, 'utf8'), {
+				fields: this.groupField,
+				item: item
+			}),
+		})
+	}
+
 }

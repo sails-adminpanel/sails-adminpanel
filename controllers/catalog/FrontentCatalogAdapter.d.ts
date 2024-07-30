@@ -32,7 +32,7 @@ export declare class VueCatalog {
         type: "link" | "html" | "jsonForm";
         data: string;
     }>;
-    getEditHTML(item: any, id: string | number): Promise<{
+    getEditHTML(item: any, id: string | number, modelId: string | number): Promise<{
         type: "link" | "html" | "jsonForm";
         data: string;
     }>;
@@ -46,7 +46,7 @@ export declare class VueCatalog {
     getChilds(data: any): Promise<NodeModel<Item>[]>;
     search(s: string): Promise<NodeModel<Item>[]>;
     updateTree(data: RequestData): Promise<any>;
-    updateItem(item: any, id: string, data: any): Promise<any>;
+    updateItem(item: any, modelId: string, data: any): Promise<any>;
     deleteItem(items: NodeModel<any>[]): Promise<{
         ok: boolean;
     }>;

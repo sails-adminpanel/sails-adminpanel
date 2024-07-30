@@ -3,6 +3,8 @@ import {RequestProcessor} from "../lib/requestProcessor";
 import {FieldsHelper} from "../helper/fieldsHelper";
 import {CreateUpdateConfig} from "../interfaces/adminpanelConfig";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
+import {Navigation, StorageServices} from "../lib/catalog/Navigation/Navigation";
+import {CatalogHandler} from "../lib/catalog/CatalogHandler";
 
 export default async function edit(req, res) {
 	//Check id
@@ -58,7 +60,7 @@ export default async function edit(req, res) {
 				delete reqData[prop]
 			}
 
-			if(reqData[prop] === "" && fields[prop].model.allowNull === true) {
+			if (reqData[prop] === "" && fields[prop].model.allowNull === true) {
 				reqData[prop] = null
 			}
 
@@ -106,7 +108,18 @@ export default async function edit(req, res) {
 			sails.log.debug(`Record was updated: `, newRecord);
 			if (req.body.json) {
 				return res.json({record: newRecord})
-			}else {
+			} else {
+
+				// update navigation tree after model updated
+				if (sails.config.adminpanel.navigation) {
+					for (const section of sails.config.adminpanel.navigation.sections) {
+						let navigation = CatalogHandler.getCatalog('navigation')
+						navigation.setID(section)
+						let navItem = navigation.itemTypes.find(item => item.type === entity.name)
+						await navItem.updateModelItems(newRecord[0].id, {record: newRecord[0]}, section)
+					}
+				}
+
 				req.session.messages.adminSuccess.push('Your record was updated !');
 				return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
 			}
@@ -127,7 +140,7 @@ export default async function edit(req, res) {
 	//     }
 	// }
 
-	if(req.query.without_layout){
+	if (req.query.without_layout) {
 		return res.viewAdmin("./../ejs/partials/content/editPopup.ejs", {
 			entity: entity,
 			record: record,

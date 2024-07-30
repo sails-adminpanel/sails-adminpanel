@@ -34,7 +34,7 @@ async function catalogController(req, res) {
                     case 'getAddHTML':
                         return res.json(await vueCatalog.getAddHTML(item));
                     case 'getEditHTML':
-                        return res.json(await vueCatalog.getEditHTML(item, data.id));
+                        return res.json(await vueCatalog.getEditHTML(item, data.id, data.modelId));
                     case 'getCatalog':
                         const _catalog = await vueCatalog.getCatalog();
                         return res.json({
@@ -63,8 +63,7 @@ async function catalogController(req, res) {
                     case 'getPopUpHTML':
                         return res.json({ data: await vueCatalog.getPopUpHTML(data.actionId) });
                     case 'updateItem':
-                        console.log(data);
-                        return res.json({ data: await vueCatalog.updateItem(item, data.id, data.data) });
+                        return res.json({ data: await vueCatalog.updateItem(item, data.modelId, data.data) });
                 }
                 break;
             case 'DELETE':

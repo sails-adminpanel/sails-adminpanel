@@ -9,11 +9,8 @@
 </form>
 <script>
 	{
-		let modelParentIDInput = document.querySelector('input[name="parentId"]')
-		if (modelParentIDInput) {
-			modelParentIDInput.setAttribute('disabled', 'disabled')
-			modelParentIDInput.style.opacity = '0.5'
-		}
+		let targetBlankNewItem = document.getElementById('targetBlankNewItem')
+        let treeId = document.getElementById('treeId')
 		document.getElementById('customForm').addEventListener('submit', function (e) {
 			e.preventDefault()
 			let data = {}
@@ -29,11 +26,13 @@
 				data.json = true
 				let res = await ky.post(uri, {json: data}).json()
 				if (res.record && checkboxReady) {
+					if (targetBlankNewItem) res.record[0].targetBlank = targetBlankNewItem.checked
+                    if(treeId) res.record[0].treeId = treeId.value
 					ky.put('', {
 						json: {
 							type: "<%= entity.config.model %>",
 							data: { record: res.record[0] },
-							id: data.id,
+							modelId: data.id,
 							_method: 'updateItem'
 						}
 					}).then(r => {

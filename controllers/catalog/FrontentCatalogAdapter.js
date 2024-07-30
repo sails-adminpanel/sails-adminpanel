@@ -15,8 +15,8 @@ class VueCatalog {
     getAddHTML(item) {
         return this.catalog.getAddHTML(item);
     }
-    getEditHTML(item, id) {
-        return this.catalog.getEditHTML(item, id);
+    getEditHTML(item, id, modelId) {
+        return this.catalog.getEditHTML(item, id, modelId);
     }
     getitemTypes() {
         return this.catalog.getitemTypes();
@@ -99,8 +99,8 @@ class VueCatalog {
         }
         // Retrun tree
     }
-    async updateItem(item, id, data) {
-        return await this.catalog.updateModelItems(id, item.type, data);
+    async updateItem(item, modelId, data) {
+        return await this.catalog.updateModelItems(modelId, item.type, data);
     }
     async deleteItem(items) {
         for (const item1 of items) {

@@ -2,6 +2,7 @@ import {AbstractCatalog, AbstractGroup, AbstractItem, ActionHandler, Item} from 
 import * as fs from "node:fs";
 import {StorageService} from "./TestCatalog";
 import {JSONSchema4} from "json-schema";
+import sails from "@42pub/typed-sails";
 
 const ejs = require('ejs')
 
@@ -68,6 +69,10 @@ class BaseModelItem<T extends Item> extends AbstractItem<T> {
 
 	public async search(s: string): Promise<T[]> {
 		return await sails.models[this.model].find({name: {contains: s}});
+	}
+
+	updateModelItems(itemId: string | number, data: T, catalogId: string): Promise<T> {
+		return Promise.resolve(undefined);
 	}
 
 }
@@ -151,6 +156,10 @@ export class ItemHTML extends AbstractItem<Item> {
 
 	public async search(s: string): Promise<Item[]> {
 		return await StorageService.search(s, this.type);
+	}
+
+	updateModelItems(itemId: string | number, data: Item, catalogId: string): Promise<Item> {
+		return Promise.resolve(undefined);
 	}
 }
 

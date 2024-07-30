@@ -21,6 +21,7 @@ declare class BaseModelItem<T extends Item> extends AbstractItem<T> {
     }>;
     getChilds(parentId: string | number): Promise<Item[]>;
     search(s: string): Promise<T[]>;
+    updateModelItems(itemId: string | number, data: T, catalogId: string): Promise<T>;
 }
 export declare class ModelGroup<GroupTestItem extends Item> extends BaseModelItem<GroupTestItem> {
     name: string;
@@ -59,6 +60,7 @@ export declare class ItemHTML extends AbstractItem<Item> {
     deleteItem(itemId: string | number): Promise<void>;
     getChilds(parentId: string | number): Promise<Item[]>;
     search(s: string): Promise<Item[]>;
+    updateModelItems(itemId: string | number, data: Item, catalogId: string): Promise<Item>;
 }
 export declare class ItemJsonForm extends ItemHTML {
     readonly allowedRoot: boolean;

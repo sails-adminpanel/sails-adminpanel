@@ -48,8 +48,8 @@ export class VueCatalog {
 		return this.catalog.getAddHTML(item);
 	}
 
-	getEditHTML(item: any, id: string | number) {
-		return this.catalog.getEditHTML(item, id)
+	getEditHTML(item: any, id: string | number, modelId: string | number) {
+		return this.catalog.getEditHTML(item, id, modelId)
 	}
 
 	getitemTypes() {
@@ -151,8 +151,8 @@ export class VueCatalog {
 	}
 
 
-	async updateItem(item: any, id: string, data: any) {
-		return await this.catalog.updateModelItems(id, item.type, data);
+	async updateItem(item: any, modelId: string, data: any) {
+		return await this.catalog.updateModelItems(modelId, item.type, data);
 	}
 
 	async deleteItem(items: NodeModel<any>[]) {

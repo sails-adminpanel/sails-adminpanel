@@ -97,7 +97,7 @@ export abstract class BaseItem<T extends Item> {
 	 * @param data
 	 * @param catalogId
 	 */
-	public abstract updateModelItems(itemId: string | number, data: T, catalogId: string): Promise<T>;
+	public abstract updateModelItems(modelId: string | number, data: any, catalogId: string): Promise<T>;
 
 	/**
 	 * For custom HTML
@@ -113,7 +113,7 @@ export abstract class BaseItem<T extends Item> {
 
 	public abstract getAddHTML(): Promise<{ type: 'link' | 'html' | 'jsonForm', data: string }>
 
-	public abstract getEditHTML(id: string | number, catalogId: string): Promise<{ type: 'link' | 'html'| 'jsonForm', data: string }>;
+	public abstract getEditHTML(id: string | number, catalogId: string, modelId?: string | number): Promise<{ type: 'link' | 'html'| 'jsonForm', data: string }>;
 
 	public async _getChilds(parentId: string | number | null, catalogId: string): Promise<Item[]> {
 		let items = await this.getChilds(parentId, catalogId)
@@ -333,8 +333,8 @@ export abstract class AbstractCatalog {
 	/**
 	 * Receives HTML to update an element for projection into a popup
 	 */
-	public getEditHTML(item: Item, id: string | number) {
-		return this.getItemType(item.type)?.getEditHTML(id, this.id);
+	public getEditHTML(item: Item, id: string | number, modelId?: string | number) {
+		return this.getItemType(item.type)?.getEditHTML(id, this.id, modelId);
 	}
 
 	/**
@@ -426,8 +426,8 @@ export abstract class AbstractCatalog {
 	 * @param type
 	 * @param data
 	 */
-	public updateModelItems<T extends Item>(id: string | number, type: string, data: T): Promise<T> {
-		return this.getItemType(type)?.updateModelItems(id, data, this.id) as Promise<T>;
+	public updateModelItems<T extends Item>(modelId: string | number, type: string, data: T): Promise<T> {
+		return this.getItemType(type)?.updateModelItems(modelId, data, this.id) as Promise<T>;
 	}
 
 	/**

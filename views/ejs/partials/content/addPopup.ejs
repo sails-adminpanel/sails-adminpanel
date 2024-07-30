@@ -8,13 +8,8 @@
 </form>
 <script>
 	{
-		let modelParentIDInput = document.querySelector('input[name="parentId"]')
 		let parentId = document.getElementById('parentId')
-		if (parentId && modelParentIDInput) {
-			modelParentIDInput.setAttribute('disabled', 'disabled')
-			modelParentIDInput.style.opacity = '0.5'
-			modelParentIDInput.value = parentId.value
-		}
+		let targetBlankNewItem = document.getElementById('targetBlankNewItem')
 		document.getElementById('customForm').addEventListener('submit', function (e) {
 			e.preventDefault()
 			let data = {}
@@ -30,6 +25,7 @@
 				data.json = true
 				let res = await ky.post(uri, {json: data}).json()
 				if (res.record && checkboxReady) {
+					if (targetBlankNewItem) res.record.targetBlank = targetBlankNewItem.checked
 					ky.post('', {json: {data: {record: res.record, parentId: parentId.value, type: "<%= entity.config.model %>"},  _method: 'createItem'}}).then(r => {
 						checkboxReady.click()
 					})
