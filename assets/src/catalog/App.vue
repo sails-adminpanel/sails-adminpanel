@@ -1,24 +1,37 @@
 <template>
-	<div class="flex items-center justify-between">
-		<div class="flex gap-4">
-			<button class="btn btn-add" @click="toolAddGroup" :disabled="selectedNode.length > 1"><i
-				class="las la-plus"></i><span>create</span>
-			</button>
-			<button class="btn btn-green" @click="updateItem"
-					:disabled="selectedNode.length > 1 || !selectedNode.length"><span>edit</span>
-			</button>
-			<button class="btn btn-red" @click="deleteItem"
-					:disabled="!selectedNode.length"><span>delete</span>
-			</button>
-			<template v-for="action in actionsTools">
-				<button class="btn btn-add" @click="initAction(action.id)"><i
-					:class="`las la-${action.icon}`"></i><span>{{ action.name }}</span>
-				</button>
-			</template>
+	<h1 class="text-[28px] leading-[36px] text-black mb-4">Catalog</h1>
+	<div
+		class="grid grid-cols-[minmax(70px,_800px)_minmax(150px,_250px)] gap-10 justify-between md:flex md:flex-col md:gap-3.5">
+		<div class="sm:mr-[-24px]">
+			<swiper-container class="overflow-visible overflow-x-clip catalog-swiper" init="false">
+				<swiper-slide class="w-auto justify-center flex items-center h-9">
+					<button class="btn btn-add" @click="toolAddGroup" :disabled="selectedNode.length > 1"><i
+						class="las la-plus"></i><span>create</span>
+					</button>
+				</swiper-slide>
+				<swiper-slide class="w-auto justify-center flex items-center h-9">
+					<button class="btn btn-green" @click="updateItem"
+							:disabled="selectedNode.length > 1 || !selectedNode.length"><span>edit</span>
+					</button>
+				</swiper-slide>
+				<swiper-slide class="w-auto justify-center flex items-center h-9">
+					<button class="btn btn-red" @click="deleteItem"
+							:disabled="!selectedNode.length"><span>delete</span>
+					</button>
+				</swiper-slide>
+				<template v-for="action in actionsTools">
+					<swiper-slide class="w-auto justify-center flex items-center h-9">
+						<button class="btn btn-add" @click="initAction(action.id)"><i
+							:class="`las la-${action.icon}`"></i><span>{{ action.name }}</span>
+						</button>
+					</swiper-slide>
+				</template>
+			</swiper-container>
 		</div>
 		<div class="admin-panel__widget">
 			<div class="widget_narrow ">
-				<input class="text-input w-full input-search" type="text" placeholder="Search" value="" @input="search"
+				<input class="text-input w-full input-search" type="text" placeholder="Search" value=""
+					   @input="search"
 					   v-model="searchText"/>
 			</div>
 		</div>
@@ -33,6 +46,7 @@
 			@drop="nodeDropped"
 			@toggle="nodeToggled"
 			@nodecontextmenu="showContextMenu"
+			@nodedblclick="showContextMenu"
 		>
 			<template #title="{ node }">
                             <span class="item-icon">
@@ -60,7 +74,10 @@
 			<template #draginfo="draginfo"> {{ selectedNodesTitle }}</template>
 		</sl-vue-tree-next>
 	</div>
-	<div class="contextmenu" ref="contextmenu" id="contextmenu" v-show="contextMenuIsVisible">
+	<div class="contextmenu" :class="mobMenuClass" ref="contextmenu" id="contextmenu">
+		<div class="hidden md:flex justify-center items-center mt-3" :class="openContextMenu ? 'rotate-180' : ''" @click="openContextMenu = !openContextMenu" id="openContextMenu">
+			<i class="las la-angle-up"></i>
+		</div>
 		<ul class="custom-catalog__actions-items">
 			<li @click="toolAddGroup" :class="actionCreateClass">Create</li>
 			<li @click="updateItem" :class="actionEditClass">Edit</li>
@@ -72,7 +89,8 @@
 	</div>
 	<div style="display: none">
 		<div ref="refSelectItem">
-			<SelectItem :initItemsItem="ItemsItem" @createNewItem="createNewItem" v-if="isTollAdd" :selectedNode="selectedNode"/>
+			<SelectItem :initItemsItem="ItemsItem" @createNewItem="createNewItem" v-if="isTollAdd"
+						:selectedNode="selectedNode"/>
 		</div>
 		<div ref="refItemHTML" class="custom-catalog__form">
 			<ItemHTML :html="HTML" @close-all-popups="closeAllPopups" :selectedNode="selectedNode"
@@ -87,7 +105,8 @@
 </template>
 
 <script setup>
-import {SlVueTreeNext} from 'sl-vue-tree-next'
+
+import {SlVueTreeNext} from './Tree/sl-vue-tree-next'
 import {ref, onMounted, computed, reactive} from 'vue'
 import ItemHTML from "./Components/ItemHTML.vue";
 import SelectItem from "./Components/SelectItem.vue";
@@ -120,6 +139,7 @@ let isActionPopUp = ref(false)
 let searchText = ref('')
 let subcribeChildren = ref({})
 let actionId = ref(null)
+let openContextMenu = ref(false)
 
 onMounted(async () => {
 	document.addEventListener('click', function (e) {
@@ -128,18 +148,61 @@ onMounted(async () => {
 			contextMenuIsVisible.value = false
 			actionsContext.value = []
 		}
-		const slVueTree_id = document.getElementById('slVueTree_id')
-		if (!e.composedPath().includes(slVueTree_id)) {
-			contextMenuIsVisible.value = false
-			actionsContext.value = []
-		}
-		const nodesList = document.querySelector('.sl-vue-tree-next-nodes-list')
-		if (!e.composedPath().includes(nodesList)) {
-			contextMenuIsVisible.value = false
-			actionsContext.value = []
-		}
 	})
 	getCatalog()
+	actionsTools.value = [
+		{
+			id: 4,
+			name: 'test',
+			icon: 'cat'
+		},
+		{
+			id: 4,
+			name: 'test 1',
+			icon: 'users-cog'
+		}, {
+			id: 4,
+			name: 'test',
+			icon: 'cat'
+		},
+		{
+			id: 4,
+			name: 'test 1',
+			icon: 'users-cog'
+		}, {
+			id: 4,
+			name: 'test',
+			icon: 'cat'
+		},
+		{
+			id: 4,
+			name: 'test 1',
+			icon: 'users-cog'
+		},
+	]
+
+	const action_swiperEl = document.querySelector('.catalog-swiper');
+	// swiper parameters
+	const actionSwiperParams = {
+		slidesPerView: 'auto',
+		speed: 500,
+		navigation: false,
+		spaceBetween: 6,
+		on: {
+			init: function () {
+				setTimeout(function () {
+					action_swiperEl.setAttribute('style', 'width: calc(100vw - 24px)')
+					action_swiperEl.style.width = 'auto'
+				}, 100)
+			},
+		},
+	};
+
+	// now we need to assign all parameters to Swiper element
+	Object.assign(action_swiperEl, actionSwiperParams);
+
+	// and now initialize it
+	action_swiperEl.initialize();
 })
 
 let actionCreateClass = computed(() => {
@@ -152,7 +215,14 @@ let actionEditClass = computed(() => {
 let actionDeleteClass = computed(() => {
 	return !selectedNode.value.length ? 'action-disabled' : ''
 })
-
+let mobMenuClass = computed(() => {
+	if(openContextMenu.value && contextMenuIsVisible.value){
+		return 'contextmenu--active contextmenu--active-show'
+	}
+	else if (contextMenuIsVisible.value) {
+		return 'contextmenu--active'
+	}
+})
 const search = debounce(async () => {
 	if (searchText.value.length > 0) {
 		//remove subcribers
@@ -164,7 +234,7 @@ const search = debounce(async () => {
 		reloadCatalog()
 		subcribeChildren.value['root'] = setInterval(() => { // add root subscribe
 			reloadCatalog()
-		}, 15000)
+		}, 30000)
 	}
 
 }, 500)
@@ -197,7 +267,7 @@ async function getCatalog() {
 		setCatalog(catalog)
 		subcribeChildren.value['root'] = setInterval(() => { // add root subscribe
 			reloadCatalog()
-		}, 15000)
+		}, 30000)
 	} else {
 		// console.log(catalog)
 	}
@@ -310,7 +380,14 @@ async function createNewItem(value) {
 
 async function updateItem() {
 	let item = selectedNode.value[0]
-	let resPost = await ky.post('', {json: {type: item.data.type, modelId: item.data.modelId ?? null, id: item.data.id, _method: 'getEditHTML'}}).json()
+	let resPost = await ky.post('', {
+		json: {
+			type: item.data.type,
+			modelId: item.data.modelId ?? null,
+			id: item.data.id,
+			_method: 'getEditHTML'
+		}
+	}).json()
 	await getHTML(resPost)
 	PopupEvent.value = 'update'
 	createPopup(refItemHTML.value)
@@ -350,13 +427,13 @@ async function nodeToggled(node, event) {
 		}
 		subcribeChildren.value[node.data.id] = setInterval(() => {
 			getChilds(node)
-		}, 15000)
+		}, 30000)
 	} else {
 		clearInterval(subcribeChildren.value[node.data.id])
 		if (parent && parent.children.find(e => e.isExpanded) === undefined) { // if there is a parent and the parent has all groups closed
 			subcribeChildren.value[parent.data.id] = setInterval(() => {
 				getChilds(parent)
-			}, 15000)
+			}, 30000)
 		}
 	}
 
@@ -373,7 +450,7 @@ async function nodeToggled(node, event) {
 	} else {
 		subcribeChildren.value['root'] = setInterval(() => { // add root subscribe
 			reloadCatalog()
-		}, 15000)
+		}, 30000)
 	}
 }
 
@@ -473,8 +550,13 @@ async function showContextMenu(node, event) {
 	selectNodeRightClick(node)
 	contextMenuIsVisible.value = true
 	const $contextMenu = contextmenu.value
-	$contextMenu.style.left = event.clientX + 'px'
-	$contextMenu.style.top = event.clientY + 'px'
+	if (window.innerWidth >= 769) {
+		$contextMenu.style.left = event.clientX + 'px'
+		$contextMenu.style.top = event.clientY + 'px'
+	} else {
+		$contextMenu.style.left = 0
+		$contextMenu.style.bottom = 0
+	}
 	getActionsContext()
 }
 
@@ -507,7 +589,7 @@ async function initAction(id) {
 		case 'json-forms':
 			res = await ky.put('', {json: {actionId: action.id, _method: 'getPopUpHTML'}}).json()
 			actionJsonFormSchema.value = JSON.parse(res.data)
-			actionId.value= action.id
+			actionId.value = action.id
 			createPopup(refActionPopup.value)
 			isJsonForm.value = true
 			isPopupAction.value = true
@@ -519,66 +601,11 @@ function removeNodes() {
 	const $slVueTree = slVueTreeRef.value
 	const paths = $slVueTree.getSelected().map((node) => node.path)
 	$slVueTree.remove(paths)
-	if(!nodes.value.length){
+	if (!nodes.value.length) {
 		selectedNode.value = []
 	}
 }
 
 </script>
-
-
 <style>
-.contextmenu {
-	position: absolute;
-	background-color: white;
-	color: black;
-	border-radius: 2px;
-	cursor: pointer;
-}
-
-.contextmenu > div {
-	padding: 10px;
-}
-
-.contextmenu > div:hover {
-	background-color: rgba(100, 100, 255, 0.5);
-}
-
-.last-event {
-	color: white;
-	background-color: rgba(100, 100, 255, 0.5);
-	padding: 10px;
-	border-radius: 2px;
-}
-
-.item-icon {
-	display: inline-block;
-	text-align: left;
-	width: 20px;
-}
-
-.input-search {
-	height: 36px;
-}
-
-.sl-vue-tree-next-title:has(> span.search) {
-	background: #5d5035;
-}
-
-.modal-content {
-	padding: 31px 41px;
-	overflow: auto;
-	height: 100vh;
-}
-
-.close-admin-modal-pu {
-	top: 30px;
-	right: 33px
-}
-
-.btn[disabled],
-.action-disabled {
-	pointer-events: none;
-	opacity: 0.5;
-}
 </style>

@@ -11,7 +11,6 @@
 		"jimp": "=0.2.28",
 		"password-hash": "^1.2.2",
 		"sails-build-dictionary": "^0.10.1",
-		"sl-vue-tree-next": "^0.0.13",
 		"utils-decorators": "^2.0.8"
 	},
 	"deprecated": false,

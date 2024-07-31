@@ -38,7 +38,7 @@ const path = {
 	},
 	watch:{
 		scss: `${srcFolder}/styles/**/*.scss`,
-		catalogVue: `${srcFolder}/catalog/**/*.vue`
+		catalogVue: `${srcFolder}/catalog/**/*.{vue,css}`
 	},
 	clean: buildFolder,
 	srcfolder: srcFolder,
