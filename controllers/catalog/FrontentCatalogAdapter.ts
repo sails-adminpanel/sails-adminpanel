@@ -44,20 +44,36 @@ export class VueCatalog {
 		return this.catalog.getItemType(type);
 	}
 
-	getAddHTML(item: any) {
-		return this.catalog.getAddHTML(item);
+	getAddHTML(item: any, loc: string) {
+		return this.catalog.getAddHTML(item, loc);
 	}
 
-	getEditHTML(item: any, id: string | number, modelId: string | number) {
-		return this.catalog.getEditHTML(item, id, modelId)
+	getEditHTML(item: any, id: string | number, loc: string, modelId: string | number) {
+		return this.catalog.getEditHTML(item, id, loc, modelId)
 	}
 
 	getitemTypes() {
 		return this.catalog.getitemTypes();
 	}
 
-	getLocales(){
-		return this.catalog.getLocales()
+	getLocales(loc: string) {
+		let messages = this.catalog.getLocalizeMessages()
+		const i18nFactory = require('i18n-2');
+		let i18n = new i18nFactory({
+			...sails.config.i18n,
+			directory: sails.config.i18n.localesDirectory,
+			extension: ".json"
+		})
+		i18n.setLocale(loc);
+		let outMessages = {}
+		for (const mess of Object.keys(messages)) {
+			if (mess === 'head') {
+				outMessages[mess] = messages[mess]
+				continue
+			}
+			outMessages[mess] = i18n.locales[loc][mess]
+		}
+		return outMessages
 	}
 
 	async getActions(items: NodeModel<any>[], type: string) {
@@ -65,7 +81,7 @@ export class VueCatalog {
 		for (const item of items) {
 			arrItems.push(await this.catalog.find(item.data))
 		}
-		if(type === 'tools'){
+		if (type === 'tools') {
 			return (await this.catalog.getActions(arrItems))?.filter(e => e.displayTool);
 		} else {
 			return (await this.catalog.getActions(arrItems))?.filter(e => e.displayContext);
@@ -80,7 +96,7 @@ export class VueCatalog {
 		return this.catalog.handleAction(actionId, arrItems, config);
 	}
 
-	async getPopUpHTML(actionId: string){
+	async getPopUpHTML(actionId: string) {
 		return this.catalog.getPopUpHTML(actionId);
 	}
 
@@ -135,7 +151,7 @@ export class VueCatalog {
 
 		// It’s unclear why he’s coming reqNodes
 		for (const reqNode of reqNodes) {
-			 // console.log(">>>>>>>>>", "this.catalog.find", reqNode)
+			// console.log(">>>>>>>>>", "this.catalog.find", reqNode)
 			const item = await this.catalog.find(reqNode.data);
 			if (!item) {
 				throw `reqNode Item not found`
@@ -161,7 +177,7 @@ export class VueCatalog {
 
 	async deleteItem(items: NodeModel<any>[]) {
 		for (const item1 of items) {
-			if(item1.children?.length){
+			if (item1.children?.length) {
 				await this.deleteItem(item1.children)
 			}
 			this.catalog.deleteItem(item1.data.type, item1.data.id)

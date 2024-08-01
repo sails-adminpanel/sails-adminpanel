@@ -2,9 +2,9 @@
 	<div class="modal-content">
 		<div class="custom-catalog__form">
 			<div class="flex flex-col gap-2">
-				<label class="admin-panel__title" for="root-group">{{ $t('selectItemtype') }}</label>
+				<label class="admin-panel__title" for="root-group">{{ messages["Select Item type"] }}</label>
 				<select id="root-group" class="select" @change="create($event)">
-					<option selected disabled value="">{{ $t('selectItems') }}</option>
+					<option selected disabled value="">{{ messages["Select Items"] }}</option>
 					<option v-for="item in ItemsItem" :value="item.type">{{ item.name }}</option>
 				</select>
 			</div>
@@ -13,11 +13,11 @@
 </template>
 
 <script setup>
-import {computed} from "vue";
+import {computed, inject} from "vue";
 
+const messages = inject('messages')
 const props = defineProps(['initItemsItem', 'selectedNode'])
 const emit = defineEmits(['createNewItem'])
-
 
 let ItemsItem = computed(() => {
 	if (props.selectedNode) {

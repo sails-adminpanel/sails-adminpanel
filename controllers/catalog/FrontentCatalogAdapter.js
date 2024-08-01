@@ -12,17 +12,33 @@ class VueCatalog {
     getItemType(type) {
         return this.catalog.getItemType(type);
     }
-    getAddHTML(item) {
-        return this.catalog.getAddHTML(item);
+    getAddHTML(item, loc) {
+        return this.catalog.getAddHTML(item, loc);
     }
-    getEditHTML(item, id, modelId) {
-        return this.catalog.getEditHTML(item, id, modelId);
+    getEditHTML(item, id, loc, modelId) {
+        return this.catalog.getEditHTML(item, id, loc, modelId);
     }
     getitemTypes() {
         return this.catalog.getitemTypes();
     }
-    getLocales() {
-        return this.catalog.getLocales();
+    getLocales(loc) {
+        let messages = this.catalog.getLocalizeMessages();
+        const i18nFactory = require('i18n-2');
+        let i18n = new i18nFactory({
+            ...sails.config.i18n,
+            directory: sails.config.i18n.localesDirectory,
+            extension: ".json"
+        });
+        i18n.setLocale(loc);
+        let outMessages = {};
+        for (const mess of Object.keys(messages)) {
+            if (mess === 'head') {
+                outMessages[mess] = messages[mess];
+                continue;
+            }
+            outMessages[mess] = i18n.locales[loc][mess];
+        }
+        return outMessages;
     }
     async getActions(items, type) {
         let arrItems = [];

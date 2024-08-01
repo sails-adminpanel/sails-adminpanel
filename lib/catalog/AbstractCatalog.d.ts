@@ -78,11 +78,11 @@ export declare abstract class BaseItem<T extends Item> {
      *  delete element
      */
     abstract deleteItem(itemId: string | number, catalogId: string): Promise<void>;
-    abstract getAddHTML(): Promise<{
+    abstract getAddHTML(loc: string): Promise<{
         type: 'link' | 'html' | 'jsonForm';
         data: string;
     }>;
-    abstract getEditHTML(id: string | number, catalogId: string, modelId?: string | number): Promise<{
+    abstract getEditHTML(id: string | number, catalogId: string, loc: string, modelId?: string | number): Promise<{
         type: 'link' | 'html' | 'jsonForm';
         data: string;
     }>;
@@ -185,17 +185,15 @@ export declare abstract class AbstractCatalog {
      * List of element types
      */
     readonly itemTypes: BaseItem<Item>[];
-    getLocales(): {
-        en: {
-            head: string;
-            delete: string;
-            edit: string;
-            create: string;
-            search: string;
-            selectItemtype: string;
-            selectItems: string;
-            save: string;
-        };
+    getLocalizeMessages(): {
+        head: string;
+        Delete: string;
+        Edit: string;
+        create: string;
+        Search: string;
+        "Select Item type": string;
+        "Select Items": string;
+        Save: string;
     };
     /**
      * Method for getting childs elements
@@ -219,14 +217,14 @@ export declare abstract class AbstractCatalog {
     /**
      * Receives HTML to update an element for projection into a popup
      */
-    getEditHTML(item: Item, id: string | number, modelId?: string | number): Promise<{
+    getEditHTML(item: Item, id: string | number, loc: string, modelId?: string | number): Promise<{
         type: "link" | "html" | "jsonForm";
         data: string;
     }>;
     /**
      * Receives HTML to create an element for projection into a popup
      */
-    getAddHTML(item: Item): Promise<{
+    getAddHTML(item: Item, loc: string): Promise<{
         type: "link" | "html" | "jsonForm";
         data: string;
     }>;

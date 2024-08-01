@@ -28,27 +28,16 @@ export declare class VueCatalog {
     constructor(_catalog: AbstractCatalog);
     setID(id: string): void;
     getItemType(type: string): import("../../lib/catalog/AbstractCatalog").BaseItem<Item>;
-    getAddHTML(item: any): Promise<{
+    getAddHTML(item: any, loc: string): Promise<{
         type: "link" | "html" | "jsonForm";
         data: string;
     }>;
-    getEditHTML(item: any, id: string | number, modelId: string | number): Promise<{
+    getEditHTML(item: any, id: string | number, loc: string, modelId: string | number): Promise<{
         type: "link" | "html" | "jsonForm";
         data: string;
     }>;
     getitemTypes(): import("../../lib/catalog/AbstractCatalog").BaseItem<Item>[];
-    getLocales(): {
-        en: {
-            head: string;
-            delete: string;
-            edit: string;
-            create: string;
-            search: string;
-            selectItemtype: string;
-            selectItems: string;
-            save: string;
-        };
-    };
+    getLocales(loc: string): {};
     getActions(items: NodeModel<any>[], type: string): Promise<import("../../lib/catalog/AbstractCatalog").ActionHandler[]>;
     handleAction(actionId: string, items: any[], config: any): Promise<void>;
     getPopUpHTML(actionId: string): Promise<string>;

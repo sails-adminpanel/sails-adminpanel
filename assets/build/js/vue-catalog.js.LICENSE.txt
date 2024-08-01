@@ -1,5 +1,7 @@
 /*! #__NO_SIDE_EFFECTS__ */
 
+/*! MIT License © Sindre Sorhus */
+
 /**
  * @license
  * Lodash <https://lodash.com/>

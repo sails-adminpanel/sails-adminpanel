@@ -228,6 +228,7 @@ class NavigationItem extends AbstractItem<NavItem> {
 	protected navigationModel: string;
 	public readonly actionHandlers = []
 	public readonly urlPath: any;
+	readonly i18n: any
 
 	constructor(name: string, model: string, navigationModel: string, urlPath: any) {
 		super();
@@ -238,6 +239,14 @@ class NavigationItem extends AbstractItem<NavItem> {
 		this.urlPath = urlPath
 		let configModel = sails.config.adminpanel.models[this.model] as ModelConfig
 		this.icon = configModel.icon ?? 'file'
+
+		const i18nFactory = require('i18n-2');
+
+		this.i18n = new i18nFactory({
+			...sails.config.i18n,
+			directory: sails.config.i18n.localesDirectory,
+			extension: ".json"
+		})
 	}
 
 	async create(data: any, catalogId: string): Promise<NavItem> {
@@ -303,14 +312,22 @@ class NavigationItem extends AbstractItem<NavItem> {
 		return await storage.findElementById(itemId);
 	}
 
-	async getAddHTML(): Promise<{ type: "link" | "html" | "jsonForm"; data: string }> {
+	async getAddHTML(loc: string): Promise<{ type: "link" | "html" | "jsonForm"; data: string }> {
 		let type: 'html' = 'html'
 		let items = await sails.models[this.model].find()
+
+		// This dirty hack is here because the field of view is disappearing
+		this.i18n.setLocale(loc);
+		const __ = (s: string) => {
+			return this.i18n.__(s)
+		}
+
 		return {
 			type: type,
 			data: ejs.render(fs.readFileSync(`${__dirname}/itemHTMLAdd.ejs`, 'utf8'), {
 				items: items,
-				item: {name: this.name, type: this.type, model: this.model}
+				item: {name: this.name, type: this.type, model: this.model},
+				__: __
 			}),
 		}
 	}
@@ -320,15 +337,22 @@ class NavigationItem extends AbstractItem<NavItem> {
 		return await storage.findElementsByParentId(parentId, this.type);
 	}
 
-	async getEditHTML(id: string | number, catalogId: string, modelId: string | number): Promise<{
+	async getEditHTML(id: string | number, catalogId: string, loc: string, modelId: string | number): Promise<{
 		type: "link" | "html" | "jsonForm";
 		data: string
 	}> {
 		let item = await this.find(id, catalogId)
 		let type: 'html' = 'html'
+
+		// This dirty hack is here because the field of view is disappearing
+		this.i18n.setLocale(loc);
+		const __ = (s: string) => {
+			return this.i18n.__(s)
+		}
+
 		return Promise.resolve({
 			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/itemHTMLEdit.ejs`, 'utf8'), {item: item})
+			data: ejs.render(fs.readFileSync(`${__dirname}/itemHTMLEdit.ejs`, 'utf8'), {item: item, __: __})
 		})
 	}
 
@@ -342,11 +366,19 @@ class NavigationItem extends AbstractItem<NavItem> {
 class NavigationGroup extends AbstractGroup<NavItem> {
 	readonly allowedRoot: boolean = true;
 	readonly name: string = "Group";
-	readonly groupField: string[]
+	readonly groupField: object[]
+	readonly i18n: any
 
-	constructor(groupField: string[]) {
+	constructor(groupField: object[]) {
 		super();
 		this.groupField = groupField
+		const i18nFactory = require('i18n-2');
+
+		this.i18n = new i18nFactory({
+			...sails.config.i18n,
+			directory: sails.config.i18n.localesDirectory,
+			extension: ".json"
+		})
 	}
 
 	async create(data: any, catalogId: string): Promise<NavItem> {
@@ -394,11 +426,21 @@ class NavigationGroup extends AbstractGroup<NavItem> {
 		return await storage.setElement(modelId, data);
 	}
 
-	getAddHTML(): Promise<{ type: "link" | "html" | "jsonForm"; data: string }> {
+	getAddHTML(loc: string): Promise<{ type: "link" | "html" | "jsonForm"; data: string }> {
 		let type: 'html' = 'html'
+
+		// This dirty hack is here because the field of view is disappearing
+		this.i18n.setLocale(loc);
+		const __ = (s: string) => {
+			return this.i18n.__(s)
+		}
+
 		return Promise.resolve({
 			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/GroupHTMLAdd.ejs`, 'utf8'), {fields: this.groupField}),
+			data: ejs.render(fs.readFileSync(`${__dirname}/GroupHTMLAdd.ejs`, 'utf8'), {
+				fields: this.groupField,
+				__: __
+			}),
 		})
 	}
 
@@ -407,17 +449,25 @@ class NavigationGroup extends AbstractGroup<NavItem> {
 		return await storage.findElementsByParentId(parentId, this.type);
 	}
 
-	async getEditHTML(id: string | number, catalogId: string): Promise<{
+	async getEditHTML(id: string | number, catalogId: string, loc: string, modelId?: string | number): Promise<{
 		type: "link" | "html" | "jsonForm";
 		data: string
 	}> {
 		let type: 'html' = 'html'
 		let item = await this.find(id, catalogId)
+
+		// This dirty hack is here because the field of view is disappearing
+		this.i18n.setLocale(loc);
+		const __ = (s: string) => {
+			return this.i18n.__(s)
+		}
+
 		return Promise.resolve({
 			type: type,
 			data: ejs.render(fs.readFileSync(`${__dirname}/GroupHTMLEdit.ejs`, 'utf8'), {
 				fields: this.groupField,
-				item: item
+				item: item,
+				__: __
 			}),
 		})
 	}
@@ -441,25 +491,37 @@ class LinkItem extends NavigationGroup {
 		super([]);
 	}
 
-	getAddHTML(): Promise<{ type: "link" | "html" | "jsonForm"; data: string }> {
+	getAddHTML(loc: string): Promise<{ type: "link" | "html" | "jsonForm"; data: string }> {
 		let type: 'html' = 'html'
+		this.i18n.setLocale(loc);
+
+		const __ = (s: string) => {
+			return this.i18n.__(s)
+		}
 		return Promise.resolve({
 			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/LinkItemAdd.ejs`, 'utf8')),
+			data: ejs.render(fs.readFileSync(`${__dirname}/LinkItemAdd.ejs`, 'utf8'), {__: __}),
 		})
 	}
 
-	async getEditHTML(id: string | number, catalogId: string): Promise<{
+	async getEditHTML(id: string | number, catalogId: string, loc: string): Promise<{
 		type: "link" | "html" | "jsonForm";
 		data: string
 	}> {
 		let type: 'html' = 'html'
 		let item = await this.find(id, catalogId)
+
+		this.i18n.setLocale(loc);
+		const __ = (s: string) => {
+			return this.i18n.__(s)
+		}
+
 		return Promise.resolve({
 			type: type,
 			data: ejs.render(fs.readFileSync(`${__dirname}/LinkItemEdit.ejs`, 'utf8'), {
 				fields: this.groupField,
-				item: item
+				item: item,
+				__: __
 			}),
 		})
 	}

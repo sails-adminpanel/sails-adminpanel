@@ -5,7 +5,7 @@
 	<textarea id="installStepOutput"></textarea>
 	<div>
 		<button class="btn btn-green" id="save-group" @click="save">
-			{{ $t('save') }}
+			{{ messages.Save }}
 		</button>
 	</div>
 
@@ -13,8 +13,9 @@
 
 <script setup>
 import JsonForms from '../../jsonForms/App.vue'
-import {onMounted, ref} from "vue";
+import {onMounted, ref, inject} from "vue";
 
+const messages = inject('messages')
 const props = defineProps(['schema', 'UISchema', 'actionId', 'selectedNode'])
 const emit = defineEmits(['closeAllPopups'])
 let refJsonForm = ref(null)

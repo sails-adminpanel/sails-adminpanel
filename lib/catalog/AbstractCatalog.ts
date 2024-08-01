@@ -1,4 +1,4 @@
-import { JSONSchema4 } from "json-schema";
+import {JSONSchema4} from "json-schema";
 import {AccessRightsHelper} from "../../helper/accessRightsHelper";
 
 /**
@@ -105,19 +105,25 @@ export abstract class BaseItem<T extends Item> {
 	 * @param data
 	 */
 	public abstract create(data: T, catalogId: string): Promise<T>;
+
 	/**
 	 *  delete element
 	 */
 	public abstract deleteItem(itemId: string | number, catalogId: string): Promise<void>;
 
 
-	public abstract getAddHTML(): Promise<{ type: 'link' | 'html' | 'jsonForm', data: string }>
+	public abstract getAddHTML(loc: string): Promise<{ type: 'link' | 'html' | 'jsonForm', data: string }>
 
-	public abstract getEditHTML(id: string | number, catalogId: string, modelId?: string | number): Promise<{ type: 'link' | 'html'| 'jsonForm', data: string }>;
+	public abstract getEditHTML(id: string | number, catalogId: string, loc: string, modelId?: string | number): Promise<{
+		type: 'link' | 'html' | 'jsonForm',
+		data: string
+	}>;
 
 	public async _getChilds(parentId: string | number | null, catalogId: string): Promise<Item[]> {
 		let items = await this.getChilds(parentId, catalogId)
-		items.forEach((item)=>{this._enrich(item as T)})
+		items.forEach((item) => {
+			this._enrich(item as T)
+		})
 		return items;
 	}
 
@@ -252,18 +258,16 @@ export abstract class AbstractCatalog {
 	public readonly itemTypes: BaseItem<Item>[] = [];
 
 
-	public getLocales(){
+	public getLocalizeMessages() {
 		return {
-			en: {
-				head: this.name,
-				delete: 'delete',
-				edit: 'edit',
-				create: 'create',
-				search: 'Search',
-				selectItemtype: 'Select Item type',
-				selectItems: 'Select Items',
-				save: 'Save'
-			},
+			"head": this.name,
+			"Delete": "",
+			"Edit": "",
+			"create": "",
+			"Search": "",
+			"Select Item type": "",
+			"Select Items": "",
+			"Save": ''
 		}
 	}
 
@@ -287,7 +291,7 @@ export abstract class AbstractCatalog {
 		}
 	}
 
-	private _bindAccessRight(){
+	private _bindAccessRight() {
 		setTimeout(() => {
 			const postfix = this.id ? `${this.slug}-${this.id}` : `${this.slug}`
 			AccessRightsHelper.registerToken({
@@ -349,15 +353,15 @@ export abstract class AbstractCatalog {
 	/**
 	 * Receives HTML to update an element for projection into a popup
 	 */
-	public getEditHTML(item: Item, id: string | number, modelId?: string | number) {
-		return this.getItemType(item.type)?.getEditHTML(id, this.id, modelId);
+	public getEditHTML(item: Item, id: string | number, loc: string, modelId?: string | number) {
+		return this.getItemType(item.type)?.getEditHTML(id, this.id, loc, modelId);
 	}
 
 	/**
 	 * Receives HTML to create an element for projection into a popup
 	 */
-	public getAddHTML(item: Item) {
-		return this.getItemType(item.type)?.getAddHTML();
+	public getAddHTML(item: Item, loc: string) {
+		return this.getItemType(item.type)?.getAddHTML(loc);
 	}
 
 	public addActionHandler(actionHandler: ActionHandler) {
@@ -411,7 +415,7 @@ export abstract class AbstractCatalog {
 	 * Only For a Link action
 	 * @param actionId
 	 */
-	public async getLink(actionId: string){
+	public async getLink(actionId: string) {
 		return this.actionHandlers.find((it) => it.id === actionId)?.getLink();
 	}
 
@@ -419,7 +423,7 @@ export abstract class AbstractCatalog {
 	 * For Extermal and JsonForms actions
 	 * @param actionId
 	 */
-	public async getPopUpHTML(actionId: string){
+	public async getPopUpHTML(actionId: string) {
 		return this.actionHandlers.find((it) => it.id === actionId)?.getPopUpHTML();
 	}
 

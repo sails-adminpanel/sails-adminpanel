@@ -32,9 +32,9 @@ async function catalogController(req, res) {
             case 'POST':
                 switch (data._method) {
                     case 'getAddHTML':
-                        return res.json(await vueCatalog.getAddHTML(item));
+                        return res.json(await vueCatalog.getAddHTML(item, req.session.UserAP.locale));
                     case 'getEditHTML':
-                        return res.json(await vueCatalog.getEditHTML(item, data.id, data.modelId));
+                        return res.json(await vueCatalog.getEditHTML(item, data.id, req.session.UserAP.locale, data.modelId));
                     case 'getCatalog':
                         const _catalog = await vueCatalog.getCatalog();
                         return res.json({
@@ -51,7 +51,7 @@ async function catalogController(req, res) {
                     case 'search':
                         return res.json({ data: await vueCatalog.search(data.s) });
                     case "getLocales":
-                        return res.json({ data: vueCatalog.getLocales() });
+                        return res.json({ data: vueCatalog.getLocales(req.session.UserAP.locale) });
                 }
                 break;
             case 'PUT':

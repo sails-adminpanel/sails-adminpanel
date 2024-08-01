@@ -456,7 +456,7 @@ export interface NavigationItemTypeConfig {
 export interface NavigationConfig {
 	model: string
 	sections: string[]
-	groupField: string[]
+	groupField: {name: string, required: boolean}[]
 	allowContentInGroup?: boolean
 	items: NavigationItemTypeConfig[]
 }
