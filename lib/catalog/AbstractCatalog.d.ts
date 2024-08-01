@@ -185,6 +185,18 @@ export declare abstract class AbstractCatalog {
      * List of element types
      */
     readonly itemTypes: BaseItem<Item>[];
+    getLocales(): {
+        en: {
+            head: string;
+            delete: string;
+            edit: string;
+            create: string;
+            search: string;
+            selectItemtype: string;
+            selectItems: string;
+            save: string;
+        };
+    };
     /**
      * Method for getting childs elements
      * if pass null as parentId this root

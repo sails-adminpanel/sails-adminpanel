@@ -11,7 +11,8 @@
 		"jimp": "=0.2.28",
 		"password-hash": "^1.2.2",
 		"sails-build-dictionary": "^0.10.1",
-		"utils-decorators": "^2.0.8"
+		"utils-decorators": "^2.0.8",
+		"vue-i18n": "^9.13.1"
 	},
 	"deprecated": false,
 	"description": "Basic adminpanel for Sails 1x",

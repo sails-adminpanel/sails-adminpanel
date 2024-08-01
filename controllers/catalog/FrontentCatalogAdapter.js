@@ -21,6 +21,9 @@ class VueCatalog {
     getitemTypes() {
         return this.catalog.getitemTypes();
     }
+    getLocales() {
+        return this.catalog.getLocales();
+    }
     async getActions(items, type) {
         let arrItems = [];
         for (const item of items) {

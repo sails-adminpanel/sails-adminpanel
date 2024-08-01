@@ -1,22 +1,22 @@
 <template>
-	<h1 class="text-[28px] leading-[36px] text-black mb-4">Catalog</h1>
+	<h1 class="text-[28px] leading-[36px] text-black mb-4">{{ $t('head') }}</h1>
 	<div
 		class="grid grid-cols-[minmax(70px,_800px)_minmax(150px,_250px)] gap-10 justify-between md:flex md:flex-col md:gap-3.5">
 		<div class="sm:mr-[-24px]">
 			<swiper-container class="overflow-visible overflow-x-clip catalog-swiper" init="false">
 				<swiper-slide class="w-auto justify-center flex items-center h-9">
 					<button class="btn btn-add" @click="toolAddGroup" :disabled="selectedNode.length > 1"><i
-						class="las la-plus"></i><span>create</span>
+						class="las la-plus"></i><span>{{ $t('create') }}</span>
 					</button>
 				</swiper-slide>
 				<swiper-slide class="w-auto justify-center flex items-center h-9">
 					<button class="btn btn-green" @click="updateItem"
-							:disabled="selectedNode.length > 1 || !selectedNode.length"><span>edit</span>
+							:disabled="selectedNode.length > 1 || !selectedNode.length"><span>{{ $t('edit') }}</span>
 					</button>
 				</swiper-slide>
 				<swiper-slide class="w-auto justify-center flex items-center h-9">
 					<button class="btn btn-red" @click="deleteItem"
-							:disabled="!selectedNode.length"><span>delete</span>
+							:disabled="!selectedNode.length"><span>{{ $t('delete') }}</span>
 					</button>
 				</swiper-slide>
 				<template v-for="action in actionsTools">
@@ -30,7 +30,7 @@
 		</div>
 		<div class="admin-panel__widget">
 			<div class="widget_narrow ">
-				<input class="text-input w-full input-search" type="text" placeholder="Search" value=""
+				<input class="text-input w-full input-search" type="text" :placeholder="$t('search')" value=""
 					   @input="search"
 					   v-model="searchText"/>
 			</div>
@@ -79,9 +79,9 @@
 			<i class="las la-angle-up"></i>
 		</div>
 		<ul class="custom-catalog__actions-items">
-			<li @click="toolAddGroup" :class="actionCreateClass">Create</li>
-			<li @click="updateItem" :class="actionEditClass">Edit</li>
-			<li @click="deleteItem" :class="actionDeleteClass">Delete</li>
+			<li @click="toolAddGroup" class="capitalize" :class="actionCreateClass">{{ $t('create') }}</li>
+			<li @click="updateItem" class="capitalize" :class="actionEditClass">{{ $t('edit') }}</li>
+			<li @click="deleteItem" class="capitalize" :class="actionDeleteClass">{{ $t('delete') }}</li>
 			<li v-for="action in actionsContext" @click="initAction(action.id)">
 				<i v-if="action.icon" :class="`las la-${action.icon}`"></i>&nbsp;{{ action.name }}
 			</li>
@@ -112,6 +112,8 @@ import ItemHTML from "./Components/ItemHTML.vue";
 import SelectItem from "./Components/SelectItem.vue";
 import ActionPopUp from "./Components/ActionPopUp.vue";
 import debounce from "lodash/debounce"
+// import { useI18n } from 'vue-i18n'
+// const { t } = useI18n()
 
 let nodes = ref([])
 

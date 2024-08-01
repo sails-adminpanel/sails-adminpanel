@@ -56,6 +56,10 @@ export class VueCatalog {
 		return this.catalog.getitemTypes();
 	}
 
+	getLocales(){
+		return this.catalog.getLocales()
+	}
+
 	async getActions(items: NodeModel<any>[], type: string) {
 		let arrItems = []
 		for (const item of items) {

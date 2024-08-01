@@ -50,6 +50,8 @@ export async function catalogController(req, res) {
 						return res.json({data: await vueCatalog.getActions(data.items, data.type)})
 					case 'search':
 						return res.json({data: await vueCatalog.search(data.s)})
+					case "getLocales":
+						return res.json({data: vueCatalog.getLocales()})
 				}
 				break;
 			case 'PUT':

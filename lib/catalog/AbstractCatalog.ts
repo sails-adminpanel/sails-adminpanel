@@ -251,6 +251,22 @@ export abstract class AbstractCatalog {
 	 */
 	public readonly itemTypes: BaseItem<Item>[] = [];
 
+
+	public getLocales(){
+		return {
+			en: {
+				head: this.name,
+				delete: 'delete',
+				edit: 'edit',
+				create: 'create',
+				search: 'Search',
+				selectItemtype: 'Select Item type',
+				selectItems: 'Select Items',
+				save: 'Save'
+			},
+		}
+	}
+
 	/**
 	 * Method for getting childs elements
 	 * if pass null as parentId this root

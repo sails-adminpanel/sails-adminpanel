@@ -216,6 +216,7 @@ export class Navigation extends AbstractCatalog {
 
 		super(items);
 	}
+
 }
 
 class NavigationItem extends AbstractItem<NavItem> {

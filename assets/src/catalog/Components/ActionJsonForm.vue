@@ -5,7 +5,7 @@
 	<textarea id="installStepOutput"></textarea>
 	<div>
 		<button class="btn btn-green" id="save-group" @click="save">
-			Save
+			{{ $t('save') }}
 		</button>
 	</div>
 

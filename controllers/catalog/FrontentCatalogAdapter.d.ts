@@ -37,6 +37,18 @@ export declare class VueCatalog {
         data: string;
     }>;
     getitemTypes(): import("../../lib/catalog/AbstractCatalog").BaseItem<Item>[];
+    getLocales(): {
+        en: {
+            head: string;
+            delete: string;
+            edit: string;
+            create: string;
+            search: string;
+            selectItemtype: string;
+            selectItems: string;
+            save: string;
+        };
+    };
     getActions(items: NodeModel<any>[], type: string): Promise<import("../../lib/catalog/AbstractCatalog").ActionHandler[]>;
     handleAction(actionId: string, items: any[], config: any): Promise<void>;
     getPopUpHTML(actionId: string): Promise<string>;
