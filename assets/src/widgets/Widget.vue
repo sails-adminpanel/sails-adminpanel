@@ -31,7 +31,6 @@
 
 <script>
 import {defineComponent} from "vue";
-import ky from "ky";
 import {getDefaultColorByID} from "./colorPallete"
 
 export default defineComponent({
@@ -157,17 +156,17 @@ export default defineComponent({
 			this.constructorOption = this.widgets.find(e => e.id === this.ID).constructorOption
 		},
 		getConstructorName() {
-			this.constructorName = this.widgets.find(e => e.id === this.ID).constructorName 
+			this.constructorName = this.widgets.find(e => e.id === this.ID).constructorName
 		},
 		runScript(currentWidget, constructorOption){
 			// console.log(this.widgets.find(e => e.id === this.ID))
 
 			let filePath = currentWidget.scriptUrl
-			let api = filePath 
+			let api = filePath
 			// console.log(`API: ${api}`)
 
 			const existingScript = document.querySelector(`script[src="${api}"]`);
-			
+
 			if(existingScript){
 				existingScript.parentNode.removeChild(existingScript);
 			}

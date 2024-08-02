@@ -10,15 +10,19 @@
     ace_<%=key%>.setReadonly
 
 	if (localStorage.getItem('__dark-mode') === '1') {
-		ace_<%=key%>.setTheme("ace/theme/one_dark");
+		ace_<%=key%>.setTheme("ace/theme/dracula");
 	} else {
-		ace_<%=key%>.setTheme("ace/theme/katzenmilch");
+		ace_<%=key%>.setTheme("ace/theme/sqlserver");
     }
 
     ace_<%=key%>.session.setMode("ace/mode/html");
     ace_<%=key%>.session.on("change", function () {
         $('#form-<%=key%>').val(ace_<%=key%>.getValue());
     });
+
+    <% if (field.config.options && field.config.options.mode) { %>
+        ace_<%=key%>.session.setMode("ace/mode/<%=field.config.options.mode%>")
+    <% } %>
 
     // Disable doctype annotations
     var session_<%=key%> = ace_<%=key%>.getSession();

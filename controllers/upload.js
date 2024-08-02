@@ -39,7 +39,10 @@ function upload(req, res) {
         // Громоздко потомучто в конфиге сделали неодинаковые типы для ENTITY
         let adminpanelConfig = sails.config.adminpanel;
         if (entity.type === 'model') {
-            fieldConfig = adminpanelConfig.models[entity.name].fields[field];
+            const model = adminpanelConfig.models[entity.name];
+            if (typeof model !== "boolean") {
+                fieldConfig = model.fields[field];
+            }
         }
         else if (entity.type === 'form') {
             fieldConfig = adminpanelConfig.forms.data[entity.name][field];

@@ -12,6 +12,7 @@ describe('Hook methods sails.adminpanel...', function () {
     }
 
     sails.hooks.adminpanel.addModelConfig(testModel);
+    //@ts-ignore
     expect(sails.config.adminpanel.models.test.title).to.equal("test")
   })
 })

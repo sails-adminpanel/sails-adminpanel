@@ -50,7 +50,10 @@ export default function upload(req, res) {
         // Громоздко потомучто в конфиге сделали неодинаковые типы для ENTITY
         let adminpanelConfig = sails.config.adminpanel as AdminpanelConfig
         if (entity.type === 'model'){
-            fieldConfig = adminpanelConfig.models[entity.name].fields[field] as BaseFieldConfig
+            const model = adminpanelConfig.models[entity.name]; 
+            if(typeof model !== "boolean") {
+                fieldConfig = model.fields[field] as BaseFieldConfig
+            }
         } else if(entity.type === 'form'){
             fieldConfig = adminpanelConfig.forms.data[entity.name][field] as BaseFieldConfig
         }

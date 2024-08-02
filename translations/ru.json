@@ -6,6 +6,8 @@
     "Are you sure ?": "Вы уверены?",
     "View": "Просмотреть",
     "Edit": "Редактировать",
+	"create": "Создать",
+	"create new": "создать новую",
     "Overview": "Обзор",
     "Adminpanel": "Админпанель",
     "This is opensource project": "Это проект с открытым исходным кодом",
@@ -38,6 +40,9 @@
     "User groups": "Группы пользователя",
     "Repeat password": "Повторить пароль",
     "Please log in": "Пожалуйста авторизируйтесь",
-    "Log in": "Вход"
+    "Log in": "Вход",
+	"Select Item type": "Выберите Элемент",
+	"Select Items": "Ничего не выбрано",
+	"Search": "Поиск",
+	"Open in a new window": "Открывать в новом окне"
   }
-  

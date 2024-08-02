@@ -1,0 +1,34 @@
+<div class="custom-catalog__form">
+	<div class="flex flex-col gap-3">
+		<div class="admin-panel__wrapper-title">
+			<label class="admin-panel__title" for="form-title">Title for Item2</label>
+		</div>
+		<div class="admin-panel__widget">
+			<div class="widget_narrow ">
+				<input class="text-input w-full" type="text" placeholder="Title" value="" name="title"
+					   id="group-form-title" required/>
+			</div>
+		</div>
+	</div>
+	<div>
+		<button class="btn btn-green" id="save-group">
+			Save
+		</button>
+	</div>
+</div>
+<script>
+	{
+		let btn = document.getElementById('save-group')
+		btn.addEventListener('click', async function () {
+			let title = document.getElementById('group-form-title').value
+			let parentId = document.getElementById('parentId')
+			let data = {
+				name: title,
+				parentId: parentId.value ? parentId.value : null,
+				type: 'itemHTML',
+			}
+			let res = await ky.post('', {json: {data: data, _method: 'createItem'}}).json()
+			if (res.data) document.getElementById('checkbox-ready').click()
+		})
+	}
+</script>

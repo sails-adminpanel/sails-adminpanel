@@ -47,8 +47,8 @@ class PopUp {
         this.modal.classList.remove('admin-modal-pu--active');
         setTimeout(() => {
             this.modal.remove();
+            this.trigger('close');
         }, 300);
-        this.trigger('close');
     }
     on(event, callback) {
         if (!(event in this.eventHandlers)) {
@@ -102,6 +102,11 @@ class AdminPopUp {
             }, 300);
         });
         return popup;
+    }
+    static closeAll() {
+        for (const popup of this.popups) {
+            popup.closeModal();
+        }
     }
     static offsetToggle(prevModal) {
         if (prevModal !== null) {

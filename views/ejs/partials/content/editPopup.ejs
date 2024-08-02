@@ -1,0 +1,45 @@
+<% var idField = adminpanel.configHelper.getIdentifierField(entity.config.model) %>
+<form action="" id="customForm">
+    <%- include("edit.ejs") %>
+    <div>
+        <button class="btn btn-green mt-4" id="save-group">
+            Save
+        </button>
+    </div>
+</form>
+<script>
+	{
+		let targetBlankNewItem = document.getElementById('targetBlankNewItem')
+        let treeId = document.getElementById('treeId')
+		document.getElementById('customForm').addEventListener('submit', function (e) {
+			e.preventDefault()
+			let data = {}
+			let uri = "<%= entity.uri %>/edit/<%= record[idField] %>"
+			let checkboxReady = document.getElementById('checkbox-ready')
+
+			setTimeout(async () => {
+				for (const eElement of e.target.elements) {
+					if (eElement.value) {
+						data[eElement.name] = eElement.value
+					}
+				}
+				data.json = true
+				let res = await ky.post(uri, {json: data}).json()
+				if (res.record && checkboxReady) {
+					if (targetBlankNewItem) res.record[0].targetBlank = targetBlankNewItem.checked
+                    if(treeId) res.record[0].treeId = treeId.value
+					ky.put('', {
+						json: {
+							type: "<%= entity.config.model %>",
+							data: { record: res.record[0] },
+							modelId: data.id,
+							_method: 'updateItem'
+						}
+					}).then(r => {
+						checkboxReady.click()
+					})
+				}
+			}, 10)
+		})
+	}
+</script>

@@ -1,0 +1,36 @@
+<form action="" id="customForm">
+    <%- include("add.ejs") %>
+    <div>
+        <button class="btn btn-green mt-4" id="save-group">
+            Save
+        </button>
+    </div>
+</form>
+<script>
+	{
+		let parentId = document.getElementById('parentId')
+		let targetBlankNewItem = document.getElementById('targetBlankNewItem')
+		document.getElementById('customForm').addEventListener('submit', function (e) {
+			e.preventDefault()
+			let data = {}
+			let uri = "<%= entity.uri %>/add"
+			let checkboxReady = document.getElementById('checkbox-ready')
+
+			setTimeout(async () => {
+				for (const eElement of e.target.elements) {
+					if (eElement.value) {
+						data[eElement.name] = eElement.value
+					}
+				}
+				data.json = true
+				let res = await ky.post(uri, {json: data}).json()
+				if (res.record && checkboxReady) {
+					if (targetBlankNewItem) res.record.targetBlank = targetBlankNewItem.checked
+					ky.post('', {json: {data: {record: res.record, parentId: parentId.value, type: "<%= entity.config.model %>"},  _method: 'createItem'}}).then(r => {
+						checkboxReady.click()
+					})
+				}
+			}, 10)
+		})
+	}
+</script>

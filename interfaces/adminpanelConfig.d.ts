@@ -31,11 +31,10 @@ export interface AdminpanelConfig {
     /**
      * @alpha
      * Models configuration
-     * @todo rewrite for EntityType
      * reference upload contoroller ~50 line
      * */
     models: {
-        [key: string]: ModelConfig;
+        [key: string]: ModelConfig | boolean;
     };
     /**
      * For custom adminpanel sections, displays inside header
@@ -103,7 +102,6 @@ export interface AdminpanelConfig {
          */
         path?: string;
         /**
-         * TODO: (wizards) rewrite to data -> setup
          * same for model (need entity config types)
          * */
         data: {
@@ -166,6 +164,10 @@ export interface AdminpanelConfig {
      * System field for store absolute root path adminpanel hookfolder
      */
     rootPath?: string;
+    /**
+     *  Navigation
+     */
+    navigation?: NavigationConfig;
 }
 export interface ModelConfig {
     title: string;
@@ -245,7 +247,7 @@ export interface FieldsModels {
 interface FormFieldConfig extends BaseFieldConfig {
     value?: any;
 }
-interface BaseFieldConfig {
+export interface BaseFieldConfig {
     title?: string;
     type?: FieldsTypes;
     /**
@@ -275,7 +277,10 @@ interface BaseFieldConfig {
     /** Show as disabled element HTML */
     disabled?: boolean;
 }
-interface NavigationOptionsField {
+/**
+ * @deprecated
+ */
+export interface NavigationOptionsField {
     /**
      * max number of nested elements
      * */
@@ -358,7 +363,7 @@ export interface CreateUpdateConfig {
      *
      * Function(reqData) {return reqData}
      * */
-    entityModifier?: (reqData: string) => string;
+    entityModifier?: <T>(fieldData: T) => T;
     /**
      * You can change standard controller for any entity by this property
      * */
@@ -377,5 +382,23 @@ export interface HrefConfig {
      * For menu items only
      * */
     subItems?: HrefConfig[];
+}
+export interface NavigationItemTypeConfig {
+    model: string;
+    name: string;
+    /**
+     *  /page/:slug
+     */
+    urlPath: string | ((v: any) => string);
+}
+export interface NavigationConfig {
+    model: string;
+    sections: string[];
+    groupField: {
+        name: string;
+        required: boolean;
+    }[];
+    allowContentInGroup?: boolean;
+    items: NavigationItemTypeConfig[];
 }
 export {};

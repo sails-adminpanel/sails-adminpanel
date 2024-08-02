@@ -29,6 +29,9 @@ async function add(req, res) {
             if (Number.isNaN(reqData[prop]) || reqData[prop] === undefined || reqData[prop] === null) {
                 delete reqData[prop];
             }
+            if (reqData[prop] === "" && fields[prop].model.allowNull === true) {
+                reqData[prop] = null;
+            }
             if (fields[prop].config.type === 'select-many') {
                 reqData[prop] = reqData[prop].split(",");
             }
@@ -65,8 +68,13 @@ async function add(req, res) {
         try {
             let record = await entity.model.create(reqData).fetch();
             sails.log.debug(`A new record was created: `, record);
-            req.session.messages.adminSuccess.push('Your record was created !');
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
+            if (req.body.json) {
+                return res.json({ record: record });
+            }
+            else {
+                req.session.messages.adminSuccess.push('Your record was created !');
+                return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
+            }
         }
         catch (e) {
             sails.log.error(e);
@@ -74,8 +82,8 @@ async function add(req, res) {
             data = reqData;
         }
     }
-    if (req.query.without_layout) {
-        return res.viewAdmin("./../ejs/partials/content/add.ejs", {
+    if (req.query?.without_layout) {
+        return res.viewAdmin("./../ejs/partials/content/addPopup.ejs", {
             entity: entity,
             fields: fields,
             data: data

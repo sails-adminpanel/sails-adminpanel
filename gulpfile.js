@@ -38,7 +38,7 @@ const path = {
 	},
 	watch:{
 		scss: `${srcFolder}/styles/**/*.scss`,
-		catalogVue: `${srcFolder}/catalog/**/*.vue`
+		catalogVue: `${srcFolder}/catalog/**/*.{vue,css}`
 	},
 	clean: buildFolder,
 	srcfolder: srcFolder,
@@ -511,3 +511,4 @@ gulp.task('styles', gulp.series(scss, gulp.parallel(serve, watcher)))
 
 gulp.task('vue', gulp.series(vueWidgets, gulp.parallel(serve, vueWidgetsWatcher) ,gulp.parallel(serve, vueInstallStepperWatcher)))
 gulp.task('catalog', gulp.series(vueCatalog, gulp.parallel(serve, vueCaalogWatcher)))
+gulp.task('prodCat', vueCatalogProd)

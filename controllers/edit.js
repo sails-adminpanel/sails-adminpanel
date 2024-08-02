@@ -4,6 +4,7 @@ const adminUtil_1 = require("../lib/adminUtil");
 const requestProcessor_1 = require("../lib/requestProcessor");
 const fieldsHelper_1 = require("../helper/fieldsHelper");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
+const CatalogHandler_1 = require("../lib/catalog/CatalogHandler");
 async function edit(req, res) {
     //Check id
     if (!req.param('id')) {
@@ -48,6 +49,9 @@ async function edit(req, res) {
             if (Number.isNaN(reqData[prop]) || reqData[prop] === undefined || reqData[prop] === null) {
                 delete reqData[prop];
             }
+            if (reqData[prop] === "" && fields[prop].model.allowNull === true) {
+                reqData[prop] = null;
+            }
             if (fields[prop].config.type === 'select-many') {
                 reqData[prop] = reqData[prop].split(",");
             }
@@ -85,8 +89,22 @@ async function edit(req, res) {
         try {
             let newRecord = await entity.model.update(params, reqData).fetch();
             sails.log.debug(`Record was updated: `, newRecord);
-            req.session.messages.adminSuccess.push('Your record was updated !');
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
+            if (req.body.json) {
+                return res.json({ record: newRecord });
+            }
+            else {
+                // update navigation tree after model updated
+                if (sails.config.adminpanel.navigation) {
+                    for (const section of sails.config.adminpanel.navigation.sections) {
+                        let navigation = CatalogHandler_1.CatalogHandler.getCatalog('navigation');
+                        navigation.setID(section);
+                        let navItem = navigation.itemTypes.find(item => item.type === entity.name);
+                        await navItem.updateModelItems(newRecord[0].id, { record: newRecord[0] }, section);
+                    }
+                }
+                req.session.messages.adminSuccess.push('Your record was updated !');
+                return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
+            }
         }
         catch (e) {
             sails.log.error(e);
@@ -104,7 +122,7 @@ async function edit(req, res) {
     //     }
     // }
     if (req.query.without_layout) {
-        return res.viewAdmin("./../ejs/partials/content/edit.ejs", {
+        return res.viewAdmin("./../ejs/partials/content/editPopup.ejs", {
             entity: entity,
             record: record,
             fields: fields

@@ -50,8 +50,11 @@ class ConfigHelper {
         let config = sails.config.adminpanel;
         let ModelConfig;
         Object.keys(config.models).forEach((entityName) => {
-            if (config.models[entityName].model === modelName.toLowerCase()) {
-                ModelConfig = config.models[entityName];
+            const model = config.models[entityName];
+            if (typeof model !== "boolean") {
+                if (model.model === modelName.toLowerCase()) {
+                    ModelConfig = config.models[entityName];
+                }
             }
         });
         if (ModelConfig && ModelConfig.identifierField) {
