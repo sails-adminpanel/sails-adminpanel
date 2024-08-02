@@ -185,19 +185,7 @@ export declare abstract class AbstractCatalog {
      * List of element types
      */
     readonly itemTypes: BaseItem<Item>[];
-    getLocalizeMessages(): {
-        head: string;
-        Delete: string;
-        Edit: string;
-        create: string;
-        Search: string;
-        "Select Item type": string;
-        "Select Items": string;
-        Save: string;
-        "No, cancel": string;
-        "Are you sure?": string;
-        "Yes, I'm sure": string;
-    };
+    getLocalizeMessages(): object;
     /**
      * Method for getting childs elements
      * if pass null as parentId this root

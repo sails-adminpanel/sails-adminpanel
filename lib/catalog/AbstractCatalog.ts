@@ -259,8 +259,7 @@ export abstract class AbstractCatalog {
 
 
 	public getLocalizeMessages() {
-		return {
-			"head": this.name,
+		let obj: object = {
 			"Delete": "",
 			"Edit": "",
 			"create": "",
@@ -272,6 +271,11 @@ export abstract class AbstractCatalog {
 			"Are you sure?": "",
 			"Yes, I'm sure": ""
 		}
+		obj[this.name] = ""
+		for (const actionHandler of this.actionHandlers) {
+			obj[actionHandler.name] = ""
+		}
+		return obj
 	}
 
 	/**

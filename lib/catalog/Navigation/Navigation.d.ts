@@ -1,4 +1,4 @@
-import { AbstractCatalog, Item } from "../AbstractCatalog";
+import { AbstractCatalog, ActionHandler, Item } from "../AbstractCatalog";
 import { NavigationConfig } from "../../../interfaces/adminpanelConfig";
 export interface NavItem extends Item {
     urlPath?: any;
@@ -34,7 +34,7 @@ export declare class Navigation extends AbstractCatalog {
     readonly name: string;
     readonly slug: string;
     readonly icon: string;
-    readonly actionHandlers: any[];
+    readonly actionHandlers: ActionHandler[];
     constructor(config: NavigationConfig);
 }
 export {};

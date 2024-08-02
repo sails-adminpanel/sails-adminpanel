@@ -9,6 +9,7 @@ async function init() {
 
 init().then(({data}) => {
 	let app = createApp(App)
+	console.log(data)
 	app.provide('messages', data)
 	app.mount('#catalog')
 })

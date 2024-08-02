@@ -32,11 +32,7 @@ class VueCatalog {
         i18n.setLocale(loc);
         let outMessages = {};
         for (const mess of Object.keys(messages)) {
-            if (mess === 'head') {
-                outMessages[mess] = messages[mess];
-                continue;
-            }
-            outMessages[mess] = i18n.locales[loc][mess];
+            outMessages[mess] = i18n.__(mess);
         }
         return outMessages;
     }

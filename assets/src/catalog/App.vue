@@ -1,5 +1,5 @@
 <template>
-	<h1 class="text-[28px] leading-[36px] text-black mb-4">{{ messages.head }}</h1>
+	<h1 class="text-[28px] leading-[36px] text-black mb-4">{{ messages[_catalog.name] }} <span class="text-xl text-gray-400">({{_catalog.id}})</span></h1>
 	<div
 		class="grid grid-cols-[minmax(70px,_800px)_minmax(150px,_250px)] gap-10 justify-between md:flex md:flex-col md:gap-3.5">
 		<div class="sm:mr-[-24px]">
@@ -22,7 +22,7 @@
 				<template v-for="action in actionsTools">
 					<swiper-slide class="w-auto justify-center flex items-center h-9">
 						<button class="btn btn-add" @click="initAction(action.id)"><i
-							:class="`las la-${action.icon}`"></i><span>{{ action.name }}</span>
+							:class="`las la-${action.icon}`"></i><span>{{ messages[action.name] }}</span>
 						</button>
 					</swiper-slide>
 				</template>
@@ -175,7 +175,11 @@ let subcribeChildren = ref({})
 let actionId = ref(null)
 let openContextMenu = ref(false)
 let delModalShow = ref(false)
-let movingGroupsRootOnly = ref(null)
+let _catalog = reactive({
+	name: null,
+	id: null,
+	movingGroupsRootOnly: null
+})
 
 onMounted(async () => {
 	document.addEventListener('click', function (e) {
@@ -356,7 +360,9 @@ function getParent(Tnode) {
 }
 
 function setCatalog(catalog) {
-	movingGroupsRootOnly.value = catalog.movingGroupsRootOnly
+	_catalog.movingGroupsRootOnly = catalog.movingGroupsRootOnly
+	_catalog.name = catalog.catalogName
+	_catalog.id = catalog.catalogId
 	nodes.value = catalog.nodes
 }
 
@@ -534,7 +540,7 @@ async function nodeDropped(Dnode, position, event) {
 		})
 	}
 	// console.log('Node: ', reqNode, 'parent: ', reqParent)
-	if(movingGroupsRootOnly.value === true) {
+	if(_catalog.movingGroupsRootOnly === true) {
 		if (reqParent.data.id !== 0 && !reqNode.isLeaf) {
 			reloadCatalog()
 			return

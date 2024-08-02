@@ -446,7 +446,7 @@ export interface HrefConfig {
 
 export interface NavigationItemTypeConfig {
 	model: string
-	name: string
+	title: string
 	/**
 	 *  /page/:slug
 	 */

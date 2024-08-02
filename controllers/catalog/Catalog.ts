@@ -42,7 +42,12 @@ export async function catalogController(req, res) {
 						const __catalog = await vueCatalog.getCatalog();
 						return res.json({
 							'items': vueCatalog.getitemTypes(),
-							'catalog': {nodes: __catalog, movingGroupsRootOnly: _catalog.movingGroupsRootOnly ?? false},
+							'catalog': {
+								nodes: __catalog,
+								movingGroupsRootOnly: _catalog.movingGroupsRootOnly ?? false,
+								catalogName: _catalog.name,
+								catalogId: _catalog.id
+							},
 							'toolsActions': await vueCatalog.getActions([], 'tools')
 						})
 					case 'createItem':

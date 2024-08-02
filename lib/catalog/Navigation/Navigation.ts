@@ -1,9 +1,10 @@
-import {AbstractCatalog, AbstractGroup, AbstractItem, Item} from "../AbstractCatalog";
+import {AbstractCatalog, AbstractGroup, AbstractItem, ActionHandler, Item} from "../AbstractCatalog";
 import {ModelConfig, NavigationConfig} from "../../../interfaces/adminpanelConfig";
 import * as fs from "node:fs";
 
 const ejs = require('ejs')
 import {v4 as uuid} from "uuid";
+import {JSONSchema4} from "json-schema";
 
 export interface NavItem extends Item {
 	urlPath?: any;
@@ -196,13 +197,13 @@ export class Navigation extends AbstractCatalog {
 	readonly name: string = 'Navigation';
 	readonly slug: string = 'navigation';
 	public readonly icon: string = "box";
-	public readonly actionHandlers = []
+	public readonly actionHandlers: ActionHandler[] = []
 
 	constructor(config: NavigationConfig) {
 		let items = []
 		for (const configElement of config.items) {
 			items.push(new NavigationItem(
-				configElement.name,
+				configElement.title,
 				configElement.model,
 				config.model,
 				configElement.urlPath
@@ -215,6 +216,61 @@ export class Navigation extends AbstractCatalog {
 		}
 		super(items);
 		this.movingGroupsRootOnly = config.movingGroupsRootOnly
+		this.addActionHandler(new JsonFormAction())
+	}
+
+}
+
+class JsonFormAction extends ActionHandler {
+	readonly icon: string = 'crow';
+	readonly id: string = 'json-form';
+	readonly jsonSchema: JSONSchema4 = {
+		"type": "object",
+		"properties": {
+			"name": {
+				"type": "string",
+			},
+			"secondName": {
+				"type": "string"
+			}
+		}
+	};
+	readonly name: string = 'JsonFormAction';
+	readonly uiSchema: any = {
+		"type": "VerticalLayout",
+		"elements": [
+			{
+				"type": "Control",
+				"label": "First Name",
+				"scope": "#/properties/name"
+			},
+			{
+				"type": "Control",
+				"label": "Second Name",
+				"scope": "#/properties/secondName",
+			}
+		]
+	};
+	public readonly displayTool: boolean = true
+	public readonly displayContext: boolean = false
+	public readonly selectedItemTypes: string[] = []
+	readonly type: "basic" | "json-forms" | "external" | "link" = 'json-forms';
+
+	getLink(): Promise<string> {
+		return Promise.resolve("");
+	}
+
+	getPopUpHTML(): Promise<string> {
+		return Promise.resolve(JSON.stringify({schema: this.jsonSchema, UISchema: this.uiSchema}));
+	}
+
+
+	handler(items: Item[], data?: any): Promise<any> {
+		console.log('JsonFormAction handler items: ', items)
+		console.log('JsonFormAction handler data: ', data)
+		return new Promise((resolve, reject) => {
+			resolve({ok: true})
+		})
 	}
 
 }
