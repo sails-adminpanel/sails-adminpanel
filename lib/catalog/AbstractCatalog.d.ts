@@ -170,9 +170,9 @@ export declare abstract class AbstractCatalog {
      */
     abstract readonly slug: string;
     /**
-     * 0 or null without limits
+     * moving groups to the root only
      */
-    abstract readonly maxNestingDepth: number | null;
+    abstract readonly movingGroupsRootOnly: boolean;
     /**
      * Array of all global contexts, which will appear for all elements
      */
@@ -194,6 +194,9 @@ export declare abstract class AbstractCatalog {
         "Select Item type": string;
         "Select Items": string;
         Save: string;
+        "No, cancel": string;
+        "Are you sure?": string;
+        "Yes, I'm sure": string;
     };
     /**
      * Method for getting childs elements

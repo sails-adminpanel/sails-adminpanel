@@ -30,7 +30,7 @@ export declare class StorageServices {
     static getAll(): StorageService[];
 }
 export declare class Navigation extends AbstractCatalog {
-    readonly maxNestingDepth: number | null;
+    readonly movingGroupsRootOnly: boolean;
     readonly name: string;
     readonly slug: string;
     readonly icon: string;

@@ -458,5 +458,6 @@ export interface NavigationConfig {
 	sections: string[]
 	groupField: {name: string, required: boolean}[]
 	allowContentInGroup?: boolean
-	items: NavigationItemTypeConfig[]
+	items: NavigationItemTypeConfig[],
+	movingGroupsRootOnly: boolean
 }

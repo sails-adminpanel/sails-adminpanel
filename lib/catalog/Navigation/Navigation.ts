@@ -192,7 +192,7 @@ export class StorageServices {
 }
 
 export class Navigation extends AbstractCatalog {
-	readonly maxNestingDepth: number | null;
+	readonly movingGroupsRootOnly:boolean;
 	readonly name: string = 'Navigation';
 	readonly slug: string = 'navigation';
 	public readonly icon: string = "box";
@@ -213,8 +213,8 @@ export class Navigation extends AbstractCatalog {
 		for (const section of config.sections) {
 			StorageServices.add(new StorageService(section, config.model))
 		}
-
 		super(items);
+		this.movingGroupsRootOnly = config.movingGroupsRootOnly
 	}
 
 }

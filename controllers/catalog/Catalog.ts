@@ -10,10 +10,14 @@ export async function catalogController(req, res) {
 	if (sails.config.adminpanel.auth) {
 		if (!req.session.UserAP) {
 			return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
-		}else if (!AccessRightsHelper.havePermission(`catalog-${postfix}`, req.session.UserAP)) {
+		} else if (!AccessRightsHelper.havePermission(`catalog-${postfix}`, req.session.UserAP)) {
 			return res.sendStatus(403);
 		}
 	}
+
+	const _catalog = CatalogHandler.getCatalog(slug)
+	if (_catalog === undefined) return res.sendStatus(404);
+
 	const method = req.method.toUpperCase();
 	if (method === 'GET') {
 		return res.viewAdmin('catalog', {entity: "entity", slug: slug, id: id});
@@ -21,7 +25,6 @@ export async function catalogController(req, res) {
 
 	if (method === 'POST' || method === 'PUT' || method === 'DELETE') {
 		const data = req.body
-		const _catalog = CatalogHandler.getCatalog(slug)
 		const vueCatalog = new VueCatalog(_catalog);
 
 		if (!vueCatalog) return res.status(404);
@@ -36,10 +39,10 @@ export async function catalogController(req, res) {
 					case 'getEditHTML':
 						return res.json(await vueCatalog.getEditHTML(item, data.id, req.session.UserAP.locale, data.modelId))
 					case 'getCatalog':
-						const _catalog = await vueCatalog.getCatalog();
+						const __catalog = await vueCatalog.getCatalog();
 						return res.json({
 							'items': vueCatalog.getitemTypes(),
-							'catalog': {nodes: _catalog},
+							'catalog': {nodes: __catalog, movingGroupsRootOnly: _catalog.movingGroupsRootOnly ?? false},
 							'toolsActions': await vueCatalog.getActions([], 'tools')
 						})
 					case 'createItem':
@@ -63,7 +66,7 @@ export async function catalogController(req, res) {
 					case 'handleAction':
 						return res.json({data: await vueCatalog.handleAction(data.data.actionID, data.data.items, data.data.config)})
 					case 'getPopUpHTML':
-						return  res.json({data: await vueCatalog.getPopUpHTML(data.actionId)})
+						return res.json({data: await vueCatalog.getPopUpHTML(data.actionId)})
 					case 'updateItem':
 						return res.json({data: await vueCatalog.updateItem(item, data.modelId, data.data)})
 				}

@@ -237,9 +237,9 @@ export abstract class AbstractCatalog {
 	public abstract readonly slug: string;
 
 	/**
-	 * 0 or null without limits
+	 * moving groups to the root only
 	 */
-	public abstract readonly maxNestingDepth: number | null
+	public abstract readonly movingGroupsRootOnly: boolean
 
 
 	/**
@@ -267,7 +267,10 @@ export abstract class AbstractCatalog {
 			"Search": "",
 			"Select Item type": "",
 			"Select Items": "",
-			"Save": ''
+			"Save": "",
+			"No, cancel": "",
+			"Are you sure?": "",
+			"Yes, I'm sure": ""
 		}
 	}
 

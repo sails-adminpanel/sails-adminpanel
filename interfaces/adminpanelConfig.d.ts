@@ -400,5 +400,6 @@ export interface NavigationConfig {
     }[];
     allowContentInGroup?: boolean;
     items: NavigationItemTypeConfig[];
+    movingGroupsRootOnly: boolean;
 }
 export {};

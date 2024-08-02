@@ -15,7 +15,7 @@
 					</button>
 				</swiper-slide>
 				<swiper-slide class="w-auto justify-center flex items-center h-9">
-					<button class="btn btn-red" @click="deleteItem"
+					<button class="btn btn-red" @click="initDel"
 							:disabled="!selectedNode.length"><span>{{ messages.Delete }}</span>
 					</button>
 				</swiper-slide>
@@ -75,13 +75,14 @@
 		</sl-vue-tree-next>
 	</div>
 	<div class="contextmenu" :class="mobMenuClass" ref="contextmenu" id="contextmenu">
-		<div class="hidden md:flex justify-center items-center mt-3" :class="openContextMenu ? 'rotate-180' : ''" @click="openContextMenu = !openContextMenu" id="openContextMenu">
+		<div class="hidden md:flex justify-center items-center mt-3" :class="openContextMenu ? 'rotate-180' : ''"
+			 @click="openContextMenu = !openContextMenu" id="openContextMenu">
 			<i class="las la-angle-up"></i>
 		</div>
 		<ul class="custom-catalog__actions-items">
 			<li @click="toolAddGroup" class="capitalize" :class="actionCreateClass">{{ messages.create }}</li>
 			<li @click="updateItem" class="capitalize" :class="actionEditClass">{{ messages.Edit }}</li>
-			<li @click="deleteItem" class="capitalize" :class="actionDeleteClass">{{ messages.Delete }}</li>
+			<li @click="initDel" class="capitalize" :class="actionDeleteClass">{{ messages.Delete }}</li>
 			<li v-for="action in actionsContext" @click="initAction(action.id)">
 				<i v-if="action.icon" :class="`las la-${action.icon}`"></i>&nbsp;{{ action.name }}
 			</li>
@@ -100,6 +101,36 @@
 		<div ref="refActionPopup" class="custom-catalog__form">
 			<ActionPopUp v-if="isPopupAction" :html="actionHTML" :is-json-form="isJsonForm" :selectedNode="selectedNode"
 						 :JSONFormSchema="actionJsonFormSchema" :actionId="actionId" @closeAllPopups="closeAllPopups"/>
+		</div>
+	</div>
+	<div class="w-screen h-screen bg-black/70 fixed z-[10000] top-0 left-0 transition" :class="delModalClass">
+		<div tabindex="-1"
+			 class="fixed top-0 left-0 right-0 z-50 p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+			<div class="absolute top-1/4 left-1/2 translate-x-[-50%] w-full sm:w-[90%] max-w-md max-h-full">
+				<div class="relative bg-white rounded-lg shadow">
+					<button type="button" @click="delModalShow = false"
+							class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center">
+						<svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+							 viewBox="0 0 14 14">
+							<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+								  stroke-width="2"
+								  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+						</svg>
+						<span class="sr-only">Close modal</span>
+					</button>
+					<div class="p-6 text-center">
+						<h3 class="mb-5 text-lg font-normal text-gray-500">{{ messages["Are you sure?"] }}</h3>
+						<button type="button" @click="deleteItem"
+								class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
+							{{ messages["Yes, I'm sure"] }}
+						</button>
+						<button type="button" @click="delModalShow = false"
+								class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10">
+							{{ messages["No, cancel"] }}
+						</button>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -143,6 +174,8 @@ let searchText = ref('')
 let subcribeChildren = ref({})
 let actionId = ref(null)
 let openContextMenu = ref(false)
+let delModalShow = ref(false)
+let movingGroupsRootOnly = ref(null)
 
 onMounted(async () => {
 	document.addEventListener('click', function (e) {
@@ -182,6 +215,10 @@ let actionCreateClass = computed(() => {
 	return selectedNode.value.length > 1 ? 'action-disabled' : ''
 })
 
+let delModalClass = computed(() => {
+	return delModalShow.value ? 'opacity-100 visible' : 'opacity-0 invisible';
+})
+
 let actionEditClass = computed(() => {
 	return selectedNode.value.length > 1 || !selectedNode.value.length ? 'action-disabled' : ''
 })
@@ -189,10 +226,9 @@ let actionDeleteClass = computed(() => {
 	return !selectedNode.value.length ? 'action-disabled' : ''
 })
 let mobMenuClass = computed(() => {
-	if(openContextMenu.value && contextMenuIsVisible.value){
+	if (openContextMenu.value && contextMenuIsVisible.value) {
 		return 'contextmenu--active contextmenu--active-show'
-	}
-	else if (contextMenuIsVisible.value) {
+	} else if (contextMenuIsVisible.value) {
 		return 'contextmenu--active'
 	}
 })
@@ -320,6 +356,7 @@ function getParent(Tnode) {
 }
 
 function setCatalog(catalog) {
+	movingGroupsRootOnly.value = catalog.movingGroupsRootOnly
 	nodes.value = catalog.nodes
 }
 
@@ -367,9 +404,16 @@ async function updateItem() {
 	isCreate.value = true
 }
 
+function initDel() {
+	delModalShow.value = true
+}
+
 async function deleteItem() {
-	let res = await ky.delete('', {json: {data: selectedNode.value}}).json()
-	if (res.data.ok) removeNodes()
+	if (selectedNode.value.length) {
+		let res = await ky.delete('', {json: {data: selectedNode.value}}).json()
+		if (res.data.ok) removeNodes()
+	}
+	delModalShow.value = false
 }
 
 function nodeSelected(nodes, event) {
@@ -489,8 +533,13 @@ async function nodeDropped(Dnode, position, event) {
 			if (node.level === 1) reqParent.children.push(node)
 		})
 	}
-	//console.log('Node: ', reqNode, 'parent: ', reqParent)
-
+	// console.log('Node: ', reqNode, 'parent: ', reqParent)
+	if(movingGroupsRootOnly.value === true) {
+		if (reqParent.data.id !== 0 && !reqNode.isLeaf) {
+			reloadCatalog()
+			return
+		}
+	}
 	let res = await ky.put('', {json: {data: {reqNode: reqNode, reqParent: reqParent}, _method: 'updateTree'}}).json()
 }
 

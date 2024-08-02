@@ -16,13 +16,15 @@ async function catalogController(req, res) {
             return res.sendStatus(403);
         }
     }
+    const _catalog = CatalogHandler_1.CatalogHandler.getCatalog(slug);
+    if (_catalog === undefined)
+        return res.sendStatus(404);
     const method = req.method.toUpperCase();
     if (method === 'GET') {
         return res.viewAdmin('catalog', { entity: "entity", slug: slug, id: id });
     }
     if (method === 'POST' || method === 'PUT' || method === 'DELETE') {
         const data = req.body;
-        const _catalog = CatalogHandler_1.CatalogHandler.getCatalog(slug);
         const vueCatalog = new FrontentCatalogAdapter_1.VueCatalog(_catalog);
         if (!vueCatalog)
             return res.status(404);
@@ -36,10 +38,10 @@ async function catalogController(req, res) {
                     case 'getEditHTML':
                         return res.json(await vueCatalog.getEditHTML(item, data.id, req.session.UserAP.locale, data.modelId));
                     case 'getCatalog':
-                        const _catalog = await vueCatalog.getCatalog();
+                        const __catalog = await vueCatalog.getCatalog();
                         return res.json({
                             'items': vueCatalog.getitemTypes(),
-                            'catalog': { nodes: _catalog },
+                            'catalog': { nodes: __catalog, movingGroupsRootOnly: _catalog.movingGroupsRootOnly ?? false },
                             'toolsActions': await vueCatalog.getActions([], 'tools')
                         });
                     case 'createItem':
