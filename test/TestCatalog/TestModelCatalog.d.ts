@@ -80,6 +80,7 @@ export declare class TestModelCatalog extends AbstractCatalog {
     readonly icon: string;
     readonly actionHandlers: any[];
     constructor();
+    readonly movingGroupsRootOnly: boolean;
 }
 export declare class Link extends ActionHandler {
     readonly icon: string;

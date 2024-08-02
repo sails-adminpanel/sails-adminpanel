@@ -216,11 +216,13 @@ export class Navigation extends AbstractCatalog {
 		}
 		super(items);
 		this.movingGroupsRootOnly = config.movingGroupsRootOnly
-		this.addActionHandler(new JsonFormAction())
+
+		//Test
+		//this.addActionHandler(new JsonFormAction())
 	}
 
 }
-
+//Test Action
 class JsonFormAction extends ActionHandler {
 	readonly icon: string = 'crow';
 	readonly id: string = 'json-form';

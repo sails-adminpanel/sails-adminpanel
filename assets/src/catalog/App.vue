@@ -91,7 +91,7 @@
 	<div style="display: none">
 		<div ref="refSelectItem">
 			<SelectItem :initItemsItem="ItemsItem" @createNewItem="createNewItem" v-if="isTollAdd"
-						:selectedNode="selectedNode"/>
+						:selectedNode="selectedNode" :movingGroupsRootOnly="_catalog.movingGroupsRootOnly"/>
 		</div>
 		<div ref="refItemHTML" class="custom-catalog__form">
 			<ItemHTML :html="HTML" @close-all-popups="closeAllPopups" :selectedNode="selectedNode"

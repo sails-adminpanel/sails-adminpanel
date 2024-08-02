@@ -1,7 +1,7 @@
 .custom-catalog {
 	@apply p-6 md:mt-[-50px];
 	&__container {
-		@apply mt-4 grid grid-cols-2 gap-4;
+		@apply mt-4 grid grid-cols-2 gap-4 sm:grid-cols-1;
 	}
 	&__form{
 		@apply flex flex-col gap-4;
@@ -159,7 +159,7 @@
 }
 
 .sl-vue-tree-next-title:has(> span.search) {
-	@apply bg-[#D9E4EA];
+	@apply bg-[#D9E4EA] pr-2;
 }
 
 .modal-content {

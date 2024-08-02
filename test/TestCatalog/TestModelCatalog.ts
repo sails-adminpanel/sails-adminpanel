@@ -279,6 +279,8 @@ export class TestModelCatalog extends AbstractCatalog {
 		this.addActionHandler(new HTMLAction())
 		this.addActionHandler(new JsonFormAction())
 	}
+
+	readonly movingGroupsRootOnly: boolean;
 }
 
 export class Link extends ActionHandler {
