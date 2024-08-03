@@ -82,6 +82,7 @@ export declare class TestCatalog extends AbstractCatalog {
     readonly slug: string;
     readonly maxNestingDepth: number;
     readonly icon: string;
+    readonly movingGroupsRootOnly: boolean;
     constructor();
 }
 export {};

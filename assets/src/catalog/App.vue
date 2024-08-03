@@ -1,5 +1,5 @@
 <template>
-	<h1 class="text-[28px] leading-[36px] text-black mb-4">{{ messages[_catalog.name] }} <span class="text-xl text-gray-400">({{_catalog.id}})</span></h1>
+	<h1 class="text-[28px] leading-[36px] text-black mb-4 dark:text-gray-300">{{ messages[_catalog.name] }} <span class="text-xl text-gray-400">({{_catalog.id}})</span></h1>
 	<div
 		class="grid grid-cols-[minmax(70px,_800px)_minmax(150px,_250px)] gap-10 justify-between md:flex md:flex-col md:gap-3.5">
 		<div class="sm:mr-[-24px]">
@@ -107,9 +107,9 @@
 		<div tabindex="-1"
 			 class="fixed top-0 left-0 right-0 z-50 p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
 			<div class="absolute top-1/4 left-1/2 translate-x-[-50%] w-full sm:w-[90%] max-w-md max-h-full">
-				<div class="relative bg-white rounded-lg shadow">
+				<div class="relative bg-white dark:bg-gray-600  rounded-lg shadow">
 					<button type="button" @click="delModalShow = false"
-							class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center">
+							class="absolute top-3 right-2.5 text-gray-400 dark:text-gray-300 bg-transparent hover:text-red-600 dark:hover:text-red-600 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center">
 						<svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
 							 viewBox="0 0 14 14">
 							<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -119,13 +119,13 @@
 						<span class="sr-only">Close modal</span>
 					</button>
 					<div class="p-6 text-center">
-						<h3 class="mb-5 text-lg font-normal text-gray-500">{{ messages["Are you sure?"] }}</h3>
+						<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-300">{{ messages["Are you sure?"] }}</h3>
 						<button type="button" @click="deleteItem"
-								class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
+								class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
 							{{ messages["Yes, I'm sure"] }}
 						</button>
 						<button type="button" @click="delModalShow = false"
-								class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10">
+								class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
 							{{ messages["No, cancel"] }}
 						</button>
 					</div>
@@ -137,7 +137,7 @@
 
 <script setup>
 
-import {SlVueTreeNext} from './Tree/sl-vue-tree-next'
+import {SlVueTreeNext} from '@sails-adminpanel/sl-vue-tree-next'
 import {ref, onMounted, computed, reactive, inject} from 'vue'
 import ItemHTML from "./Components/ItemHTML.vue";
 import SelectItem from "./Components/SelectItem.vue";

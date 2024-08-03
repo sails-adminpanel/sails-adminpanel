@@ -162,8 +162,7 @@ export class VueCatalog {
 			await this.catalog.updateItem(childNode.data.id, childNode.data.type, childNode.data);
 			sortCount++;
 		}
-
-		// Retrun tree
+		return Promise.resolve('ok')
 	}
 
 

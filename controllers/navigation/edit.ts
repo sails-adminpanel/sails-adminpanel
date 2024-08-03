@@ -1,4 +1,4 @@
-import {AdminUtil} from "../../adminUtil";
+import {AdminUtil} from "../../lib/adminUtil";
 
 export default async function edit(req, res) {
 	let entity = AdminUtil.findEntityObject(req);

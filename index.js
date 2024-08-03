@@ -5,6 +5,7 @@ const { MenuHelper } = require('./helper/menuHelper');
 const { ConfigHelper } = require('./helper/configHelper');
 const { AccessRightsHelper } = require('./helper/accessRightsHelper');
 const { InstallStepper } = require("./lib/installStepper/installStepper");
+const { CatalogHandler } = require("./lib/catalog/CatalogHandler");
 module.exports = function (sails) {
     let libInitialize = require("./lib/initialize");
     return {
@@ -46,5 +47,6 @@ module.exports = function (sails) {
         enoughPermissions: AccessRightsHelper.enoughPermissions,
         getInstallStepper: () => InstallStepper,
         getWidgetHandler: () => widgetHandler_1.WidgetHandler,
+        CatalogHandler: () => CatalogHandler,
     };
 };

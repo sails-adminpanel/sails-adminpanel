@@ -112,7 +112,7 @@ class VueCatalog {
             await this.catalog.updateItem(childNode.data.id, childNode.data.type, childNode.data);
             sortCount++;
         }
-        // Retrun tree
+        return Promise.resolve('ok');
     }
     async updateItem(item, modelId, data) {
         return await this.catalog.updateModelItems(modelId, item.type, data);

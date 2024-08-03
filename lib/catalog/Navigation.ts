@@ -1,10 +1,11 @@
-import {AbstractCatalog, AbstractGroup, AbstractItem, ActionHandler, Item} from "../AbstractCatalog";
-import {ModelConfig, NavigationConfig} from "../../../interfaces/adminpanelConfig";
+import {AbstractCatalog, AbstractGroup, AbstractItem, ActionHandler, Item} from "./AbstractCatalog";
+import {ModelConfig, NavigationConfig} from "../../interfaces/adminpanelConfig";
 import * as fs from "node:fs";
 
 const ejs = require('ejs')
 import {v4 as uuid} from "uuid";
 import {JSONSchema4} from "json-schema";
+import {ViewsHelper} from "../../helper/viewsHelper";
 
 export interface NavItem extends Item {
 	urlPath?: any;
@@ -216,65 +217,7 @@ export class Navigation extends AbstractCatalog {
 		}
 		super(items);
 		this.movingGroupsRootOnly = config.movingGroupsRootOnly
-
-		//Test
-		//this.addActionHandler(new JsonFormAction())
 	}
-
-}
-//Test Action
-class JsonFormAction extends ActionHandler {
-	readonly icon: string = 'crow';
-	readonly id: string = 'json-form';
-	readonly jsonSchema: JSONSchema4 = {
-		"type": "object",
-		"properties": {
-			"name": {
-				"type": "string",
-			},
-			"secondName": {
-				"type": "string"
-			}
-		}
-	};
-	readonly name: string = 'JsonFormAction';
-	readonly uiSchema: any = {
-		"type": "VerticalLayout",
-		"elements": [
-			{
-				"type": "Control",
-				"label": "First Name",
-				"scope": "#/properties/name"
-			},
-			{
-				"type": "Control",
-				"label": "Second Name",
-				"scope": "#/properties/secondName",
-			}
-		]
-	};
-	public readonly displayTool: boolean = true
-	public readonly displayContext: boolean = false
-	public readonly selectedItemTypes: string[] = []
-	readonly type: "basic" | "json-forms" | "external" | "link" = 'json-forms';
-
-	getLink(): Promise<string> {
-		return Promise.resolve("");
-	}
-
-	getPopUpHTML(): Promise<string> {
-		return Promise.resolve(JSON.stringify({schema: this.jsonSchema, UISchema: this.uiSchema}));
-	}
-
-
-	handler(items: Item[], data?: any): Promise<any> {
-		console.log('JsonFormAction handler items: ', items)
-		console.log('JsonFormAction handler data: ', data)
-		return new Promise((resolve, reject) => {
-			resolve({ok: true})
-		})
-	}
-
 }
 
 class NavigationItem extends AbstractItem<NavItem> {
@@ -382,7 +325,7 @@ class NavigationItem extends AbstractItem<NavItem> {
 
 		return {
 			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/itemHTMLAdd.ejs`, 'utf8'), {
+			data: ejs.render(fs.readFileSync(ViewsHelper.getViewPath('./../../views/ejs/navigation/itemHTMLAdd.ejs'), 'utf8'), {
 				items: items,
 				item: {name: this.name, type: this.type, model: this.model},
 				__: __
@@ -410,7 +353,7 @@ class NavigationItem extends AbstractItem<NavItem> {
 
 		return Promise.resolve({
 			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/itemHTMLEdit.ejs`, 'utf8'), {item: item, __: __})
+			data: ejs.render(fs.readFileSync(ViewsHelper.getViewPath('./../../views/ejs/navigation/itemHTMLEdit.ejs'), 'utf8'), {item: item, __: __})
 		})
 	}
 
@@ -495,7 +438,7 @@ class NavigationGroup extends AbstractGroup<NavItem> {
 
 		return Promise.resolve({
 			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/GroupHTMLAdd.ejs`, 'utf8'), {
+			data: ejs.render(fs.readFileSync(ViewsHelper.getViewPath('./../../views/ejs/navigation/GroupHTMLAdd.ejs'), 'utf8'), {
 				fields: this.groupField,
 				__: __
 			}),
@@ -522,7 +465,7 @@ class NavigationGroup extends AbstractGroup<NavItem> {
 
 		return Promise.resolve({
 			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/GroupHTMLEdit.ejs`, 'utf8'), {
+			data: ejs.render(fs.readFileSync(ViewsHelper.getViewPath('./../../views/ejs/navigation/GroupHTMLEdit.ejs'), 'utf8'), {
 				fields: this.groupField,
 				item: item,
 				__: __
@@ -558,7 +501,7 @@ class LinkItem extends NavigationGroup {
 		}
 		return Promise.resolve({
 			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/LinkItemAdd.ejs`, 'utf8'), {__: __}),
+			data: ejs.render(fs.readFileSync(ViewsHelper.getViewPath('./../../views/ejs/navigation/LinkItemAdd.ejs'), 'utf8'), {__: __}),
 		})
 	}
 
@@ -576,7 +519,7 @@ class LinkItem extends NavigationGroup {
 
 		return Promise.resolve({
 			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/LinkItemEdit.ejs`, 'utf8'), {
+			data: ejs.render(fs.readFileSync(ViewsHelper.getViewPath('./../../views/ejs/navigation/LinkItemEdit.ejs'), 'utf8'), {
 				fields: this.groupField,
 				item: item,
 				__: __
