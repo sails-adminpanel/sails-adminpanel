@@ -159,7 +159,7 @@
 }
 
 .sl-vue-tree-next-title:has(> span.search) {
-	@apply bg-[#D9E4EA] pr-2;
+	@apply bg-[#D9E4EA] dark:bg-gray-900 pr-2;
 }
 
 .modal-content {
