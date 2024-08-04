@@ -5,16 +5,15 @@
   "description": "Sails test application",
   "keywords": [],
   "dependencies": {
-    "include-all": "^4.0.3",
     "muddy-water": "^1.2.1",
-    "patch-package": "6.4.7",
+    "include-all": "^4.0.3",
+    "sails-adminpanel": "file:../..",
+    "patch-package": "^8.0.0",
     "rc": "^1.2.8",
     "request": "^2.88.2",
     "sails": "^1.5.10",
-    "sails-adminpanel": "file:../..",
     "sails-hook-orm": "^4.0.3",
-    "sails-memory": "^0.10.7",
-    "test-app": "file:"
+    "sails-memory": "^0.10.7"
   },
   "scripts": {
     "debug": "node debug app.js",
