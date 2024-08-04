@@ -392,7 +392,7 @@ export interface NavigationItemTypeConfig {
     urlPath: string | ((v: any) => string);
 }
 export interface NavigationConfig {
-    model: string;
+    model?: string;
     sections: string[];
     groupField: {
         name: string;

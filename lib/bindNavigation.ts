@@ -6,6 +6,7 @@ export default function bindNavigation() {
 	sails.after(["hook:orm:loaded"], async () => {
 		if (sails.config.adminpanel.navigation) {
 			try {
+				sails.config.adminpanel.navigation.model = sails.config.adminpanel.navigation.model ? sails.config.adminpanel.navigation.model : 'navigationap'
 				let navigation = new Navigation(sails.config.adminpanel.navigation)
 				CatalogHandler.add(navigation)
 				sails.config.adminpanel.models[sails.config.adminpanel.navigation.model.toLowerCase()] = {

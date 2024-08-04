@@ -361,7 +361,6 @@ module.exports.adminpanel = {
 		}
 	},
 	navigation: {
-		model: "Navigation",
 		items: [
 			{
 				title: 'Page',
