@@ -237,9 +237,9 @@ export abstract class AbstractCatalog {
 	public abstract readonly slug: string;
 
 	/**
-	 * 0 or null without limits
+	 * moving groups to the root only
 	 */
-	public abstract readonly maxNestingDepth: number | null
+	public abstract readonly movingGroupsRootOnly: boolean
 
 
 	/**
@@ -259,16 +259,23 @@ export abstract class AbstractCatalog {
 
 
 	public getLocalizeMessages() {
-		return {
-			"head": this.name,
+		let obj: object = {
 			"Delete": "",
 			"Edit": "",
 			"create": "",
 			"Search": "",
 			"Select Item type": "",
 			"Select Items": "",
-			"Save": ''
+			"Save": "",
+			"No, cancel": "",
+			"Are you sure?": "",
+			"Yes, I'm sure": ""
 		}
+		obj[this.name] = ""
+		for (const actionHandler of this.actionHandlers) {
+			obj[actionHandler.name] = ""
+		}
+		return obj
 	}
 
 	/**

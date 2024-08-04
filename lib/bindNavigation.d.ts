@@ -1,1 +1,1 @@
-export default function bindNavigation(): Promise<void>;
+export default function bindNavigation(): void;

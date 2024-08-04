@@ -17,6 +17,6 @@ describe('Access rights helper test', function () {
         //console.log(1,entities,forms)
         let tokensAmount = accessRightsHelper_1.AccessRightsHelper.getTokens().length;
         console.log(2, accessRightsHelper_1.AccessRightsHelper.getTokens());
-        (0, chai_1.expect)(tokensAmount).to.equal(4 * (entitiesAmount + formsAmount) + 2); // 4 for every entity and form + 2 routes for migrations
+        (0, chai_1.expect)(tokensAmount).to.equal(4 * (entitiesAmount + formsAmount) + 2 + 1); // 4 for every entity and form + 2 routes for migrations +1 for navigation
     });
 });

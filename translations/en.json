@@ -44,5 +44,11 @@
 	"Select Item type": "Select Item type",
 	"Select Items": "Not Selected",
 	"Search": "Search",
-	"Open in a new window": "Open in a new window"
+	"Open in a new window": "Open in a new window",
+	"No, cancel": "No, cancel",
+	"Are you sure?": "Are you sure?",
+	"Yes, I'm sure": "Yes, I'm sure",
+	"Navigation": "Navigation",
+	"Select": "Select",
+	"OR": "OR"
 }

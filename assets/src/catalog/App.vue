@@ -1,5 +1,5 @@
 <template>
-	<h1 class="text-[28px] leading-[36px] text-black mb-4">{{ messages.head }}</h1>
+	<h1 class="text-[28px] leading-[36px] text-black mb-4 dark:text-gray-300">{{ messages[_catalog.name] }} <span class="text-xl text-gray-400">({{_catalog.id}})</span></h1>
 	<div
 		class="grid grid-cols-[minmax(70px,_800px)_minmax(150px,_250px)] gap-10 justify-between md:flex md:flex-col md:gap-3.5">
 		<div class="sm:mr-[-24px]">
@@ -15,14 +15,14 @@
 					</button>
 				</swiper-slide>
 				<swiper-slide class="w-auto justify-center flex items-center h-9">
-					<button class="btn btn-red" @click="deleteItem"
+					<button class="btn btn-red" @click="initDel"
 							:disabled="!selectedNode.length"><span>{{ messages.Delete }}</span>
 					</button>
 				</swiper-slide>
 				<template v-for="action in actionsTools">
 					<swiper-slide class="w-auto justify-center flex items-center h-9">
 						<button class="btn btn-add" @click="initAction(action.id)"><i
-							:class="`las la-${action.icon}`"></i><span>{{ action.name }}</span>
+							:class="`las la-${action.icon}`"></i><span>{{ messages[action.name] }}</span>
 						</button>
 					</swiper-slide>
 				</template>
@@ -75,13 +75,14 @@
 		</sl-vue-tree-next>
 	</div>
 	<div class="contextmenu" :class="mobMenuClass" ref="contextmenu" id="contextmenu">
-		<div class="hidden md:flex justify-center items-center mt-3" :class="openContextMenu ? 'rotate-180' : ''" @click="openContextMenu = !openContextMenu" id="openContextMenu">
+		<div class="hidden md:flex justify-center items-center mt-3" :class="openContextMenu ? 'rotate-180' : ''"
+			 @click="openContextMenu = !openContextMenu" id="openContextMenu">
 			<i class="las la-angle-up"></i>
 		</div>
 		<ul class="custom-catalog__actions-items">
 			<li @click="toolAddGroup" class="capitalize" :class="actionCreateClass">{{ messages.create }}</li>
 			<li @click="updateItem" class="capitalize" :class="actionEditClass">{{ messages.Edit }}</li>
-			<li @click="deleteItem" class="capitalize" :class="actionDeleteClass">{{ messages.Delete }}</li>
+			<li @click="initDel" class="capitalize" :class="actionDeleteClass">{{ messages.Delete }}</li>
 			<li v-for="action in actionsContext" @click="initAction(action.id)">
 				<i v-if="action.icon" :class="`las la-${action.icon}`"></i>&nbsp;{{ action.name }}
 			</li>
@@ -90,7 +91,7 @@
 	<div style="display: none">
 		<div ref="refSelectItem">
 			<SelectItem :initItemsItem="ItemsItem" @createNewItem="createNewItem" v-if="isTollAdd"
-						:selectedNode="selectedNode"/>
+						:selectedNode="selectedNode" :movingGroupsRootOnly="_catalog.movingGroupsRootOnly"/>
 		</div>
 		<div ref="refItemHTML" class="custom-catalog__form">
 			<ItemHTML :html="HTML" @close-all-popups="closeAllPopups" :selectedNode="selectedNode"
@@ -102,11 +103,41 @@
 						 :JSONFormSchema="actionJsonFormSchema" :actionId="actionId" @closeAllPopups="closeAllPopups"/>
 		</div>
 	</div>
+	<div class="w-screen h-screen bg-black/70 fixed z-[10000] top-0 left-0 transition" :class="delModalClass">
+		<div tabindex="-1"
+			 class="fixed top-0 left-0 right-0 z-50 p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+			<div class="absolute top-1/4 left-1/2 translate-x-[-50%] w-full sm:w-[90%] max-w-md max-h-full">
+				<div class="relative bg-white dark:bg-gray-600  rounded-lg shadow">
+					<button type="button" @click="delModalShow = false"
+							class="absolute top-3 right-2.5 text-gray-400 dark:text-gray-300 bg-transparent hover:text-red-600 dark:hover:text-red-600 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center">
+						<svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+							 viewBox="0 0 14 14">
+							<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+								  stroke-width="2"
+								  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+						</svg>
+						<span class="sr-only">Close modal</span>
+					</button>
+					<div class="p-6 text-center">
+						<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-300">{{ messages["Are you sure?"] }}</h3>
+						<button type="button" @click="deleteItem"
+								class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
+							{{ messages["Yes, I'm sure"] }}
+						</button>
+						<button type="button" @click="delModalShow = false"
+								class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+							{{ messages["No, cancel"] }}
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script setup>
 
-import {SlVueTreeNext} from './Tree/sl-vue-tree-next'
+import {SlVueTreeNext} from '@sails-adminpanel/sl-vue-tree-next'
 import {ref, onMounted, computed, reactive, inject} from 'vue'
 import ItemHTML from "./Components/ItemHTML.vue";
 import SelectItem from "./Components/SelectItem.vue";
@@ -143,6 +174,12 @@ let searchText = ref('')
 let subcribeChildren = ref({})
 let actionId = ref(null)
 let openContextMenu = ref(false)
+let delModalShow = ref(false)
+let _catalog = reactive({
+	name: null,
+	id: null,
+	movingGroupsRootOnly: null
+})
 
 onMounted(async () => {
 	document.addEventListener('click', function (e) {
@@ -182,6 +219,10 @@ let actionCreateClass = computed(() => {
 	return selectedNode.value.length > 1 ? 'action-disabled' : ''
 })
 
+let delModalClass = computed(() => {
+	return delModalShow.value ? 'opacity-100 visible' : 'opacity-0 invisible';
+})
+
 let actionEditClass = computed(() => {
 	return selectedNode.value.length > 1 || !selectedNode.value.length ? 'action-disabled' : ''
 })
@@ -189,10 +230,9 @@ let actionDeleteClass = computed(() => {
 	return !selectedNode.value.length ? 'action-disabled' : ''
 })
 let mobMenuClass = computed(() => {
-	if(openContextMenu.value && contextMenuIsVisible.value){
+	if (openContextMenu.value && contextMenuIsVisible.value) {
 		return 'contextmenu--active contextmenu--active-show'
-	}
-	else if (contextMenuIsVisible.value) {
+	} else if (contextMenuIsVisible.value) {
 		return 'contextmenu--active'
 	}
 })
@@ -320,6 +360,9 @@ function getParent(Tnode) {
 }
 
 function setCatalog(catalog) {
+	_catalog.movingGroupsRootOnly = catalog.movingGroupsRootOnly
+	_catalog.name = catalog.catalogName
+	_catalog.id = catalog.catalogId
 	nodes.value = catalog.nodes
 }
 
@@ -367,9 +410,16 @@ async function updateItem() {
 	isCreate.value = true
 }
 
+function initDel() {
+	delModalShow.value = true
+}
+
 async function deleteItem() {
-	let res = await ky.delete('', {json: {data: selectedNode.value}}).json()
-	if (res.data.ok) removeNodes()
+	if (selectedNode.value.length) {
+		let res = await ky.delete('', {json: {data: selectedNode.value}}).json()
+		if (res.data.ok) removeNodes()
+	}
+	delModalShow.value = false
 }
 
 function nodeSelected(nodes, event) {
@@ -489,8 +539,13 @@ async function nodeDropped(Dnode, position, event) {
 			if (node.level === 1) reqParent.children.push(node)
 		})
 	}
-	//console.log('Node: ', reqNode, 'parent: ', reqParent)
-
+	// console.log('Node: ', reqNode, 'parent: ', reqParent)
+	if(_catalog.movingGroupsRootOnly === true) {
+		if (reqParent.data.id !== 0 && !reqNode.isLeaf) {
+			reloadCatalog()
+			return
+		}
+	}
 	let res = await ky.put('', {json: {data: {reqNode: reqNode, reqParent: reqParent}, _method: 'updateTree'}}).json()
 }
 

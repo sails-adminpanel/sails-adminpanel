@@ -13,6 +13,7 @@ export class CatalogHandler {
 		let config = sails.config.adminpanel;
 		if (this.catalog.length) {
 			for (const catItem of this.catalog) {
+				console.log('catItem: ', catItem)
 				catalog.push({
 					id: catItem.id
 				})

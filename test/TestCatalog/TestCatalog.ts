@@ -182,6 +182,7 @@ export class TestCatalog extends AbstractCatalog {
 	public readonly slug: string = "test";
 	public readonly maxNestingDepth: number = null;
 	public readonly icon: string = "box";
+	public readonly movingGroupsRootOnly:boolean;
 
 	//  public readonly itemTypes: (Item2 | Item1 | TestGroup)[];
 

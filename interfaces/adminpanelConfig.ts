@@ -446,7 +446,7 @@ export interface HrefConfig {
 
 export interface NavigationItemTypeConfig {
 	model: string
-	name: string
+	title: string
 	/**
 	 *  /page/:slug
 	 */
@@ -454,9 +454,10 @@ export interface NavigationItemTypeConfig {
 }
 
 export interface NavigationConfig {
-	model: string
+	model?: string
 	sections: string[]
 	groupField: {name: string, required: boolean}[]
 	allowContentInGroup?: boolean
-	items: NavigationItemTypeConfig[]
+	items: NavigationItemTypeConfig[],
+	movingGroupsRootOnly: boolean
 }

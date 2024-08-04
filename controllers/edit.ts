@@ -3,7 +3,6 @@ import {RequestProcessor} from "../lib/requestProcessor";
 import {FieldsHelper} from "../helper/fieldsHelper";
 import {CreateUpdateConfig} from "../interfaces/adminpanelConfig";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
-import {Navigation, StorageServices} from "../lib/catalog/Navigation/Navigation";
 import {CatalogHandler} from "../lib/catalog/CatalogHandler";
 
 export default async function edit(req, res) {

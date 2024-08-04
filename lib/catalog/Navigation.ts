@@ -1,9 +1,11 @@
-import {AbstractCatalog, AbstractGroup, AbstractItem, Item} from "../AbstractCatalog";
-import {ModelConfig, NavigationConfig} from "../../../interfaces/adminpanelConfig";
+import {AbstractCatalog, AbstractGroup, AbstractItem, ActionHandler, Item} from "./AbstractCatalog";
+import {ModelConfig, NavigationConfig} from "../../interfaces/adminpanelConfig";
 import * as fs from "node:fs";
 
 const ejs = require('ejs')
 import {v4 as uuid} from "uuid";
+import {JSONSchema4} from "json-schema";
+import {ViewsHelper} from "../../helper/viewsHelper";
 
 export interface NavItem extends Item {
 	urlPath?: any;
@@ -192,17 +194,17 @@ export class StorageServices {
 }
 
 export class Navigation extends AbstractCatalog {
-	readonly maxNestingDepth: number | null;
+	readonly movingGroupsRootOnly:boolean;
 	readonly name: string = 'Navigation';
 	readonly slug: string = 'navigation';
 	public readonly icon: string = "box";
-	public readonly actionHandlers = []
+	public readonly actionHandlers: ActionHandler[] = []
 
 	constructor(config: NavigationConfig) {
 		let items = []
 		for (const configElement of config.items) {
 			items.push(new NavigationItem(
-				configElement.name,
+				configElement.title,
 				configElement.model,
 				config.model,
 				configElement.urlPath
@@ -213,10 +215,9 @@ export class Navigation extends AbstractCatalog {
 		for (const section of config.sections) {
 			StorageServices.add(new StorageService(section, config.model))
 		}
-
 		super(items);
+		this.movingGroupsRootOnly = config.movingGroupsRootOnly
 	}
-
 }
 
 class NavigationItem extends AbstractItem<NavItem> {
@@ -324,7 +325,7 @@ class NavigationItem extends AbstractItem<NavItem> {
 
 		return {
 			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/itemHTMLAdd.ejs`, 'utf8'), {
+			data: ejs.render(fs.readFileSync(ViewsHelper.getViewPath('./../../views/ejs/navigation/itemHTMLAdd.ejs'), 'utf8'), {
 				items: items,
 				item: {name: this.name, type: this.type, model: this.model},
 				__: __
@@ -352,7 +353,7 @@ class NavigationItem extends AbstractItem<NavItem> {
 
 		return Promise.resolve({
 			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/itemHTMLEdit.ejs`, 'utf8'), {item: item, __: __})
+			data: ejs.render(fs.readFileSync(ViewsHelper.getViewPath('./../../views/ejs/navigation/itemHTMLEdit.ejs'), 'utf8'), {item: item, __: __})
 		})
 	}
 
@@ -437,7 +438,7 @@ class NavigationGroup extends AbstractGroup<NavItem> {
 
 		return Promise.resolve({
 			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/GroupHTMLAdd.ejs`, 'utf8'), {
+			data: ejs.render(fs.readFileSync(ViewsHelper.getViewPath('./../../views/ejs/navigation/GroupHTMLAdd.ejs'), 'utf8'), {
 				fields: this.groupField,
 				__: __
 			}),
@@ -464,7 +465,7 @@ class NavigationGroup extends AbstractGroup<NavItem> {
 
 		return Promise.resolve({
 			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/GroupHTMLEdit.ejs`, 'utf8'), {
+			data: ejs.render(fs.readFileSync(ViewsHelper.getViewPath('./../../views/ejs/navigation/GroupHTMLEdit.ejs'), 'utf8'), {
 				fields: this.groupField,
 				item: item,
 				__: __
@@ -500,7 +501,7 @@ class LinkItem extends NavigationGroup {
 		}
 		return Promise.resolve({
 			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/LinkItemAdd.ejs`, 'utf8'), {__: __}),
+			data: ejs.render(fs.readFileSync(ViewsHelper.getViewPath('./../../views/ejs/navigation/LinkItemAdd.ejs'), 'utf8'), {__: __}),
 		})
 	}
 
@@ -518,7 +519,7 @@ class LinkItem extends NavigationGroup {
 
 		return Promise.resolve({
 			type: type,
-			data: ejs.render(fs.readFileSync(`${__dirname}/LinkItemEdit.ejs`, 'utf8'), {
+			data: ejs.render(fs.readFileSync(ViewsHelper.getViewPath('./../../views/ejs/navigation/LinkItemEdit.ejs'), 'utf8'), {
 				fields: this.groupField,
 				item: item,
 				__: __

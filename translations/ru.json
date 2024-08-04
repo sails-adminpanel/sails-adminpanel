@@ -44,5 +44,11 @@
 	"Select Item type": "Выберите Элемент",
 	"Select Items": "Ничего не выбрано",
 	"Search": "Поиск",
-	"Open in a new window": "Открывать в новом окне"
-  }
+	"Open in a new window": "Открывать в новом окне",
+	"No, cancel": "Нет, отменить",
+	"Are you sure?": "Вы уверены?",
+	"Yes, I'm sure": "Да, я уверен",
+	"Navigation": "Навигация",
+	"Select": "Выберите",
+	"OR": "ИЛИ"
+}

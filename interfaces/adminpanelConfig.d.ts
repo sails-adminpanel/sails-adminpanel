@@ -385,14 +385,14 @@ export interface HrefConfig {
 }
 export interface NavigationItemTypeConfig {
     model: string;
-    name: string;
+    title: string;
     /**
      *  /page/:slug
      */
     urlPath: string | ((v: any) => string);
 }
 export interface NavigationConfig {
-    model: string;
+    model?: string;
     sections: string[];
     groupField: {
         name: string;
@@ -400,5 +400,6 @@ export interface NavigationConfig {
     }[];
     allowContentInGroup?: boolean;
     items: NavigationItemTypeConfig[];
+    movingGroupsRootOnly: boolean;
 }
 export {};
