@@ -1,9 +1,9 @@
 {
-	"Welcome": "Test Welcome",
-	"A brand new app.": "Test A brand new app.",
-	"Actions": "Test Actions",
-	"No records found !": "Test No records found !",
-	"Are you sure ?": "Test Are you sure ?",
+	"Welcome": "Welcome",
+	"A brand new app.": "A brand new app.",
+	"Actions": "Actions",
+	"No records found !": "No records found !",
+	"Are you sure ?": "Are you sure ?",
 	"View": "View",
 	"Edit": "Edit",
 	"Overview": "Overview",
@@ -94,5 +94,8 @@
 	"Slug": "Slug",
 	"about": "about",
 	"Text": "Text",
-	"gallery": "gallery"
+	"gallery": "gallery",
+	"Is Administrator": "Is Administrator",
+	"Leave this field empty if you don't want to change the password": "Leave this field empty if you don't want to change the password",
+	"Wrong username or password": "Wrong username or password"
 }
