@@ -26,7 +26,15 @@
 				let res = await ky.post(uri, {json: data}).json()
 				if (res.record && checkboxReady) {
 					if (targetBlankNewItem) res.record.targetBlank = targetBlankNewItem.checked
-					ky.post('', {json: {data: {record: res.record, parentId: parentId.value, type: "<%= entity.config.model %>"},  _method: 'createItem'}}).then(r => {
+					ky.post('', {
+						json: {
+							data: {
+								record: res.record,
+								parentId: parentId.value,
+								type: "<%= entity.config.model %>"
+							}, _method: 'createItem'
+						}
+					}).then(r => {
 						checkboxReady.click()
 					})
 				}

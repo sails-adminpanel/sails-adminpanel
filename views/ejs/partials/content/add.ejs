@@ -1,5 +1,11 @@
 <% var config = adminpanel.configHelper.getConfig() %>
-
+<script>
+	const jsonEditor = {};
+	const aceCounter = 0;
+	const editor = [];
+	const textarea = [];
+	const tables = {};
+</script>
 <% Object.keys(fields).forEach(function(key) { %>
     <% if ((!config.showORMtime) && (key === 'createdAt' || key === 'updatedAt')) return %>
     <div class="flex flex-col gap-3">
