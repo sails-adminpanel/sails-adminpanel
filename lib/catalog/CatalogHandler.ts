@@ -9,17 +9,7 @@ export class CatalogHandler {
 	}
 
 	public static getAll() {
-		let catalog = []
-		let config = sails.config.adminpanel;
-		if (this.catalog.length) {
-			for (const catItem of this.catalog) {
-				console.log('catItem: ', catItem)
-				catalog.push({
-					id: catItem.id
-				})
-			}
-		}
-		return Promise.resolve(catalog)
+		return this.catalog;
 	}
 
 	public static getCatalog(slug: string) {

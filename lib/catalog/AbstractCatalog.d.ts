@@ -172,7 +172,7 @@ export declare abstract class AbstractCatalog {
     /**
      * moving groups to the root only
      */
-    abstract readonly movingGroupsRootOnly: boolean;
+    movingGroupsRootOnly: boolean;
     /**
      * Array of all global contexts, which will appear for all elements
      */

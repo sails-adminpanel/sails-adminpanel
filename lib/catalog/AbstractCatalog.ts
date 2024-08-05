@@ -239,7 +239,7 @@ export abstract class AbstractCatalog {
 	/**
 	 * moving groups to the root only
 	 */
-	public abstract readonly movingGroupsRootOnly: boolean
+	public movingGroupsRootOnly: boolean = false
 
 
 	/**
