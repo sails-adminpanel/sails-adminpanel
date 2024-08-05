@@ -6,6 +6,7 @@ import {VueCatalog} from "./FrontentCatalogAdapter";
 export async function catalogController(req, res) {
 	const slug = req.param('slug');
 	const id = req.param('id') ? req.param('id') : '';
+	
 	const postfix = id ? `${slug}-${id}` : `${slug}`
 	if (sails.config.adminpanel.auth) {
 		if (!req.session.UserAP) {
@@ -16,6 +17,14 @@ export async function catalogController(req, res) {
 	}
 
 	const _catalog = CatalogHandler.getCatalog(slug)
+	
+	if(id) {
+		const idList = _catalog.getIdList();
+		if(idList.length && !idList.includes(id)) {
+			return res.status(404);
+		}
+	}
+	
 	if (_catalog === undefined) return res.sendStatus(404);
 
 	const method = req.method.toUpperCase();

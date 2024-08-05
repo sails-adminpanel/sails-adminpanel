@@ -321,6 +321,13 @@ export abstract class AbstractCatalog {
 		this.id = id
 	}
 
+	/**
+	 * Gettind id list method 
+	 */
+	public getIdList(): string [] {
+		return []
+	}
+
 	public getItemType(type: string) {
 		return this.itemTypes.find((it) => it.type === type);
 	}

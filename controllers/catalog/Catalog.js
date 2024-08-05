@@ -17,6 +17,12 @@ async function catalogController(req, res) {
         }
     }
     const _catalog = CatalogHandler_1.CatalogHandler.getCatalog(slug);
+    if (id) {
+        const idList = _catalog.getIdList();
+        if (idList.length && !idList.includes(id)) {
+            return res.status(404);
+        }
+    }
     if (_catalog === undefined)
         return res.sendStatus(404);
     const method = req.method.toUpperCase();

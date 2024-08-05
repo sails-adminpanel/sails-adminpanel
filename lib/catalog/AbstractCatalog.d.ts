@@ -194,6 +194,10 @@ export declare abstract class AbstractCatalog {
     private _bindAccessRight;
     protected constructor(items: BaseItem<any>[]);
     setID(id: string): void;
+    /**
+     * Gettind id list method
+     */
+    getIdList(): string[];
     getItemType(type: string): BaseItem<Item>;
     getGroupType(): BaseItem<Item>;
     additemTypes<T extends BaseItem<any>>(itemType: T): void;
