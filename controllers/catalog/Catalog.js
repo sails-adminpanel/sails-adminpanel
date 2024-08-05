@@ -6,7 +6,7 @@ const accessRightsHelper_1 = require("../../helper/accessRightsHelper");
 const FrontentCatalogAdapter_1 = require("./FrontentCatalogAdapter");
 async function catalogController(req, res) {
     const slug = req.param('slug');
-    const id = req.param('id') ? req.param('id') : '';
+    let id = req.param('id') ? req.param('id') : '';
     const postfix = id ? `${slug}-${id}` : `${slug}`;
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
@@ -22,7 +22,12 @@ async function catalogController(req, res) {
     const idList = await _catalog.getIdList();
     if (id) {
         if (idList.length && !idList.includes(id)) {
-            return res.status(404);
+            return res.sendStatus(404);
+        }
+    }
+    else {
+        if (idList.length) {
+            id = idList[0];
         }
     }
     const method = req.method.toUpperCase();
