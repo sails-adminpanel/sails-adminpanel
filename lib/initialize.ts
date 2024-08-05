@@ -43,7 +43,7 @@ export default async function(sails: any, cb) {
 
     HookTools.waitForHooks("adminpanel", requiredHooks, afterHook);
 	const modelsToSkip = []
-	if(sails.config.adminpanel.navigation.model) modelsToSkip.push('navigationap')
+	if(sails.config.adminpanel.navigation?.model) modelsToSkip.push('navigationap')
     await HookTools.bindModels(resolve(__dirname, "../models"));
 
     // add install stepper policy to check unfilled settings
