@@ -350,7 +350,7 @@ async function closeAllPopups() {
 		}
 	}
 	if (PopupEvent.value === 'update') {
-		if (selectedNode.value[0].data.parentId === null) {
+		if (!selectedNode.value.length || selectedNode.value[0]?.data.parentId === null) {
 			reloadCatalog()
 		} else {
 			await getChilds(getParent(selectedNode.value[0]))
@@ -433,6 +433,7 @@ async function deleteItem() {
 		if (res.data.ok) removeNodes()
 	}
 	delModalShow.value = false
+	selectedNode.value = []
 }
 
 function nodeSelected(nodes, event) {

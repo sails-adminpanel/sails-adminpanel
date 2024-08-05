@@ -89,7 +89,7 @@ async function edit(req, res) {
         try {
             let newRecord = await entity.model.update(params, reqData).fetch();
             sails.log.debug(`Record was updated: `, newRecord);
-            if (req.body.json) {
+            if (req.body.jsonPopupCatalog) {
                 return res.json({ record: newRecord });
             }
             else {

@@ -884,6 +884,10 @@ select {
 	}
 }
 
+.htContextMenu:not(.htGhostTable){
+	z-index: 99999;
+}
+
 // Dashboard
 @import "widgets";
 @import "ch_switcher";
