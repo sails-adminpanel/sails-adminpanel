@@ -16,6 +16,10 @@ export async function catalogController(req, res) {
 		}
 	}
 
+	if(slug === 'navigation' && !id) {
+		return res.sendStatus(404)
+	}
+
 	const _catalog = CatalogHandler.getCatalog(slug)
 
 	if (_catalog === undefined) return res.sendStatus(404);
@@ -24,7 +28,7 @@ export async function catalogController(req, res) {
 
 	if (id) {
 		if (idList.length && !idList.includes(id)) {
-			return res.status(404);
+			return res.sendStatus(404);
 		}
 	}
 

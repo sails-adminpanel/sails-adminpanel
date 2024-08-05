@@ -57,7 +57,25 @@ export class VueCatalog {
 	}
 
 	getLocales(loc: string) {
-		let messages = this.catalog.getLocalizeMessages()
+		let obj: object = {
+			"Delete": "",
+			"Edit": "",
+			"create": "",
+			"Search": "",
+			"Select Item type": "",
+			"Select Items": "",
+			"Save": "",
+			"No, cancel": "",
+			"Are you sure?": "",
+			"Yes, I'm sure": "",
+			"Select Ids": ""
+		}
+		obj[this.catalog.name] = ""
+		for (const actionHandler of this.catalog.actionHandlers) {
+			obj[actionHandler.name] = ""
+		}
+
+		let messages = obj
 		const i18nFactory = require('i18n-2');
 		let i18n = new i18nFactory({
 			...sails.config.i18n,

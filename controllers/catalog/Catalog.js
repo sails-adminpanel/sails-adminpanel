@@ -16,13 +16,16 @@ async function catalogController(req, res) {
             return res.sendStatus(403);
         }
     }
+    if (slug === 'navigation' && !id) {
+        return res.sendStatus(404);
+    }
     const _catalog = CatalogHandler_1.CatalogHandler.getCatalog(slug);
     if (_catalog === undefined)
         return res.sendStatus(404);
     const idList = await _catalog.getIdList();
     if (id) {
         if (idList.length && !idList.includes(id)) {
-            return res.status(404);
+            return res.sendStatus(404);
         }
     }
     const method = req.method.toUpperCase();
