@@ -30,11 +30,12 @@ export async function catalogController(req, res) {
 		if (idList.length && !idList.includes(id)) {
 			return res.sendStatus(404);
 		}
-	} else {
-		if (idList.length) {
-			id = idList[0]
-		}
 	}
+	// else {
+	// 	if (idList.length) {
+	// 		id = idList[0]
+	// 	}
+	// }
 
 
 	const method = req.method.toUpperCase();
