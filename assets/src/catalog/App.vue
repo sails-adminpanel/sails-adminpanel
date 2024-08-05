@@ -1,5 +1,13 @@
 <template>
-	<h1 class="text-[28px] leading-[36px] text-black mb-4 dark:text-gray-300">{{ messages[_catalog.name] }} <span class="text-xl text-gray-400">({{_catalog.id}})</span></h1>
+	<div class="flex gap-4 items-center mb-4">
+		<h1 class="text-[28px] leading-[36px] text-black dark:text-gray-300">{{ messages[_catalog.name] }}</h1>
+			<select class="select select-small capitalize" v-if="_catalog.idList.length" @change="window.location = `/admin/catalog/${_catalog.slug}/${$event.target.value}`">
+				<option v-for="id in _catalog.idList" :value="id" :selected="id === _catalog.id" class="capitalize">{{
+						id
+					}}
+				</option>
+			</select>
+	</div>
 	<div
 		class="grid grid-cols-[minmax(70px,_800px)_minmax(150px,_250px)] gap-10 justify-between md:flex md:flex-col md:gap-3.5">
 		<div class="sm:mr-[-24px]">
@@ -119,7 +127,8 @@
 						<span class="sr-only">Close modal</span>
 					</button>
 					<div class="p-6 text-center">
-						<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-300">{{ messages["Are you sure?"] }}</h3>
+						<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-300">
+							{{ messages["Are you sure?"] }}</h3>
 						<button type="button" @click="deleteItem"
 								class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
 							{{ messages["Yes, I'm sure"] }}
@@ -178,7 +187,9 @@ let delModalShow = ref(false)
 let _catalog = reactive({
 	name: null,
 	id: null,
-	movingGroupsRootOnly: null
+	slug: null,
+	movingGroupsRootOnly: null,
+	idList: []
 })
 
 onMounted(async () => {
@@ -363,6 +374,8 @@ function setCatalog(catalog) {
 	_catalog.movingGroupsRootOnly = catalog.movingGroupsRootOnly
 	_catalog.name = catalog.catalogName
 	_catalog.id = catalog.catalogId
+	_catalog.slug = catalog.catalogSlug
+	_catalog.idList = catalog.idList
 	nodes.value = catalog.nodes
 }
 
@@ -540,7 +553,7 @@ async function nodeDropped(Dnode, position, event) {
 		})
 	}
 	// console.log('Node: ', reqNode, 'parent: ', reqParent)
-	if(_catalog.movingGroupsRootOnly === true) {
+	if (_catalog.movingGroupsRootOnly === true) {
 		if (reqParent.data.id !== 0 && !reqNode.isLeaf) {
 			reloadCatalog()
 			return

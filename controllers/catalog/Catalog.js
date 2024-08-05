@@ -17,14 +17,14 @@ async function catalogController(req, res) {
         }
     }
     const _catalog = CatalogHandler_1.CatalogHandler.getCatalog(slug);
+    if (_catalog === undefined)
+        return res.sendStatus(404);
+    const idList = await _catalog.getIdList();
     if (id) {
-        const idList = _catalog.getIdList();
         if (idList.length && !idList.includes(id)) {
             return res.status(404);
         }
     }
-    if (_catalog === undefined)
-        return res.sendStatus(404);
     const method = req.method.toUpperCase();
     if (method === 'GET') {
         return res.viewAdmin('catalog', { entity: "entity", slug: slug, id: id });
@@ -51,7 +51,9 @@ async function catalogController(req, res) {
                                 nodes: __catalog,
                                 movingGroupsRootOnly: _catalog.movingGroupsRootOnly ?? false,
                                 catalogName: _catalog.name,
-                                catalogId: _catalog.id
+                                catalogId: _catalog.id,
+                                catalogSlug: _catalog.slug,
+                                idList: idList
                             },
                             'toolsActions': await vueCatalog.getActions([], 'tools')
                         });

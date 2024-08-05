@@ -164,6 +164,7 @@ class TestCatalog extends AbstractCatalog_1.AbstractCatalog {
         this.slug = "test";
         this.maxNestingDepth = null;
         this.icon = "box";
+        this.actionHandlers = [];
     }
 }
 exports.TestCatalog = TestCatalog;

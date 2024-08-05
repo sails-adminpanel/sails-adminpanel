@@ -6,7 +6,7 @@ import {VueCatalog} from "./FrontentCatalogAdapter";
 export async function catalogController(req, res) {
 	const slug = req.param('slug');
 	const id = req.param('id') ? req.param('id') : '';
-	
+
 	const postfix = id ? `${slug}-${id}` : `${slug}`
 	if (sails.config.adminpanel.auth) {
 		if (!req.session.UserAP) {
@@ -17,15 +17,17 @@ export async function catalogController(req, res) {
 	}
 
 	const _catalog = CatalogHandler.getCatalog(slug)
-	
-	if(id) {
-		const idList = _catalog.getIdList();
-		if(idList.length && !idList.includes(id)) {
+
+	if (_catalog === undefined) return res.sendStatus(404);
+
+	const idList = await _catalog.getIdList();
+
+	if (id) {
+		if (idList.length && !idList.includes(id)) {
 			return res.status(404);
 		}
 	}
-	
-	if (_catalog === undefined) return res.sendStatus(404);
+
 
 	const method = req.method.toUpperCase();
 	if (method === 'GET') {
@@ -55,7 +57,9 @@ export async function catalogController(req, res) {
 								nodes: __catalog,
 								movingGroupsRootOnly: _catalog.movingGroupsRootOnly ?? false,
 								catalogName: _catalog.name,
-								catalogId: _catalog.id
+								catalogId: _catalog.id,
+								catalogSlug: _catalog.slug,
+								idList: idList
 							},
 							'toolsActions': await vueCatalog.getActions([], 'tools')
 						})

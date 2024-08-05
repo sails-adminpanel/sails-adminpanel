@@ -20,7 +20,7 @@ interface NavigationAP extends OptionalAll<attributes> {
 }
 export default NavigationAP;
 declare let model: {
-    beforeCreate(record: NavigationAP, cb: (err?: string | Error) => void): void;
+    beforeCreate(record: NavigationAP, cb: (err?: Error | string) => void): void;
 };
 declare global {
     const NavigationAP: typeof model & WaterlineModel<NavigationAP, null>;

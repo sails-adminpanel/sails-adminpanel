@@ -73,15 +73,5 @@ export default async function () {
      */
     sails.emit('Adminpanel:afterHook:loaded');
 
-    if (process.env.NODE_ENV !== "production") {
-        // let catalog = new TestCatalog()
-        // CatalogHandler.add(catalog)
-        // require("./../test/TestCatalog/genData").createTestData()
-
-        // let catalogModel = new TestModelCatalog()
-        // CatalogHandler.add(catalogModel)
-        // require("./../test/TestCatalog/genDataModelCatalog").createTestData()
-    }
-
     return
 };

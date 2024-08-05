@@ -183,6 +183,7 @@ export class TestCatalog extends AbstractCatalog {
 	public readonly maxNestingDepth: number = null;
 	public readonly icon: string = "box";
 	public readonly movingGroupsRootOnly:boolean;
+	public readonly actionHandlers = []
 
 	//  public readonly itemTypes: (Item2 | Item1 | TestGroup)[];
 

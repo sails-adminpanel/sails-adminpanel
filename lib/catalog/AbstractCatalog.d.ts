@@ -197,7 +197,7 @@ export declare abstract class AbstractCatalog {
     /**
      * Gettind id list method
      */
-    getIdList(): string[];
+    getIdList(): Promise<string[]>;
     getItemType(type: string): BaseItem<Item>;
     getGroupType(): BaseItem<Item>;
     additemTypes<T extends BaseItem<any>>(itemType: T): void;

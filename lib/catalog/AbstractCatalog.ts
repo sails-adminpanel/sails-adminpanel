@@ -322,9 +322,9 @@ export abstract class AbstractCatalog {
 	}
 
 	/**
-	 * Gettind id list method 
+	 * Gettind id list method
 	 */
-	public getIdList(): string [] {
+	public async getIdList(): Promise<string []> {
 		return []
 	}
 

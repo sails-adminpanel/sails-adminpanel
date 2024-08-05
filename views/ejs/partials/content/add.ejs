@@ -1,10 +1,10 @@
 <% var config = adminpanel.configHelper.getConfig() %>
 <script>
-	const jsonEditor = {};
-	const aceCounter = 0;
-	const editor = [];
-	const textarea = [];
-	const tables = {};
+	let jsonEditor = {}
+	let aceCounter = 0;
+	let editor = [];
+	let textarea = [];
+	let tables = {};
 </script>
 <% Object.keys(fields).forEach(function(key) { %>
     <% if ((!config.showORMtime) && (key === 'createdAt' || key === 'updatedAt')) return %>

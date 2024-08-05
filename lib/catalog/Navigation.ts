@@ -199,6 +199,7 @@ export class Navigation extends AbstractCatalog {
 	readonly slug: string = 'navigation';
 	public readonly icon: string = "box";
 	public readonly actionHandlers: ActionHandler[] = []
+	public idList: string[] = []
 
 	constructor(config: NavigationConfig) {
 		let items = []
@@ -217,6 +218,11 @@ export class Navigation extends AbstractCatalog {
 		}
 		super(items);
 		this.movingGroupsRootOnly = config.movingGroupsRootOnly
+		this.idList = config.sections ?? []
+	}
+
+	async getIdList(){
+		return this.idList
 	}
 }
 
