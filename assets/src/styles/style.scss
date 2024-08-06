@@ -194,6 +194,9 @@ select {
 	@apply px-3 py-2 rounded border border-gray-400 dark:border-gray-700 dark:focus:border-blue-600 outline-none focus:ring focus:ring-offset-0 focus:ring-blue-600 h-12 bg-white dark:bg-gray-900 transition;
 }
 
+.select-small{
+	@apply h-[36px] py-0;
+}
 
 .textarea {
 	@apply h-[200px] w-full;
@@ -879,6 +882,10 @@ select {
 	.admin-modal-pu--active .admin-modal-pu-wrapper {
 		left: 0
 	}
+}
+
+.htContextMenu:not(.htGhostTable){
+	z-index: 99999;
 }
 
 // Dashboard

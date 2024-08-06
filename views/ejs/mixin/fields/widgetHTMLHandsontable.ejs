@@ -13,7 +13,7 @@
 <% } %>
 
 <script>
-
+	var tables = {};
     let data<%=key%> = document.getElementById('form-<%= key %>').value;
     if (data<%=key%>) {
         data<%=key%> = JSON.parse(data<%=key%>)
@@ -98,7 +98,7 @@
     this.TEXTAREA_PARENT.style.width = quillWidth + 'px';
     this.TEXTAREA_PARENT.style.height = quillHeight + 'px';
     this.TEXTAREA_PARENT.style.display = 'none';
-    
+
     this.quill = new Quill(this.editableDiv, {
       theme: 'snow',
       modules: {

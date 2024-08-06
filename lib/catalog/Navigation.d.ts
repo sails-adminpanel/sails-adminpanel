@@ -35,6 +35,8 @@ export declare class Navigation extends AbstractCatalog {
     readonly slug: string;
     readonly icon: string;
     readonly actionHandlers: ActionHandler[];
+    idList: string[];
     constructor(config: NavigationConfig);
+    getIdList(): Promise<string[]>;
 }
 export {};

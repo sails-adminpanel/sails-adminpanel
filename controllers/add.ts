@@ -81,7 +81,7 @@ export default async function add(req, res) {
 		try {
 			let record = await entity.model.create(reqData).fetch();
 			sails.log.debug(`A new record was created: `, record);
-			if (req.body.json) {
+			if (req.body.jsonPopupCatalog) {
 				return res.json({record: record})
 			} else {
 				req.session.messages.adminSuccess.push('Your record was created !');

@@ -258,26 +258,6 @@ export abstract class AbstractCatalog {
 	public readonly itemTypes: BaseItem<Item>[] = [];
 
 
-	public getLocalizeMessages() {
-		let obj: object = {
-			"Delete": "",
-			"Edit": "",
-			"create": "",
-			"Search": "",
-			"Select Item type": "",
-			"Select Items": "",
-			"Save": "",
-			"No, cancel": "",
-			"Are you sure?": "",
-			"Yes, I'm sure": ""
-		}
-		obj[this.name] = ""
-		for (const actionHandler of this.actionHandlers) {
-			obj[actionHandler.name] = ""
-		}
-		return obj
-	}
-
 	/**
 	 * Method for getting childs elements
 	 * if pass null as parentId this root
@@ -322,9 +302,9 @@ export abstract class AbstractCatalog {
 	}
 
 	/**
-	 * Gettind id list method 
+	 * Gettind id list method
 	 */
-	public getIdList(): string [] {
+	public async getIdList(): Promise<string []> {
 		return []
 	}
 

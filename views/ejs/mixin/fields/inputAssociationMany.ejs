@@ -35,7 +35,7 @@
         icon: "las la-times",
         multiple: true,
         onChange: function(value) {
-            $('#form-<%= key %>').val(value)
+            document.getElementById('form-<%= key %>').value = value;
         }
     });
 </script>

@@ -185,7 +185,6 @@ export declare abstract class AbstractCatalog {
      * List of element types
      */
     readonly itemTypes: BaseItem<Item>[];
-    getLocalizeMessages(): object;
     /**
      * Method for getting childs elements
      * if pass null as parentId this root
@@ -197,7 +196,7 @@ export declare abstract class AbstractCatalog {
     /**
      * Gettind id list method
      */
-    getIdList(): string[];
+    getIdList(): Promise<string[]>;
     getItemType(type: string): BaseItem<Item>;
     getGroupType(): BaseItem<Item>;
     additemTypes<T extends BaseItem<any>>(itemType: T): void;

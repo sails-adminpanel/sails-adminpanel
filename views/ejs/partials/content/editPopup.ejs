@@ -2,7 +2,7 @@
 <form action="" id="customForm">
     <%- include("edit.ejs") %>
     <div>
-        <button class="btn btn-green mt-4" id="save-group">
+        <button class="btn btn-green mt-4" id="save-group" type="submit">
             Save
         </button>
     </div>
@@ -18,12 +18,50 @@
 			let checkboxReady = document.getElementById('checkbox-ready')
 
 			setTimeout(async () => {
+				for (let id in jsonEditor) {
+					try {
+						let json = jsonEditor[id].get();
+						$('#form-' + id).val(JSON.stringify(json));
+					} catch (e) {
+						alert('JSON is invalid.');
+						$('#form-' + id).show().focus().hide();
+						jsonEditor[id].focus();
+						return false;
+					}
+				}
+				for (let id in tables) {
+					try {
+						let schema = tables[id].getSchema();
+						let table = tables[id].getData();
+						table = table.filter(item => {
+							return !([...new Set(item)].length === 1 && [...new Set(item)][0] === null);
+						});
+						if (schema && Object.keys(schema).length) {
+							table = table.map((item) => {
+								let newItem = {};
+								let keys = Object.keys(schema);
+								for (let i = 0; i < keys.length; i++) {
+									newItem[keys[i]] = item[i];
+								}
+								return newItem;
+							});
+						} else {
+							table = table.map((item) => {
+								return [null].concat(item);
+							});
+						}
+						$('#form-' + id).val(JSON.stringify(table));
+					} catch (e) {
+						alert('Table is invalid!');
+						return false;
+					}
+				}
 				for (const eElement of e.target.elements) {
 					if (eElement.value) {
 						data[eElement.name] = eElement.value
 					}
 				}
-				data.json = true
+				data.jsonPopupCatalog = true
 				let res = await ky.post(uri, {json: data}).json()
 				if (res.record && checkboxReady) {
 					if (targetBlankNewItem) res.record[0].targetBlank = targetBlankNewItem.checked

@@ -5,11 +5,7 @@ import bindDev from "./bindDev";
 import bindForms from "./bindForms";
 import bindDashboardWidgets from "./bindDashboardWidgets";
 import Router from "./Router";
-import { CatalogHandler } from "./catalog/CatalogHandler";
 
-// Delete it after finish develop catalog feature
-import { TestCatalog } from "../test/TestCatalog/TestCatalog";
-import { TestModelCatalog } from "../test/TestCatalog/TestModelCatalog";
 import bindNavigation from "./bindNavigation";
 
 export default async function () {
@@ -73,15 +69,5 @@ export default async function () {
      */
     sails.emit('Adminpanel:afterHook:loaded');
 
-    if (process.env.NODE_ENV !== "production") {
-        // let catalog = new TestCatalog()
-        // CatalogHandler.add(catalog)
-        // require("./../test/TestCatalog/genData").createTestData()
-
-        // let catalogModel = new TestModelCatalog()
-        // CatalogHandler.add(catalogModel)
-        // require("./../test/TestCatalog/genDataModelCatalog").createTestData()
-    }
-
-    return
+	return
 };

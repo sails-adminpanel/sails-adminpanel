@@ -12,7 +12,7 @@
                 ...options<%=key%>,
                 element: '<%=key%>-container',
                 field: '<%=key%>',
-                data: $('#form-<%=key%>').val(),
+                data: document.getElementById(`form-<%= key %>`).value,
             });
         });
 </script>
