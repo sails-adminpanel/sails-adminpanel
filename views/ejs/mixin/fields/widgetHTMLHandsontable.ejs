@@ -13,7 +13,7 @@
 <% } %>
 
 <script>
-	var tables = {};
+
     let data<%=key%> = document.getElementById('form-<%= key %>').value;
     if (data<%=key%>) {
         data<%=key%> = JSON.parse(data<%=key%>)
@@ -55,7 +55,7 @@
 
     if(options<%=key%>.height === 'auto') options<%=key%>.height = 500
 
-    tables['<%= key %>'] = new Handsontable(container<%=key%>, {
+	apTables['<%= key %>'] = new Handsontable(container<%=key%>, {
         data: data<%=key%>,
         ...options<%=key%>
     });
