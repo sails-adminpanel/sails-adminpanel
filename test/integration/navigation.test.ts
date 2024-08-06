@@ -38,11 +38,11 @@ describe('Navigation', function () {
 				"slug": "page-1",
 				"about": "zxc",
 				"text": "<p>zxc</p>",
-				"json": true
+				"jsonPopupCatalog": true
 			})
 
 		await agent.post('/admin/catalog/navigation/header')
-			.type('form')
+			.type('json')
 			.send({data: {record: res.body.record, parentId: "", type: "page"}, _method: 'createItem'});
 
 		await agent.post('/admin/catalog/navigation/header')
@@ -183,6 +183,7 @@ describe('Navigation', function () {
 					},
 				}, _method: 'getChilds'
 			});
+
 		s = finally_res.body.data.find((e_2: { title: string; }) => e_2.title === 'Page 1').title;
 		// console.log(s)
 

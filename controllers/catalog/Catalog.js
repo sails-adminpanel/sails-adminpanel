@@ -16,6 +16,9 @@ async function catalogController(req, res) {
             return res.sendStatus(403);
         }
     }
+    if (slug === 'navigation' && !id) {
+        return res.sendStatus(404);
+    }
     const _catalog = CatalogHandler_1.CatalogHandler.getCatalog(slug);
     if (_catalog === undefined)
         return res.sendStatus(404);
@@ -25,11 +28,11 @@ async function catalogController(req, res) {
             return res.sendStatus(404);
         }
     }
-    else {
-        if (idList.length) {
-            id = idList[0];
-        }
-    }
+    // else {
+    // 	if (idList.length) {
+    // 		id = idList[0]
+    // 	}
+    // }
     const method = req.method.toUpperCase();
     if (method === 'GET') {
         return res.viewAdmin('catalog', { entity: "entity", slug: slug, id: id });

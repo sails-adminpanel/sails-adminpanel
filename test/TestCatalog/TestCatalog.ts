@@ -184,7 +184,7 @@ export class TestCatalog extends AbstractCatalog {
 	public readonly icon: string = "box";
 	public readonly movingGroupsRootOnly:boolean;
 	public readonly actionHandlers = []
-
+	public idList: string[] = ['test']
 	//  public readonly itemTypes: (Item2 | Item1 | TestGroup)[];
 
 	constructor() {
@@ -195,5 +195,8 @@ export class TestCatalog extends AbstractCatalog {
 			new Item1(),// @ts-ignore
 			new Item2()
 		]);
+	}
+	async getIdList(){
+		return this.idList
 	}
 }

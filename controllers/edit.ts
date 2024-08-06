@@ -114,8 +114,11 @@ export default async function edit(req, res) {
 					for (const section of sails.config.adminpanel.navigation.sections) {
 						let navigation = CatalogHandler.getCatalog('navigation')
 						navigation.setID(section)
+						console.log(navigation)
 						let navItem = navigation.itemTypes.find(item => item.type === entity.name)
-						await navItem.updateModelItems(newRecord[0].id, {record: newRecord[0]}, section)
+						if(navItem) {
+							await navItem.updateModelItems(newRecord[0].id, {record: newRecord[0]}, section)
+						}
 					}
 				}
 

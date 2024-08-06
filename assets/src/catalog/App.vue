@@ -2,6 +2,7 @@
 	<div class="flex gap-4 items-center mb-4">
 		<h1 class="text-[28px] leading-[36px] text-black dark:text-gray-300">{{ messages[_catalog.name] }}</h1>
 			<select class="select select-small capitalize" v-if="_catalog.idList.length" @change="window.location = `/admin/catalog/${_catalog.slug}/${$event.target.value}`">
+				<option :selected="!_catalog.id" disabled value="">{{ messages["Select Ids"] }}</option>
 				<option v-for="id in _catalog.idList" :value="id" :selected="id === _catalog.id" class="capitalize">{{
 						id
 					}}
@@ -283,6 +284,7 @@ async function getCatalog() {
 			actionsTools.value.push(re)
 		}
 	}
+	console.log(catalog)
 	if (items) {
 		// console.log(catalog, items)
 		for (const catalogItem of items) {
