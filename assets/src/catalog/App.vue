@@ -55,7 +55,7 @@
 			@drop="nodeDropped"
 			@toggle="nodeToggled"
 			@nodecontextmenu="showContextMenu"
-			@nodedblclick="showContextMenu"
+			@nodedblclick="updateItemDBclick"
 		>
 			<template #title="{ node }">
                             <span class="item-icon">
@@ -425,6 +425,22 @@ async function updateItem() {
 	isCreate.value = true
 }
 
+async function updateItemDBclick(){
+	let item = JSON.parse(localStorage.getItem('selectedNode'))
+	let resPost = await ky.post('', {
+		json: {
+			type: item.data.type,
+			modelId: item.data.modelId ?? null,
+			id: item.data.id,
+			_method: 'getEditHTML'
+		}
+	}).json()
+	await getHTML(resPost)
+	PopupEvent.value = 'update'
+	createPopup(refItemHTML.value)
+	isCreate.value = true
+}
+
 function initDel() {
 	delModalShow.value = true
 }
@@ -441,6 +457,7 @@ async function deleteItem() {
 function nodeSelected(nodes, event) {
 	if (nodes.length === 1) {
 		let node = nodes[0]
+		localStorage.setItem('selectedNode', JSON.stringify(node))
 		if (node.isSelected) {
 			slVueTreeRef.value.updateNode({path: node.path, patch: {isSelected: false}})
 			selectedNode.value = []
