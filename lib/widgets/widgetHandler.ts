@@ -149,8 +149,8 @@ export class WidgetHandler {
 		} else {
 			user = await UserAP.findOne({ id: id })
 		}
-
-		if (!Boolean(user.widgets)) {
+		
+		if (!user || !user.widgets || user.widgets.length === 0) {
 			if (sails.config.adminpanel.dashboard && typeof sails.config.adminpanel.dashboard !== "boolean" && sails.config.adminpanel.dashboard.defaultWidgets) {
 				let defaultWidgets = sails.config.adminpanel.dashboard.defaultWidgets;
 				widgets = await this.getAll(user);
@@ -158,11 +158,15 @@ export class WidgetHandler {
 					if (defaultWidgets.includes(widget.id.split("__")[0])) {
 						widget.added = true;
 					}
-				})
+				});
 			}
+		} else {
+			widgets = user.widgets;
 		}
-		return widgets
+		
+		return widgets;
 	}
+	
 
 	public static async setWidgetsDB(id: number, widgets: WidgetConfig[], auth: boolean): Promise<number> {
 		if (!auth) {
@@ -208,6 +212,7 @@ export async function widgetsDB(req, res) {
 		id = req.session.UserAP.id
 	}
 
+	console.log(">>>.")
 	if (req.method.toUpperCase() === 'GET') {
 		try {
 			let widgets = await WidgetHandler.getWidgetsDB(id, auth);
