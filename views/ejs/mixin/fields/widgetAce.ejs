@@ -6,7 +6,7 @@
 <div id="ace-<%= key %>"><%=value%></div>
 <script>
     {
-        $(`#form-<%= key %>`).hide();
+        document.getElementById(`form-<%= key %>`).style.display = 'none';
         let ace_<%=key%> = ace.edit('ace-<%=key%>');
         ace_<%=key%>.setReadonly
 
@@ -17,8 +17,8 @@
         }
 
         ace_<%=key%>.session.setMode("ace/mode/html");
-        ace_<%=key%>.session.on("change", function () {
-            $('#form-<%=key%>').val(ace_<%=key%>.getValue());
+        ace_<%= key %>.session.on("change", function () {
+            document.getElementById(`form-<%= key %>`).value = ace_<%= key %>.getValue();
         });
 
         <% if (field.config.options && field.config.options.mode) { %>

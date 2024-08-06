@@ -38,7 +38,7 @@
         value: selectedOption<%=key%>,
         icon: "las la-times",
         onChange: function(value) {
-            $('#form-<%= key %>').val(value)
+            document.getElementById(`form-<%= key %>`).value = value;
         }
     });
 </script>

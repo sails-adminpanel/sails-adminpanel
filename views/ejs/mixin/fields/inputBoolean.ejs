@@ -11,14 +11,14 @@
 </div>
 <input type="hidden" id="form-<%= key %>" name="<%= key %>" value="<%= value %>">
 <script>
-    $('.checkbox #fake-form-<%= key -%>').on('change', function () {
-        let val = $(this).val()
+    document.querySelector('.checkbox #fake-form-<%= key -%>').addEventListener('change', function() {
+        let val = this.value;
         if (val === '0') {
-            $(this).val('1')
-            $('#form-<%= key %>').val('1')
+            this.value = '1';
+            document.getElementById('form-<%= key %>').value = '1';
         } else {
-            $(this).val('0')
-            $('#form-<%= key %>').val('0')
+            this.value = '0';
+            document.getElementById('form-<%= key %>').value = '0';
         }
-    })
+    });
 </script>
