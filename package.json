@@ -5,7 +5,7 @@
 	"dependencies": {
 		"@jsonforms/vue": "^3.3.0",
 		"@jsonforms/vue-vanilla": "^3.3.0",
-		"@sails-adminpanel/sl-vue-tree-next": "^0.0.14",
+		"@sails-adminpanel/sl-vue-tree-next": "^0.0.15",
 		"axios": "^1.7.2",
 		"db-migrate": "^0.11.14",
 		"i18n-2": "0.7.3",
