@@ -127,7 +127,13 @@ export class VueCatalog {
 
 	createItem(data: any) {
 		//data = VueCatalogUtils.refinement(data);
-		return this.catalog.createItem(data);
+		if(this.catalog.slug !== "navigation"){
+			let item = data.record;
+			item.parenId = data.parenId;
+			return this.catalog.createItem(item);
+		} else {
+			return this.catalog.createItem(data);
+		}
 	}
 
 	async getChilds(data: any) {
