@@ -5,15 +5,21 @@
   "description": "Sails test application",
   "keywords": [],
   "dependencies": {
-    "muddy-water": "^1.2.1",
+    "i18n-2": "^0.7.3",
     "include-all": "^4.0.3",
-    "sails-adminpanel": "file:../..",
+    "muddy-water": "^1.2.1",
     "patch-package": "^8.0.0",
     "rc": "^1.2.8",
     "request": "^2.88.2",
+    "rttc": "^10.0.1",
     "sails": "^1.5.10",
+    "sails-adminpanel": "file:../..",
+    "sails-disk": "^2.1.2",
     "sails-hook-orm": "^4.0.3",
-    "sails-memory": "^0.10.7"
+    "sails-memory": "^0.10.7",
+    "sails-postgresql": "^5.0.1",
+    "waterline": "^0.15.2",
+    "waterline-schema": "^1.0.0"
   },
   "scripts": {
     "debug": "node debug app.js",
