@@ -96,8 +96,8 @@
 		;
 		for (var id in apTables) {
 			try {
-				var schema = tables[id].getSchema();
-				var table = tables[id].getData();
+				var schema = apTables[id].getSchema();
+				var table = apTables[id].getData();
 				table = table.filter(item => {
 					return !([...new Set(item)].length === 1 && [...new Set(item)][0] === null);
 				});

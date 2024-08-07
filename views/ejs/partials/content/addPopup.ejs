@@ -29,10 +29,10 @@
 						return false;
 					}
 				}
-				for (const id in tables) {
+				for (const id in apTables) {
 					try {
-						let schema = tables[id].getSchema();
-						let table = tables[id].getData();
+						let schema = apTables[id].getSchema();
+						let table = apTables[id].getData();
 						table = table.filter(item => {
 							return !([...new Set(item)].length === 1 && [...new Set(item)][0] === null);
 						});
