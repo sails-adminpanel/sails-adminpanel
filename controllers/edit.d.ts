@@ -1,1 +1,1 @@
-export default function edit(req: any, res: any): Promise<any>;
+export default function edit(req: ReqType, res: ResType): Promise<any>;

@@ -5,7 +5,7 @@ import {CreateUpdateConfig} from "../interfaces/adminpanelConfig";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import {CatalogHandler} from "../lib/catalog/CatalogHandler";
 
-export default async function edit(req, res) {
+export default async function edit(req: ReqType, res: ResType) {
 	//Check id
 	if (!req.param('id')) {
 		return res.notFound();

@@ -1,4 +1,4 @@
-module.exports = async function (req, res, proceed) {
+module.exports = async function (req: ReqType, res: ResType, proceed) {
     let locale: string = ""
     
     if (typeof sails.config.adminpanel.translation  !== 'boolean') {
@@ -10,7 +10,7 @@ module.exports = async function (req, res, proceed) {
             req.session.UserAP.isAdministrator = true;
         } else {
             req.session.UserAP = {
-                id: "auth-false",
+                id: 0,
                 isAdministrator: true,
                 locale: locale
             }

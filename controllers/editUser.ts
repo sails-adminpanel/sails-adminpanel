@@ -1,7 +1,7 @@
 import {AdminUtil} from "../lib/adminUtil";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 
-export default async function(req, res) {
+export default async function(req: ReqType, res: ResType) {
 
     let entity = AdminUtil.findEntityObject(req);
 

@@ -2,7 +2,7 @@ import {WidgetHelper} from "../helper/widgetHelper";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import {NavigationOptionsField} from "../interfaces/adminpanelConfig";
 
-export default async function normalizeNavigationConfig(req, res) {
+export default async function normalizeNavigationConfig(req: ReqType, res: ResType) {
 
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {

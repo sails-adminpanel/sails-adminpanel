@@ -1,4 +1,4 @@
-export default async function initUser(req, res) {
+export default async function initUser(req: ReqType, res: ResType) {
   if (!sails.config.adminpanel.auth) {
     return res.redirect(`${sails.config.adminpanel.routePrefix}/`);
   }

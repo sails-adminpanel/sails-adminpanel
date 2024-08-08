@@ -1,48 +1,49 @@
-import WaterlineModel from "../interfaces/waterlineModel";
-import WaterlineEntity from "../interfaces/waterlineORM";
-import UserAP from "./UserAP";
-import {OptionalAll} from "../interfaces/toolsTS";
+import { Attributes, ModelTypeDetection, Model } from "sails-typescript";
 
-let attributes = {
+let a: Attributes;
+const attributes = a = {
+  id: {
+    type: "number",
+    autoIncrement: true,
+  },
+  name: {
+    type: "string",
+    required: true,
+    unique: true,
+  },
+  description: {
+    type: "string",
+  },
+  tokens: {
+    type: "json",
+  },
+  users: {
+    collection: "UserAP",
+    via: "groups",
+  },
+}  as const;
 
-    id: {
-        type: 'number',
-        autoIncrement: true
-    } as unknown as number,
-    name: {
-        type: "string",
-        required: true,
-        unique: true
-    } as unknown as string,
-    description: "string",
-    tokens: {
-        type: "json"
-    } as unknown as string[],
-    users: {
-        collection: "userap",
-        via: "groups"
-    } as unknown as UserAP[]
-
-};
-
-type attributes = typeof attributes & WaterlineEntity;
-interface GroupAP extends OptionalAll<attributes> {}
+type ModelOptions = ModelTypeDetection<typeof attributes>;
+interface GroupAP extends Partial<ModelOptions> {}
 export default GroupAP;
 
-let model = {
-    beforeCreate: (item, next) => {
-        return next();
-    }
-
+const methods = {
+  beforeCreate(record: GroupAP, cb: (err?: Error | string) => void) {
+    cb();
+  },
 };
 
-module.exports = {
-    primaryKey: "id",
-    attributes: attributes,
-    ...model,
+const model = {
+  primaryKey: "id",
+  attributes: attributes,
+  ...methods,
 };
+
+module.exports = model;
 
 declare global {
-    const GroupAP: typeof model & WaterlineModel<GroupAP, null>;
+  const GroupAP: Model<typeof model>;
+  interface Models {
+    GroupAP: GroupAP;
+  }
 }
-

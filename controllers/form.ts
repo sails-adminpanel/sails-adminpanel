@@ -1,7 +1,7 @@
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import {FormHelper} from "../helper/formHelper";
 
-export default async function form(req, res) {
+export default async function form(req: ReqType, res: ResType) {
 	let slug = req.param("slug");
 
 	//Check slug

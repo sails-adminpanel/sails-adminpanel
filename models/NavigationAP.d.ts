@@ -2,14 +2,8 @@ import WaterlineModel from "../interfaces/waterlineModel";
 import WaterlineEntity from "../interfaces/waterlineORM";
 import { OptionalAll } from "../interfaces/toolsTS";
 declare let attributes: {
-    id: {
-        type: string;
-        allowNull: boolean;
-    };
-    label: {
-        type: string;
-        required: boolean;
-    };
+    id: string;
+    label: string;
     tree: {
         readonly type: "json";
         readonly required: true;

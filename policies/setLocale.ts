@@ -1,4 +1,4 @@
-module.exports = async function (req, res, proceed) {
+module.exports = async function (req: ReqType, res: ResType, proceed) {
     if (!sails.hooks.i18n) {
         return proceed();
     }

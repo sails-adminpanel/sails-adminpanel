@@ -1,7 +1,7 @@
 import { AdminUtil } from "../lib/adminUtil";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 
-export default async function remove(req, res) {
+export default async function remove(req: ReqType, res: ResType) {
     //Checking id of the record
     if (!req.param('id')) {
         sails.log.error(new Error('Admin panel: No id for record provided'));

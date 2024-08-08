@@ -1,1 +1,1 @@
-export default function normalizeNavigationConfig(req: any, res: any): Promise<any>;
+export default function normalizeNavigationConfig(req: ReqType, res: ResType): Promise<import("sails-typescript").default.Response>;
