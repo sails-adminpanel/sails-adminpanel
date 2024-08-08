@@ -83,7 +83,7 @@ export class AccessRightsHelper {
 		}
 
 		let allow = false;
-		for (let group of user.groups) {
+		for (let group of user.groups as GroupAP[]) {
 			if (group.tokens.includes(tokenId)) {
 				allow = true;
 				break;
