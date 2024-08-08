@@ -2,7 +2,9 @@
 import * as fs from "fs";
 
 export class FileStorageHelper {
-    private static _storage = {};
+    private static _storage: {
+        [key: string]: any
+    } = {};
     private static _filePath = ".tmp/adminpanel_file_storage.json";
     private static _isInitialized = false;
 

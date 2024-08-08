@@ -4,6 +4,7 @@ import {FieldsHelper} from "../helper/fieldsHelper";
 import {CreateUpdateConfig} from "../interfaces/adminpanelConfig";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import {CatalogHandler} from "../lib/catalog/CatalogHandler";
+import { strict } from "assert";
 
 export default async function edit(req: ReqType, res: ResType) {
 	//Check id
@@ -30,7 +31,8 @@ export default async function edit(req: ReqType, res: ResType) {
 
 	let record;
 	try {
-		record = await entity.model.findOne(req.param('id')).populateAll();
+		const id = req.param('id') as string;
+		record = await entity.model.findOne(id).populateAll();
 	} catch (e) {
 		sails.log.error('Admin edit error: ');
 		sails.log.error(e);
@@ -45,13 +47,14 @@ export default async function edit(req: ReqType, res: ResType) {
 	// Save
 	if (req.method.toUpperCase() === 'POST') {
 		let reqData = RequestProcessor.processRequest(req, fields);
-		let params = {};
+		let params: {
+			[key: string]: number | string
+		} = {};
 		params[entity.config.identifierField || sails.config.adminpanel.identifierField] = req.param('id');
 
 
 		for (let prop in reqData) {
 			if (fields[prop].model.type === 'boolean') {
-
 				reqData[prop] = Boolean(reqData[prop]);
 			}
 
@@ -64,16 +67,18 @@ export default async function edit(req: ReqType, res: ResType) {
 			}
 
 			if (fields[prop].config.type === 'select-many') {
-				reqData[prop] = reqData[prop].split(",")
+				reqData[prop] = reqData[prop].toString().split(",")
 			}
 
 			if (fields[prop] && fields[prop].model && fields[prop].model.type === 'json' && reqData[prop] !== '') {
-				try {
-					reqData[prop] = JSON.parse(reqData[prop]);
-				} catch (e) {
-					// Why it here?
-					if (typeof reqData[prop] === "string" && reqData[prop].replace(/(\r\n|\n|\r|\s{2,})/gm, "")) {
-						sails.log.error(JSON.stringify(reqData[prop]), e);
+				if(typeof reqData[prop] === "string") {
+					try {
+						reqData[prop] = JSON.parse(reqData[prop] as string);
+					} catch (e) {
+						// Why it here @roman?
+						if (typeof reqData[prop] === "string" && reqData[prop].toString().replace(/(\r\n|\n|\r|\s{2,})/gm, "")) {
+							sails.log.error(JSON.stringify(reqData[prop]), e);
+						}
 					}
 				}
 			}
@@ -87,12 +92,12 @@ export default async function edit(req: ReqType, res: ResType) {
 
 			// split string for association-many
 			if (fields[prop] && fields[prop].model && fields[prop].model.type === 'association-many' && reqData[prop]) {
-				reqData[prop] = reqData[prop].split(",")
+				reqData[prop] = reqData[prop].toString().split(",")
 			}
 
 			// HardFix: Long string was splitted as array of strings. https://github.com/balderdashy/sails/issues/7262
 			if (fields[prop].model.type === 'string' && Array.isArray(reqData[prop])) {
-				reqData[prop] = reqData[prop].join("");
+				reqData[prop] = (reqData[prop] as string[]).join("");
 			}
 		}
 
@@ -130,16 +135,6 @@ export default async function edit(req: ReqType, res: ResType) {
 			return e;
 		}
 	}
-
-	// if (reloadNeeded) {
-	//     try {
-	//         record = await entity.model.findOne(req.param('id')).populateAll();
-	//     } catch (e) {
-	//         sails.log.error('Admin edit error: ');
-	//         sails.log.error(e);
-	//         return res.serverError();
-	//     }
-	// }
 
 	if (req.query.without_layout) {
 		return res.viewAdmin("./../ejs/partials/content/editPopup.ejs", {

@@ -13,7 +13,7 @@ export default class FinalizeStep extends InstallStepAbstract {
     title = 'Finalize Step';
     badge = '';
     isSkipped = false;
-    settingsKeys = [];
+    settingsKeys: string[] = [];
     renderer: "ejs" = "ejs";
     isProcessed = false;
 
@@ -28,7 +28,7 @@ export default class FinalizeStep extends InstallStepAbstract {
         }
     }
 
-    async process(data) {
+    async process(data: any) {
         let installStepper = InstallStepper.getInstance();
         if (!installStepper.hasUnfinalizedSteps()) {
             this.isProcessed = true;

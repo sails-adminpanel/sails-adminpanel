@@ -11,7 +11,7 @@ export default async function add(req: ReqType, res: ResType) {
 		return res.notFound();
 	}
 
-	if (!entity.config.add) {
+	if (!entity.config?.add) {
 		return res.redirect(entity.uri);
 	}
 

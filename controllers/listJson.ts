@@ -23,7 +23,7 @@ export default async function listJson(req: ReqType, res: ResType) {
         let fields = FieldsHelper.getFields(req, entity, 'list');
         const nodeTable = new NodeTable(req.body, entity.model, fields);
 
-        nodeTable.output((err, data) => {
+        nodeTable.output((err: Error, data: []) => {
             if (err) {
                 sails.log.error(err);
                 return;

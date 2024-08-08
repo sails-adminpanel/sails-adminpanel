@@ -25,7 +25,7 @@ async function default_1(req, res) {
         for (let key in req.body) {
             if (key.startsWith("group-checkbox-") && req.body[key] === "on") {
                 for (let group of groups) {
-                    if (group.id == key.slice(15)) {
+                    if (group.id == parseInt(key.slice(15))) {
                         userGroups.push(group.id);
                     }
                 }

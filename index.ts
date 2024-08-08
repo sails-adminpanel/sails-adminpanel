@@ -10,7 +10,7 @@ const {InstallStepper} = require("./lib/installStepper/installStepper");
 
 const {CatalogHandler} = require("./lib/catalog/CatalogHandler")
 
-module.exports = function (sails) {
+module.exports = function () {
 
     let libInitialize =  require("./lib/initialize");
 
@@ -23,36 +23,16 @@ module.exports = function (sails) {
 
         configure: require('./lib/configure').default(),
 
-        initialize: async function initialize(cb) {
+        initialize: async function initialize(cb: Function) {
             await libInitialize.default(sails, cb);
         },
 
-        addMenuItem: function (link, label, icon, group) {
-            if (!link)
-                throw 'first argument is required';
-
-            sails.config.adminpanel.menu = sails.config.adminpanel.menu || {};
-            sails.config.adminpanel.menu.actions = sails.config.adminpanel.menu.actions || [];
-            sails.config.adminpanel.menu.actions.push({
-                link: link,
-                title: label || link,
-                icon: icon,
-                menuGroup: group
-            });
-
-            sails.config.views.locals.adminpanel.menuHelper = new MenuHelper(sails.config.adminpanel);
+        addMenuItem: function (link: string, label: string, icon: string, group: string) {
+            throw `Not implemented adminpanel index file addMenuItem`
         },
 
-        addGroup: function (key, title) {
-            if (!key)
-                throw 'first argument is required';
-
-            sails.config.adminpanel.menu = sails.config.adminpanel.menu || {};
-            sails.config.adminpanel.menu.groups = sails.config.adminpanel.menu.groups || [];
-            sails.config.adminpanel.menu.groups.push({
-                key: key,
-                title: title || key,
-            });
+        addGroup: function (key: string, title: string) {
+            throw `Not implemented adminpanel index file addGroup`
         },
         addModelConfig: ConfigHelper.addModelConfig,
         registerAccessToken: AccessRightsHelper.registerToken,

@@ -1,5 +1,8 @@
-import { Model } from 'sails';
 import { Fields } from '../../helper/fieldsHelper';
+import { Model } from "sails-typescript";
+type ORMModel = Model<Models[keyof Models]> & {
+    primaryKey: string;
+};
 interface Request {
     start: string;
     length: string;
@@ -26,10 +29,10 @@ interface Search {
 }
 export declare class NodeTable {
     request: Request;
-    model: Model;
+    model: ORMModel;
     fields: Fields;
     fieldsArray: string[];
-    constructor(request: Request, model: Model, fields: Fields);
+    constructor(request: Request, model: ORMModel, fields: Fields);
     limit(): Promise<number[]>;
     order(): string;
     filter(): any;

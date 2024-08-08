@@ -5,7 +5,7 @@ const path = require("path");
 class ViewsHelper {
     /**
      * Generate path to views files for given view engine
-     *
+     * @deprecated only EJS support
      * @param {string} engine - View engine name. E.g. 'jade', 'ejs'...
      * @returns {string}
      */
@@ -38,15 +38,14 @@ class ViewsHelper {
      */
     static getFieldValue(key, field, data) {
         let value = data[key];
-        if (typeof value === "object" && value !== null && field.config.type == 'association') {
-            value = value[field.config.identifierField];
-        }
-        if (value !== null && Array.isArray(value) && field.config.type == 'association-many') {
-            let result = [];
-            value.forEach(function (val) {
-                result.push(val[field.config.identifierField]);
-            });
-            return result;
+        if (typeof value === "object" && value !== null) {
+            if (field.config.type === 'association' && !Array.isArray(value)) {
+                // Here we assert that value is an object and has the identifierField
+                return value[field.config.identifierField];
+            }
+            if (Array.isArray(value) && field.config.type === 'association-many') {
+                return value.map(val => val[field.config.identifierField]);
+            }
         }
         return value;
     }
@@ -75,18 +74,16 @@ class ViewsHelper {
         if (!value) {
             return '-----------';
         }
-        let displayField = field.config.displayField || 'id';
+        const displayField = field.config.displayField || 'id';
         if (Array.isArray(value)) {
-            let result = '';
-            value.forEach(function (val) {
-                result += val[displayField] + '<br/>';
-            });
-            return result;
+            return value
+                .map(val => val[displayField])
+                .join('<br/>');
         }
-        if (typeof value === "object") {
+        if (typeof value === 'object' && value !== null) {
             return value[displayField];
         }
-        return value;
+        return String(value);
     }
 }
 exports.ViewsHelper = ViewsHelper;

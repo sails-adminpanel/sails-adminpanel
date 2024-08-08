@@ -1,3 +1,5 @@
+import { Field } from "sails-adminpanel/helper/fieldsHelper";
+import { SailsModelAnyField, SailsModelAnyInstance } from "sails-adminpanel/interfaces/StrippedORMModel";
 export declare class ViewsHelper {
     /**
      * Base path for all views.
@@ -5,24 +7,24 @@ export declare class ViewsHelper {
     static BASE_VIEWS_PATH: string;
     /**
      * Generate path to views files for given view engine
-     *
+     * @deprecated only EJS support
      * @param {string} engine - View engine name. E.g. 'jade', 'ejs'...
      * @returns {string}
      */
-    static getPathToEngine(engine: any): string;
+    static getPathToEngine(engine: "ejs"): string;
     /**
      * Will generate path to view file
      *
      * @param {string} view
      * @returns {string}
      */
-    static getViewPath(view: any): string;
+    static getViewPath(view: string): string;
     /**
      *
      * @param {IncomingMessage} req
      * @param {string} key Types: adminError|adminSuccess
      */
-    static hasMessages(req: any, key: any): any;
+    static hasMessages(req: ReqType, key: "adminError" | "adminSuccess"): string[];
     /**
      * Get needed field value from dat provided.
      *
@@ -30,7 +32,7 @@ export declare class ViewsHelper {
      * @param {object} field
      * @param {Array} data
      */
-    static getFieldValue(key: any, field: any, data: any): any;
+    static getFieldValue(key: string, field: Field, data: SailsModelAnyInstance): SailsModelAnyField;
     /**
      * Check if given option equals value or is in array
      *
@@ -38,12 +40,12 @@ export declare class ViewsHelper {
      * @param {string|number|Array} value
      * @returns {boolean}
      */
-    static isOptionSelected(option: any, value: any): boolean;
+    static isOptionSelected(option: string | number | boolean, value: string | number | boolean | (string | number | boolean)[]): boolean;
     /**
      * Get's field value for view screen
      *
      * @param {string|number|boolean|object|Array} value
      * @param {object} field
      */
-    static getAssociationValue(value: any, field: any): any;
+    static getAssociationValue(value: SailsModelAnyField, field: Field): string;
 }

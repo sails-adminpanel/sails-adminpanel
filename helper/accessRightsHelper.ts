@@ -1,3 +1,4 @@
+import GroupAP from "sails-adminpanel/models/GroupAP";
 import {AccessRightsToken} from "../interfaces/types";
 import UserAP from "../models/UserAP";
 import userAP from "../models/UserAP";
@@ -87,11 +88,6 @@ export class AccessRightsHelper {
 				allow = true;
 				break;
 			}
-		}
-
-		if (!allow) {
-			sails.log.error("Adminpanel > Access is not allowed");
-			return false;
 		}
 
 		return true;

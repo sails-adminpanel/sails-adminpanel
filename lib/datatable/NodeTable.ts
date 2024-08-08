@@ -1,6 +1,9 @@
-import { Model } from 'sails';
 import { Fields } from '../../helper/fieldsHelper';
+import {Model} from "sails-typescript"
+// TODO: move into sails-typescript
+import { CriteriaQuery, WhereCriteriaQuery } from "sails-typescript/criteria"
 
+type ORMModel = Model<Models[keyof Models]> & {primaryKey: string};
 interface Request {
   start: string;
   length: string;
@@ -32,11 +35,11 @@ interface Search {
 
 export class NodeTable {
   public request: Request;
-  public model: Model;
+  public model: ORMModel;
   public fields: Fields;
   public fieldsArray: string[] = ['actions']
 
-  constructor(request: Request, model: Model, fields: Fields) {
+  constructor(request: Request, model: ORMModel, fields: Fields) {
     this.request = request;
     this.model = model;
     this.fields = fields;
@@ -154,7 +157,7 @@ export class NodeTable {
       }
     }
 
-    let criteria = {}
+    let criteria: any = {}
     if (globalSearch.length || localSearch.length) {
       if (globalSearch.length) {
         criteria['or'] = globalSearch
@@ -182,6 +185,7 @@ export class NodeTable {
       const queryOptions = await this.buildQuery();
       const totalRecords = await this.model.count();
       const filteredRecords = await this.model.count(queryOptions.where);
+      //@ts-ignore todo rewrite for unuse populate chain instead populateAll 
       const data = await this.model.find(queryOptions).populateAll();
       const output = {
         draw: this.request.draw !== "" ? this.request.draw : 0,

@@ -26,6 +26,10 @@ declare global {
     const sails: Sails;
     type ReqType = sails.Request & {
         session: reqSession;
+        _parsedUrl: {
+            pathname: string;
+        };
+        setLocale: (locale: string) => void;
     };
     type ResType = sails.Response & {
         viewAdmin<T>(variables: T): void;

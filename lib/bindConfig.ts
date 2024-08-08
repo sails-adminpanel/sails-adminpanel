@@ -8,7 +8,7 @@ export default function bindConfig() {
      * Bind adminpanel config to views
      */
     if (!sails.config.adminpanel.pathToViews) {
-        sails.config.adminpanel.pathToViews = ViewsHelper.getPathToEngine(sails.config.views.extension);
+        sails.config.adminpanel.pathToViews = ViewsHelper.getPathToEngine("ejs");
     }
     // binding locals
     if (!sails.config.views.locals) {

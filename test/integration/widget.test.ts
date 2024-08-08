@@ -5,11 +5,11 @@ import { LineAwesomeIcon } from "../../interfaces/lineAwesome";
 
 class CustomOne extends CustomBase {
     public icon?: LineAwesomeIcon = "dog";
-    constructor(ID) {
+    constructor(id: string) {
         super();
-        this.ID = ID;
+        this.id = id;
     }
-    readonly ID: string;
+    readonly id: string;
     readonly department: string = 'test';
     readonly description: string = 'Widget Custom One';
     readonly name: string = 'Site Custom';

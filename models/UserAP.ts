@@ -1,5 +1,6 @@
 import { Attributes, ModelTypeDetection, Model } from "sails-typescript";
 import { generate }  from 'password-hash';
+import { WidgetConfig } from "sails-adminpanel/lib/widgets/widgetHandler";
 
 let a: Attributes;
 const attributes = a = {
@@ -88,5 +89,8 @@ declare global {
   const UserAP: Model<typeof model>;
   interface Models {
     UserAP: UserAP;
+  }
+  interface AppCustomJsonTypes {
+    widgets: WidgetConfig[]
   }
 }

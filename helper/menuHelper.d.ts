@@ -1,6 +1,21 @@
+/**
+ * Menu helper
+ *
+ * @constructor
+ */
+import { ActionType, AdminpanelConfig, HrefConfig, ModelConfig } from "../interfaces/adminpanelConfig";
+export type MenuItem = {
+    link: string;
+    title: string;
+    id: string;
+    actions: HrefConfig[];
+    icon: string;
+    accessRightsToken: string;
+    entityName?: string;
+};
 export declare class MenuHelper {
     private static config;
-    constructor(config: any);
+    constructor(config: AdminpanelConfig);
     /**
      * Checks if brand exists
      *
@@ -22,35 +37,35 @@ export declare class MenuHelper {
     /**
      * Check if global actions buttons added to action
      *
-     * @param {Object} ModelConfig
+     * @param {Object} modelConfig
      * @param {string=} [action] Defaults to `list`
      * @returns {boolean}
      */
-    hasGlobalActions(ModelConfig: any, action: any): boolean;
+    hasGlobalActions(modelConfig: ModelConfig, action: ActionType): boolean;
     /**
      * Check if inline actions buttons added to action
      *
-     * @param {Object} ModelConfig
+     * @param {Object} modelConfig
      * @param {string=} [action] Defaults to `list`
      * @returns {boolean}
      */
-    hasInlineActions(ModelConfig: any, action: any): boolean;
+    hasInlineActions(modelConfig: ModelConfig, action: ActionType): boolean;
     /**
      * Get list of custom global buttons for action
      *
-     * @param {Object} ModelConfig
+     * @param {Object} modelConfig
      * @param {string=} [action]
      * @returns {Array}
      */
-    getGlobalActions(ModelConfig: any, action: any): any;
+    getGlobalActions(modelConfig: ModelConfig, action: ActionType): HrefConfig[];
     /**
      * Get list of custom inline buttons for action
      *
-     * @param {Object} ModelConfig
+     * @param {Object} modelConfig
      * @param {string=} [action]
      * @returns {Array}
      */
-    getInlineActions(ModelConfig: any, action: any): any;
+    getInlineActions(modelConfig: ModelConfig, action: ActionType): HrefConfig[];
     /**
      * Replace fields in given URL and binds to model fields.
      *
@@ -61,11 +76,13 @@ export declare class MenuHelper {
      * @param {Object} model
      * @returns {string}
      */
-    static replaceModelFields(url: any, model: any): any;
+    static replaceModelFields(url: string, model: {
+        [x: string]: string;
+    }): string;
     /**
      * Get list of entity menus that was not bound to groups
      *
      * @returns {Array}
      */
-    getMenuItems(): any[];
+    getMenuItems(): MenuItem[];
 }

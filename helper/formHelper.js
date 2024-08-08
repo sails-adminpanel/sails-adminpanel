@@ -4,12 +4,12 @@ exports.FormHelper = void 0;
 const path = require("path");
 const fs = require("fs");
 class FormHelper {
-    static async get(slug) {
+    static get(slug) {
         if (sails.config.adminpanel.forms && sails.config.adminpanel.forms !== null) {
             return sails.config.adminpanel.forms.data[slug];
         }
     }
-    static async loadForms(formsPath) {
+    static loadForms(formsPath) {
         try {
             let formsDirectoryPath = path.resolve(formsPath);
             let forms = fs.readdirSync(formsDirectoryPath).filter(function (file) {

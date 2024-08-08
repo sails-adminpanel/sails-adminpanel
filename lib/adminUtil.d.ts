@@ -1,6 +1,11 @@
 import { Entity } from "../interfaces/types";
-import { ActionType, AdminpanelConfig, ModelConfig } from "../interfaces/adminpanelConfig";
-import StrippedORMModel from "../interfaces/StrippedORMModel";
+import { ActionType, AdminpanelConfig, CreateUpdateConfig, ModelConfig } from "../interfaces/adminpanelConfig";
+import { Model } from "sails-typescript";
+import { SailsModelAnyInstance } from "../interfaces/StrippedORMModel";
+/**
+ * @deprecated need refactor actions
+ */
+type ActionConfig = CreateUpdateConfig;
 export declare class AdminUtil {
     /**
      * Default configuration for entity
@@ -52,7 +57,9 @@ export declare class AdminUtil {
      * @param {string} name
      * @returns {?Model}
      */
-    static getModel(name: string): StrippedORMModel;
+    static getModel<T extends keyof Models>(name: T): Model<Models[T]> & {
+        attributes: SailsModelAnyInstance;
+    } | null;
     /**
      * Get entity type
      *
@@ -98,16 +105,18 @@ export declare class AdminUtil {
      * @param {string} actionType Type of action that config should be loaded for. Example: list, edit, add, remove, view.
      * @returns {Object} Will return object with configs or default configs.
      */
-    static findActionConfig(entity: Entity, actionType: ActionType): any;
+    static findActionConfig(entity: Entity, actionType: ActionType): ActionConfig;
     /**
      * Trying to find model by request
      *
      * @see AdminUtil._isValidModelConfig
      * @param {Request} req
-     * @param {Object} ModelConfig
+     * @param {Object} modelConfig
      * @returns {?Model}
      */
-    static findModel(req: ReqType, ModelConfig: ModelConfig): StrippedORMModel;
+    static findModel<T extends keyof Models>(req: ReqType, modelConfig: ModelConfig): Model<Models[T]> & {
+        attributes: SailsModelAnyInstance;
+    } | null;
     /**
      * Will create entity object from request.
      *
@@ -128,3 +137,4 @@ export declare class AdminUtil {
      */
     static findEntityObject(req: ReqType): Entity;
 }
+export {};

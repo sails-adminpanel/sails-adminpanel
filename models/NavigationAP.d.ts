@@ -1,21 +1,43 @@
-import WaterlineModel from "../interfaces/waterlineModel";
-import WaterlineEntity from "../interfaces/waterlineORM";
-import { OptionalAll } from "../interfaces/toolsTS";
-declare let attributes: {
-    id: string;
-    label: string;
-    tree: {
+import { ModelTypeDetection, Model } from "sails-typescript";
+declare const attributes: {
+    readonly id: {
+        readonly type: "string";
+        readonly allowNull: false;
+    };
+    readonly label: {
+        readonly type: "string";
+        readonly required: true;
+    };
+    readonly tree: {
         readonly type: "json";
         readonly required: true;
     };
 };
-type attributes = typeof attributes & WaterlineEntity;
-interface NavigationAP extends OptionalAll<attributes> {
+type ModelOptions = ModelTypeDetection<typeof attributes>;
+interface NavigationAP extends Partial<ModelOptions> {
 }
 export default NavigationAP;
-declare let model: {
+declare const model: {
     beforeCreate(record: NavigationAP, cb: (err?: string | Error) => void): void;
+    primaryKey: string;
+    attributes: {
+        readonly id: {
+            readonly type: "string";
+            readonly allowNull: false;
+        };
+        readonly label: {
+            readonly type: "string";
+            readonly required: true;
+        };
+        readonly tree: {
+            readonly type: "json";
+            readonly required: true;
+        };
+    };
 };
 declare global {
-    const NavigationAP: typeof model & WaterlineModel<NavigationAP, null>;
+    const NavigationAP: Model<typeof model>;
+    interface Models {
+        NavigationAP: NavigationAP;
+    }
 }
