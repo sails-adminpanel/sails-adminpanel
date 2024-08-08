@@ -36,12 +36,13 @@ describe('Add Test Entity', function () {
                 .type('form')
                 .send(testData);
             expect(res.status).to.equal(200);
-            // Assuming that the ID of the newly created entity is in the response body.
+            // Assuming that the id of the newly created entity is in the response body.
             // @ts-ignore
             let createdTest = await Test.find({});
             if (createdTest.length !== 1)
                 throw `expect one record`;
             for (let key in testData) {
+                //@ts-ignore
                 expect(createdTest[0][key]).to.deep.equal(testData[key]);
             }
             // Clean up the created entity

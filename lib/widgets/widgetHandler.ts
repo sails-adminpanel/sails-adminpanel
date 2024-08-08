@@ -30,7 +30,7 @@ export class WidgetHandler {
 
 	public static add(widget: WidgetType): void {
 		AccessRightsHelper.registerToken({
-			id: `widget-${widget.ID}`,
+			id: `widget-${widget.id}`,
 			name: widget.name,
 			description: widget.description,
 			department: widget.department
@@ -40,7 +40,7 @@ export class WidgetHandler {
 
 	public static getById(id: string): WidgetType | undefined {
 		if (this.widgets.length) {
-			return this.widgets.find(widget => widget.ID === id);
+			return this.widgets.find(widget => widget.id === id);
 		} else {
 			return undefined
 		}
@@ -48,7 +48,7 @@ export class WidgetHandler {
 
 	public static removeById(id: string): void {
 		if (this.widgets.length) {
-			const index = this.widgets.findIndex(widget => widget.ID === id);
+			const index = this.widgets.findIndex(widget => widget.id === id);
 			if (index !== -1) {
 				this.widgets.splice(index, 1);
 			}
@@ -62,11 +62,11 @@ export class WidgetHandler {
 			let id_key = 0
 			for (const widget of this.widgets) {
 				if (widget instanceof SwitcherBase) {
-					if (AccessRightsHelper.havePermission(`widget-${widget.ID}`, user)) {
+					if (AccessRightsHelper.havePermission(`widget-${widget.id}`, user)) {
 						widgets.push({
-							id: `${widget.ID}__${id_key}`,
+							id: `${widget.id}__${id_key}`,
 							type: widget.widgetType,
-							api: `${config.routePrefix}/widgets-switch/${widget.ID}`,
+							api: `${config.routePrefix}/widgets-switch/${widget.id}`,
 							description: widget.description,
 							icon: widget.icon as AdminpanelIcon,
 							name: widget.name,
@@ -75,11 +75,11 @@ export class WidgetHandler {
 						})
 					}
 				} else if (widget instanceof InfoBase) {
-					if (AccessRightsHelper.havePermission(`widget-${widget.ID}`, user)) {
+					if (AccessRightsHelper.havePermission(`widget-${widget.id}`, user)) {
 						widgets.push({
-							id: `${widget.ID}__${id_key}`,
+							id: `${widget.id}__${id_key}`,
 							type: widget.widgetType,
-							api: `${config.routePrefix}/widgets-info/${widget.ID}`,
+							api: `${config.routePrefix}/widgets-info/${widget.id}`,
 							description: widget.description,
 							icon: widget.icon as AdminpanelIcon,
 							name: widget.name,
@@ -88,11 +88,11 @@ export class WidgetHandler {
 						})
 					}
 				} else if (widget instanceof ActionBase) {
-					if (AccessRightsHelper.havePermission(`widget-${widget.ID}`, user)) {
+					if (AccessRightsHelper.havePermission(`widget-${widget.id}`, user)) {
 						widgets.push({
-							id: `${widget.ID}__${id_key}`,
+							id: `${widget.id}__${id_key}`,
 							type: widget.widgetType,
-							api: `${config.routePrefix}/widgets-action/${widget.ID}`,
+							api: `${config.routePrefix}/widgets-action/${widget.id}`,
 							description: widget.description,
 							icon: widget.icon as AdminpanelIcon,
 							name: widget.name,
@@ -101,12 +101,12 @@ export class WidgetHandler {
 						})
 					}
 				} else if (widget instanceof LinkBase) {
-					if (AccessRightsHelper.havePermission(`widget-${widget.ID}`, user)) {
+					if (AccessRightsHelper.havePermission(`widget-${widget.id}`, user)) {
 						let links_id_key = 0
 						for (const link of widget.links) {
 							widgets.push({
 								name: link.name,
-								id: `${widget.ID}__${links_id_key}`,
+								id: `${widget.id}__${links_id_key}`,
 								type: 'link',
 								description: link.description,
 								link: link.link,
@@ -117,11 +117,11 @@ export class WidgetHandler {
 						}
 					}
 				} else if (widget instanceof CustomBase) {
-					if (AccessRightsHelper.havePermission(`widget-${widget.ID}`, user)) {
+					if (AccessRightsHelper.havePermission(`widget-${widget.id}`, user)) {
 						widgets.push({
-							id: `${widget.ID}_${id_key}`,
+							id: `${widget.id}_${id_key}`,
 							type: widget.widgetType,
-							api: `${config.routePrefix}/widgets-custom/${widget.ID}`,
+							api: `${config.routePrefix}/widgets-custom/${widget.id}`,
 							description: widget.description,
 							icon: widget.icon as AdminpanelIcon,
 							name: widget.name,

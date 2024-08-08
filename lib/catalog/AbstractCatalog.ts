@@ -267,7 +267,7 @@ export abstract class AbstractCatalog {
 			const items = await this.getItemType(byItemType)?._getChilds(parentId, this.id);
 			return items ? items.sort((a, b) => a.sortOrder - b.sortOrder) : [];
 		} else {
-			let result = [];
+			let result: Item[] = [];
 			for (const itemType of this.itemTypes) {
 				const items = await itemType?._getChilds(parentId, this.id);
 				if (items) {

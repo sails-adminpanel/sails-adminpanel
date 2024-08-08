@@ -10,6 +10,7 @@ let sails;
 before(function (done) {
     this.timeout(50000);
     const rc = require("./fixture/app-export").rc;
+    //@ts-ignore
     function waitForEvent(sails) {
         return new Promise((resolve) => {
             sails.on('adminpanel:router:binded', resolve);
