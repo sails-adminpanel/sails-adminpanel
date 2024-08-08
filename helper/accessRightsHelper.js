@@ -73,10 +73,6 @@ class AccessRightsHelper {
                 break;
             }
         }
-        if (!allow) {
-            sails.log.error("Adminpanel > Access is not allowed");
-            return false;
-        }
         return true;
     }
 }
