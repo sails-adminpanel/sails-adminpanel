@@ -1,1 +1,1 @@
-export default function editGroup(req: any, res: any): Promise<any>;
+export default function editGroup(req: ReqType, res: ResType): Promise<void | import("sails-typescript").default.Response>;

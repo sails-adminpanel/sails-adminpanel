@@ -32,7 +32,7 @@ async function addGroup(req, res) {
         for (let key in req.body) {
             if (key.startsWith("user-checkbox-") && req.body[key] === "on") {
                 for (let user of users) {
-                    if (user.id == key.slice(14)) {
+                    if (user.id == parseInt(key.slice(14))) {
                         usersInThisGroup.push(user.id);
                     }
                 }

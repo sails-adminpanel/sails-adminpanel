@@ -1,1 +1,1 @@
-export default function form(req: any, res: any): Promise<any>;
+export default function form(req: ReqType, res: ResType): Promise<void | import("sails-typescript").default.Response>;

@@ -1,1 +1,1 @@
-export default function upload(req: any, res: any): any;
+export default function upload(req: ReqType, res: ResType): void | import("sails-typescript").default.Response;

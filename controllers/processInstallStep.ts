@@ -2,7 +2,7 @@ import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import {InstallStepper} from "../lib/installStepper/installStepper";
 import * as path from "path";
 
-export default async function processInstallStep(req, res) {
+export default async function processInstallStep(req: ReqType, res: ResType) {
 	if (sails.config.adminpanel.auth) {
 		if (!req.session.UserAP) {
 			return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);

@@ -181,7 +181,7 @@ export class WidgetHandler {
 }
 
 // TODO: move to folder controlles
-export async function getAllWidgets(req, res) {
+export async function getAllWidgets(req: ReqType, res: ResType) {
 	if (sails.config.adminpanel.auth) {
 		if (!req.session.UserAP) {
 			return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
@@ -200,7 +200,7 @@ export async function getAllWidgets(req, res) {
 }
 
 // TODO: move in controller folder
-export async function widgetsDB(req, res) {
+export async function widgetsDB(req: ReqType, res: ResType) {
 	let id: number = 0
 	let auth = sails.config.adminpanel.auth
 	if (auth) {

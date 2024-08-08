@@ -2,7 +2,7 @@ import {InstallStepper} from "./installStepper/installStepper";
 let installStepper = InstallStepper.getInstance();
 
 export default function() {
-    let installStepperPolicy = function (req, res, proceed) {
+    let installStepperPolicy = function (req: ReqType, res: ResType, proceed) {
         if (!req.session.UserAP) {
             return proceed();
         }

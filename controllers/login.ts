@@ -1,6 +1,6 @@
 let passwordHash = require("password-hash");
 
-export default async function login(req, res) {
+export default async function login(req: ReqType, res: ResType) {
   if (req.url.indexOf("login") >= 0) {
     if (!sails.config.adminpanel.auth) {
       return res.redirect(`${sails.config.adminpanel.routePrefix}/`);

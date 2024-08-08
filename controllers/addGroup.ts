@@ -1,7 +1,8 @@
 import {AdminUtil} from "../lib/adminUtil";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
+import { AccessRightsToken } from "../interfaces/types";
 
-export default async function addGroup(req, res) {
+export default async function addGroup(req: ReqType, res: ResType) {
 
     let entity = AdminUtil.findEntityObject(req);
 
@@ -21,7 +22,10 @@ export default async function addGroup(req, res) {
     }
 
     let departments = AccessRightsHelper.getAllDepartments();
-    let groupedTokens = {}
+
+    let groupedTokens: {
+        [key: string]:  AccessRightsToken[]
+    } = {}
 
     for (let department of departments) {
         groupedTokens[department] = AccessRightsHelper.getTokensByDepartment(department)
@@ -37,7 +41,7 @@ export default async function addGroup(req, res) {
         for (let key in req.body) {
             if (key.startsWith("user-checkbox-") && req.body[key] === "on") {
                 for (let user of users) {
-                    if (user.id == key.slice(14)) {
+                    if (user.id == parseInt(key.slice(14))) {
                         usersInThisGroup.push(user.id)
                     }
                 }

@@ -3,7 +3,7 @@ import {AccessRightsHelper} from "../helper/accessRightsHelper";
 
 export default function bindResView() {
 
-    let bindResFunctions = function (req, res, next) {
+    let bindResFunctions = function (req: ReqType, res: ResType, next) {
 
         /**
          * Guess view name by request

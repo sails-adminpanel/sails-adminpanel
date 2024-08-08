@@ -9,7 +9,7 @@ module.exports = async function (req, res, proceed) {
         }
         else {
             req.session.UserAP = {
-                id: "auth-false",
+                id: 0,
                 isAdministrator: true,
                 locale: locale
             };

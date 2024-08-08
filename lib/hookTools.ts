@@ -173,7 +173,7 @@ export default class HookTools {
      * |                '/index': 'policy'
      * |              }
      * |
-     * * - policy.js > module.exports = function (req, res, next) {
+     * * - policy.js > module.exports = function (req: ReqType, res: ResType, next) {
      *                    return next();
      *                 }
      * @param folder - folder where policies load

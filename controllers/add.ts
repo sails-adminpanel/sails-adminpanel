@@ -4,7 +4,7 @@ import {FieldsHelper} from "../helper/fieldsHelper";
 import {CreateUpdateConfig} from "../interfaces/adminpanelConfig";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 
-export default async function add(req, res) {
+export default async function add(req: ReqType, res: ResType) {
 	let entity = AdminUtil.findEntityObject(req);
 
 	if (!entity.model) {

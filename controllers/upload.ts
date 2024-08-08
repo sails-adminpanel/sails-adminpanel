@@ -6,7 +6,7 @@ const Jimp = require('jimp');
 
 // !TODO for images resizing need usage parameters to get request cat.jpg?150. It makes image inscribed in square 150*150px
 
-export default function upload(req, res) {
+export default function upload(req: ReqType, res: ResType) {
 
     // sails.log.debug('admin > upload');
     let entity = AdminUtil.findEntityObject(req);
