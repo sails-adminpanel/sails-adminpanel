@@ -151,6 +151,7 @@ export class FieldsHelper {
                 let displayField;
                 if (config.type === 'association') {
                     try {
+                        let model = AdminUtil.getModel(modelField.model.toLowerCase() as keyof Models);
                         associatedModelAttributes = AdminUtil.getModel(modelField.model.toLowerCase() as keyof Models).attributes;
                     }
                     catch (e) {

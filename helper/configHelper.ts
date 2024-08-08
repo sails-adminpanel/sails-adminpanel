@@ -1,4 +1,4 @@
-import { AdminpanelConfig } from "../interfaces/adminpanelConfig";
+import { AdminpanelConfig, ModelConfig } from "../interfaces/adminpanelConfig";
 import Router from "../lib/Router";
 import { getDefaultConfig, setDefaultConfig } from "../lib/defaults";
 export class ConfigHelper {
@@ -21,16 +21,16 @@ export class ConfigHelper {
         return sails.config.adminpanel;
     }
 
-    /**
-     * Checks if given field is identifier of model
-     *
-     * @param {Object} field
-     * @param {Object|string=} modelOrName
-     * @returns {boolean}
-     */
-    public static isId(field, modelOrName): boolean {
-        return (field.config.key == this.getIdentifierField(modelOrName));
-    }
+    // /**
+    //  * Checks if given field is identifier of model
+    //  *
+    //  * @param {Object} field
+    //  * @param {Object|string=} modelOrName
+    //  * @returns {boolean}
+    //  */
+    // public static isId(field: { config: { key: string; }; }, modelOrName: string): boolean {
+    //     return (field.config.key == this.getIdentifierField(modelOrName));
+    // }
 
     /**
      * Get configured `identifierField` from adminpanel configuration.
@@ -44,25 +44,27 @@ export class ConfigHelper {
      * @returns {string}
      * @param modelName
      */
-    public static getIdentifierField(modelName) {
+    public static getIdentifierField(modelName: string) {
 
         if (!modelName) {
             throw new Error("Model name is not defined")
         }
 
         let config = sails.config.adminpanel;
-        let ModelConfig;
+        let modelConfig: ModelConfig;
         Object.keys(config.models).forEach((entityName) => {
             const model = config.models[entityName];
             if(typeof model !== "boolean") {
                 if (model.model === modelName.toLowerCase()) {
-                    ModelConfig = config.models[entityName]
+                    if(typeof config.models[entityName] !== "boolean") {
+                        modelConfig = config.models[entityName] as ModelConfig
+                    }
                 }
             }
         })
 
-        if (ModelConfig && ModelConfig.identifierField) {
-            return ModelConfig.identifierField;
+        if (modelConfig && modelConfig.identifierField) {
+            return modelConfig.identifierField;
         } else if (sails.models[modelName.toLowerCase()].primaryKey) {
             return sails.models[modelName.toLowerCase()].primaryKey
         } else {

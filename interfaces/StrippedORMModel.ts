@@ -28,13 +28,14 @@ type QueryBuilder = {
   sum(attribute: string): QueryBuilder;
   average(attribute: string): QueryBuilder;
   meta(options: any): QueryBuilder;
-};
+} & SailsModelAnyInstance;
 
 export default interface StrippedORMModel {
   create?(params: any): CRUDBuilder;
   create?(params: any[]): CRUDBuilder;
 
   find?(criteria?: any): QueryBuilder;
+  findOne?(criteria?: any): QueryBuilder;
   findOne?(criteria?: any): QueryBuilder;
   findOrCreate?(criteria?: any, values?: any): QueryBuilder;
 
@@ -44,6 +45,8 @@ export default interface StrippedORMModel {
   destroy?(criteria: any): CRUDBuilder;
   destroy?(criteria: any[]): CRUDBuilder;
   destroyOne?(criteria: any[]): CRUDBuilder;
+  destroyOne?(criteria: string | number): CRUDBuilder;
+
 
   count?(criteria?: any): number;
   count?(criteria: any[]): number;

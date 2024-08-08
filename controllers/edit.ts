@@ -31,7 +31,8 @@ export default async function edit(req: ReqType, res: ResType) {
 
 	let record;
 	try {
-		record = await entity.model.findOne(req.param('id')).populateAll();
+		const id = req.param('id') as string;
+		record = await entity.model.findOne(id).populateAll();
 	} catch (e) {
 		sails.log.error('Admin edit error: ');
 		sails.log.error(e);

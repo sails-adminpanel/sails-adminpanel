@@ -21,16 +21,16 @@ class ConfigHelper {
     static getConfig() {
         return sails.config.adminpanel;
     }
-    /**
-     * Checks if given field is identifier of model
-     *
-     * @param {Object} field
-     * @param {Object|string=} modelOrName
-     * @returns {boolean}
-     */
-    static isId(field, modelOrName) {
-        return (field.config.key == this.getIdentifierField(modelOrName));
-    }
+    // /**
+    //  * Checks if given field is identifier of model
+    //  *
+    //  * @param {Object} field
+    //  * @param {Object|string=} modelOrName
+    //  * @returns {boolean}
+    //  */
+    // public static isId(field: { config: { key: string; }; }, modelOrName: string): boolean {
+    //     return (field.config.key == this.getIdentifierField(modelOrName));
+    // }
     /**
      * Get configured `identifierField` from adminpanel configuration.
      *
@@ -48,17 +48,19 @@ class ConfigHelper {
             throw new Error("Model name is not defined");
         }
         let config = sails.config.adminpanel;
-        let ModelConfig;
+        let modelConfig;
         Object.keys(config.models).forEach((entityName) => {
             const model = config.models[entityName];
             if (typeof model !== "boolean") {
                 if (model.model === modelName.toLowerCase()) {
-                    ModelConfig = config.models[entityName];
+                    if (typeof config.models[entityName] !== "boolean") {
+                        modelConfig = config.models[entityName];
+                    }
                 }
             }
         });
-        if (ModelConfig && ModelConfig.identifierField) {
-            return ModelConfig.identifierField;
+        if (modelConfig && modelConfig.identifierField) {
+            return modelConfig.identifierField;
         }
         else if (sails.models[modelName.toLowerCase()].primaryKey) {
             return sails.models[modelName.toLowerCase()].primaryKey;

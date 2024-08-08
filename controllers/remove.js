@@ -53,7 +53,8 @@ async function remove(req, res) {
     // sails.log.debug('admin > remove > record > ', record);
     let destroyedRecord;
     try {
-        destroyedRecord = await entity.model.destroyOne(record[entity.config.identifierField || sails.config.adminpanel.identifierField]);
+        const fieldId = entity.config.identifierField ?? sails.config.adminpanel.identifierField;
+        await entity.model.destroyOne(record[fieldId]).fetch();
     }
     catch (e) {
         sails.log.error('adminpanel > error', e);

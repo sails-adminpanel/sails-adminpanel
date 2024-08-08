@@ -1,15 +1,16 @@
 import * as path from "path";
 import * as fs from "fs";
+import { AdminpanelConfig } from "sails-adminpanel/interfaces/adminpanelConfig";
 
 export class FormHelper {
 
-    public static async get(slug: string): Promise<object> {
+    public static get(slug: string): AdminpanelConfig["forms"]["data"][0] {
         if (sails.config.adminpanel.forms && sails.config.adminpanel.forms !== null) {
             return sails.config.adminpanel.forms.data[slug]
         }
     }
 
-    public static async loadForms(formsPath: string): Promise<void> {
+    public static loadForms(formsPath: string): void {
         try {
             let formsDirectoryPath = path.resolve(formsPath);
             let forms = fs.readdirSync(formsDirectoryPath).filter(function (file) {

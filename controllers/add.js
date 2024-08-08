@@ -9,7 +9,7 @@ async function add(req, res) {
     if (!entity.model) {
         return res.notFound();
     }
-    if (!entity.config.add) {
+    if (!entity.config?.add) {
         return res.redirect(entity.uri);
     }
     if (sails.config.adminpanel.auth) {

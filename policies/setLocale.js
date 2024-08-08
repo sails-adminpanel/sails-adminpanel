@@ -1,3 +1,4 @@
+"use strict";
 module.exports = async function (req, res, proceed) {
     if (!sails.hooks.i18n) {
         return proceed();

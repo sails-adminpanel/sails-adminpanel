@@ -46,60 +46,75 @@ class MenuHelper {
     /**
      * Check if global actions buttons added to action
      *
-     * @param {Object} ModelConfig
+     * @param {Object} modelConfig
      * @param {string=} [action] Defaults to `list`
      * @returns {boolean}
      */
-    hasGlobalActions(ModelConfig, action) {
-        action = action || 'list';
-        if (!ModelConfig[action] || !ModelConfig[action].actions || !ModelConfig[action].actions.global) {
+    hasGlobalActions(modelConfig, action) {
+        action = action ?? 'list';
+        const config = modelConfig[action];
+        if (typeof config === "object" && config !== null && 'actions' in config) {
+            if (!config.actions || !config.actions.global) {
+                return false;
+            }
+            let actions = config.actions.global;
+            return actions.length > 0;
+        }
+        else {
             return false;
         }
-        let actions = ModelConfig[action].actions.global;
-        return actions.length > 0;
     }
     /**
      * Check if inline actions buttons added to action
      *
-     * @param {Object} ModelConfig
+     * @param {Object} modelConfig
      * @param {string=} [action] Defaults to `list`
      * @returns {boolean}
      */
-    hasInlineActions(ModelConfig, action) {
-        action = action || 'list';
-        if (!ModelConfig[action] || !ModelConfig[action].actions || !ModelConfig[action].actions.inline) {
+    hasInlineActions(modelConfig, action) {
+        action = action ?? 'list';
+        const config = modelConfig[action];
+        if (typeof config !== "object" || config === null || !('actions' in config) || !config.actions.inline) {
             return false;
         }
-        let actions = ModelConfig[action].actions.inline;
+        const actions = config.actions.inline;
         return actions.length > 0;
     }
     /**
      * Get list of custom global buttons for action
      *
-     * @param {Object} ModelConfig
+     * @param {Object} modelConfig
      * @param {string=} [action]
      * @returns {Array}
      */
-    getGlobalActions(ModelConfig, action) {
-        action = action || 'list';
-        if (!this.hasGlobalActions(ModelConfig, action)) {
+    getGlobalActions(modelConfig, action) {
+        action = action ?? 'list';
+        if (!this.hasGlobalActions(modelConfig, action)) {
             return [];
         }
-        return ModelConfig[action].actions.global;
+        const config = modelConfig[action];
+        if (typeof config === "object" && config !== null && 'actions' in config && config.actions.global) {
+            return config.actions.global;
+        }
+        return [];
     }
     /**
      * Get list of custom inline buttons for action
      *
-     * @param {Object} ModelConfig
+     * @param {Object} modelConfig
      * @param {string=} [action]
      * @returns {Array}
      */
-    getInlineActions(ModelConfig, action) {
+    getInlineActions(modelConfig, action) {
         action = action || 'list';
-        if (!this.hasInlineActions(ModelConfig, action)) {
+        if (!this.hasInlineActions(modelConfig, action)) {
             return [];
         }
-        return ModelConfig[action].actions.inline;
+        const config = modelConfig[action];
+        if (typeof config === "object" && config !== null && 'actions' in config && config.actions.inline) {
+            return config.actions.inline;
+        }
+        return [];
     }
     /**
      * Replace fields in given URL and binds to model fields.

@@ -1,3 +1,4 @@
+import GroupAP from "sails-adminpanel/models/GroupAP";
 import {AccessRightsToken} from "../interfaces/types";
 import UserAP from "../models/UserAP";
 import userAP from "../models/UserAP";
@@ -77,7 +78,7 @@ export class AccessRightsHelper {
         }
 
         let allow = false;
-        for (let group of user.groups) {
+        for (let group of user.groups as GroupAP[]) {
             if (group.tokens.includes(tokenId)) {
                 allow = true;
                 break;

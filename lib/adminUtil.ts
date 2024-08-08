@@ -1,6 +1,7 @@
 import {Entity} from "../interfaces/types";
 import {ActionType, AdminpanelConfig, CreateUpdateConfig, HrefConfig, ModelConfig} from "../interfaces/adminpanelConfig";
 import { Attributes, ModelTypeDetection, Model } from "sails-typescript";
+import { SailsModelAnyInstance } from "../interfaces/StrippedORMModel";
 
 /**
  * @deprecated need refactor actions
@@ -99,7 +100,7 @@ export class AdminUtil {
      * @param {string} name
      * @returns {?Model}
      */
-    public static getModel<T extends keyof Models>(name: T): Model<Models[T]> | null {
+    public static getModel<T extends keyof Models>(name: T): Model<Models[T]> & {attributes: SailsModelAnyInstance} | null {
         //Getting model
         // console.log('admin > model > ', sails.models);
         let Model = sails.models[name.toLowerCase()];

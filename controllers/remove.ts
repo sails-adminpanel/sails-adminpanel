@@ -1,5 +1,7 @@
 import { AdminUtil } from "../lib/adminUtil";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
+import { stdin } from "node:process";
+import { SailsModelAnyInstance } from "sails-adminpanel/interfaces/StrippedORMModel";
 
 export default async function remove(req: ReqType, res: ResType) {
     //Checking id of the record
@@ -29,9 +31,9 @@ export default async function remove(req: ReqType, res: ResType) {
     /**
      * Searching for record by model
      */
-    let record;
+    let record: SailsModelAnyInstance;
     try {
-        record = await entity.model.findOne(req.param('id'));
+        record = await entity.model.findOne(req.param('id')) as SailsModelAnyInstance;
     } catch (e) {
         if (req.wantsJSON) {
             return res.json({
@@ -56,7 +58,8 @@ export default async function remove(req: ReqType, res: ResType) {
 
     let destroyedRecord;
     try {
-        destroyedRecord = await entity.model.destroyOne(record[entity.config.identifierField || sails.config.adminpanel.identifierField]);
+        const fieldId = entity.config.identifierField ?? sails.config.adminpanel.identifierField;
+        await entity.model.destroyOne(record[fieldId] as number | string).fetch()       
     } catch (e) {
         sails.log.error('adminpanel > error', e);
     }

@@ -27,7 +27,8 @@ async function edit(req, res) {
     }
     let record;
     try {
-        record = await entity.model.findOne(req.param('id')).populateAll();
+        const id = req.param('id');
+        record = await entity.model.findOne(id).populateAll();
     }
     catch (e) {
         sails.log.error('Admin edit error: ');

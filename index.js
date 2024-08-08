@@ -6,7 +6,7 @@ const { ConfigHelper } = require('./helper/configHelper');
 const { AccessRightsHelper } = require('./helper/accessRightsHelper');
 const { InstallStepper } = require("./lib/installStepper/installStepper");
 const { CatalogHandler } = require("./lib/catalog/CatalogHandler");
-module.exports = function (sails) {
+module.exports = function () {
     let libInitialize = require("./lib/initialize");
     return {
         /**
@@ -18,27 +18,10 @@ module.exports = function (sails) {
             await libInitialize.default(sails, cb);
         },
         addMenuItem: function (link, label, icon, group) {
-            if (!link)
-                throw 'first argument is required';
-            sails.config.adminpanel.menu = sails.config.adminpanel.menu || {};
-            sails.config.adminpanel.menu.actions = sails.config.adminpanel.menu.actions || [];
-            sails.config.adminpanel.menu.actions.push({
-                link: link,
-                title: label || link,
-                icon: icon,
-                menuGroup: group
-            });
-            sails.config.views.locals.adminpanel.menuHelper = new MenuHelper(sails.config.adminpanel);
+            throw `Not implemented adminpanel index file addMenuItem`;
         },
         addGroup: function (key, title) {
-            if (!key)
-                throw 'first argument is required';
-            sails.config.adminpanel.menu = sails.config.adminpanel.menu || {};
-            sails.config.adminpanel.menu.groups = sails.config.adminpanel.menu.groups || [];
-            sails.config.adminpanel.menu.groups.push({
-                key: key,
-                title: title || key,
-            });
+            throw `Not implemented adminpanel index file addGroup`;
         },
         addModelConfig: ConfigHelper.addModelConfig,
         registerAccessToken: AccessRightsHelper.registerToken,
