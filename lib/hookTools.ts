@@ -84,7 +84,7 @@ export default class HookTools {
      * @param hooks - array of names hooks to wait for
      * @param cb - function
      */
-    public static waitForHooks(selfName: string, hooks: string[], cb: (...args) => any): void {
+    public static waitForHooks(selfName: string, hooks: string[], cb: Function): void {
         var eventsToWaitFor = [];
         eventsToWaitFor.push("router:after");
         try {
@@ -179,14 +179,14 @@ export default class HookTools {
      * @param folder - folder where policies load
      */
 
-    public static loadPolicies(folder: string) {
+    public static loadPolicies(folder: string): void {
         const normalizedPath = path.normalize(folder);
-
-        const policies = {};
+    
+        const policies: {[key: string]: Function} = {};
         readdirSync(normalizedPath).forEach(function (file) {
             policies[file.split(".").slice(0, -1).join(".")] = require(normalizedPath + "/" + file);
         });
-
+    
         this.policies = policies;
     }
 }

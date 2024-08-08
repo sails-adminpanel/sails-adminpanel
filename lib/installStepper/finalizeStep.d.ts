@@ -10,7 +10,7 @@ export default class FinalizeStep extends InstallStepAbstract {
     title: string;
     badge: string;
     isSkipped: boolean;
-    settingsKeys: any[];
+    settingsKeys: string[];
     renderer: "ejs";
     isProcessed: boolean;
     check(): Promise<boolean>;

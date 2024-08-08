@@ -49,10 +49,12 @@ export class RequestProcessor {
         let files = {};
         for await (let elem of fileFieldKeys) {
             try {
+                //@ts-ignore
                 req.file(elem).upload((err: Error, file)  => {
                     if (err) {
                         return err;
                     }
+                    //@ts-ignore
                     files[elem] = file;
                 });
             } catch (e) {
@@ -102,7 +104,7 @@ export class RequestProcessor {
                 try {
                     postParams[key] = JSON.parse(postParams[key] as string);
                 } catch (error) {
-                    if (typeof postParams[key] === "string" && postParams[key].trim()) {
+                    if (typeof postParams[key] === "string" && (postParams[key] as string).trim()) {
                         sails.log.error(`Adminpanel > processRequest: json parse error when parsing ${postParams[key]}`, error);
                     }
                 }

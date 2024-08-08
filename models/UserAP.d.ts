@@ -1,4 +1,5 @@
 import { ModelTypeDetection, Model } from "sails-typescript";
+import { WidgetConfig } from "sails-adminpanel/lib/widgets/widgetHandler";
 declare const attributes: {
     readonly id: {
         readonly type: "number";
@@ -110,5 +111,8 @@ declare global {
     const UserAP: Model<typeof model>;
     interface Models {
         UserAP: UserAP;
+    }
+    interface AppCustomJsonTypes {
+        widgets: WidgetConfig[];
     }
 }

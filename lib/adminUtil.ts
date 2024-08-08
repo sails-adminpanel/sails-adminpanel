@@ -1,7 +1,7 @@
 import {Entity} from "../interfaces/types";
 import {ActionType, AdminpanelConfig, CreateUpdateConfig, HrefConfig, ModelConfig} from "../interfaces/adminpanelConfig";
 import { Attributes, ModelTypeDetection, Model } from "sails-typescript";
-import { SailsModelAnyInstance } from "../interfaces/StrippedORMModel";
+import StrippedORMModel, { SailsModelAnyInstance } from "../interfaces/StrippedORMModel";
 
 /**
  * @deprecated need refactor actions
@@ -207,7 +207,7 @@ export class AdminUtil {
         if (typeof entity.config[actionType] === "boolean") {
             return result;
         }
-        return this._normalizeActionConfig(entity.config[actionType]);
+        return this._normalizeActionConfig(entity.config[actionType] as ActionConfig);
     }
 
     /**
@@ -215,14 +215,17 @@ export class AdminUtil {
      *
      * @see AdminUtil._isValidModelConfig
      * @param {Request} req
-     * @param {Object} ModelConfig
+     * @param {Object} modelConfig
      * @returns {?Model}
      */
-    public static findModel(req: ReqType, ModelConfig: ModelConfig): StrippedORMModel {
-        if (!this._isValidModelConfig(ModelConfig)) {
+
+    public static findModel<T extends keyof Models>(req: ReqType, modelConfig: ModelConfig): Model<Models[T]> & { attributes: SailsModelAnyInstance } | null {
+        if (!this._isValidModelConfig(modelConfig)) {
             return null;
         }
-        return this.getModel(ModelConfig.model);
+    
+        const modelName = modelConfig.model as T;
+        return this.getModel(modelName);
     }
 
     /**
@@ -244,20 +247,30 @@ export class AdminUtil {
      * @returns {Object}
      */
     public static findEntityObject(req: ReqType): Entity {
-        let entityName = this.findEntityName(req);
-        let entityType = this.findEntityType(req);
-        let entityUri = `${this.config().routePrefix}/${entityType}/${entityName}`;
-        let entity: Entity = {
+        // Retrieve entity name and type based on the request
+        const entityName = this.findEntityName(req);
+        const entityType = this.findEntityType(req);
+        
+        // Construct the entity URI
+        const entityUri = `${this.config().routePrefix}/${entityType}/${entityName}`;
+        
+        // Initialize the Entity object
+        const entity: Entity = {
             name: entityName,
             uri: entityUri,
             type: entityType
         };
+        
+        // If the entity type is "model", add additional properties
         if (entityType === "model") {
+            // Find and add the model configuration to the entity
             entity.config = this.findModelConfig(req, entityName);
-            // console.log(entityName, entity)
-
+            
+            // Find and add the model itself to the entity
             entity.model = this.findModel(req, entity.config);
         }
+        
+        // Return the completed entity object
         return entity;
     }
 }

@@ -27,7 +27,13 @@ declare global {
     [key: string]: any | object;
   }
   const sails: Sails;
-  type ReqType = sails.Request & {session: reqSession} ;
+  type ReqType = sails.Request & {
+    session: reqSession,    
+    _parsedUrl: {
+      pathname: string
+    }
+    setLocale: (locale: string)=>void
+  } ;
   type ResType = sails.Response & { 
     viewAdmin<T>(variables: T): void
     viewAdmin<T>(template: string, variables: T): void 

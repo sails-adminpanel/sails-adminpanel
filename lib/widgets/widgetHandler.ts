@@ -7,7 +7,7 @@ import UserAP from "../../models/UserAP";
 import CustomBase from "./abstractCustom";
 import { AdminpanelIcon } from "../../interfaces/adminpanelConfig";
 
-type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase | CustomBase);
+export type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase | CustomBase);
 export interface WidgetConfig {
 	id: string;
 	type: string;
@@ -181,20 +181,24 @@ export class WidgetHandler {
 }
 
 // TODO: move to folder controlles
-export async function getAllWidgets(req: ReqType, res: ResType) {
+export async function getAllWidgets(req: ReqType, res: ResType): Promise<void> {
 	if (sails.config.adminpanel.auth) {
 		if (!req.session.UserAP) {
-			return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+			res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+			return 
 		} else if (!AccessRightsHelper.havePermission(`widgets`, req.session.UserAP)) {
-			return res.sendStatus(403);
+			res.sendStatus(403);
+			return 
 		}
 	}
 
 	if (req.method.toUpperCase() === 'GET') {
 		try {
-			return res.json({ widgets: await WidgetHandler.getAll(req.session.UserAP) })
+			res.json({ widgets: await WidgetHandler.getAll(req.session.UserAP) })
+			return 
 		} catch (e) {
-			return res.serverError(e)
+			res.serverError(e)
+			return 
 		}
 	}
 }
@@ -212,7 +216,6 @@ export async function widgetsDB(req: ReqType, res: ResType) {
 		id = req.session.UserAP.id
 	}
 
-	console.log(">>>.")
 	if (req.method.toUpperCase() === 'GET') {
 		try {
 			let widgets = await WidgetHandler.getWidgetsDB(id, auth);

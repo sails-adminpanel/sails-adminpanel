@@ -10,6 +10,7 @@ export type FieldModel = {
 export type Field = {
     config: BaseFieldConfig & {
         records: object[];
+        file?: string;
     };
     model: FieldModel;
 };
