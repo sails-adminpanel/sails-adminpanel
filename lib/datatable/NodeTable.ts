@@ -180,7 +180,7 @@ export class NodeTable {
     return { where: filter, sort: order, skip: limit[0], limit: limit[1] };
   }
 
-  async output(callback: Function): Promise<void> {
+  async output(callback: ()=>void): Promise<void> {
     try {
       const queryOptions = await this.buildQuery();
       const totalRecords = await this.model.count();

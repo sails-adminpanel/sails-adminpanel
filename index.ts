@@ -23,7 +23,7 @@ module.exports = function () {
 
         configure: require('./lib/configure').default(),
 
-        initialize: async function initialize(cb: Function) {
+        initialize: async function initialize(cb: ()=>void) {
             await libInitialize.default(sails, cb);
         },
 

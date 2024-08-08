@@ -51,8 +51,8 @@ export default interface StrippedORMModel {
   count?(criteria?: any): number;
   count?(criteria: any[]): number;
 
-  query(sqlQuery: string, cb: Function): void;
-  query(sqlQuery: string, data: any, cb: Function): void;
+  query(sqlQuery: string, cb: ()=>void): void;
+  query(sqlQuery: string, data: any, cb: ()=>void): void;
   native(cb: (err: Error, collection: any) => void): void;
 
   stream?(criteria: any, writeEnd: any): NodeJS.WritableStream | Error;

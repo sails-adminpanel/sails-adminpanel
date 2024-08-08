@@ -7,7 +7,7 @@ import {resolve} from "path";
 import afterHook from "./afterHook";
 import bindInstallStepper from "./bindInstallStepper";
 
-export default async function(sails: any, cb: Function) {
+export default async function(sails: any, cb: ()=>void) {
 
 
 

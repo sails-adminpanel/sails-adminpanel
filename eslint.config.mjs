@@ -7,6 +7,12 @@ import { FlatCompat } from "@eslint/eslintrc";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+
+import { includeIgnoreFile } from "@eslint/compat";
+const gitignorePath = path.resolve(__dirname, ".tslintignore");
+
+
 const compat = new FlatCompat({
     baseDirectory: __dirname,
     recommendedConfig: js.configs.recommended,
@@ -14,6 +20,7 @@ const compat = new FlatCompat({
 });
 
 export default [
+    includeIgnoreFile(gitignorePath),
     ...compat.extends("eslint:recommended", "plugin:@typescript-eslint/recommended"),
     {
         plugins: {
@@ -39,7 +46,15 @@ export default [
             "@typescript-eslint/prefer-as-const": "off",
             "@typescript-eslint/no-empty-object-type": "off",
             "@typescript-eslint/no-unused-expressions": "off",
-            // Включаем только предупреждение для `any`
+            "prefer-rest-params": "off",
+            "no-prototype-builtins": "off",
+            "no-useless-escape": "off",
+            "@typescript-eslint/triple-slash-reference": "off",
+            "no-sparse-arrays": "off",
+            "no-unexpected-multiline": "off",
+
+            // Enable warn
+            "no-var": "warn",
             "@typescript-eslint/no-explicit-any": "warn",
         },
     },

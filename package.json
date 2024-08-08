@@ -50,6 +50,7 @@
 		"@ckeditor/ckeditor5-theme-lark": "^42.0.0",
 		"@ckeditor/ckeditor5-typing": "^42.0.0",
 		"@ckeditor/ckeditor5-word-count": "^42.0.0",
+		"@eslint/compat": "^1.1.1",
 		"@eslint/js": "^9.8.0",
 		"@interactjs/core": "1.10.27",
 		"@interactjs/utils": "1.10.27",
@@ -139,7 +140,8 @@
 		"test:init": "npm i && cd ./test/fixture && npm i --no-package-lock && cd -",
 		"test:init-win": "npm i && cd test\\fixture && rmdir /s/Q node_modules && npm i --no-package-lock",
 		"build:css": "sass assets/styles:clarity/src",
-		"bulid:js": "npx gulp js && npx gulp jsProd"
+		"bulid:js": "npx gulp js && npx gulp jsProd",
+		"tslint": "npx eslint ."
 	},
 	"version": "3.2.0"
 }

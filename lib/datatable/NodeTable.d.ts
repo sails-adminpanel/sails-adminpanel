@@ -37,7 +37,7 @@ export declare class NodeTable {
     order(): string;
     filter(): any;
     buildQuery(): Promise<any>;
-    output(callback: Function): Promise<void>;
+    output(callback: () => void): Promise<void>;
     mapData(data: {
         [key: string]: any;
     }): object[];
