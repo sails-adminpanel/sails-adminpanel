@@ -2,12 +2,14 @@ import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import {InstallStepper} from "../lib/installStepper/installStepper";
 import * as path from "path";
 
-export default async function processInstallStep(req: ReqType, res: ResType) {
+export default async function processInstallStep(req: ReqType, res: ResType): Promise<void> {
 	if (sails.config.adminpanel.auth) {
 		if (!req.session.UserAP) {
-			return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+			res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+			return
 		} else if (!AccessRightsHelper.havePermission(`process-install-step`, req.session.UserAP)) {
-			return res.sendStatus(403);
+			res.sendStatus(403);
+			return
 		}
 	}
 
@@ -15,7 +17,8 @@ export default async function processInstallStep(req: ReqType, res: ResType) {
 		sails.log.debug("GET REQUEST TO PROCESS INSTALL STEP")
 		let installStepper = InstallStepper.getStepper(req.params.id);
 		if (!installStepper) {
-			return res.redirect(`${sails.config.adminpanel.routePrefix}`);
+			res.redirect(`${sails.config.adminpanel.routePrefix}`);
+			return
 		}
 
 		if (installStepper.hasUnprocessedSteps() || installStepper.hasUnfinalizedSteps()) {
@@ -26,13 +29,15 @@ export default async function processInstallStep(req: ReqType, res: ResType) {
 				await renderData.currentStep.onInit();
 			} catch (e) {
 				console.log("ERROR IN PROCESS INSTALL STEP", e)
-				return res.viewAdmin(`installer/error`, {error: e, stepperId: installStepper.id});
+				res.viewAdmin(`installer/error`, {error: e, stepperId: installStepper.id});
+				return
 			}
 
-			return res.viewAdmin(`installer/${renderer}`, {...renderData, stepperId: installStepper.id});
-			// return res.viewAdmin(`installer/dev`, {...renderData, stepperId: installStepper.id});
+			res.viewAdmin(`installer/${renderer}`, {...renderData, stepperId: installStepper.id});
+			return
 		} else {
-			return res.redirect(`${sails.config.adminpanel.routePrefix}`);
+			res.redirect(`${sails.config.adminpanel.routePrefix}`);
+			return
 		}
 	}
 
@@ -74,20 +79,23 @@ export default async function processInstallStep(req: ReqType, res: ResType) {
 				await installStepper.skipStep(currentStepId);
 
 			} else {
-				return res.status(400).send("Invalid action parameter");
+				res.status(400).send("Invalid action parameter");
+				return
 			}
 
 			// go back to stepper if there are more unprocessed steps, otherwise go back to /admin
 			if (installStepper.hasUnprocessedSteps()) {
-				return res.redirect(`${sails.config.adminpanel.routePrefix}/install/${installStepper.id}`);
-
+				res.redirect(`${sails.config.adminpanel.routePrefix}/install/${installStepper.id}`);
+				return
 			} else {
-				return res.redirect(`${sails.config.adminpanel.routePrefix}`);
+				res.redirect(`${sails.config.adminpanel.routePrefix}`);
+				return
 			}
 
 		} catch (error) {
 			sails.log.error("Error processing step:", error);
-			return res.status(500).send("Error processing step");
+			res.status(500).send("Error processing step");
+			return
 		}
 	}
 
@@ -96,17 +104,19 @@ export default async function processInstallStep(req: ReqType, res: ResType) {
 
 		try {
 			InstallStepper.deleteStepper(req.params.id);
-			return res.status(200).send("OK")
-
+			res.status(200).send("OK")
+			return
 		} catch (e) {
-			return res.status(403).send(e);
+			res.status(403).send(e);
+			return
 		}
 	}
 
-	return res.status(500).send("Invalid request method")
+	res.status(500).send("Invalid request method")
+	return
 };
 
-function uploadFiles(files, currentStepId) {
+function uploadFiles(files: ReturnType<ReqType['file']>, currentStepId: string | number) {
 	// TODO: Investigate system hang when trying to save a file, and execution of the code after save block does not process.
 	//  The system seems to only proceed after encountering a timeout error.
 	//  This issue is ruining the ability to upload multiple files.

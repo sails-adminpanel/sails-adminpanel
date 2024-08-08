@@ -97,7 +97,7 @@ class FieldsHelper {
             }
             else {
                 return {
-                    key: key,
+                    // key: key,
                     title: key
                 };
             }
@@ -105,16 +105,16 @@ class FieldsHelper {
         // check for string notation
         if (typeof config === "string") {
             return {
-                key: key,
+                // key: key,
                 title: config
             };
         }
         //check for object notation
         if (typeof config === "object" && config !== null) {
             // make required checks
-            if (!config.key) {
-                config.key = key;
-            }
+            // if (!config.key) {
+            //     config.key = key;
+            // }
             if (!config.title) {
                 config.title = key;
             }
@@ -188,10 +188,11 @@ class FieldsHelper {
             }
             let list;
             try {
-                list = await Model.find();
+                list = await Model.find({});
             }
             catch (e) {
-                throw new Error("FieldsHelper > Models not found");
+                sails.log.error(e);
+                throw new Error("FieldsHelper > loadAssociations error");
             }
             fields[key].config.records = list;
         };
@@ -247,7 +248,8 @@ class FieldsHelper {
      * @param {string=} [type] Type of action that config should be loaded for. Example: list, edit, add, remove, view. Defaut: list
      * @returns {Object} Empty object or pbject with list of properties
      */
-    static getFields(req, entity, type) {
+    static getFields(
+    /** @deprecated */ req, entity, type) {
         if (!entity.model || !entity.model.attributes) {
             return {};
         }
@@ -256,9 +258,6 @@ class FieldsHelper {
         //get field config for actions
         let actionConfig = adminUtil_1.AdminUtil.findActionConfig(entity, type);
         let fieldsConfig = entity.config.fields || {};
-        //Get keys from config
-        //var actionConfigFields = _.keys(actionConfig.fields);
-        //Getting list of fields from model
         let modelAttributes = entity.model.attributes;
         let that = this;
         /**

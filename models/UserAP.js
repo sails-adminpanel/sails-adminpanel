@@ -1,52 +1,76 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-let passwordHash = require('password-hash');
-let attributes = {
+const password_hash_1 = require("password-hash");
+let a;
+const attributes = a = {
     id: {
         type: 'number',
-        autoIncrement: true
+        autoIncrement: true,
     },
     login: {
         type: 'string',
         required: true,
-        unique: true
+        unique: true,
     },
     fullName: {
         type: 'string',
-        required: true
+        required: true,
     },
-    email: "string",
-    passwordHashed: 'string',
-    password: 'string',
-    timezone: "string",
-    expires: "string",
-    locale: "string",
-    isDeleted: "boolean",
-    isActive: "boolean",
-    isAdministrator: "boolean",
+    email: {
+        type: 'string',
+    },
+    passwordHashed: {
+        type: 'string',
+    },
+    password: {
+        type: 'string',
+    },
+    timezone: {
+        type: 'string',
+    },
+    expires: {
+        type: 'string',
+    },
+    locale: {
+        type: 'string',
+    },
+    isDeleted: {
+        type: 'boolean',
+    },
+    isActive: {
+        type: 'boolean',
+    },
+    isAdministrator: {
+        type: 'boolean',
+    },
     groups: {
-        collection: "groupap",
-        via: "users"
+        collection: 'GroupAP',
+        via: 'users',
     },
-    widgets: 'json'
+    widgets: {
+        type: 'json',
+    },
 };
-let model = {
-    beforeCreate: (values, next) => {
-        values.passwordHashed = passwordHash.generate(values.login + values.password);
+// Методы модели
+const methods = {
+    beforeCreate(values, cb) {
+        values.passwordHashed = (0, password_hash_1.generate)(values.login + values.password);
         values.password = 'masked';
-        return next();
+        cb();
     },
-    beforeUpdate: (values, next) => {
+    beforeUpdate(values, cb) {
         if (values.password) {
-            values.passwordHashed = passwordHash.generate(values.login + values.password);
+            values.passwordHashed = (0, password_hash_1.generate)(values.login + values.password);
             values.password = 'masked';
         }
-        return next();
-    }
-    /** ... Any model methods here ... */
+        cb();
+    },
+    /** ... Any additional model methods ... */
 };
-module.exports = {
+// Модель
+const model = {
     primaryKey: "id",
     attributes: attributes,
-    ...model,
+    ...methods,
 };
+module.exports = model;

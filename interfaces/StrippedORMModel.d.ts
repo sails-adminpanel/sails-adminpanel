@@ -1,10 +1,15 @@
-/// <reference types="node" />
-import { Callback } from "waterline";
 /**
  * As we generate adminpanel by models from config, we cannot pass model in generic
  */
+/// <reference types="node" />
 type CRUDBuilder = {
     fetch(): Promise<any>;
+};
+export type SailsModelAnyField = number | string | boolean | Date | Array<number | string | boolean> | {
+    [key: string]: number | string | boolean | Date;
+};
+export type SailsModelAnyInstance = {
+    [key: string]: SailsModelAnyField;
 };
 type QueryBuilder = {
     where(condition: any): QueryBuilder;
@@ -42,10 +47,10 @@ export default interface StrippedORMModel {
     destroyOne?(criteria: any[]): CRUDBuilder;
     count?(criteria?: any): number;
     count?(criteria: any[]): number;
-    query(sqlQuery: string, cb: Callback<any>): void;
-    query(sqlQuery: string, data: any, cb: Callback<any>): void;
+    query(sqlQuery: string, cb: Function): void;
+    query(sqlQuery: string, data: any, cb: Function): void;
     native(cb: (err: Error, collection: any) => void): void;
     stream?(criteria: any, writeEnd: any): NodeJS.WritableStream | Error;
-    attributes: any;
+    attributes: SailsModelAnyInstance;
 }
 export {};

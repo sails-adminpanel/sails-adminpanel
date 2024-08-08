@@ -53,16 +53,18 @@ async function edit(req, res) {
                 reqData[prop] = null;
             }
             if (fields[prop].config.type === 'select-many') {
-                reqData[prop] = reqData[prop].split(",");
+                reqData[prop] = reqData[prop].toString().split(",");
             }
             if (fields[prop] && fields[prop].model && fields[prop].model.type === 'json' && reqData[prop] !== '') {
-                try {
-                    reqData[prop] = JSON.parse(reqData[prop]);
-                }
-                catch (e) {
-                    // Why it here?
-                    if (typeof reqData[prop] === "string" && reqData[prop].replace(/(\r\n|\n|\r|\s{2,})/gm, "")) {
-                        sails.log.error(JSON.stringify(reqData[prop]), e);
+                if (typeof reqData[prop] === "string") {
+                    try {
+                        reqData[prop] = JSON.parse(reqData[prop]);
+                    }
+                    catch (e) {
+                        // Why it here @roman?
+                        if (typeof reqData[prop] === "string" && reqData[prop].toString().replace(/(\r\n|\n|\r|\s{2,})/gm, "")) {
+                            sails.log.error(JSON.stringify(reqData[prop]), e);
+                        }
                     }
                 }
             }
@@ -74,7 +76,7 @@ async function edit(req, res) {
             }
             // split string for association-many
             if (fields[prop] && fields[prop].model && fields[prop].model.type === 'association-many' && reqData[prop]) {
-                reqData[prop] = reqData[prop].split(",");
+                reqData[prop] = reqData[prop].toString().split(",");
             }
             // HardFix: Long string was splitted as array of strings. https://github.com/balderdashy/sails/issues/7262
             if (fields[prop].model.type === 'string' && Array.isArray(reqData[prop])) {
@@ -115,15 +117,6 @@ async function edit(req, res) {
             return e;
         }
     }
-    // if (reloadNeeded) {
-    //     try {
-    //         record = await entity.model.findOne(req.param('id')).populateAll();
-    //     } catch (e) {
-    //         sails.log.error('Admin edit error: ');
-    //         sails.log.error(e);
-    //         return res.serverError();
-    //     }
-    // }
     if (req.query.without_layout) {
         return res.viewAdmin("./../ejs/partials/content/editPopup.ejs", {
             entity: entity,

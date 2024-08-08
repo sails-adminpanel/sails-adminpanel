@@ -46,4 +46,7 @@ declare global {
   interface Models {
     GroupAP: GroupAP;
   }
+  interface AppCustomJsonTypes {
+    tokens: string[]
+  }
 }

@@ -1,18 +1,31 @@
+import { SailsModelAnyInstance } from "sails-adminpanel/interfaces/StrippedORMModel";
 import { ActionType, BaseFieldConfig } from "../interfaces/adminpanelConfig";
 import { Entity } from "../interfaces/types";
 import { AdminUtil } from "../lib/adminUtil";
 
+export type FieldModel = {
+    allowNull?: boolean;
+    model?: string;
+    collection?: string;
+    required?: boolean;
+    type: 'association' | 'association-many' | 'number' | 'json' | 'string' | 'boolean' | 'ref';
+}
+
+export type Field = {
+    config: BaseFieldConfig & {records: object[]};
+    model: FieldModel;
+}
 
 export type Fields = {
-    [key: string]: {
-        config: BaseFieldConfig
-        model: {
-			allowNull: boolean;
-            model: string,
-            required: boolean
-            type: 'association' | 'association-many' | 'number' | 'json' | 'string' | 'boolean' | 'ref'
-        }
-    }
+    [key: string]: Field;
+};
+
+
+type KeyIsAbsentInConfig = {
+    /**
+     * @deprecated key is lost
+     */
+    key: string
 }
 
 export class FieldsHelper {
@@ -97,7 +110,7 @@ export class FieldsHelper {
      * @returns {boolean|Object}
      * @private
      */
-    private static _normalizeFieldConfig(config, key, modelField) {
+    private static _normalizeFieldConfig(config: string | boolean | BaseFieldConfig , key: string, modelField: FieldModel): false | BaseFieldConfig {
         if (typeof config === "undefined" || typeof key === "undefined") {
             throw new Error('No `config` or `key` passed !');
         }
@@ -110,7 +123,7 @@ export class FieldsHelper {
             }
             else {
                 return {
-                    key: key,
+                    // key: key,
                     title: key
                 };
             }
@@ -118,16 +131,16 @@ export class FieldsHelper {
         // check for string notation
         if (typeof config === "string") {
             return {
-                key: key,
+                // key: key,
                 title: config
             };
         }
         //check for object notation
         if (typeof config === "object" && config !== null) {
             // make required checks
-            if (!config.key) {
-                config.key = key;
-            }
+            // if (!config.key) {
+            //     config.key = key;
+            // }
             if (!config.title) {
                 config.title = key;
             }
@@ -138,7 +151,7 @@ export class FieldsHelper {
                 let displayField;
                 if (config.type === 'association') {
                     try {
-                        associatedModelAttributes = AdminUtil.getModel(modelField.model.toLowerCase()).attributes;
+                        associatedModelAttributes = AdminUtil.getModel(modelField.model.toLowerCase() as keyof Models).attributes;
                     }
                     catch (e) {
                         sails.log.error(e);
@@ -147,7 +160,7 @@ export class FieldsHelper {
                 else if (config.type === 'association-many') {
                     try {
                         // console.log('admin > helper > collection > ', AdminUtil.getModel(modelField.collection.toLowerCase()).attributes);
-                        associatedModelAttributes = AdminUtil.getModel(modelField.collection.toLowerCase()).attributes;
+                        associatedModelAttributes = AdminUtil.getModel(modelField.collection.toLowerCase()  as keyof Models).attributes;
                     }
                     catch (e) {
                         sails.log.error(e);
@@ -178,35 +191,37 @@ export class FieldsHelper {
      * @param {Object} fields
      * @param {function=} [cb]
      */
-    public static async loadAssociations(fields) {
+    public static async loadAssociations(fields: Fields): Promise<Fields>{
         /**
          * Load all associated records for given field key
          *
          * @param {string} key
          * @param {function=} [cb]
          */
-        let loadAssoc = async function (key) {
+        let loadAssoc = async function (key: string) {
             if (fields[key].config.type !== 'association' && fields[key].config.type !== 'association-many') {
                 return;
             }
             fields[key].config.records = [];
 
             let modelName = fields[key].model.model || fields[key].model.collection;
+
             if (!modelName) {
                 sails.log.error('No model found for field: ', fields[key]);
                 return;
             }
 
-            let Model = AdminUtil.getModel(modelName);
+            let Model = AdminUtil.getModel(modelName as keyof Models);
             if (!Model) {
                 return;
             }
-
-            let list;
+            
+            let list: SailsModelAnyInstance[];
             try {
-                list = await Model.find();
+                list = await Model.find({});
             } catch (e) {
-                throw new Error("FieldsHelper > Models not found");
+                sails.log.error(e)
+                throw new Error("FieldsHelper > loadAssociations error");
             }
 
             fields[key].config.records = list;
@@ -230,8 +245,8 @@ export class FieldsHelper {
      * @param {Object} fields
      * @returns {Array}
      */
-    public static getFieldsToPopulate(fields) {
-        let result = [];
+    public static getFieldsToPopulate(fields: Fields): string[] {
+        let result: string[] = [];
         Object.entries<any>(fields).forEach(function ([key, field]) {
             if (field.config.type === 'association' || field.config.type === 'association-many') {
                 result.push(key);
@@ -267,101 +282,105 @@ export class FieldsHelper {
      * @param {string=} [type] Type of action that config should be loaded for. Example: list, edit, add, remove, view. Defaut: list
      * @returns {Object} Empty object or pbject with list of properties
      */
-    public static getFields(req: ReqType, entity: Entity, type: ActionType): Fields {
-        if (!entity.model || !entity.model.attributes) {
-            return {};
-        }
-        //get type of fields to show
-        type = type || 'list';
-        //get field config for actions
-        let actionConfig = AdminUtil.findActionConfig(entity, type);
-        let fieldsConfig = entity.config.fields || {};
-        //Get keys from config
-        //var actionConfigFields = _.keys(actionConfig.fields);
-        //Getting list of fields from model
-        let modelAttributes = entity.model.attributes
+    public static getFields(
+        /** @deprecated */ req: ReqType, 
+        entity: Entity, 
+        type: ActionType): Fields {
 
+            if (!entity.model || !entity.model.attributes) {
+                return {};
+            }
 
-        let that = this;
-        /**
-         * Iteration function for every field
-         *
-         * @param {Object} modelField
-         * @param {string} key
-         * @private
-         */
-        let _prepareField = function ([key, modelField]) {
+            //get type of fields to show
+            type = type || 'list';
+            //get field config for actions
+            let actionConfig = AdminUtil.findActionConfig(entity, type);
+            let fieldsConfig = entity.config.fields || {};
+            
+            let modelAttributes = entity.model.attributes
+
+            let that = this;
             /**
-             * Checks for short type in waterline:
-             * fieldName: 'string'
+             * Iteration function for every field
+             *
+             * @param {Object} modelField
+             * @param {string} key
+             * @private
              */
-            if (typeof modelField === "string") {
-                modelField = {
-                    type: modelField
+            let _prepareField = function ([key, modelField]: [string, FieldModel]) {
+                /**
+                 * Checks for short type in waterline:
+                 * fieldName: 'string'
+                 */
+                if (typeof modelField === "string") {
+                    modelField = {
+                        type: modelField
+                    };
+                }
+
+                if (typeof modelField === "object" && modelField !== null && modelField.model) {
+                    modelField.type = 'association';
+                }
+
+                if (typeof modelField === "object" && modelField !== null && modelField.collection) {
+                    modelField.type = 'association-many';
+                }
+
+                if (type === 'add' && key === sails.config.adminpanel.identifierField) {
+                    return;
+                }
+                //Getting config form configuration file
+                let fldConfig: any = { key: key, title: key };
+                let ignoreField = false; // if set to true, field will be removed from editor/list
+                //Checking global entity fields configuration
+                if (fieldsConfig[key] || fieldsConfig[key] === false) {
+                    //if config set to false ignoring this field
+                    if (fieldsConfig[key] === false) {
+                        ignoreField = true;
+                    }
+                    else {
+                        let tmpCfg = that._normalizeFieldConfig(fieldsConfig[key], key, modelField);
+                        fldConfig = { ...fldConfig, ...tmpCfg };
+                    }
+                }
+                //Checking inaction entity fields configuration. Should overwrite global one
+                if (actionConfig.fields[key] || actionConfig.fields[key] === false) {
+                    //if config set to false ignoring this field
+                    if (actionConfig.fields[key] === false) {
+                        ignoreField = true;
+                    }
+                    else {
+                        let tmpCfg = that._normalizeFieldConfig(actionConfig.fields[key], key, modelField);
+                        ignoreField = false;
+                        fldConfig = { ...fldConfig, ...tmpCfg };
+                    }
+                }
+                if (ignoreField) {
+                    return;
+                }
+                //check required
+                fldConfig.required = Boolean(fldConfig.required || modelField.required);
+                /**
+                 * Default type for field.
+                 * Could be fetched form config file or file model if not defined in config file.
+                 */
+                fldConfig.type = fldConfig.type || modelField.type;
+                // All field types should be in lower case
+                fldConfig.type = fldConfig.type.toLowerCase();
+                //normalizing configs
+                fldConfig = that._normalizeFieldConfig(fldConfig, key, modelField);
+                //Adding new field to result set
+                result[key] = {
+                    config: fldConfig,
+                    model: modelField
                 };
-            }
-
-            if (typeof modelField === "object" && modelField !== null && modelField.model) {
-                modelField.type = 'association';
-            }
-
-            if (typeof modelField === "object" && modelField !== null && modelField.collection) {
-                modelField.type = 'association-many';
-            }
-
-            if (type === 'add' && key === sails.config.adminpanel.identifierField) {
-                return;
-            }
-            //Getting config form configuration file
-            let fldConfig: any = { key: key, title: key };
-            let ignoreField = false; // if set to true, field will be removed from editor/list
-            //Checking global entity fields configuration
-            if (fieldsConfig[key] || fieldsConfig[key] === false) {
-                //if config set to false ignoring this field
-                if (fieldsConfig[key] === false) {
-                    ignoreField = true;
-                }
-                else {
-                    let tmpCfg = that._normalizeFieldConfig(fieldsConfig[key], key, modelField);
-                    fldConfig = { ...fldConfig, ...tmpCfg };
-                }
-            }
-            //Checking inaction entity fields configuration. Should overwrite global one
-            if (actionConfig.fields[key] || actionConfig.fields[key] === false) {
-                //if config set to false ignoring this field
-                if (actionConfig.fields[key] === false) {
-                    ignoreField = true;
-                }
-                else {
-                    let tmpCfg = that._normalizeFieldConfig(actionConfig.fields[key], key, modelField);
-                    ignoreField = false;
-                    fldConfig = { ...fldConfig, ...tmpCfg };
-                }
-            }
-            if (ignoreField) {
-                return;
-            }
-            //check required
-            fldConfig.required = Boolean(fldConfig.required || modelField.required);
-            /**
-             * Default type for field.
-             * Could be fetched form config file or file model if not defined in config file.
-             */
-            fldConfig.type = fldConfig.type || modelField.type;
-            // All field types should be in lower case
-            fldConfig.type = fldConfig.type.toLowerCase();
-            //normalizing configs
-            fldConfig = that._normalizeFieldConfig(fldConfig, key, modelField);
-            //Adding new field to result set
-            result[key] = {
-                config: fldConfig,
-                model: modelField
             };
-        };
-        // creating result
-        let result = {};
-        Object.entries(modelAttributes).forEach(_prepareField);
+            // creating result
+            let result: {
+                [key: string]: any
+            } = {};
+            Object.entries(modelAttributes).forEach(_prepareField);
 
-        return result;
+            return result;
     }
 }

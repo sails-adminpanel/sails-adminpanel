@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import { AdminUtil } from "../lib/adminUtil";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import * as path from "path";
@@ -153,9 +155,10 @@ export default function upload(req: ReqType, res: ResType) {
 
             // images
             if (type === 'images' || type === 'image') {
+                //@ts-ignore
                 Jimp.read('.' + dir + filename, async function (err, image) {
                     if (err) return res.serverError(err);
-
+                    //@ts-ignore
                     image.write(assetsDir + filename, function (err, img) {
                         if (err) sails.log.error("Can't save image in assets!");
                     });
@@ -181,6 +184,7 @@ export default function upload(req: ReqType, res: ResType) {
                             i.quality = 60;
                         }
                         let name = await jimpResize(i);
+                        //@ts-ignore
                         resizes[i.name] = `/${dirDownload}/${path.basename(name)}`;
                     }
 
@@ -188,6 +192,7 @@ export default function upload(req: ReqType, res: ResType) {
                         return new Promise((resolve, reject) => {
                             const name = fullDir + filename.substr(0, filename.lastIndexOf('.')) + '_' + i.name + '.' + filename.split('.').reverse()[0];
                             const name2 = assetsDir + filename.substr(0, filename.lastIndexOf('.')) + '_' + i.name + '.' + filename.split('.').reverse()[0];
+                            //@ts-ignore
                             Jimp.read('.' + dir + filename, function (err, imageTemp) {
                                 imageTemp.resize(i.w === -1 ? Jimp.AUTO : i.w, i.h === -1 ? Jimp.AUTO : i.h).quality(i.quality).write(name, function (err, image) {
                                     image.write(name2);
@@ -197,7 +202,7 @@ export default function upload(req: ReqType, res: ResType) {
                             });
                         });
                     }
-
+                    //@ts-ignore
                     Jimp.read('.' + dir + filename, function (err, image1) {
                         if (err) return res.serverError(err);
                         image1.scaleToFit(large, large).write(fullDir + nameLarge, function () {

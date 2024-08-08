@@ -1,21 +1,22 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const uuid_1 = require("uuid");
-let attributes = {
+let a;
+const attributes = a = {
     id: {
         type: "string",
         allowNull: false,
     },
     label: {
-        type: 'string',
-        required: true
+        type: "string",
+        required: true,
     },
     tree: {
-        type: 'json',
-        required: true
-    }
+        type: "json",
+        required: true,
+    },
 };
-let model = {
+const methods = {
     beforeCreate(record, cb) {
         if (!record.id) {
             record.id = (0, uuid_1.v4)();
@@ -24,8 +25,9 @@ let model = {
     },
     /** ... Any model methods here ... */
 };
-module.exports = {
+const model = {
     primaryKey: "id",
     attributes: attributes,
-    ...model,
+    ...methods,
 };
+module.exports = model;

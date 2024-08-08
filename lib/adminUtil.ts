@@ -1,7 +1,11 @@
 import {Entity} from "../interfaces/types";
-import {ActionType, AdminpanelConfig, ModelConfig} from "../interfaces/adminpanelConfig";
-import StrippedORMModel from "../interfaces/StrippedORMModel";
+import {ActionType, AdminpanelConfig, CreateUpdateConfig, HrefConfig, ModelConfig} from "../interfaces/adminpanelConfig";
+import { Attributes, ModelTypeDetection, Model } from "sails-typescript";
 
+/**
+ * @deprecated need refactor actions
+ */
+type ActionConfig = CreateUpdateConfig
 export class AdminUtil {
 
     /**
@@ -33,7 +37,7 @@ export class AdminUtil {
      * @returns {boolean}
      * @private
      */
-    private static _isValidModelConfig(config) {
+    private static _isValidModelConfig(config: ModelConfig) {
         return (typeof config === "object" && typeof config.model === "string");
     };
 
@@ -46,30 +50,24 @@ export class AdminUtil {
      * @returns {Object}
      * @private
      */
-    private static _normalizeModelConfig(entityName, config) {
+    private static _normalizeModelConfig(entityName: string, config: ModelConfig | boolean) {
         if(typeof config === "boolean") {
             config = {
                 model: entityName,
                 icon: 'file',
-                name: entityName
+                title: entityName
             }
         }
 
         if (!this._isValidModelConfig(config)) {
             sails.log.error('Wrong entity configuration, using default');
-            config = {};
+            config = {
+                model: entityName,
+                icon: 'file',
+                title: entityName
+            }
         }
         config = {...this._defaultModelConfig, ...config};
-
-        //Check limits
-        if (typeof config.list === "boolean") {
-            config.list = {
-                limit: 15
-            };
-        }
-        if (typeof config.list.limit !== "number") {
-            config.list.limit = 15;
-        }
         return config;
     };
 
@@ -80,7 +78,7 @@ export class AdminUtil {
      * @returns {Object}
      * @private
      */
-    private static _normalizeActionConfig(config) {
+    private static _normalizeActionConfig(config: ActionConfig): ActionConfig {
         //Adding fields
         config.fields = config.fields || {};
         return {...this._defaultActionConfig, ...config};
@@ -101,7 +99,7 @@ export class AdminUtil {
      * @param {string} name
      * @returns {?Model}
      */
-    public static getModel(name: string): StrippedORMModel {
+    public static getModel<T extends keyof Models>(name: T): Model<Models[T]> | null {
         //Getting model
         // console.log('admin > model > ', sails.models);
         let Model = sails.models[name.toLowerCase()];
@@ -167,7 +165,7 @@ export class AdminUtil {
             sails.log.error('No such route exists');
             return null;
         }
-        return this._normalizeModelConfig(entityName, this.config().models[entityName] || {});
+        return this._normalizeModelConfig(entityName, this.config().models[entityName]);
     }
 
     /**
@@ -193,7 +191,7 @@ export class AdminUtil {
      * @param {string} actionType Type of action that config should be loaded for. Example: list, edit, add, remove, view.
      * @returns {Object} Will return object with configs or default configs.
      */
-    public static findActionConfig(entity: Entity, actionType: ActionType) {
+    public static findActionConfig(entity: Entity, actionType: ActionType): ActionConfig {
         if (!entity || !actionType) {
             throw new Error('No `entity` or `actionType` passed !');
         }

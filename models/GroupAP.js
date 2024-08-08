@@ -1,31 +1,35 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-let attributes = {
+let a;
+const attributes = a = {
     id: {
-        type: 'number',
-        autoIncrement: true
+        type: "number",
+        autoIncrement: true,
     },
     name: {
         type: "string",
         required: true,
-        unique: true
+        unique: true,
     },
-    description: "string",
+    description: {
+        type: "string",
+    },
     tokens: {
-        type: "json"
+        type: "json",
     },
     users: {
-        collection: "userap",
-        via: "groups"
-    }
+        collection: "UserAP",
+        via: "groups",
+    },
 };
-let model = {
-    beforeCreate: (item, next) => {
-        return next();
-    }
+const methods = {
+    beforeCreate(record, cb) {
+        cb();
+    },
 };
-module.exports = {
+const model = {
     primaryKey: "id",
     attributes: attributes,
-    ...model,
+    ...methods,
 };
+module.exports = model;

@@ -1,4 +1,7 @@
+import { Field, Fields } from "sails-adminpanel/helper/fieldsHelper";
+
 let queryString = require('querystring');
+type PostParams = Record<string, string | number | boolean | object | string[] | number[] | null >;
 
 /**
  * Default helper that will contain all methods
@@ -15,7 +18,7 @@ export class RequestProcessor {
      * @param {Object} params
      * @returns {String}
      */
-    public static addGetParams(req, params) {
+    public static addGetParams(req: ReqType, params: {}): string {
         if (!req || typeof req.query !== "object") throw new Error('Wrong request given !');
         if (typeof params !== "object") {
             params = {};
@@ -25,40 +28,13 @@ export class RequestProcessor {
     }
 
     /**
-     * upload file to server
-     *
-     * @param {string} key
-     * @param {*} val
-     * @param {Object} field
-     * @param {Function=} [cb]
-     * @returns {?string}
-     */
-    public static uploadFile(key, val, field, cb) {
-        // !TODO fix this, there is no req in parameters
-        // if (!key || !val || !field) {
-        //     return null;
-        // }
-        //
-        // if (!req.file || typeof req.file !== "function") {
-        //     return null;
-        // }
-        //
-        // let options = {};
-        // if (field.config.uploadPath) {
-        //     options.dirname = field.config.uploadPath;
-        // }
-        //
-        // req.file(key).upload(options, cb);
-    }
-
-    /**
      * Will fetch all files from request. That should be stored
      *
      * @param {Request} req
      * @param {Object} fields List of fileds config
      * @param {Function=} [cb]
      */
-    public static async processFiles(req, fields) {
+    public static async processFiles(req: ReqType, fields: Fields) {
         let fileFieldKeys = [];
         for (let key in fields) {
             if (fields[key].config && fields[key].config.file) {
@@ -73,7 +49,7 @@ export class RequestProcessor {
         let files = {};
         for await (let elem of fileFieldKeys) {
             try {
-                await req.file(elem).upload(function(err, file) {
+                req.file(elem).upload((err: Error, file)  => {
                     if (err) {
                         return err;
                     }
@@ -88,6 +64,8 @@ export class RequestProcessor {
         return files;
     }
 
+
+
     /**
      * Will try to find all fields that should be used in model
      *
@@ -97,59 +75,44 @@ export class RequestProcessor {
      * @see AdminUtil#getFields to know what data should be passed into fields
      * @returns {Object} List of processed values from request
      */
-    public static processRequest(req, fields) {
-        // let booleanFields = {};
 
-        // for (let key of Object.keys(fields)) {
-        //     if (fields[key].config.type === 'boolean') {
-        //         booleanFields[key] = Boolean(data[key]);
-        //     }
-        // }
+    public static processRequest(req: ReqType, fields: Fields): PostParams {
         let data = req.allParams();
-        let postParams = {};
-        // Only fileds data
+        let postParams: PostParams = {};
+    
         for (let key of Object.keys(data)) {
-            if (Boolean(fields[key])) {
-                postParams[key] = data[key]
+            if (fields[key]) {
+                postParams[key] = data[key];
             }
         }
-
+    
         for (let key in postParams) {
             let field = fields[key];
-            if (field.model.type == 'boolean') {
+    
+            if (field.model.type === 'boolean') {
                 postParams[key] = ['true', '1', 'yes', "TRUE", "on"].includes(postParams[key].toString().toLowerCase());
-				continue;
+                continue;
             }
-
-            if (field.model.type == 'number') {
-                postParams[key] = parseFloat(postParams[key]);
+    
+            if (field.model.type === 'number') {
+                postParams[key] = parseFloat(postParams[key] as string);
             }
-
-            if (field.model.type == 'json') {
+    
+            if (field.model.type === 'json') {
                 try {
-                    postParams[key] = JSON.parse(postParams[key]);
+                    postParams[key] = JSON.parse(postParams[key] as string);
                 } catch (error) {
-                    // show error only when string and when string is not empty
-                    if (typeof postParams[key] === "string" && postParams[key].replace(/(\r\n|\n|\r|\s{2,})/gm, "")) {
-                        sails.log.error(`Adminpanel > processRequest: json parse error when parsing ${postParams[key]}`, error)
+                    if (typeof postParams[key] === "string" && postParams[key].trim()) {
+                        sails.log.error(`Adminpanel > processRequest: json parse error when parsing ${postParams[key]}`, error);
                     }
                 }
             }
-
-            //remove empty field from list
-            if (field.model.type == 'association' && !postParams[key]) {
+    
+            if (field.model.type === 'association' && !postParams[key]) {
                 delete postParams[key];
             }
         }
-
-        // // Hook for setting boolean vars to false.
-        // // HTTP wouldn't send data here
-        // for (let key in booleanFields) {
-        //     if (!postParams[key]) {
-        //         postParams[key] = false;
-        //     }
-        // }
-
+    
         return postParams;
     }
 }

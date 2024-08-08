@@ -60,6 +60,7 @@ export default async function addGroup(req: ReqType, res: ResType) {
         try {
             group = await GroupAP.create({name: req.body.name, description: req.body.description,
                 users: usersInThisGroup, tokens: tokensOfThisGroup}).fetch()
+
             sails.log.debug(`A new group was created: `, group);
             req.session.messages.adminSuccess.push('A new group was created !');
             return res.redirect(`${sails.config.adminpanel.routePrefix}/model/groupsap`);
