@@ -1,47 +1,48 @@
-import WaterlineModel from "../interfaces/waterlineModel";
-import WaterlineEntity from "../interfaces/waterlineORM";
-import {OptionalAll} from "../interfaces/toolsTS";
-import {v4 as uuid} from "uuid";
+import { Attributes, ModelTypeDetection, Model } from "sails-typescript";
+import { v4 as uuid } from "uuid";
 
-let attributes = {
-	id: {
-		type: "string",
-		allowNull: false,
-	},
-	label: {
-		type: 'string',
-		required: true
-	},
-	tree: {
-		type: 'json',
-		required: true
-	} as const
-};
+let a: Attributes;
+const attributes = a = {
+  id: {
+    type: "string",
+    allowNull: false,
+  },
+  label: {
+    type: "string",
+    required: true,
+  },
+  tree: {
+    type: "json",
+    required: true,
+  },
+} as const;
 
-type attributes = typeof attributes & WaterlineEntity;
-interface NavigationAP extends OptionalAll<attributes> {}
+type ModelOptions = ModelTypeDetection<typeof attributes>;
+interface NavigationAP extends Partial<ModelOptions> {}
 export default NavigationAP;
 
-let model = {
-	beforeCreate(record: NavigationAP, cb: (err?: Error | string) => void) {
-		if (!record.id) {
-			record.id = uuid();
-		}
+const methods = {
+  beforeCreate(record: NavigationAP, cb: (err?: Error | string) => void) {
+    if (!record.id) {
+      record.id = uuid();
+    }
+    cb();
+  },
 
-		cb();
-	},
-
-	/** ... Any model methods here ... */
-
+  /** ... Any model methods here ... */
 };
 
-module.exports = {
-	primaryKey: "id",
-	attributes: attributes,
-	...model,
+const model = {
+  primaryKey: "id",
+  attributes: attributes,
+  ...methods,
 };
+
+module.exports = model;
 
 declare global {
-	const NavigationAP: typeof model & WaterlineModel<NavigationAP, null>;
+  const NavigationAP: Model<typeof model>;
+  interface Models {
+    NavigationAP: NavigationAP;
+  }
 }
-

@@ -14,7 +14,7 @@ interface GroupAP extends OptionalAll<attributes> {
 }
 export default GroupAP;
 declare let model: {
-    beforeCreate: (item: any, next: any) => any;
+    beforeCreate: (item: GroupAP, next: Function) => any;
 };
 declare global {
     const GroupAP: typeof model & WaterlineModel<GroupAP, null>;
