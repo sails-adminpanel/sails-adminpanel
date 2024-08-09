@@ -27,6 +27,12 @@ interface Column {
 interface Search {
     value: string;
 }
+interface NodeOutput {
+    draw: string | number;
+    recordsTotal: Error & number;
+    recordsFiltered: Error & number;
+    data: object[];
+}
 export declare class NodeTable {
     request: Request;
     model: ORMModel;
@@ -37,7 +43,7 @@ export declare class NodeTable {
     order(): string;
     filter(): any;
     buildQuery(): Promise<any>;
-    output(callback: () => void): Promise<void>;
+    output(callback: (err: Error, output: NodeOutput) => void): Promise<void>;
     mapData(data: {
         [key: string]: any;
     }): object[];

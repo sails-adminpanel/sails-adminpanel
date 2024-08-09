@@ -84,8 +84,8 @@ export default class HookTools {
      * @param hooks - array of names hooks to wait for
      * @param cb - function
      */
-    public static waitForHooks(selfName: string, hooks: string[], cb: ()=>void): void {
-        var eventsToWaitFor = [];
+    public static waitForHooks(selfName: string, hooks: string[], cb: (err?: Error)=>void): void {
+        const eventsToWaitFor = [];
         eventsToWaitFor.push("router:after");
         try {
             /**

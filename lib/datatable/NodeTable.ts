@@ -33,6 +33,13 @@ interface Search {
   value: string;
 }
 
+interface NodeOutput {
+  draw: string | number;
+  recordsTotal: Error & number;
+  recordsFiltered: Error & number;
+  data: object[];
+}
+
 export class NodeTable {
   public request: Request;
   public model: ORMModel;
@@ -179,8 +186,8 @@ export class NodeTable {
 
     return { where: filter, sort: order, skip: limit[0], limit: limit[1] };
   }
-
-  async output(callback: ()=>void): Promise<void> {
+  
+  async output(callback: (err: Error, output: NodeOutput)=>void): Promise<void> {
     try {
       const queryOptions = await this.buildQuery();
       const totalRecords = await this.model.count();

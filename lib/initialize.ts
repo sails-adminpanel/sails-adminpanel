@@ -7,7 +7,7 @@ import {resolve} from "path";
 import afterHook from "./afterHook";
 import bindInstallStepper from "./bindInstallStepper";
 
-export default async function(sails: any, cb: ()=>void) {
+export default async function(sails: any, cb: (err?: Error)=>void) {
 
 
 
@@ -54,6 +54,6 @@ export default async function(sails: any, cb: ()=>void) {
     //     .filter(function(item, pos, self) { return self.indexOf(item) == pos })
 
     // Bind assets
-    await bindAssets();
+    bindAssets();
     cb();
 };
