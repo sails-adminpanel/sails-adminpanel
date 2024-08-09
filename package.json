@@ -13,7 +13,6 @@
 		"lodash": "^4.17.21",
 		"password-hash": "^1.2.2",
 		"sails-build-dictionary": "^0.10.1",
-		"sails-typescript": "^1.0.14",
 		"serve-static": "^1.15.0",
 		"utils-decorators": "^2.0.8",
 		"vue-i18n": "^9.13.1"
@@ -21,6 +20,7 @@
 	"deprecated": false,
 	"description": "Basic adminpanel for Sails 1x",
 	"devDependencies": {
+		"sails-typescript": "^1.0.15",
 		"@ckeditor/ckeditor5-alignment": "^42.0.0",
 		"@ckeditor/ckeditor5-autoformat": "^42.0.0",
 		"@ckeditor/ckeditor5-basic-styles": "^42.0.0",
