@@ -17,7 +17,11 @@ declare global {
         services: any;
         config: _sailsConfig;
         log: any;
-        getDatastore: () => void;
+        getDatastore: () => {
+            config: {
+                adapter: string;
+            };
+        };
     }
     interface _sailsConfig extends sailsConfig {
         adminpanel: AdminpanelConfig;

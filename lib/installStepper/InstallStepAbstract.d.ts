@@ -9,6 +9,8 @@ export default abstract class InstallStepAbstract {
     abstract description: string;
     abstract scriptsUrl: string;
     abstract stylesUrl: string;
+    /** For custom modules to set the list of settings wanted to set in this step */
+    settingsKeys: string[];
     /** Absolute path to ejs template */
     abstract ejsPath: string;
     abstract renderer: "ejs" | "jsonforms";
