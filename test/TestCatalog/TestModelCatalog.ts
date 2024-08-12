@@ -14,7 +14,7 @@ class BaseModelItem<T extends Item> extends AbstractItem<T> {
 	public icon: string = "file";
 	public model: string = null;
 
-	public readonly actionHandlers = []
+	public readonly actionHandlers: ActionHandler[] = []
 
 	public async find(itemId: string | number) {
 		return await sails.models[this.model].findOne({id: itemId});
@@ -85,7 +85,7 @@ export class ModelGroup<GroupTestItem extends Item> extends BaseModelItem<GroupT
 	public type = 'group'
 	public isGroup: boolean = true;
 	public model: string = "group";
-	public readonly actionHandlers = []
+	public readonly actionHandlers: ActionHandler[] = []
 
 }
 
@@ -95,7 +95,7 @@ export class Page<T extends Item> extends BaseModelItem<T> {
 	public icon = 'file'
 	public type = 'page'
 	public model: string = "page";
-	public readonly actionHandlers = []
+	public readonly actionHandlers: ActionHandler[] = []
 
 }
 
@@ -105,7 +105,7 @@ export class ItemHTML extends AbstractItem<Item> {
 	public name: string = 'ItemHTML'
 	public icon = 'cat'
 	public type = 'itemHTML'
-	public readonly actionHandlers = []
+	public readonly actionHandlers:ActionHandler[] = []
 
 	public getAddHTML(): Promise<{ type: 'link' | 'html' | 'jsonForm', data: string }> {
 		let type: 'html' = 'html'
@@ -263,7 +263,7 @@ export class TestModelCatalog extends AbstractCatalog {
 	public readonly slug: string = "testModel";
 	public readonly maxNestingDepth: number = null;
 	public readonly icon: string = "box";
-	public readonly actionHandlers = []
+	public readonly actionHandlers: ActionHandler[] = []
 
 	//  public readonly itemTypes: (Item2 | Item1 | TestGroup)[];
 

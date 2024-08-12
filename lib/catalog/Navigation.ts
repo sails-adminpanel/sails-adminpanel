@@ -233,7 +233,7 @@ class NavigationItem extends AbstractItem<NavItem> {
 	readonly type: string;
 	protected model: string;
 	protected navigationModel: string;
-	public readonly actionHandlers = []
+	public readonly actionHandlers: ActionHandler[] = []
 	public readonly urlPath: any;
 	readonly i18n: any
 

@@ -12,7 +12,7 @@
  */
 
 /**
-* @vue/shared v3.4.31
+* @vue/shared v3.4.37
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/

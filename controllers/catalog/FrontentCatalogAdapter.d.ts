@@ -18,6 +18,9 @@ interface NodeModel<TDataType> {
 }
 interface NodeData extends Item {
 }
+interface obj {
+    [key: string]: string;
+}
 interface RequestData {
     reqNode: NodeModel<NodeData>[];
     reqParent: NodeModel<NodeData>;
@@ -37,7 +40,7 @@ export declare class VueCatalog {
         data: string;
     }>;
     getitemTypes(): import("../../lib/catalog/AbstractCatalog").BaseItem<Item>[];
-    getLocales(loc: string): {};
+    getLocales(loc: string): obj;
     getActions(items: NodeModel<any>[], type: string): Promise<import("../../lib/catalog/AbstractCatalog").ActionHandler[]>;
     handleAction(actionId: string, items: any[], config: any): Promise<void>;
     getPopUpHTML(actionId: string): Promise<string>;

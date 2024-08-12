@@ -23,6 +23,10 @@ interface NodeModel<TDataType> {
 interface NodeData extends Item {
 }
 
+interface obj {
+	[key: string]: string;
+}
+
 interface RequestData {
 	reqNode: NodeModel<NodeData>[];
 	reqParent: NodeModel<NodeData>;
@@ -57,7 +61,8 @@ export class VueCatalog {
 	}
 
 	getLocales(loc: string) {
-		let obj: object = {
+
+		let obj: obj = {
 			"Delete": "",
 			"Edit": "",
 			"create": "",
@@ -83,7 +88,7 @@ export class VueCatalog {
 			extension: ".json"
 		})
 		i18n.setLocale(loc);
-		let outMessages = {}
+		let outMessages:obj = {}
 		for (const mess of Object.keys(messages)) {
 			outMessages[mess] = i18n.__(mess)
 		}

@@ -1,4 +1,4 @@
-import { AbstractCatalog, AbstractGroup, AbstractItem, Item } from "../../lib/catalog/AbstractCatalog";
+import { AbstractCatalog, ActionHandler, AbstractGroup, AbstractItem, Item } from "../../lib/catalog/AbstractCatalog";
 interface GroupTestItem extends Item {
     thisIsGroup: boolean;
 }
@@ -83,7 +83,7 @@ export declare class TestCatalog extends AbstractCatalog {
     readonly maxNestingDepth: number;
     readonly icon: string;
     readonly movingGroupsRootOnly: boolean;
-    readonly actionHandlers: any[];
+    readonly actionHandlers: ActionHandler[];
     idList: string[];
     constructor();
     getIdList(): Promise<string[]>;

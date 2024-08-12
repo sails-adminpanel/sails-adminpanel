@@ -6,7 +6,7 @@ declare class BaseModelItem<T extends Item> extends AbstractItem<T> {
     allowedRoot: boolean;
     icon: string;
     model: string;
-    readonly actionHandlers: any[];
+    readonly actionHandlers: ActionHandler[];
     find(itemId: string | number): Promise<any>;
     update(itemId: string | number, data: Item): Promise<T>;
     create(catalogId: string, data: T): Promise<T>;
@@ -30,7 +30,7 @@ export declare class ModelGroup<GroupTestItem extends Item> extends BaseModelIte
     type: string;
     isGroup: boolean;
     model: string;
-    readonly actionHandlers: any[];
+    readonly actionHandlers: ActionHandler[];
 }
 export declare class Page<T extends Item> extends BaseModelItem<T> {
     name: string;
@@ -38,14 +38,14 @@ export declare class Page<T extends Item> extends BaseModelItem<T> {
     icon: string;
     type: string;
     model: string;
-    readonly actionHandlers: any[];
+    readonly actionHandlers: ActionHandler[];
 }
 export declare class ItemHTML extends AbstractItem<Item> {
     readonly allowedRoot: boolean;
     name: string;
     icon: string;
     type: string;
-    readonly actionHandlers: any[];
+    readonly actionHandlers: ActionHandler[];
     getAddHTML(): Promise<{
         type: 'link' | 'html' | 'jsonForm';
         data: string;
@@ -78,7 +78,7 @@ export declare class TestModelCatalog extends AbstractCatalog {
     readonly slug: string;
     readonly maxNestingDepth: number;
     readonly icon: string;
-    readonly actionHandlers: any[];
+    readonly actionHandlers: ActionHandler[];
     constructor();
     readonly movingGroupsRootOnly: boolean;
 }

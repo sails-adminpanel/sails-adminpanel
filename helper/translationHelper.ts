@@ -8,7 +8,7 @@ export class TranslationHelper {
         let translationsConfig = sails.config.adminpanel.translation;
 
         if ( typeof translationsConfig === "boolean") {
-            if(translationsConfig === true) {
+            if(translationsConfig as boolean === true) {
                 sails.log.warn("sails.config.adminpanel.translation is TRUE, is not mater")
             }
             return
@@ -65,7 +65,7 @@ export class TranslationHelper {
         return translateObject(object);
     }
 
-    private static getI18nInstance(locale: string): any {        
+    private static getI18nInstance(locale: string): any {
         if(typeof sails.config.adminpanel.translation === "boolean") {
             throw `Transaltion is disabled`
         }

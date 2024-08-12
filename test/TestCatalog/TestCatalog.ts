@@ -55,7 +55,7 @@ export class StorageService {
 			}
 		}
 
-		return matchedElements;
+		return matchedElements as GroupTestItem[];
 	}
 }
 
@@ -92,6 +92,7 @@ export class TestGroup extends AbstractGroup<GroupTestItem> {
 	public async deleteItem(itemId: string | number): Promise<void> {
 		return await StorageService.removeElementById(itemId);
 	}
+
 	// TODO rename this
 	// @ts-ignore
 	public getAddHTML(): { type: "link" | "html"; data: string; } {
@@ -182,9 +183,10 @@ export class TestCatalog extends AbstractCatalog {
 	public readonly slug: string = "test";
 	public readonly maxNestingDepth: number = null;
 	public readonly icon: string = "box";
-	public readonly movingGroupsRootOnly:boolean;
-	public readonly actionHandlers = []
+	public readonly movingGroupsRootOnly: boolean;
+	public readonly actionHandlers: ActionHandler[] = []
 	public idList: string[] = ['test']
+
 	//  public readonly itemTypes: (Item2 | Item1 | TestGroup)[];
 
 	constructor() {
@@ -196,7 +198,8 @@ export class TestCatalog extends AbstractCatalog {
 			new Item2()
 		]);
 	}
-	async getIdList(){
+
+	async getIdList() {
 		return this.idList
 	}
 }
