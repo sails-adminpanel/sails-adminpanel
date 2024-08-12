@@ -21,16 +21,16 @@ class ConfigHelper {
     static getConfig() {
         return sails.config.adminpanel;
     }
-    // /**
-    //  * Checks if given field is identifier of model
-    //  *
-    //  * @param {Object} field
-    //  * @param {Object|string=} modelOrName
-    //  * @returns {boolean}
-    //  */
-    // public static isId(field: { config: { key: string; }; }, modelOrName: string): boolean {
-    //     return (field.config.key == this.getIdentifierField(modelOrName));
-    // }
+    /**
+     * Checks if given field is identifier of model
+     *
+     * @param {Object} field
+     * @param {Object|string=} modelOrName
+     * @returns {boolean}
+     */
+    static isId(field, modelOrName) {
+        return (field.config.key == this.getIdentifierField(modelOrName));
+    }
     /**
      * Get configured `identifierField` from adminpanel configuration.
      *
