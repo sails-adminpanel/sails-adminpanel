@@ -90,7 +90,7 @@ export interface AdminpanelConfig {
          * */
         path?: string;
         defaultLocale: string;
-    } | boolean;
+    } | false;
     /**
      * Forms
      * */
@@ -168,6 +168,10 @@ export interface AdminpanelConfig {
      *  Navigation
      */
     navigation?: NavigationConfig;
+    /**
+     *  Path to modules views
+     */
+    modulesViewsPath?: string;
 }
 export interface ModelConfig {
     title: string;
