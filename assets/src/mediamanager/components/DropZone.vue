@@ -10,11 +10,11 @@ import {onMounted, onUnmounted, ref} from 'vue'
 
 const fileInput = ref(null)
 
-const onDrop = (e) => {
+function onDrop(e){
 	console.log([...e.dataTransfer.files])
 }
 
-const onLoad = (e) => {
+function onLoad(e){
 	console.log([...e.target.files])
 }
 
