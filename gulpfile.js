@@ -122,6 +122,11 @@ function vueCaalogWatcher(){
 	gulp.watch(path.watch.scss, gulp.series(scss, reload))
 	gulp.watch(path.watch.catalogVue, gulp.series(scss, reload))
 }
+function vueMMWatcher(){
+	gulp.watch(`${srcFolder}/mediamanager/**/*.*`, gulp.series(vueMediamanager, reload))
+	gulp.watch(path.watch.scss, gulp.series(scss, reload))
+	gulp.watch(path.watch.MMVue, gulp.series(scss, reload))
+}
 
 function vueInstallStepperWatcher(){
 	gulp.watch(`${srcFolder}/installStepper/**/*.*`, gulp.series(vueInstallStepper, reload))
@@ -145,6 +150,9 @@ gulp.task('styles-prod', scssProd);
 gulp.task('styles', gulp.series(scss, gulp.parallel(serve, watcher)))
 
 gulp.task('vue', gulp.series(vueWidgets, gulp.parallel(serve, vueWidgetsWatcher) ,gulp.parallel(serve, vueInstallStepperWatcher)))
+
 gulp.task('catalog', gulp.series(vueCatalog, gulp.parallel(serve, vueCaalogWatcher)))
 gulp.task('prodCat', vueCatalogProd)
+
+gulp.task('mm', gulp.series(vueMediamanager, gulp.parallel(serve,vueMMWatcher)))
 gulp.task('prodMediamanager', vueMediamanagerProd)

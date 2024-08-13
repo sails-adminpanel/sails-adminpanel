@@ -15,7 +15,8 @@ const path = {
 	},
 	watch:{
 		scss: `${srcFolder}/styles/**/*.scss`,
-		catalogVue: `${srcFolder}/catalog/**/*.{vue,css}`
+		catalogVue: `${srcFolder}/catalog/**/*.{vue,css}`,
+		MMVue: `${srcFolder}/mediamanager/**/*.{vue,css}`,
 	},
 	clean: buildFolder,
 	srcfolder: srcFolder,

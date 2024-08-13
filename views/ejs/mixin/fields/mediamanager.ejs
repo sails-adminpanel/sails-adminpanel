@@ -1,1 +1,7 @@
-<div id="mediamanager"></div>
+<div id="mediamanager-<%= key %>"></div>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+		MountMediaManager({id: "#mediamanager-<%= key %>"})
+	})
+</script>

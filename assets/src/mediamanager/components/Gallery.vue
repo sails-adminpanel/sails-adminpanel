@@ -54,12 +54,13 @@ import Icons from "./Icons.vue";
 import Table from "./Table.vue";
 import DropZone from "./DropZone.vue";
 import {computed, onMounted, ref} from "vue";
-import {state} from "../services/popupState.js";
 
 
 const layout = ref(Icons)
 const iconsType = ref('bigIcons')
 const galleryRef = ref(null)
+
+const emit = defineEmits(['closePopup'])
 
 onMounted(() => {
 	let galleryPopup = AdminPopUp.new()
@@ -68,7 +69,7 @@ onMounted(() => {
 	})
 	galleryPopup.on('close', () => {
 		console.log('closed gallery')
-		state.galleryVisible.value = false
+		emit('closePopup')
 	})
 })
 
