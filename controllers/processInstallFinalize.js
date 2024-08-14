@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = processInstallFinalize;
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 const installStepper_1 = require("../lib/installStepper/installStepper");
 let installStepper = installStepper_1.InstallStepper.getInstance();
@@ -15,5 +16,4 @@ async function processInstallFinalize(req, res) {
     sails.log.debug("IN PROCESS FINALIZE", installStepper.getFinalizeStatus());
     return res.json(installStepper.getFinalizeStatus());
 }
-exports.default = processInstallFinalize;
 ;

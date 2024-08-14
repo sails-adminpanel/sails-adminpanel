@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = normalizeNavigationConfig;
 const widgetHelper_1 = require("../helper/widgetHelper");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 async function normalizeNavigationConfig(req, res) {
@@ -34,5 +35,4 @@ async function normalizeNavigationConfig(req, res) {
     res.send(normalizedConfig);
     return;
 }
-exports.default = normalizeNavigationConfig;
 ;

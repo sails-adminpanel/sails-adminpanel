@@ -7,6 +7,7 @@ import bindDashboardWidgets from "./bindDashboardWidgets";
 import Router from "./Router";
 
 import bindNavigation from "./bindNavigation";
+import bindMediaManager from "./bindMediaManager";
 
 export default async function () {
     // Binding list of function for rendering
@@ -44,6 +45,7 @@ export default async function () {
     bindDashboardWidgets();
 
 	bindNavigation();
+	bindMediaManager();
 
     //bind access rights
     bindAccessRights();

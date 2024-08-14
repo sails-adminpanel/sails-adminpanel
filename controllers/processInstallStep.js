@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = processInstallStep;
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 const installStepper_1 = require("../lib/installStepper/installStepper");
 const path = require("path");
@@ -108,7 +109,6 @@ async function processInstallStep(req, res) {
     res.status(500).send("Invalid request method");
     return;
 }
-exports.default = processInstallStep;
 ;
 function uploadFiles(files, currentStepId) {
     // TODO: Investigate system hang when trying to save a file, and execution of the code after save block does not process.

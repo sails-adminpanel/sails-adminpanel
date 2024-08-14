@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createTestData = void 0;
+exports.createTestData = createTestData;
 const TestCatalog_1 = require("./TestCatalog");
 async function createTestData() {
     const group1 = {
@@ -54,4 +54,3 @@ async function createTestData() {
         await TestCatalog_1.StorageService.setElement(groups[i].id, groups[i]);
     }
 }
-exports.createTestData = createTestData;

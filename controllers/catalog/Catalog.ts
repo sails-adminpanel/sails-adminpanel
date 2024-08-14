@@ -2,7 +2,6 @@ import {CatalogHandler} from "../../lib/catalog/CatalogHandler";
 import {AccessRightsHelper} from "../../helper/accessRightsHelper";
 import {VueCatalog} from "./FrontentCatalogAdapter";
 
-
 export async function catalogController(req: ReqType, res: ResType) {
 	const slug = req.param('slug');
 	let id = req.param('id') ? req.param('id') : '';

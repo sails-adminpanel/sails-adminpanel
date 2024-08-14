@@ -1,7 +1,6 @@
 import {Navigation} from "./catalog/Navigation";
 import {CatalogHandler} from "./catalog/CatalogHandler";
 
-
 export default function bindNavigation() {
 	sails.after(["hook:orm:loaded"], async () => {
 		if (sails.config.adminpanel.navigation) {

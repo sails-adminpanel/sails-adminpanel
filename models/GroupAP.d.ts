@@ -25,7 +25,7 @@ interface GroupAP extends Partial<ModelOptions> {
 }
 export default GroupAP;
 declare const model: {
-    beforeCreate(record: GroupAP, cb: (err?: string | Error) => void): void;
+    beforeCreate(record: GroupAP, cb: (err?: Error | string) => void): void;
     primaryKey: string;
     attributes: {
         readonly id: {

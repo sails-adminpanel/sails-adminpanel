@@ -33,7 +33,7 @@ export default function upload(req: ReqType, res: ResType) {
 
 		//save file
 		const filenameOrig = req.body.name.replace(' ', '_');
-		let filename = filenameOrig.substr(0, filenameOrig.lastIndexOf('.')) + rand + '.' + filenameOrig.split('.').reverse()[0];
+		let filename = filenameOrig.replace(/$/, '_prefix');
 
 		req.file('image').upload({
 			dirname: dir,

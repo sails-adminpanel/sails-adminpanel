@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = addGroup;
 const adminUtil_1 = require("../lib/adminUtil");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 async function addGroup(req, res) {
@@ -61,5 +62,4 @@ async function addGroup(req, res) {
     }
     return res.viewAdmin("addGroup", { entity: entity, users: users, groupedTokens: groupedTokens });
 }
-exports.default = addGroup;
 ;

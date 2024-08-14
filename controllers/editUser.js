@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = default_1;
 const adminUtil_1 = require("../lib/adminUtil");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 async function default_1(req, res) {
@@ -85,5 +86,4 @@ async function default_1(req, res) {
     }
     return res.viewAdmin("editUser", { entity: entity, user: user, groups: groups });
 }
-exports.default = default_1;
 ;

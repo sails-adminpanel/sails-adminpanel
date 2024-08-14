@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = form;
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 const formHelper_1 = require("../helper/formHelper");
 async function form(req, res) {
@@ -62,4 +63,3 @@ async function form(req, res) {
     }
     res.viewAdmin("form", { formData: form, slug: slug });
 }
-exports.default = form;

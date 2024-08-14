@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = welcome;
 /**
  * Welcome text
  *
@@ -13,5 +14,4 @@ function welcome(req, res) {
     }
     return res.viewAdmin('welcome', { entity: "entity" });
 }
-exports.default = welcome;
 ;

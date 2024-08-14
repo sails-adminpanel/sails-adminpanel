@@ -18,7 +18,7 @@ interface NavigationAP extends Partial<ModelOptions> {
 }
 export default NavigationAP;
 declare const model: {
-    beforeCreate(record: NavigationAP, cb: (err?: string | Error) => void): void;
+    beforeCreate(record: NavigationAP, cb: (err?: Error | string) => void): void;
     primaryKey: string;
     attributes: {
         readonly id: {

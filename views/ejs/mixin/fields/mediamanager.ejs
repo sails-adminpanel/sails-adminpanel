@@ -1,7 +1,16 @@
+<script>
+	if (document.readyState === "complete" || document.readyState === "loaded") {
+		MountMediaManager({
+			id: "#mediamanager-<%= key %>"
+		})
+	} else {
+		document.addEventListener('DOMContentLoaded', function () {
+			MountMediaManager({
+				id: "#mediamanager-<%= key %>",
+                url: "/admin/media-manager-uploader/<%= field.config.options?.id ? field.config.options.id : 'default'%>"
+			})
+		})
+	}
+</script>
 <div id="mediamanager-<%= key %>"></div>
 
-<script>
-	document.addEventListener('DOMContentLoaded', function () {
-		MountMediaManager({id: "#mediamanager-<%= key %>"})
-	})
-</script>

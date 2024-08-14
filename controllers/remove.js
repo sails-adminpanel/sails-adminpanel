@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = remove;
 const adminUtil_1 = require("../lib/adminUtil");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 async function remove(req, res) {
@@ -67,5 +68,4 @@ async function remove(req, res) {
     }
     res.redirect(entity.uri);
 }
-exports.default = remove;
 ;

@@ -38,6 +38,10 @@ declare global {
     type ResType = sails.Response & {
         viewAdmin<T>(variables: T): void;
         viewAdmin<T>(template: string, variables: T): void;
+        /**
+         * @deprecated
+         * @param statusCode
+         */
         sendStatus(statusCode: number): Response;
     };
     type PropType<TObj, TProp extends keyof TObj> = TObj[TProp];

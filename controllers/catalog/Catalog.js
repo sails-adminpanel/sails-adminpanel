@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.catalogController = void 0;
+exports.catalogController = catalogController;
 const CatalogHandler_1 = require("../../lib/catalog/CatalogHandler");
 const accessRightsHelper_1 = require("../../helper/accessRightsHelper");
 const FrontentCatalogAdapter_1 = require("./FrontentCatalogAdapter");
@@ -96,4 +96,3 @@ async function catalogController(req, res) {
         }
     }
 }
-exports.catalogController = catalogController;

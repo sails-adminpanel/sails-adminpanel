@@ -6,16 +6,30 @@
 </template>
 
 <script setup>
-import {onMounted, onUnmounted, ref} from 'vue'
+import {inject, onMounted, onUnmounted, ref} from 'vue'
 
 const fileInput = ref(null)
+const uploadUrl = inject('uploadUrl')
 
-function onDrop(e){
-	console.log([...e.dataTransfer.files])
+async function onDrop(e) {
+	for (const file of e.dataTransfer.files) {
+		await upload(file)
+	}
 }
 
-function onLoad(e){
-	console.log([...e.target.files])
+async function onLoad(e) {
+	console.log(e.target.files)
+	for (const file of e.target.files) {
+		await upload(file)
+	}
+}
+
+async function upload(file) {
+	let form = new FormData()
+	form.append('name', file.name)
+	form.append('file', file)
+	let res = await ky.post(uploadUrl, {body: form}).json()
+	console.log(res)
 }
 
 function preventDefaults(e) {
@@ -37,7 +51,7 @@ onUnmounted(() => {
 })
 </script>
 <style scoped>
-.drop-zone{
+.drop-zone {
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -49,7 +63,8 @@ onUnmounted(() => {
 	border-radius: 11px;
 	transition: all 0.2s ease-in-out;
 }
-.drop-zone:hover{
+
+.drop-zone:hover {
 	background-color: #e1e5ff;
 }
 </style>

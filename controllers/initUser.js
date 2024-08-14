@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = initUser;
 async function initUser(req, res) {
     if (!sails.config.adminpanel.auth) {
         return res.redirect(`${sails.config.adminpanel.routePrefix}/`);
@@ -40,5 +41,4 @@ async function initUser(req, res) {
         return res.viewAdmin("init_user");
     }
 }
-exports.default = initUser;
 ;

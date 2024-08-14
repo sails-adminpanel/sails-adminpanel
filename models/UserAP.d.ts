@@ -54,8 +54,8 @@ interface UserAP extends Partial<ModelOptions> {
 }
 export default UserAP;
 declare const model: {
-    beforeCreate(values: UserAP, cb: (err?: string | Error) => void): void;
-    beforeUpdate(values: UserAP, cb: (err?: string | Error) => void): void;
+    beforeCreate(values: UserAP, cb: (err?: Error | string) => void): void;
+    beforeUpdate(values: UserAP, cb: (err?: Error | string) => void): void;
     primaryKey: string;
     attributes: {
         readonly id: {

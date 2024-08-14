@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = edit;
 const adminUtil_1 = require("../lib/adminUtil");
 const requestProcessor_1 = require("../lib/requestProcessor");
 const fieldsHelper_1 = require("../helper/fieldsHelper");
@@ -132,5 +133,4 @@ async function edit(req, res) {
         });
     }
 }
-exports.default = edit;
 ;

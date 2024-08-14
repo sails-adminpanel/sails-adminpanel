@@ -22,6 +22,7 @@ import {widgetActionController} from '../controllers/widgets/Action';
 import {widgetCustomController} from "../controllers/widgets/Custom";
 import {debounce} from "utils-decorators";
 import {catalogController} from "../controllers/catalog/Catalog";
+import {mediaManagerController} from "../controllers/media-manager/mediaManagerApi";
 
 
 export default class Router {
@@ -103,6 +104,11 @@ export default class Router {
 		 */
 		sails.router.bind(`${config.routePrefix}/catalog/:slug/:id`, bindPolicies(policies, catalogController));
 		sails.router.bind(`${config.routePrefix}/catalog/:slug`, bindPolicies(policies, catalogController));
+
+		/**
+		 * Media Manager
+		 */
+		sails.router.bind(`${config.routePrefix}/media-manager-uploader/:id`, bindPolicies(policies, mediaManagerController));
 
 		/**
 		 * List of records

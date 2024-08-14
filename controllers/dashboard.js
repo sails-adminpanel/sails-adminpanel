@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = default_1;
 /**
  * Will generate dashboard controller
  *
@@ -13,5 +14,4 @@ function default_1(req, res) {
     }
     return res.viewAdmin('dashboard', { entity: "entity" });
 }
-exports.default = default_1;
 ;

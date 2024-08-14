@@ -1,7 +1,6 @@
 /**
  * As we generate adminpanel by models from config, we cannot pass model in generic
  */
-/// <reference types="node" />
 type CRUDBuilder = {
     fetch(): Promise<any>;
 };
