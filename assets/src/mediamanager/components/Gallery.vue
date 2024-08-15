@@ -29,16 +29,13 @@
 		</div>
 		<div class="flex gap-4 mb-4 border-b-2 pb-2">
 			<span class="text-xl text-gray-500 hover:text-green-700 cursor-pointer"
-				  :class="iconsType === 'bigIcons' ? 'active' : ''"
-				  @click="changeLayout('bigIcons')">Крупные значки</span>
-			<span class="text-xl text-gray-500 hover:text-green-700 cursor-pointer"
-				  :class="iconsType === 'smallIcons' ? 'active' : ''"
-				  @click="changeLayout('smallIcons')">Мелкие значки</span>
+				  :class="layout?.name === 'Icons' ? 'active' : ''"
+				  @click="changeLayout('tile')">Плитка</span>
 			<span class="text-xl text-gray-500 hover:text-green-700 cursor-pointer"
 				  :class="layout?.name === 'Table' ? 'active' : ''" @click="changeLayout('table')">Таблица</span>
 		</div>
 		<transition name="fade" mode="out-in" appear>
-			<component :is="layout" :type="iconsType" :key="iconsType"/>
+			<component :is="layout" :key="iconsType" :mediaList="mediaList"/>
 		</transition>
 	</div>
 </template>
@@ -53,16 +50,16 @@ export default {
 import Icons from "./Icons.vue";
 import Table from "./Table.vue";
 import DropZone from "./DropZone.vue";
-import {computed, onMounted, ref} from "vue";
-
+import {computed, inject, onMounted, ref} from "vue";
 
 const layout = ref(Icons)
-const iconsType = ref('bigIcons')
 const galleryRef = ref(null)
+const uploadUrl = inject('uploadUrl')
+const mediaList = ref([])
 
 const emit = defineEmits(['closePopup'])
 
-onMounted(() => {
+onMounted(async () => {
 	let galleryPopup = AdminPopUp.new()
 	galleryPopup.on('open', () => {
 		galleryPopup.content.appendChild(galleryRef.value)
@@ -71,15 +68,17 @@ onMounted(() => {
 		console.log('closed gallery')
 		emit('closePopup')
 	})
+	await getData()
 })
 
+async function getData(){
+	let data = await ky.get(uploadUrl).json()
+	mediaList.value = data.data
+}
+
 function changeLayout(type) {
-	iconsType.value = type
 	switch (type) {
-		case 'bigIcons':
-			layout.value = Icons
-			break
-		case 'smallIcons':
+		case 'tile':
 			layout.value = Icons
 			break
 		case 'table':

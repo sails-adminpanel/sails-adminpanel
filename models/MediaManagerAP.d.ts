@@ -11,9 +11,15 @@ declare const attributes: {
         readonly type: "string";
     };
     readonly size: {
-        readonly type: "string";
+        readonly type: "number";
     };
-    readonly date: {
+    readonly image_size: {
+        readonly type: "json";
+    };
+    readonly thumb: {
+        readonly type: "boolean";
+    };
+    readonly url: {
         readonly type: "string";
     };
 };
@@ -36,9 +42,15 @@ declare const model: {
             readonly type: "string";
         };
         readonly size: {
-            readonly type: "string";
+            readonly type: "number";
         };
-        readonly date: {
+        readonly image_size: {
+            readonly type: "json";
+        };
+        readonly thumb: {
+            readonly type: "boolean";
+        };
+        readonly url: {
             readonly type: "string";
         };
     };

@@ -19,8 +19,7 @@
 						<tr v-for="i in 10" class="border-b border-neutral-200 dark:border-white/10 text-lg">
 							<td class="whitespace-nowrap px-6 py-4 font-medium">{{i}}</td>
 							<td class="p-2 max-w-[150px]">
-								<img src="https://imgholder.ru/500x500/8493a8/adb9ca.jpg&text=IMAGE+HOLDER&font=kelson"
-									 class="max-w-[150px] w-auto h-auto object-cover">
+								img
 							</td>
 							<td class="p-2">
 								10.10.10

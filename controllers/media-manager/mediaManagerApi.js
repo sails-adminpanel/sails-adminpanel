@@ -9,7 +9,10 @@ async function mediaManagerController(req, res) {
         return res.sendStatus(404);
     }
     const manager = MediaManagerHandler_1.MediaManagerHandler.get(id);
+    if (method === 'GET') {
+        return await manager.getLibrary(req, res);
+    }
     if (method === 'POST') {
-        return manager.upload(req, res);
+        return await manager.upload(req, res);
     }
 }

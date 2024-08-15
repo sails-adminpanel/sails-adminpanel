@@ -45,30 +45,9 @@ import Gallery from "./components/Gallery.vue";
 import {VueDraggableNext} from 'vue-draggable-next'
 import {v4 as uuid} from "uuid";
 
-const list = ref([
-	{
-		id: 1,
-		src: '/test/kandinsky-download-1722017335271.png'
-	},
-	{
-		id: 2,
-		src: '/test/kandinsky-download-1722022870430.png'
-	},
-	{
-		id: 3,
-		src: '/test/kandinsky-download-1722022966141.png'
-	},
-	{
-		id: 4,
-		src: '/test/kandinsky-download-1722023167578.png'
-	},
-	{
-		id: 5,
-		src: '/test/kandinsky-download-1722636944600.png'
-	},
-]);
+const list = ref([]);
 
-const galleryVisible = ref(false)
+const galleryVisible = ref(true)
 const dragging = ref(false)
 
 function openPopup() {

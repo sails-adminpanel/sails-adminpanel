@@ -8,15 +8,21 @@ const attributes = a = {
 		allowNull: false,
 	},
 	parentId: {
-		model: 'MediaManagerAP',
+		model: 'MediaManagerAP'
 	},
 	mimeType: {
 		type: 'string'
 	},
 	size: {
-		type: 'string'
+		type: 'number'
 	},
-	date: {
+	image_size: {
+		type: "json"
+	},
+	thumb: {
+		type: 'boolean'
+	},
+	url: {
 		type: 'string'
 	}
 } as const;

@@ -1,8 +1,6 @@
 <template>
-	<div class="grid gap-2" :class="layoutClass">
-		<div v-for="i in 10">
-			<img src="https://imgholder.ru/500x500/8493a8/adb9ca.jpg&text=IMAGE+HOLDER&font=kelson" class="w-full h-full object-cover">
-		</div>
+	<div class="flex flex-wrap gap-2 justify-items-start">
+		<img :src="item.url"  v-for="item in mediaList" class="w-full h-full max-w-[150px]" alt="">
 	</div>
 </template>
 
@@ -13,17 +11,9 @@ export default {
 </script>
 
 <script setup>
-import {computed} from "vue";
 
-const props = defineProps(['type'])
+const props = defineProps(['mediaList'])
 
-const layoutClass = computed(() => {
-	if(props.type === 'bigIcons'){
-		return 'grid-cols-4'
-	} else if(props.type === 'smallIcons'){
-		return 'grid-cols-8'
-	}
-})
 </script>
 
 <style scoped>

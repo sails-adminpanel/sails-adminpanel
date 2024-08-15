@@ -1,8 +1,11 @@
 <template>
-	<div @drop.prevent="onDrop" class="drop-zone" @click="fileInput.click()">
-		<span class="text-sm text-[#C6BBBB]">dropzone</span>
+	<div class="relative transition" :class="loading ? 'opacity-60' : ''">
+		<div @drop.prevent="onDrop" class="drop-zone" @click="fileInput.click()">
+			<span class="text-sm text-[#C6BBBB]">dropzone</span>
+		</div>
+		<input type="file" name="" id="" @input="onLoad" ref="fileInput" hidden="hidden" multiple>
+		<span class="loader transition" :class="loading ? 'loader--active' : ''"></span>
 	</div>
-	<input type="file" name="" id="" @input="onLoad" ref="fileInput" hidden="hidden" multiple>
 </template>
 
 <script setup>
@@ -10,16 +13,18 @@ import {inject, onMounted, onUnmounted, ref} from 'vue'
 
 const fileInput = ref(null)
 const uploadUrl = inject('uploadUrl')
+const loading = ref(false)
 
 async function onDrop(e) {
+	loading.value = true
 	for (const file of e.dataTransfer.files) {
 		await upload(file)
 	}
 }
 
 async function onLoad(e) {
-	console.log(e.target.files)
 	for (const file of e.target.files) {
+		loading.value = true
 		await upload(file)
 	}
 }
@@ -29,7 +34,7 @@ async function upload(file) {
 	form.append('name', file.name)
 	form.append('file', file)
 	let res = await ky.post(uploadUrl, {body: form}).json()
-	console.log(res)
+	if (res) loading.value = false
 }
 
 function preventDefaults(e) {
@@ -66,5 +71,33 @@ onUnmounted(() => {
 
 .drop-zone:hover {
 	background-color: #e1e5ff;
+}
+.loader {
+	width: 48px;
+	height: 48px;
+	border: 5px dotted  rgb(107 114 128);
+	border-radius: 50%;
+	display: inline-block;
+	position: absolute;
+	top: 28%;
+	pointer-events: none;
+	left: 50%;
+	transform: translateX(-50%);
+	box-sizing: border-box;
+	animation: rotation 2s linear infinite;
+	opacity: 0;
+	visibility: hidden;
+}
+.loader--active{
+	opacity: 1;
+	visibility: visible;
+}
+@keyframes rotation {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
 }
 </style>

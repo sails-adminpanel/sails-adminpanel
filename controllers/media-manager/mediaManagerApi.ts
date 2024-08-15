@@ -10,7 +10,11 @@ export async function mediaManagerController(req: ReqType, res: ResType){
 
 	const manager = MediaManagerHandler.get(id)
 
+	if(method === 'GET'){
+		return await manager.getLibrary(req, res)
+	}
+
 	if (method === 'POST') {
-		return manager.upload(req, res)
+		return await manager.upload(req, res)
 	}
 }

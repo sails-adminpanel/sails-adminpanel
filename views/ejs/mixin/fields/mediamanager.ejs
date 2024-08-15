@@ -7,10 +7,12 @@
 		document.addEventListener('DOMContentLoaded', function () {
 			MountMediaManager({
 				id: "#mediamanager-<%= key %>",
-                url: "/admin/media-manager-uploader/<%= field.config.options?.id ? field.config.options.id : 'default'%>"
+                url: "/admin/media-manager-uploader/<%= field.config.options?.id ? field.config.options.id : 'default'%>",
+                toJsonId: "mediamanager-json-<%= key %>"
 			})
 		})
 	}
 </script>
 <div id="mediamanager-<%= key %>"></div>
+<textarea name="" id="mediamanager-json-<%= key %>" class="w-full mt-4" rows="10"></textarea>
 
