@@ -1,5 +1,5 @@
 <template>
-	<div class="flex flex-wrap gap-2 justify-items-start">
+	<div class="grid grid-cols-[repeat(auto-fill,_150px)] gap-2 justify-center">
 		<img :src="item.url"  v-for="item in mediaList" class="w-full h-full max-w-[150px]" alt="">
 	</div>
 </template>

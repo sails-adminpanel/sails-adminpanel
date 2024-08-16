@@ -1,5 +1,5 @@
 <template>
-	<div class="p-10 max-w-[1440px] w-full mx-auto galleryRef" ref="galleryRef">
+	<div class="p-10 max-w-[1440px] w-full mx-auto galleryRef overflow-y-auto h-full" ref="galleryRef">
 		<div class="mx-auto mt-7 mb-11">
 			<DropZone/>
 		</div>
@@ -27,16 +27,19 @@
 				<rect x="0.5" y="0.5" width="23" height="21" stroke="black"/>
 			</svg>
 		</div>
-		<div class="flex gap-4 mb-4 border-b-2 pb-2">
-			<span class="text-xl text-gray-500 hover:text-green-700 cursor-pointer"
+		<div class="flex justify-end">
+			<div class="inline-flex gap-4 mb-4 pb-2 mt-4 text-sm border-b">
+			<span class="text-gray-500 hover:text-green-700 cursor-pointer"
 				  :class="layout?.name === 'Icons' ? 'active' : ''"
 				  @click="changeLayout('tile')">Плитка</span>
-			<span class="text-xl text-gray-500 hover:text-green-700 cursor-pointer"
-				  :class="layout?.name === 'Table' ? 'active' : ''" @click="changeLayout('table')">Таблица</span>
+				<span class="text-gray-500 hover:text-green-700 cursor-pointer"
+					  :class="layout?.name === 'TableL' ? 'active' : ''" @click="changeLayout('table')">Таблица</span>
+			</div>
 		</div>
-		<transition name="fade" mode="out-in" appear>
-			<component :is="layout" :key="iconsType" :mediaList="mediaList"/>
-		</transition>
+		<component :is="layout" :key="iconsType" :mediaList="mediaList"/>
+		<div class="flex justify-center mt-4" v-if="next">
+			<span class="load-more btn btn-back" @click="loadMore" v-if="isLoadMore">Load more</span>
+		</div>
 	</div>
 </template>
 
@@ -48,14 +51,18 @@ export default {
 
 <script setup>
 import Icons from "./Icons.vue";
-import Table from "./Table.vue";
+import TableL from "./TableL.vue";
 import DropZone from "./DropZone.vue";
-import {computed, inject, onMounted, ref} from "vue";
+import {computed, inject, onMounted, ref, provide } from "vue";
 
 const layout = ref(Icons)
 const galleryRef = ref(null)
 const uploadUrl = inject('uploadUrl')
 const mediaList = ref([])
+const skip = ref(0)
+const isLoadMore = ref(true)
+const next = ref(true)
+const count = 5
 
 const emit = defineEmits(['closePopup'])
 
@@ -71,9 +78,23 @@ onMounted(async () => {
 	await getData()
 })
 
-async function getData(){
-	let data = await ky.get(uploadUrl).json()
+async function getData() {
+	let data = await ky.get(`${uploadUrl}?count=${count}&skip=0`).json()
 	mediaList.value = data.data
+	console.log(data)
+	isLoadMore.value = data.next
+}
+
+provide('pushData', (elem) => {
+	mediaList.value = [...elem, ...mediaList.value]
+})
+
+async function loadMore(){
+	skip.value += count
+	let data = await ky.get(`${uploadUrl}?count=${count}&skip=${skip.value}`).json()
+	mediaList.value = [...mediaList.value, ...data.data]
+	console.log(data)
+	isLoadMore.value = data.next
 }
 
 function changeLayout(type) {
@@ -82,15 +103,16 @@ function changeLayout(type) {
 			layout.value = Icons
 			break
 		case 'table':
-			layout.value = Table
+			layout.value = TableL
 	}
 }
 </script>
 
 <style scoped>
-.active{
+.active {
 	color: black !important;
 }
+
 .fade-enter-active,
 .fade-leave-active {
 	transition: opacity 0.2s ease;
@@ -100,7 +122,8 @@ function changeLayout(type) {
 .fade-leave-to {
 	opacity: 0;
 }
-.galleryRef svg{
+
+.galleryRef svg {
 	fill: none !important;
 }
 </style>

@@ -15,6 +15,8 @@ const fileInput = ref(null)
 const uploadUrl = inject('uploadUrl')
 const loading = ref(false)
 
+const pushData = inject('pushData')
+
 async function onDrop(e) {
 	loading.value = true
 	for (const file of e.dataTransfer.files) {
@@ -34,7 +36,10 @@ async function upload(file) {
 	form.append('name', file.name)
 	form.append('file', file)
 	let res = await ky.post(uploadUrl, {body: form}).json()
-	if (res) loading.value = false
+	if (res.msg === 'success'){
+		loading.value = false
+		pushData(res.data)
+	}
 }
 
 function preventDefaults(e) {

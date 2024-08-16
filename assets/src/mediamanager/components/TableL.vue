@@ -2,33 +2,35 @@
 	<div class="flex flex-col">
 		<div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
 			<div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-				<div class="overflow-hidden">
+				<div>
 					<table
 						class="min-w-full text-left text-sm font-light text-surface dark:text-white">
 						<thead
 							class="border-b border-neutral-200 font-medium dark:border-white/10">
 						<tr>
-							<th scope="col" class="p-2 text-left">#</th>
-							<th scope="col" class="p-2 text-left">Img</th>
+							<th scope="col" class="p-2 text-left">Файл</th>
 							<th scope="col" class="p-2 text-left">Дата</th>
 							<th scope="col" class="p-2 text-left">Тип</th>
 							<th scope="col" class="p-2 text-left">Размер</th>
+							<th scope="col" class="p-2 text-left">W x H</th>
 						</tr>
 						</thead>
 						<tbody>
-						<tr v-for="i in 10" class="border-b border-neutral-200 dark:border-white/10 text-lg">
-							<td class="whitespace-nowrap px-6 py-4 font-medium">{{i}}</td>
-							<td class="p-2 max-w-[150px]">
-								img
+						<tr v-for="(item, i) in mediaList" class="border-b border-neutral-200 dark:border-white/10 font-normal text-base">
+							<td class="p-2">
+								<img :src="item.url" alt="" class="w-full h-full max-w-[75px]">
 							</td>
 							<td class="p-2">
-								10.10.10
+								{{getDate(item.parent.createdAt)}}
 							</td>
 							<td class="p-2">
-								jpg
+								{{ item.parent.image_size.type }}
 							</td>
 							<td class="p-2">
-								20Kb
+								{{ (item.parent.size / 1024 / 1024).toFixed(2) }} Mb
+							</td>
+							<td class="p-2">
+								{{ item.parent.image_size.width }} / {{ item.parent.image_size.height }}
 							</td>
 						</tr>
 						</tbody>
@@ -41,12 +43,17 @@
 
 <script>
 export default {
-	name: 'Table',
+	name: 'TableL',
 }
 </script>
 
 <script setup>
+const props = defineProps(['mediaList'])
 
+function getDate(t){
+	let date = new Date(t)
+	return date.toLocaleDateString()
+}
 </script>
 
 <style scoped>

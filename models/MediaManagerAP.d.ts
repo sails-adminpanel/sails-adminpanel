@@ -4,7 +4,7 @@ declare const attributes: {
         readonly type: "string";
         readonly allowNull: false;
     };
-    readonly parentId: {
+    readonly parent: {
         readonly model: "MediaManagerAP";
     };
     readonly mimeType: {
@@ -22,6 +22,9 @@ declare const attributes: {
     readonly url: {
         readonly type: "string";
     };
+    readonly meta: {
+        readonly model: "MediaManagerMetaAP";
+    };
 };
 type ModelOptions = ModelTypeDetection<typeof attributes>;
 interface MediaManagerAP extends Partial<ModelOptions> {
@@ -35,7 +38,7 @@ declare const model: {
             readonly type: "string";
             readonly allowNull: false;
         };
-        readonly parentId: {
+        readonly parent: {
             readonly model: "MediaManagerAP";
         };
         readonly mimeType: {
@@ -52,6 +55,9 @@ declare const model: {
         };
         readonly url: {
             readonly type: "string";
+        };
+        readonly meta: {
+            readonly model: "MediaManagerMetaAP";
         };
     };
 };

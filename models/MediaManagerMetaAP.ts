@@ -7,38 +7,26 @@ const attributes = a = {
 		type: "string",
 		allowNull: false,
 	},
-	parent: {
-		model: 'MediaManagerAP'
-	},
-	mimeType: {
+	author: {
 		type: 'string'
 	},
-	size: {
-		type: 'number'
-	},
-	image_size: {
-		type: "json"
-	},
-	thumb: {
-		type: 'boolean'
-	},
-	url: {
+	description: {
 		type: 'string'
 	},
-	meta: {
-		model: 'MediaManagerMetaAP'
-	}
+	title: {
+		type: 'string'
+	},
 } as const;
 
 type ModelOptions = ModelTypeDetection<typeof attributes>;
 
-interface MediaManagerAP extends Partial<ModelOptions> {
+interface MediaManagerMetaAP extends Partial<ModelOptions> {
 }
 
-export default MediaManagerAP;
+export default MediaManagerMetaAP;
 
 const methods = {
-	beforeCreate(record: MediaManagerAP, cb: (err?: Error | string) => void) {
+	beforeCreate(record: MediaManagerMetaAP, cb: (err?: Error | string) => void) {
 		if (!record.id) {
 			record.id = uuid();
 		}
@@ -57,9 +45,9 @@ const model = {
 module.exports = model;
 
 declare global {
-	const MediaManagerAP: Model<typeof model>;
+	const MediaManagerMetaAP: Model<typeof model>;
 
 	interface Models {
-		MediaManagerAP: MediaManagerAP;
+		MediaManagerMetaAP: MediaManagerMetaAP;
 	}
 }

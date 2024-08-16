@@ -1,6 +1,7 @@
 import {AbstractMediaManager} from "./AbstractMediaManager";
 import {randomFileName} from "./helpers/MediaManagerHelper";
 import * as sharp from "sharp";
+import MediaManagerAP from "../../models/MediaManagerAP";
 
 const sizeOf = require("image-size")
 
@@ -22,10 +23,20 @@ export class DefaultMediaManager extends AbstractMediaManager {
 	public async getLibrary(req: ReqType, res: ResType){
 		let data = await MediaManagerAP.find({
 			where: {thumb: true},
-			limit: 10
-		})
+			limit: req.param('count'),
+			skip: req.param('skip'),
+			sort: 'createdAt DESC'
+		}).populate('parent')
+
+		let next = (await MediaManagerAP.find({
+			where: {thumb: true},
+			limit: +req.param('count'),
+			skip: +req.param('skip') === 0 ? +req.param('count') : +req.param('skip') + +req.param('count'),
+			sort: 'createdAt DESC'
+		})).length
 		res.send({
-			data: data
+			data: data,
+			next: !!next
 		})
 	}
 
@@ -42,7 +53,7 @@ export class DefaultMediaManager extends AbstractMediaManager {
 
 			return res.send({
 				msg: "success",
-				media: await this.setData(file[0], `/${this.path}/${filename}`, filename)
+				data: await this.setData(file[0], `/${this.path}/${filename}`, filename)
 			})
 		})
 	}
@@ -50,7 +61,7 @@ export class DefaultMediaManager extends AbstractMediaManager {
 	protected async setData(file: UploaderFile, url: string, filename: string) {
 
 		let parent = await MediaManagerAP.create({
-			parentId: null,
+			parent: null,
 			mimeType: file.type,
 			size: file.size,
 			thumb: false,
@@ -62,14 +73,18 @@ export class DefaultMediaManager extends AbstractMediaManager {
 		const thumbName = randomFileName(filename, '_thumb')
 		const thumb = await this.resizeImage(file.fd, `${this.dir}${thumbName}`, 150, 150)
 
-		return MediaManagerAP.create({
-			parentId: parent.id,
+		let thumbRecord = await MediaManagerAP.create({
+			parent: parent.id,
 			mimeType: file.type,
 			size: thumb.size,
 			thumb: true,
 			image_size: sizeOf(`${this.dir}${thumbName}`),
 			url:`/${this.path}/${thumbName}`
 		}).fetch()
+
+		return await MediaManagerAP.find({
+			where: {id: thumbRecord.id}
+		}).populate('parent')
 
 	}
 

@@ -7,27 +7,15 @@ const attributes = a = {
         type: "string",
         allowNull: false,
     },
-    parent: {
-        model: 'MediaManagerAP'
-    },
-    mimeType: {
+    author: {
         type: 'string'
     },
-    size: {
-        type: 'number'
-    },
-    image_size: {
-        type: "json"
-    },
-    thumb: {
-        type: 'boolean'
-    },
-    url: {
+    description: {
         type: 'string'
     },
-    meta: {
-        model: 'MediaManagerMetaAP'
-    }
+    title: {
+        type: 'string'
+    },
 };
 const methods = {
     beforeCreate(record, cb) {
