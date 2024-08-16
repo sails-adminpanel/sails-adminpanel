@@ -1,6 +1,6 @@
 <template>
 	<div class="grid grid-cols-[repeat(auto-fill,_150px)] gap-2 justify-center">
-		<img :src="item.url"  v-for="item in mediaList" class="w-full h-full max-w-[150px]" alt="">
+		<Image :item="item"  v-for="item in mediaList" init-class="w-full h-full max-w-[150px]" alt=""/>
 	</div>
 </template>
 
@@ -11,7 +11,7 @@ export default {
 </script>
 
 <script setup>
-
+import Image from "./Image.vue";
 const props = defineProps(['mediaList'])
 
 </script>

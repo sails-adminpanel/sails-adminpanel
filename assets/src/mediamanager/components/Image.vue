@@ -1,0 +1,73 @@
+<template>
+	<div class="relative">
+		<img :src="item.url" alt="" @contextmenu="openMenu" :class="initClass">
+		<div class="contextmenu flex flex-col absolute opacity-0 invisible bg-gray-50" ref="menu">
+			<ul class="custom-catalog__actions-items">
+				<li class="capitalize" @click="openMeta">Редактировать</li>
+			</ul>
+		</div>
+	</div>
+	<Meta v-if="metaVisible" :item="item"/>
+</template>
+
+<script setup>
+import Meta from "./Meta.vue";
+import {provide, ref} from "vue";
+
+const props = defineProps(['item', 'initClass'])
+const metaVisible = ref(false)
+const menu = ref(null)
+
+function openMeta(){
+	metaVisible.value = true
+}
+
+provide('closeMeta', () => {
+	metaVisible.value = false
+	menu.value.previousSibling.classList.remove('border-2', 'border-blue-500')
+})
+
+function openMenu(e) {
+	e.preventDefault()
+	closeAllMenu()
+	const ele = e.target
+	const rect = ele.getBoundingClientRect();
+	const x = e.clientX - rect.left;
+	const y = e.clientY - rect.top;
+	menu.value.style.top = `${y}px`
+	menu.value.style.left = `${x}px`
+	menuVisible(true)
+	menu.value.previousSibling.classList.add('border-2', 'border-blue-500')
+	const documentClickHandler = function (e) {
+		const isClickedOutside = !menu.value.contains(e.target);
+		if (isClickedOutside) {
+			// Hide the menu
+			menuVisible(false)
+			menu.value.previousSibling.classList.remove('border-2', 'border-blue-500')
+			// Remove the event handler
+			document.removeEventListener('click', documentClickHandler);
+		}
+	};
+
+	document.addEventListener('click', documentClickHandler);
+}
+
+function menuVisible(bool){
+	menu.value.style.opacity = bool ? 1 : 0
+	menu.value.style.visibility = bool ? 'visible' : 'hidden'
+}
+
+function closeAllMenu(){
+	const menus = document.querySelectorAll('.contextmenu')
+	for (const menu1 of menus) {
+		menu1.style.opacity = 0
+		menu1.style.visibility = 'hidden'
+		menu1.previousSibling.classList.remove('border-2', 'border-blue-500')
+	}
+}
+
+</script>
+
+<style scoped>
+
+</style>

@@ -63,8 +63,7 @@ const skip = ref(0)
 const isLoadMore = ref(true)
 const next = ref(true)
 const count = 5
-
-const emit = defineEmits(['closePopup'])
+const closeGallery = inject('closeGallery')
 
 onMounted(async () => {
 	let galleryPopup = AdminPopUp.new()
@@ -73,7 +72,7 @@ onMounted(async () => {
 	})
 	galleryPopup.on('close', () => {
 		console.log('closed gallery')
-		emit('closePopup')
+		closeGallery()
 	})
 	await getData()
 })

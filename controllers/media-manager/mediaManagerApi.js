@@ -13,6 +13,16 @@ async function mediaManagerController(req, res) {
         return await manager.getLibrary(req, res);
     }
     if (method === 'POST') {
-        return await manager.upload(req, res);
+        const data = req.body;
+        const _method = data._method;
+        delete data._method;
+        switch (_method) {
+            case 'upload':
+                return await manager.upload(req, res);
+            case 'addMeta':
+                return await manager.setMeta(req, res);
+            case 'getMeta':
+                return await manager.getMeta(req, res);
+        }
     }
 }

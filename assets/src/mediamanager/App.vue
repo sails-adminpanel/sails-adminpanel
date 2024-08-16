@@ -29,18 +29,18 @@
 			</VueDraggableNext>
 			<div
 				class="w-[50px] h-[50px] flex-none flex justify-center items-center bg-gray-300 cursor-pointer hover:bg-gray-400 transition ml-2"
-				@click="openPopup">
+				@click="openGallery">
 				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
 					<path fill="currentColor" d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z"/>
 				</svg>
 			</div>
 		</div>
 	</div>
-	<Gallery v-if="galleryVisible" @closePopup="closePopup"></Gallery>
+	<Gallery v-if="galleryVisible"></Gallery>
 </template>
 
 <script setup>
-import {ref} from 'vue'
+import {ref, provide} from 'vue'
 import Gallery from "./components/Gallery.vue";
 import {VueDraggableNext} from 'vue-draggable-next'
 import {v4 as uuid} from "uuid";
@@ -50,13 +50,13 @@ const list = ref([]);
 const galleryVisible = ref(true)
 const dragging = ref(false)
 
-function openPopup() {
+function openGallery() {
 	galleryVisible.value = true
 }
 
-function closePopup() {
+provide('closeGallery', () => {
 	galleryVisible.value = false
-}
+})
 
 function remove(id) {
 	list.value = list.value.filter(e => e.id !== id)

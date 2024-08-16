@@ -1,6 +1,6 @@
 import { AbstractMediaManager } from "./AbstractMediaManager";
 import * as sharp from "sharp";
-import MediaManagerAP from "../../models/MediaManagerAP";
+import sails from "sails-typescript";
 interface UploaderFile {
     fd: string;
     size: number;
@@ -14,8 +14,8 @@ export declare class DefaultMediaManager extends AbstractMediaManager {
     id: string;
     path: string;
     dir: string;
-    getLibrary(req: ReqType, res: ResType): Promise<void>;
-    upload(req: ReqType, res: ResType): Promise<void>;
+    getLibrary(req: ReqType, res: ResType): Promise<sails.Response>;
+    upload(req: ReqType, res: ResType): Promise<sails.Response | void>;
     protected setData(file: UploaderFile, url: string, filename: string): Promise<Error & {
         id?: string;
         size?: number;
@@ -26,8 +26,10 @@ export declare class DefaultMediaManager extends AbstractMediaManager {
         thumb?: boolean;
         url?: string;
         meta?: string;
-        parent: MediaManagerAP;
+        parent: import("../../models/MediaManagerAP").default;
     }[]>;
     protected resizeImage(input: string, output: string, width: number, height: number): Promise<sharp.OutputInfo>;
+    setMeta(req: ReqType, res: ResType): Promise<sails.Response>;
+    getMeta(req: ReqType, res: ResType): Promise<sails.Response>;
 }
 export {};

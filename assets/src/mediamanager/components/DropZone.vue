@@ -34,8 +34,9 @@ async function onLoad(e) {
 async function upload(file) {
 	let form = new FormData()
 	form.append('name', file.name)
+	form.append('_method', 'upload')
 	form.append('file', file)
-	let res = await ky.post(uploadUrl, {body: form}).json()
+	let res = await ky.post(uploadUrl, {body: form,}).json()
 	if (res.msg === 'success'){
 		loading.value = false
 		pushData(res.data)
