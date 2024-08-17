@@ -7,6 +7,10 @@ declare const attributes: {
     readonly parent: {
         readonly model: "MediaManagerAP";
     };
+    readonly children: {
+        readonly collection: "MediaManagerAP";
+        readonly via: "parent";
+    };
     readonly mimeType: {
         readonly type: "string";
     };
@@ -40,6 +44,10 @@ declare const model: {
         };
         readonly parent: {
             readonly model: "MediaManagerAP";
+        };
+        readonly children: {
+            readonly collection: "MediaManagerAP";
+            readonly via: "parent";
         };
         readonly mimeType: {
             readonly type: "string";

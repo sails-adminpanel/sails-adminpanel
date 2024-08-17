@@ -19,7 +19,6 @@ interface Meta {
 	title: string
 	author: string
 	description: string
-	metaId: string
 }
 
 export class DefaultMediaManager extends AbstractMediaManager {
@@ -29,14 +28,14 @@ export class DefaultMediaManager extends AbstractMediaManager {
 
 	public async getLibrary(req: ReqType, res: ResType): Promise<sails.Response> {
 		let data = await MediaManagerAP.find({
-			where: {thumb: true},
+			where: {parent: null},
 			limit: req.param('count'),
 			skip: req.param('skip'),
 			sort: 'createdAt DESC'
-		}).populate('parent').populate('meta')
+		}).populate('children')
 
 		let next = (await MediaManagerAP.find({
-			where: {thumb: true},
+			where: {parent: null},
 			limit: +req.param('count'),
 			skip: +req.param('skip') === 0 ? +req.param('count') : +req.param('skip') + +req.param('count'),
 			sort: 'createdAt DESC'
@@ -67,11 +66,12 @@ export class DefaultMediaManager extends AbstractMediaManager {
 
 	protected async setData(file: UploaderFile, url: string, filename: string) {
 		//create empty meta
-		let meta = await MediaManagerMetaAP.create({
-			title: '',
-			author: '',
-			description: '',
-		}).fetch()
+		let metaData: Meta ={
+			author: "",
+			description: "",
+			title: ""
+		}
+		let meta = await MediaManagerMetaAP.create(metaData).fetch()
 
 		//create parent file
 		let parent = await MediaManagerAP.create({
@@ -98,8 +98,8 @@ export class DefaultMediaManager extends AbstractMediaManager {
 		}).fetch()
 
 		return MediaManagerAP.find({
-			where: {id: thumbRecord.id}
-		}).populate('parent');
+			where: {id: parent.id}
+		}).populate('children');
 
 	}
 
@@ -110,34 +110,30 @@ export class DefaultMediaManager extends AbstractMediaManager {
 	}
 
 	public async setMeta(req: ReqType, res: ResType): Promise<sails.Response> {
-		const data: Meta = req.body
-		const id = data.metaId
-		delete data.metaId
+		const data = req.body.data
+		const id = req.body.metaId
 
 		try {
 			await MediaManagerMetaAP.update({id: id}, data)
 			return res.send({
 				msg: "success",
 			})
-		}catch (e) {
+		} catch (e) {
 			console.log(e)
 		}
 	}
 
 	public async getMeta(req: ReqType, res: ResType): Promise<sails.Response> {
 		const data = req.body
+		const fields: Meta = {
+			author: "",
+			description: "",
+			title: ""
+		}
 		return res.send({
-			data: (await MediaManagerMetaAP.find({where: {id: data.metaId}}))[0]
+			data: (await MediaManagerMetaAP.find({where: {id: data.metaId}}))[0],
+			fields: fields
 		})
 	}
 
 }
-
-// {
-// 	format: 'png',
-// 	width: 150,
-// 	height: 150,
-// 	channels: 4,
-// 	premultiplied: true,
-// 	size: 41877
-// }

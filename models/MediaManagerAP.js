@@ -10,6 +10,10 @@ const attributes = a = {
     parent: {
         model: 'MediaManagerAP'
     },
+    children: {
+        collection: 'MediaManagerAP',
+        via: 'parent'
+    },
     mimeType: {
         type: 'string'
     },

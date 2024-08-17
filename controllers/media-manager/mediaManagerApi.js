@@ -13,10 +13,7 @@ async function mediaManagerController(req, res) {
         return await manager.getLibrary(req, res);
     }
     if (method === 'POST') {
-        const data = req.body;
-        const _method = data._method;
-        delete data._method;
-        switch (_method) {
+        switch (req.body._method) {
             case 'upload':
                 return await manager.upload(req, res);
             case 'addMeta':

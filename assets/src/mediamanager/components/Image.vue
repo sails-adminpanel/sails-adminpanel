@@ -1,6 +1,6 @@
 <template>
 	<div class="relative">
-		<img :src="item.url" alt="" @contextmenu="openMenu" :class="initClass">
+		<img :src="imageUrl" alt="" @contextmenu="openMenu" :class="initClass">
 		<div class="contextmenu flex flex-col absolute opacity-0 invisible bg-gray-50" ref="menu">
 			<ul class="custom-catalog__actions-items">
 				<li class="capitalize" @click="openMeta">Редактировать</li>
@@ -12,7 +12,7 @@
 
 <script setup>
 import Meta from "./Meta.vue";
-import {provide, ref} from "vue";
+import {provide, ref, computed} from "vue";
 
 const props = defineProps(['item', 'initClass'])
 const metaVisible = ref(false)
@@ -21,6 +21,10 @@ const menu = ref(null)
 function openMeta(){
 	metaVisible.value = true
 }
+
+const imageUrl = computed(() => {
+	return props.item.children.find(e => e.thumb === true).url
+})
 
 provide('closeMeta', () => {
 	metaVisible.value = false

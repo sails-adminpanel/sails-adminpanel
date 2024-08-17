@@ -21,12 +21,13 @@ export declare class DefaultMediaManager extends AbstractMediaManager {
         size?: number;
         updatedAt?: number | undefined;
         createdAt?: number | undefined;
+        parent?: string;
         mimeType?: string;
         image_size?: import("sails-typescript").DefaultJsonType | import("sails-typescript").DefaultJsonType[];
         thumb?: boolean;
         url?: string;
         meta?: string;
-        parent: import("../../models/MediaManagerAP").default;
+        children: import("../../models/MediaManagerAP").default[];
     }[]>;
     protected resizeImage(input: string, output: string, width: number, height: number): Promise<sharp.OutputInfo>;
     setMeta(req: ReqType, res: ResType): Promise<sails.Response>;
