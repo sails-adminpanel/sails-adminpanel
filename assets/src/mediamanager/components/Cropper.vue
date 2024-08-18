@@ -1,15 +1,20 @@
 <template>
-	<div class="p-10 max-w-[1440px] w-full mx-auto overflow-y-auto h-full" ref="cropperWrapperRef">
+	<div class="px-12 py-14 max-w-[1440px] w-full mx-auto overflow-y-auto h-full" ref="cropperWrapperRef">
 		<vue-cropper
 			ref="vueCropperRef"
+			class="max-h-[500px]"
 			:src="imageSrc"
 			alt="Source Image"
+			v-bind="cropperOptions"
+			@crop="onCrop"
 		/>
+		<label for="x">X</label>
+		<input type="number" name="x" id="x" @input="vueCropperRef.setData({width: 100, height: 100})">
 	</div>
 </template>
 
 <script setup>
-import {ref, onMounted, inject} from 'vue'
+import {ref, onMounted, inject, reactive} from 'vue'
 import VueCropper from '@ballcat/vue-cropper';
 import 'cropperjs/dist/cropper.css';
 
@@ -18,6 +23,29 @@ const cropperWrapperRef = ref(null)
 const vueCropperRef = ref(null);
 const cropperPopup = ref()
 const closeCropper = inject('closeCropper')
+
+const cropperOptions = reactive({
+	viewMode: 0,
+	responsive: true,
+	restore: true,
+	checkCrossOrigin: true,
+	checkOrientation: true,
+	modal: true,
+	guides: true,
+	center: true,
+	highlight: true,
+	background: true,
+	autoCrop: true,
+	movable: true,
+	rotatable: true,
+	scalable: true,
+	zoomable: true,
+	zoomOnTouch: true,
+	zoomOnWheel: true,
+	cropBoxMovable: true,
+	cropBoxResizable: true,
+	toggleDragModeOnDblclick: true
+})
 
 onMounted(async () => {
 	cropperPopup.value = AdminPopUp.new()
@@ -30,6 +58,9 @@ onMounted(async () => {
 	})
 })
 
+function onCrop (e) {
+	console.log(e)
+}
 
 // onMounted(() => {
 // 	console.log(vueCropperRef.value.getData());
