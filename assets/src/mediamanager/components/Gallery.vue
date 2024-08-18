@@ -30,13 +30,13 @@
 		<div class="flex justify-end">
 			<div class="inline-flex gap-4 mb-4 pb-2 mt-4 text-sm border-b">
 			<span class="text-gray-500 hover:text-green-700 cursor-pointer"
-				  :class="layout?.name === 'Icons' ? 'active' : ''"
+				  :class="layout?.name === 'Tile' ? 'active' : ''"
 				  @click="changeLayout('tile')">Плитка</span>
 				<span class="text-gray-500 hover:text-green-700 cursor-pointer"
 					  :class="layout?.name === 'TableL' ? 'active' : ''" @click="changeLayout('table')">Таблица</span>
 			</div>
 		</div>
-		<component :is="layout" :key="iconsType" :mediaList="mediaList"/>
+		<component :is="layout" :mediaList="mediaList"/>
 		<div class="flex justify-center mt-4" v-if="next">
 			<span class="load-more btn btn-back" @click="loadMore" v-if="isLoadMore">Load more</span>
 		</div>
@@ -50,12 +50,12 @@ export default {
 </script>
 
 <script setup>
-import Icons from "./Icons.vue";
+import Tile from "./Tile.vue";
 import TableL from "./TableL.vue";
 import DropZone from "./DropZone.vue";
 import {computed, inject, onMounted, ref, provide } from "vue";
 
-const layout = ref(Icons)
+const layout = ref(Tile)
 const galleryRef = ref(null)
 const uploadUrl = inject('uploadUrl')
 const mediaList = ref([])
@@ -99,7 +99,7 @@ async function loadMore(){
 function changeLayout(type) {
 	switch (type) {
 		case 'tile':
-			layout.value = Icons
+			layout.value = Tile
 			break
 		case 'table':
 			layout.value = TableL

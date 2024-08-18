@@ -5,6 +5,8 @@ import App from './App.vue'
 export function MountMediaManager(data){
 	let app = createApp(App);
 	app.provide('uploadUrl', data.url)
+	app.provide('toJsonId', data.toJsonId)
+	app.provide('config', data.config)
 	app.mount(data.id)
 }
 

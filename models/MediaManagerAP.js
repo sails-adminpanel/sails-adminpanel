@@ -23,10 +23,13 @@ const attributes = a = {
     image_size: {
         type: "json"
     },
-    thumb: {
-        type: 'boolean'
+    cropType: {
+        type: 'string'
     },
     url: {
+        type: 'string'
+    },
+    filename: {
         type: 'string'
     },
     meta: {

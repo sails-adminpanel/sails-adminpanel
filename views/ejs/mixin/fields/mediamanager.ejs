@@ -1,3 +1,7 @@
+<%
+ const config = field.config.options?.config ? JSON.stringify(field.config.options.config) : JSON.stringify({})
+ %>
+<%- config %>
 <script>
 	if (document.readyState === "complete" || document.readyState === "loaded") {
 		MountMediaManager({
@@ -8,7 +12,8 @@
 			MountMediaManager({
 				id: "#mediamanager-<%= key %>",
                 url: "/admin/media-manager-uploader/<%= field.config.options?.id ? field.config.options.id : 'default'%>",
-                toJsonId: "mediamanager-json-<%= key %>"
+                toJsonId: "mediamanager-json-<%= key %>",
+                config: <%- config %>
 			})
 		})
 	}

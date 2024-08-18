@@ -13,7 +13,9 @@ import {inject, onMounted, onUnmounted, ref} from 'vue'
 
 const fileInput = ref(null)
 const uploadUrl = inject('uploadUrl')
+const config = inject('config')
 const loading = ref(false)
+
 
 const pushData = inject('pushData')
 
@@ -35,8 +37,9 @@ async function upload(file) {
 	let form = new FormData()
 	form.append('name', file.name)
 	form.append('_method', 'upload')
+	form.append('config', JSON.stringify(config))
 	form.append('file', file)
-	let res = await ky.post(uploadUrl, {body: form,}).json()
+	let res = await ky.post(uploadUrl, {body: form}).json()
 	console.log(res.data)
 	if (res.msg === 'success'){
 		loading.value = false
@@ -88,8 +91,7 @@ onUnmounted(() => {
 	position: absolute;
 	top: 28%;
 	pointer-events: none;
-	left: 50%;
-	transform: translateX(-50%);
+	left: calc(50% - 24px);
 	box-sizing: border-box;
 	animation: rotation 2s linear infinite;
 	opacity: 0;

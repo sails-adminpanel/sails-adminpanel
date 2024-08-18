@@ -20,10 +20,13 @@ declare const attributes: {
     readonly image_size: {
         readonly type: "json";
     };
-    readonly thumb: {
-        readonly type: "boolean";
+    readonly cropType: {
+        readonly type: "string";
     };
     readonly url: {
+        readonly type: "string";
+    };
+    readonly filename: {
         readonly type: "string";
     };
     readonly meta: {
@@ -58,10 +61,13 @@ declare const model: {
         readonly image_size: {
             readonly type: "json";
         };
-        readonly thumb: {
-            readonly type: "boolean";
+        readonly cropType: {
+            readonly type: "string";
         };
         readonly url: {
+            readonly type: "string";
+        };
+        readonly filename: {
             readonly type: "string";
         };
         readonly meta: {

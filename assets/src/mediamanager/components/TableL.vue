@@ -9,10 +9,12 @@
 							class="border-b border-neutral-200 font-medium dark:border-white/10">
 						<tr>
 							<th scope="col" class="p-2 text-left">Файл</th>
+							<th scope="col" class="p-2 text-left">Имя</th>
 							<th scope="col" class="p-2 text-left">Дата</th>
 							<th scope="col" class="p-2 text-left">Тип</th>
-							<th scope="col" class="p-2 text-left">Размер</th>
-							<th scope="col" class="p-2 text-left">W x H</th>
+							<th scope="col" class="p-2 text-left">Размер (orig.)</th>
+							<th scope="col" class="p-2 text-left">W x H (orig.)</th>
+							<th scope="col" class="p-2 text-left">Sizes</th>
 						</tr>
 						</thead>
 						<tbody>
@@ -21,16 +23,27 @@
 								<Image :item="item" init-class="w-full h-full max-w-[75px]" alt=""/>
 							</td>
 							<td class="p-2">
-								{{getDate(item.parent.createdAt)}}
+								{{ item.filename }}
 							</td>
 							<td class="p-2">
-								{{ item.parent.image_size.type }}
+								{{getDate(item.createdAt)}}
 							</td>
 							<td class="p-2">
-								{{ (item.parent.size / 1024 / 1024).toFixed(2) }} Mb
+								{{ fileType(item) }}
 							</td>
 							<td class="p-2">
-								{{ item.parent.image_size.width }}x{{ item.parent.image_size.height }}
+								{{ (item.size / 1024 / 1024).toFixed(4) }} Mb
+							</td>
+							<td class="p-2">
+								{{ imageSize(item.image_size) }}
+							</td>
+							<td class="p-2">
+								<template v-if="item.children.length">
+									<p v-for="size in item.children">
+										{{ size.image_size.width }}x{{ size.image_size.height }}
+									</p>
+								</template>
+								<span v-else>---</span>
 							</td>
 						</tr>
 						</tbody>
@@ -56,6 +69,19 @@ function getDate(t){
 	let date = new Date(t)
 	return date.toLocaleDateString()
 }
+
+function imageSize(sizes){
+	if(sizes){
+		return `${sizes.width }x${sizes.height}`
+	} else {
+		return '---'
+	}
+}
+
+function fileType(item){
+	return item.url.split(/[#?]/)[0].split('.').pop().trim()
+}
+
 </script>
 
 <style scoped>

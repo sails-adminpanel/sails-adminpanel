@@ -4,6 +4,7 @@
 		<div class="contextmenu flex flex-col absolute opacity-0 invisible bg-gray-50" ref="menu">
 			<ul class="custom-catalog__actions-items">
 				<li class="capitalize" @click="openMeta">Редактировать</li>
+				<li class="capitalize" @click="openFile">Посмотреть</li>
 			</ul>
 		</div>
 	</div>
@@ -17,19 +18,38 @@ import {provide, ref, computed} from "vue";
 const props = defineProps(['item', 'initClass'])
 const metaVisible = ref(false)
 const menu = ref(null)
+const imagesTypes = new Set([
+	"image/gif",
+	"image/jpeg",
+	"image/png",
+	"image/webp",
+]);
 
-function openMeta(){
+function openMeta() {
 	metaVisible.value = true
 }
 
 const imageUrl = computed(() => {
-	return props.item.children.find(e => e.thumb === true).url
+	if (props.item.children.length) {
+
+		return props.item.children.find(e => e.cropType === 'thumb').url
+	} else {
+		if (imagesTypes.has(props.item.mimeType)) {
+			return props.item.url
+		} else {
+			return `/admin/assets/fileuploader/icons/${props.item.url.split(/[#?]/)[0].split('.').pop().trim()}.svg`
+		}
+	}
 })
 
 provide('closeMeta', () => {
 	metaVisible.value = false
 	menu.value.previousSibling.classList.remove('border-2', 'border-blue-500')
 })
+
+function openFile() {
+	window.open(props.item.url, '_blank').focus();
+}
 
 function openMenu(e) {
 	e.preventDefault()
@@ -42,26 +62,23 @@ function openMenu(e) {
 	menu.value.style.left = `${x}px`
 	menuVisible(true)
 	menu.value.previousSibling.classList.add('border-2', 'border-blue-500')
-	const documentClickHandler = function (e) {
-		const isClickedOutside = !menu.value.contains(e.target);
-		if (isClickedOutside) {
-			// Hide the menu
-			menuVisible(false)
-			menu.value.previousSibling.classList.remove('border-2', 'border-blue-500')
-			// Remove the event handler
-			document.removeEventListener('click', documentClickHandler);
-		}
+	const documentClickHandler = function () {
+		// Hide the menu
+		menuVisible(false)
+		menu.value.previousSibling.classList.remove('border-2', 'border-blue-500')
+		// Remove the event handler
+		document.removeEventListener('click', documentClickHandler);
 	};
 
 	document.addEventListener('click', documentClickHandler);
 }
 
-function menuVisible(bool){
+function menuVisible(bool) {
 	menu.value.style.opacity = bool ? 1 : 0
 	menu.value.style.visibility = bool ? 'visible' : 'hidden'
 }
 
-function closeAllMenu(){
+function closeAllMenu() {
 	const menus = document.querySelectorAll('.contextmenu')
 	for (const menu1 of menus) {
 		menu1.style.opacity = 0
