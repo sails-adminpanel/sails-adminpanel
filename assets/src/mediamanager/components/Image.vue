@@ -5,18 +5,22 @@
 			<ul class="custom-catalog__actions-items">
 				<li class="capitalize" @click="openMeta">Редактировать</li>
 				<li class="capitalize" @click="openFile">Посмотреть</li>
+				<li class="capitalize" @click="openCropper">Обрезать</li>
 			</ul>
 		</div>
 	</div>
 	<Meta v-if="metaVisible" :item="item"/>
+	<Cropper v-if="cropperVisible" :image-src="item.url"/>
 </template>
 
 <script setup>
 import Meta from "./Meta.vue";
+import Cropper from "./Cropper.vue";
 import {provide, ref, computed} from "vue";
 
 const props = defineProps(['item', 'initClass'])
 const metaVisible = ref(false)
+const cropperVisible = ref(false)
 const menu = ref(null)
 const imagesTypes = new Set([
 	"image/gif",
@@ -28,6 +32,19 @@ const imagesTypes = new Set([
 function openMeta() {
 	metaVisible.value = true
 }
+provide('closeMeta', () => {
+	metaVisible.value = false
+	menu.value.previousSibling.classList.remove('border-2', 'border-blue-500')
+})
+
+function openCropper(){
+	cropperVisible.value = true
+}
+
+provide('closeCropper', () => {
+	cropperVisible.value = false
+	menu.value.previousSibling.classList.remove('border-2', 'border-blue-500')
+})
 
 const imageUrl = computed(() => {
 	if (props.item.children.length) {
@@ -42,10 +59,6 @@ const imageUrl = computed(() => {
 	}
 })
 
-provide('closeMeta', () => {
-	metaVisible.value = false
-	menu.value.previousSibling.classList.remove('border-2', 'border-blue-500')
-})
 
 function openFile() {
 	window.open(props.item.url, '_blank').focus();

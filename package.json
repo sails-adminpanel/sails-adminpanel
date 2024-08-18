@@ -3,6 +3,7 @@
 		"url": "https://github.com/sails-adminpanel/sails-adminpanel/issues"
 	},
 	"dependencies": {
+		"@ballcat/vue-cropper": "^1.0.6",
 		"@jsonforms/vue": "^3.3.0",
 		"@jsonforms/vue-vanilla": "^3.3.0",
 		"@sails-adminpanel/sl-vue-tree-next": "^0.0.15",
