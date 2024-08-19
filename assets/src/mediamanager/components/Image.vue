@@ -5,22 +5,26 @@
 			<ul class="custom-catalog__actions-items">
 				<li class="capitalize" @click="openMeta">Редактировать</li>
 				<li class="capitalize" @click="openFile">Посмотреть</li>
-				<li class="capitalize" @click="openCropper">Обрезать</li>
+				<li v-if="imagesTypes.has(item.mimeType)" class="capitalize" @click="openCropper">Обрезать</li>
+				<li v-if="imagesTypes.has(item.mimeType)" class="capitalize" @click="openSizes">Размеры</li>
 			</ul>
 		</div>
 	</div>
 	<Meta v-if="metaVisible" :item="item"/>
-	<Cropper v-if="cropperVisible" :image-src="item.url"/>
+	<Cropper v-if="cropperVisible" :item="item"/>
+	<Sizes v-if="sizesVisible" :item="item"/>
 </template>
 
 <script setup>
 import Meta from "./Meta.vue";
 import Cropper from "./Cropper.vue";
-import {provide, ref, computed} from "vue";
+import Sizes from "./Sizes.vue";
+import {provide, ref, computed, onMounted} from "vue";
 
 const props = defineProps(['item', 'initClass'])
 const metaVisible = ref(false)
 const cropperVisible = ref(false)
+const sizesVisible = ref(false)
 const menu = ref(null)
 const imagesTypes = new Set([
 	"image/gif",
@@ -32,6 +36,7 @@ const imagesTypes = new Set([
 function openMeta() {
 	metaVisible.value = true
 }
+
 provide('closeMeta', () => {
 	metaVisible.value = false
 	menu.value.previousSibling.classList.remove('border-2', 'border-blue-500')
@@ -43,6 +48,15 @@ function openCropper(){
 
 provide('closeCropper', () => {
 	cropperVisible.value = false
+	menu.value.previousSibling.classList.remove('border-2', 'border-blue-500')
+})
+
+function openSizes(){
+	sizesVisible.value = true
+}
+
+provide('closeSizes', () => {
+	sizesVisible.value = false
 	menu.value.previousSibling.classList.remove('border-2', 'border-blue-500')
 })
 
@@ -78,17 +92,18 @@ function openMenu(e) {
 	const documentClickHandler = function () {
 		// Hide the menu
 		menuVisible(false)
-		menu.value.previousSibling.classList.remove('border-2', 'border-blue-500')
+		if(menu.value) menu.value.previousSibling.classList.remove('border-2', 'border-blue-500')
 		// Remove the event handler
 		document.removeEventListener('click', documentClickHandler);
 	};
-
 	document.addEventListener('click', documentClickHandler);
 }
 
 function menuVisible(bool) {
-	menu.value.style.opacity = bool ? 1 : 0
-	menu.value.style.visibility = bool ? 'visible' : 'hidden'
+	if(menu.value) {
+		menu.value.style.opacity = bool ? 1 : 0
+		menu.value.style.visibility = bool ? 'visible' : 'hidden'
+	}
 }
 
 function closeAllMenu() {

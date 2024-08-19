@@ -20,6 +20,10 @@ async function mediaManagerController(req, res) {
                 return await manager.setMeta(req, res);
             case 'getMeta':
                 return await manager.getMeta(req, res);
+            case 'cropped':
+                return await manager.uploadCropped(req, res);
+            case 'getChildren':
+                return await manager.getChildren(req, res);
         }
     }
 }

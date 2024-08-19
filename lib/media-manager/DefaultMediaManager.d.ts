@@ -24,7 +24,9 @@ export declare class DefaultMediaManager extends AbstractMediaManager {
     path: string;
     dir: string;
     getLibrary(req: ReqType, res: ResType): Promise<sails.Response>;
+    getChildren(req: ReqType, res: ResType): Promise<sails.Response>;
     upload(req: ReqType, res: ResType): Promise<sails.Response | void>;
+    uploadCropped(req: ReqType, res: ResType): Promise<sails.Response | void>;
     protected createEmptyMeta(): Promise<Error & {
         id?: string;
         author?: string;
@@ -40,6 +42,7 @@ export declare class DefaultMediaManager extends AbstractMediaManager {
         createdAt?: number | undefined;
         parent?: string;
         mimeType?: string;
+        path?: string;
         image_size?: import("sails-typescript").DefaultJsonType | import("sails-typescript").DefaultJsonType[];
         cropType?: string;
         url?: string;
@@ -55,6 +58,7 @@ export declare class DefaultMediaManager extends AbstractMediaManager {
         createdAt?: number | undefined;
         parent?: string;
         mimeType?: string;
+        path?: string;
         image_size?: import("sails-typescript").DefaultJsonType | import("sails-typescript").DefaultJsonType[];
         cropType?: string;
         url?: string;
@@ -68,6 +72,7 @@ export declare class DefaultMediaManager extends AbstractMediaManager {
             parent?: string;
             children?: import("../../models/MediaManagerAP").default[] | string[];
             mimeType?: string;
+            path?: string;
             size?: number;
             image_size?: import("sails-typescript").DefaultJsonType | import("sails-typescript").DefaultJsonType[];
             cropType?: string;
@@ -81,6 +86,8 @@ export declare class DefaultMediaManager extends AbstractMediaManager {
         resFilename: string;
         resMIME: string;
     }>;
+    protected checkConvert(config: config, file: UploaderFile): boolean;
+    protected getConvertExtantions(s: string): string;
     protected createSizes(parent: {
         id: string;
         size: {

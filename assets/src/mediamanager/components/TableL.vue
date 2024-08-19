@@ -4,7 +4,7 @@
 			<div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
 				<div>
 					<table
-						class="min-w-full text-left text-sm font-light text-surface dark:text-white">
+						class="min-w-full text-left text-sm font-light text-surface dark:text-white" v-if="mediaList.length">
 						<thead
 							class="border-b border-neutral-200 font-medium dark:border-white/10">
 						<tr>

@@ -17,6 +17,9 @@ const attributes = a = {
 	mimeType: {
 		type: 'string'
 	},
+	path: {
+		type: 'string'
+	},
 	size: {
 		type: 'number'
 	},

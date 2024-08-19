@@ -33,6 +33,13 @@ interface config {
 	}[]
 }
 
+interface fileData {
+	name: string
+	width: number
+	height: number
+	id: string
+}
+
 export class DefaultMediaManager extends AbstractMediaManager {
 	public id: string = 'default'
 	public path: string = 'media-manager'
@@ -43,8 +50,8 @@ export class DefaultMediaManager extends AbstractMediaManager {
 			where: {parent: null},
 			limit: req.param('count'),
 			skip: req.param('skip'),
-			sort: 'createdAt DESC'
-		}).populate('children')
+			sort: 'createdAt DESC'//@ts-ignore
+		}).populate('children', {sort: 'createdAt DESC'})
 
 		let next = (await MediaManagerAP.find({
 			where: {parent: null},
@@ -55,6 +62,15 @@ export class DefaultMediaManager extends AbstractMediaManager {
 		return res.send({
 			data: data,
 			next: !!next
+		})
+	}
+
+	public async getChildren(req: ReqType, res: ResType): Promise<sails.Response> {
+		return res.send({
+			data: (await MediaManagerAP.findOne({
+				where: {id: req.body.id}
+				//@ts-ignore
+			}).populate('children', {sort: 'createdAt DESC'})).children
 		})
 	}
 
@@ -70,11 +86,45 @@ export class DefaultMediaManager extends AbstractMediaManager {
 			saveAs: filename
 		}, async (err, file): Promise<sails.Response | void> => {
 			if (err) return res.serverError(err);
+			try {
+				return res.send({
+					msg: "success",
+					data: await this.setData(file[0], `/${this.path}/${filename}`, filename, config, origFileName)
+				})
+			} catch (e) {
+				console.error(e)
+			}
+		})
+	}
 
-			return res.send({
-				msg: "success",
-				data: await this.setData(file[0], `/${this.path}/${filename}`, filename, config, origFileName)
-			})
+	public async uploadCropped(req: ReqType, res: ResType): Promise<sails.Response | void> {
+		let fileData: fileData = JSON.parse(req.body.fileData)
+		let filename = randomFileName(fileData.name, `_${fileData.width}x${fileData.height}`)
+		let origFileName = fileData.name.replace(/\.[^\.]+$/, '')
+
+		//save file
+		req.file('file').upload({
+			dirname: this.dir,
+			saveAs: filename
+		}, async (err, file): Promise<sails.Response | void> => {
+			if (err) return res.serverError(err)
+			try {
+				let cropped = await MediaManagerAP.create({
+					parent: fileData.id,
+					mimeType: file[0].type,
+					size: file[0].size,
+					path: file[0].fd,
+					cropType: `${fileData.width}x${fileData.height}`,
+					filename: origFileName,
+					image_size: sizeOf(file[0].fd),
+					url: `/${this.path}/${filename}`
+				}).fetch()
+				if (cropped) {
+					return res.send({msg: "success"})
+				}
+			} catch (e) {
+				console.error(e)
+			}
 		})
 	}
 
@@ -141,17 +191,19 @@ export class DefaultMediaManager extends AbstractMediaManager {
 		let resFile = file.fd
 		let resFilename = filename
 		let resMIME = file.type
+
 		// convert file, only webp & jpg
-		if (config.convert && (config.convert === 'webp' || config.convert === 'jpg') && config.convert !== sizeOf(file.fd).type && file.type !== 'image/webp') {
-			let convertedFileName = filename.replace(/\.[^\.]+$/, `.${config.convert}`); //change file extension
+		if (this.checkConvert(config, file)) {
+			let convertedFileName = filename.replace(/\.[^\.]+$/, `.${this.getConvertExtantions(config.convert)}`); //change file extension
 			let convertFile = await this.convertImage(file.fd, `${this.dir}${convertedFileName}`)
 
 			//create parent file converted
 			parent = await MediaManagerAP.create({
 				parent: null,
-				mimeType: `image/${config.convert}`,
+				mimeType: config.convert,
 				size: convertFile.size,
 				cropType: 'origin',
+				path: `${this.dir}${convertedFileName}`,
 				meta: meta.id,
 				filename: origFileName,
 				image_size: sizeOf(`${this.dir}${convertedFileName}`),
@@ -170,13 +222,14 @@ export class DefaultMediaManager extends AbstractMediaManager {
 
 			resFile = `${this.dir}${convertedFileName}`
 			resFilename = convertedFileName
-			resMIME = `image/${config.convert}`
+			resMIME = config.convert
 		} else {
 			//create parent file origin
 			parent = await MediaManagerAP.create({
 				parent: null,
 				mimeType: file.type,
 				size: file.size,
+				path: file.fd,
 				cropType: 'origin',
 				filename: origFileName,
 				meta: meta.id,
@@ -193,6 +246,14 @@ export class DefaultMediaManager extends AbstractMediaManager {
 		}
 	}
 
+	protected checkConvert(config: config, file: UploaderFile) {
+		return config.convert && (config.convert === 'image/webp' || config.convert === 'image/jpeg') && config.convert !== file.type && file.type !== 'image/webp'
+	}
+
+	protected getConvertExtantions(s: string) {
+		return s.replace('image/', '')
+	}
+
 	protected async createSizes(parent: {
 		id: string,
 		size: { width: number, height: number }
@@ -206,6 +267,7 @@ export class DefaultMediaManager extends AbstractMediaManager {
 			mimeType: MIME,
 			size: thumb.size,
 			cropType: 'thumb',
+			path: `${this.dir}${thumbName}`,
 			filename: origFileName,
 			image_size: sizeOf(`${this.dir}${thumbName}`),
 			url: `/${this.path}/${thumbName}`
@@ -222,6 +284,7 @@ export class DefaultMediaManager extends AbstractMediaManager {
 					mimeType: MIME,
 					size: size.size,
 					filename: origFileName,
+					path: `${this.dir}${sizeName}`,
 					cropType: Object.keys(confSize)[0],
 					image_size: sizeOf(`${this.dir}${sizeName}`),
 					url: `/${this.path}/${sizeName}`

@@ -14,6 +14,9 @@ declare const attributes: {
     readonly mimeType: {
         readonly type: "string";
     };
+    readonly path: {
+        readonly type: "string";
+    };
     readonly size: {
         readonly type: "number";
     };
@@ -53,6 +56,9 @@ declare const model: {
             readonly via: "parent";
         };
         readonly mimeType: {
+            readonly type: "string";
+        };
+        readonly path: {
             readonly type: "string";
         };
         readonly size: {
