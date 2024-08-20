@@ -36,7 +36,8 @@ const attributes = a = {
 		type: 'string'
 	},
 	meta: {
-		model: 'MediaManagerMetaAP'
+		collection: 'MediaManagerMetaAP',
+		via: 'parent'
 	}
 } as const;
 

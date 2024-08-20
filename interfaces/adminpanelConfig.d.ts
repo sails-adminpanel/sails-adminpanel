@@ -172,6 +172,7 @@ export interface AdminpanelConfig {
      *  Path to modules views
      */
     modulesViewsPath?: string;
+    mediamanager: MediaManagerConfig;
 }
 export interface ModelConfig {
     title: string;
@@ -405,5 +406,15 @@ export interface NavigationConfig {
     allowContentInGroup?: boolean;
     items: NavigationItemTypeConfig[];
     movingGroupsRootOnly: boolean;
+}
+export interface MediaManagerConfig {
+    allowMIME: string[];
+    maxByteSize: number;
+    imageSizes: {
+        [key: string]: {
+            width: number;
+            height: number;
+        };
+    };
 }
 export {};

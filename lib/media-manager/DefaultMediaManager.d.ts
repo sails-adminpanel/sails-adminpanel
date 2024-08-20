@@ -1,15 +1,4 @@
-import { AbstractMediaManager } from "./AbstractMediaManager";
-import * as sharp from "sharp";
-import sails from "sails-typescript";
-interface UploaderFile {
-    fd: string;
-    size: number;
-    type: string;
-    filename: string;
-    status: string;
-    field: string;
-    extra: string | undefined;
-}
+import { AbstractMediaManager, UploaderFile, Item, File } from "./AbstractMediaManager";
 interface config {
     convert: string;
     sizes: {
@@ -20,20 +9,11 @@ interface config {
     }[];
 }
 export declare class DefaultMediaManager extends AbstractMediaManager {
-    id: string;
-    path: string;
-    dir: string;
-    getLibrary(req: ReqType, res: ResType): Promise<sails.Response>;
-    getChildren(req: ReqType, res: ResType): Promise<sails.Response>;
-    upload(req: ReqType, res: ResType): Promise<sails.Response | void>;
-    uploadCropped(req: ReqType, res: ResType): Promise<sails.Response | void>;
-    protected createEmptyMeta(): Promise<Error & {
-        id?: string;
-        author?: string;
-        description?: string;
-        title?: string;
-        createdAt?: number | undefined;
-        updatedAt?: number | undefined;
+    readonly itemTypes: File<Item>[];
+    constructor(id: string, path: string, dir: string, model: string, metaModel: string);
+    getLibrary(limit: number, skip: number, sort: string): Promise<{
+        data: Item[];
+        next: boolean;
     }>;
     protected setData(file: UploaderFile, url: string, filename: string, config: config, origFileName: string): Promise<Error & {
         id?: string;
@@ -47,9 +27,11 @@ export declare class DefaultMediaManager extends AbstractMediaManager {
         cropType?: string;
         url?: string;
         filename?: string;
-        meta?: string;
+        meta?: import("../../models/MediaManagerMetaAP").default[] | string[];
         children: import("../../models/MediaManagerAP").default[];
     }[]>;
+    getChildren(req: ReqType, res: ResType): Promise<sails.Response>;
+    uploadCropped(req: ReqType, res: ResType): Promise<sails.Response | void>;
     private saveFile;
     protected setImage(file: UploaderFile, url: string, filename: string, config: config, origFileName: string): Promise<Error & {
         id?: string;
@@ -63,7 +45,7 @@ export declare class DefaultMediaManager extends AbstractMediaManager {
         cropType?: string;
         url?: string;
         filename?: string;
-        meta?: string;
+        meta?: import("../../models/MediaManagerMetaAP").default[] | string[];
         children: import("../../models/MediaManagerAP").default[];
     }[]>;
     protected prepareOrigin(file: UploaderFile, url: string, filename: string, config: config, origFileName: string): Promise<{
@@ -78,7 +60,7 @@ export declare class DefaultMediaManager extends AbstractMediaManager {
             cropType?: string;
             url?: string;
             filename?: string;
-            meta?: string;
+            meta?: import("../../models/MediaManagerMetaAP").default[] | string[];
             createdAt?: number | undefined;
             updatedAt?: number | undefined;
         };
@@ -95,9 +77,5 @@ export declare class DefaultMediaManager extends AbstractMediaManager {
             height: number;
         };
     }, filename: string, file: string, MIME: string, config: config, origFileName: string): Promise<void>;
-    protected convertImage(input: string, output: string): Promise<sharp.OutputInfo>;
-    protected resizeImage(input: string, output: string, width: number, height: number): Promise<sharp.OutputInfo>;
-    setMeta(req: ReqType, res: ResType): Promise<sails.Response>;
-    getMeta(req: ReqType, res: ResType): Promise<sails.Response>;
 }
 export {};

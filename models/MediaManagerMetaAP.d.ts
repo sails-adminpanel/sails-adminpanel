@@ -4,14 +4,14 @@ declare const attributes: {
         readonly type: "string";
         readonly allowNull: false;
     };
-    readonly author: {
+    readonly key: {
         readonly type: "string";
     };
-    readonly description: {
+    readonly value: {
         readonly type: "string";
     };
-    readonly title: {
-        readonly type: "string";
+    readonly parent: {
+        readonly model: "MediaManagerAP";
     };
 };
 type ModelOptions = ModelTypeDetection<typeof attributes>;
@@ -26,14 +26,14 @@ declare const model: {
             readonly type: "string";
             readonly allowNull: false;
         };
-        readonly author: {
+        readonly key: {
             readonly type: "string";
         };
-        readonly description: {
+        readonly value: {
             readonly type: "string";
         };
-        readonly title: {
-            readonly type: "string";
+        readonly parent: {
+            readonly model: "MediaManagerAP";
         };
     };
 };

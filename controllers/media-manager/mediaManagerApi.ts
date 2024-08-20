@@ -1,4 +1,5 @@
 import {MediaManagerHandler} from "../../lib/media-manager/MediaManagerHandler";
+import {MediaManagerAdapter} from "./mediaManagerAdapter";
 
 export async function mediaManagerController(req: ReqType, res: ResType) {
 	const method = req.method.toUpperCase();
@@ -8,8 +9,8 @@ export async function mediaManagerController(req: ReqType, res: ResType) {
 		return res.sendStatus(404)
 	}
 
-	const manager = MediaManagerHandler.get(id)
-
+	const _manager = MediaManagerHandler.get(id)
+	const manager = new MediaManagerAdapter(_manager)
 	if (method === 'GET') {
 		return await manager.getLibrary(req, res)
 	}

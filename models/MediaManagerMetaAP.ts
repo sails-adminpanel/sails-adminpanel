@@ -7,15 +7,15 @@ const attributes = a = {
 		type: "string",
 		allowNull: false,
 	},
-	author: {
+	key: {
 		type: 'string'
 	},
-	description: {
+	value: {
 		type: 'string'
 	},
-	title: {
-		type: 'string'
-	},
+	parent: {
+		model: 'MediaManagerAP'
+	}
 } as const;
 
 type ModelOptions = ModelTypeDetection<typeof attributes>;

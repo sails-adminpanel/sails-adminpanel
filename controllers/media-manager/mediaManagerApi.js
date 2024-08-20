@@ -2,13 +2,15 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.mediaManagerController = mediaManagerController;
 const MediaManagerHandler_1 = require("../../lib/media-manager/MediaManagerHandler");
+const mediaManagerAdapter_1 = require("./mediaManagerAdapter");
 async function mediaManagerController(req, res) {
     const method = req.method.toUpperCase();
     let id = req.param('id') ? req.param('id') : '';
     if (!id) {
         return res.sendStatus(404);
     }
-    const manager = MediaManagerHandler_1.MediaManagerHandler.get(id);
+    const _manager = MediaManagerHandler_1.MediaManagerHandler.get(id);
+    const manager = new mediaManagerAdapter_1.MediaManagerAdapter(_manager);
     if (method === 'GET') {
         return await manager.getLibrary(req, res);
     }

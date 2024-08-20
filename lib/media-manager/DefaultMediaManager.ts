@@ -1,27 +1,13 @@
-import {AbstractMediaManager} from "./AbstractMediaManager";
+import {AbstractMediaManager, UploaderFile, Item, File} from "./AbstractMediaManager";
 import {randomFileName, isImage} from "./helpers/MediaManagerHelper";
 import * as sharp from "sharp";
-import sails from "sails-typescript";
+import {ImageItem} from "./Items/ImageItem";
 
 const fs = require('fs')
 
 const sizeOf = require("image-size")
 
-interface UploaderFile {
-	fd: string
-	size: number
-	type: string
-	filename: string
-	status: string
-	field: string
-	extra: string | undefined
-}
 
-interface Meta {
-	title: string
-	author: string
-	description: string
-}
 
 interface config {
 	convert: string
@@ -41,28 +27,43 @@ interface fileData {
 }
 
 export class DefaultMediaManager extends AbstractMediaManager {
-	public id: string = 'default'
-	public path: string = 'media-manager'
-	public dir: string = `${process.cwd()}/.tmp/public/${this.path}/`
+	// public id: string = 'default'
+	// public path: string = 'media-manager'
+	// public dir: string = `${process.cwd()}/.tmp/public/${this.path}/`
+	public readonly itemTypes: File<Item>[] = [];
 
-	public async getLibrary(req: ReqType, res: ResType): Promise<sails.Response> {
-		let data = await MediaManagerAP.find({
-			where: {parent: null},
-			limit: req.param('count'),
-			skip: req.param('skip'),
-			sort: 'createdAt DESC'//@ts-ignore
-		}).populate('children', {sort: 'createdAt DESC'})
+	constructor(id: string, path: string, dir: string, model: string, metaModel: string) {
+		super(id, path, dir, model);
+		this.itemTypes.push(new ImageItem( path, dir, model, metaModel))
+	}
 
-		let next = (await MediaManagerAP.find({
+	public async getLibrary(limit: number, skip: number, sort: string): Promise<{ data: Item[], next: boolean }> {
+		let data: Item[] = await sails.models[this.model].find({
 			where: {parent: null},
-			limit: +req.param('count'),
-			skip: +req.param('skip') === 0 ? +req.param('count') : +req.param('skip') + +req.param('count'),
-			sort: 'createdAt DESC'
+			limit: limit,
+			skip: skip,
+			sort: sort//@ts-ignore
+		}).populate('children', {sort: sort})
+
+		let next: number = (await sails.models[this.model].find({
+			where: {parent: null},
+			limit: limit,
+			skip: skip === 0 ? limit : skip + limit,
+			sort: sort
 		})).length
-		return res.send({
+
+		return {
 			data: data,
 			next: !!next
-		})
+		}
+	}
+
+	protected async setData(file: UploaderFile, url: string, filename: string, config: config, origFileName: string) {
+		if (isImage(file.type)) {
+			return await this.setImage(file, url, filename, config, origFileName)
+		} else {
+			return await this.saveFile(file, url, filename, origFileName)
+		}
 	}
 
 	public async getChildren(req: ReqType, res: ResType): Promise<sails.Response> {
@@ -74,28 +75,28 @@ export class DefaultMediaManager extends AbstractMediaManager {
 		})
 	}
 
-	public async upload(req: ReqType, res: ResType): Promise<sails.Response | void> {
-		const config: config = JSON.parse(req.body.config)
-
-		let filename = randomFileName(req.body.name.replace(' ', '_'), '')
-		let origFileName = req.body.name.replace(/\.[^\.]+$/, '')
-
-		//save file
-		req.file('file').upload({
-			dirname: this.dir,
-			saveAs: filename
-		}, async (err, file): Promise<sails.Response | void> => {
-			if (err) return res.serverError(err);
-			try {
-				return res.send({
-					msg: "success",
-					data: await this.setData(file[0], `/${this.path}/${filename}`, filename, config, origFileName)
-				})
-			} catch (e) {
-				console.error(e)
-			}
-		})
-	}
+	// public async upload() {
+		// const config: config = JSON.parse(req.body.config)
+		//
+		// let filename = randomFileName(req.body.name.replace(' ', '_'), '')
+		// let origFileName = req.body.name.replace(/\.[^\.]+$/, '')
+		//
+		// //save file
+		// req.file('file').upload({
+		// 	dirname: this.dir,
+		// 	saveAs: filename
+		// }, async (err, file): Promise<sails.Response | void> => {
+		// 	if (err) return res.serverError(err);
+		// 	try {
+		// 		return res.send({
+		// 			msg: "success",
+		// 			data: await this.setData(file[0], `/${this.path}/${filename}`, filename, config, origFileName)
+		// 		})
+		// 	} catch (e) {
+		// 		console.error(e)
+		// 	}
+		// })
+	// }
 
 	public async uploadCropped(req: ReqType, res: ResType): Promise<sails.Response | void> {
 		let fileData: fileData = JSON.parse(req.body.fileData)
@@ -128,23 +129,6 @@ export class DefaultMediaManager extends AbstractMediaManager {
 		})
 	}
 
-	protected async createEmptyMeta() {
-		//create empty meta
-		let metaData: Meta = {
-			author: "",
-			description: "",
-			title: ""
-		}
-		return MediaManagerMetaAP.create(metaData).fetch()
-	}
-
-	protected async setData(file: UploaderFile, url: string, filename: string, config: config, origFileName: string) {
-		if (isImage(file.type)) {
-			return await this.setImage(file, url, filename, config, origFileName)
-		} else {
-			return await this.saveFile(file, url, filename, origFileName)
-		}
-	}
 
 	private async saveFile(file: UploaderFile, url: string, filename: string, origFileName: string) {
 		let meta = await this.createEmptyMeta()
@@ -251,7 +235,7 @@ export class DefaultMediaManager extends AbstractMediaManager {
 	}
 
 	protected getConvertExtensions(s: string): string {
-		const obj:{[key: string]: string} = {
+		const obj: { [key: string]: string } = {
 			"image/jpeg": "jpg",
 			"image/webp": "webp"
 		}
@@ -297,41 +281,41 @@ export class DefaultMediaManager extends AbstractMediaManager {
 		}
 	}
 
-	protected async convertImage(input: string, output: string,) {
-		return await sharp(input)
-			.toFile(output)
-	}
+	// protected async convertImage(input: string, output: string,) {
+	// 	return await sharp(input)
+	// 		.toFile(output)
+	// }
+	//
+	// protected async resizeImage(input: string, output: string, width: number, height: number) {
+	// 	return await sharp(input)
+	// 		.resize({width: width, height: height})
+	// 		.toFile(output)
+	// }
 
-	protected async resizeImage(input: string, output: string, width: number, height: number) {
-		return await sharp(input)
-			.resize({width: width, height: height})
-			.toFile(output)
-	}
+	// public async setMeta(req: ReqType, res: ResType): Promise<sails.Response> {
+	// 	const data = req.body.data
+	// 	const id = req.body.metaId
+	//
+	// 	try {
+	// 		await MediaManagerMetaAP.update({id: id}, data)
+	// 		return res.send({
+	// 			msg: "success",
+	// 		})
+	// 	} catch (e) {
+	// 		console.log(e)
+	// 	}
+	// }
 
-	public async setMeta(req: ReqType, res: ResType): Promise<sails.Response> {
-		const data = req.body.data
-		const id = req.body.metaId
-
-		try {
-			await MediaManagerMetaAP.update({id: id}, data)
-			return res.send({
-				msg: "success",
-			})
-		} catch (e) {
-			console.log(e)
-		}
-	}
-
-	public async getMeta(req: ReqType, res: ResType): Promise<sails.Response> {
-		const data = req.body
-		const fields: Meta = {
-			author: "",
-			description: "",
-			title: ""
-		}
-		return res.send({
-			data: (await MediaManagerMetaAP.find({where: {id: data.metaId}}))[0],
-			fields: fields
-		})
-	}
+	// public async getMeta(req: ReqType, res: ResType): Promise<sails.Response> {
+	// 	const data = req.body
+	// 	const fields: Meta = {
+	// 		author: "",
+	// 		description: "",
+	// 		title: ""
+	// 	}
+	// 	return res.send({
+	// 		data: (await MediaManagerMetaAP.find({where: {id: data.metaId}}))[0],
+	// 		fields: fields
+	// 	})
+	// }
 }

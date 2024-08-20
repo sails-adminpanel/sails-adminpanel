@@ -1,10 +1,10 @@
 <template>
 	<div class="p-10 max-w-[1440px] w-full mx-auto overflow-y-auto h-full" ref="metaRef">
 		<form class="flex flex-col gap-4" ref="formRef">
-			<div class="flex flex-col gap-4" v-for="(val, key, i) in fields">
+			<div class="flex flex-col gap-4" v-for="item in data" v-if="data.length">
 				<label class="admin-panel__title"
-					   for="author">{{key.replace(/^./, key[0].toUpperCase())}}</label>
-				<input class="text-input w-3/4" :id="key" :name="key" :value="data[key]"/>
+					   for="author">{{ capitalize(item.key) }}</label>
+				<input class="text-input w-3/4" :id="item.key" :name="item.key" :value="item.value"/>
 			</div>
 		</form>
 		<div class="mt-6">
@@ -25,8 +25,11 @@ const formRef = ref(null)
 const metaPopup = ref()
 const closeMeta = inject('closeMeta')
 const uploadUrl = inject('uploadUrl')
-const fields = ref({})
-const data = ref({})
+const data = ref([])
+
+function capitalize(title) {
+	return title.charAt(0).toUpperCase() + title.slice(1)
+}
 
 onMounted(async () => {
 	metaPopup.value = AdminPopUp.new()
@@ -44,14 +47,13 @@ onMounted(async () => {
 async function getMeta() {
 	let res = await ky.post(uploadUrl, {
 		json: {
-			metaId: props.item.meta,
+			id: props.item.id,
+			mimeType: props.item.mimeType,
 			_method: 'getMeta',
 		}
 	}).json()
-	console.log(res)
 	if (res) {
 		data.value = res.data
-		fields.value = res.fields
 	}
 }
 
@@ -62,8 +64,9 @@ async function save() {
 	}
 	let res = await ky.post(uploadUrl, {
 		json: {
+			id: props.item.id,
+			mimeType: props.item.mimeType,
 			data: data,
-			metaId: props.item.meta,
 			_method: 'addMeta',
 		}
 	}).json()

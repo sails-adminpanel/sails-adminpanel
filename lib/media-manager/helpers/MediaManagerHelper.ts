@@ -1,5 +1,3 @@
-import * as path from 'path'
-
 export function randomFileName(filenameOrig: string, type: string) {
 	// make random string in end of file
 	const prefixLength = 8;

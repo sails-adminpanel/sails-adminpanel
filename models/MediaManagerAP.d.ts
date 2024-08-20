@@ -33,7 +33,8 @@ declare const attributes: {
         readonly type: "string";
     };
     readonly meta: {
-        readonly model: "MediaManagerMetaAP";
+        readonly collection: "MediaManagerMetaAP";
+        readonly via: "parent";
     };
 };
 type ModelOptions = ModelTypeDetection<typeof attributes>;
@@ -77,7 +78,8 @@ declare const model: {
             readonly type: "string";
         };
         readonly meta: {
-            readonly model: "MediaManagerMetaAP";
+            readonly collection: "MediaManagerMetaAP";
+            readonly via: "parent";
         };
     };
 };
