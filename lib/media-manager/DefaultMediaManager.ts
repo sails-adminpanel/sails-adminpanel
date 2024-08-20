@@ -194,7 +194,7 @@ export class DefaultMediaManager extends AbstractMediaManager {
 
 		// convert file, only webp & jpg
 		if (this.checkConvert(config, file)) {
-			let convertedFileName = filename.replace(/\.[^\.]+$/, `.${this.getConvertExtantions(config.convert)}`); //change file extension
+			let convertedFileName = filename.replace(/\.[^\.]+$/, `.${this.getConvertExtensions(config.convert)}`); //change file extension
 			let convertFile = await this.convertImage(file.fd, `${this.dir}${convertedFileName}`)
 
 			//create parent file converted
@@ -250,8 +250,12 @@ export class DefaultMediaManager extends AbstractMediaManager {
 		return config.convert && (config.convert === 'image/webp' || config.convert === 'image/jpeg') && config.convert !== file.type && file.type !== 'image/webp'
 	}
 
-	protected getConvertExtantions(s: string) {
-		return s.replace('image/', '')
+	protected getConvertExtensions(s: string): string {
+		const obj:{[key: string]: string} = {
+			"image/jpeg": "jpg",
+			"image/webp": "webp"
+		}
+		return obj[s]
 	}
 
 	protected async createSizes(parent: {

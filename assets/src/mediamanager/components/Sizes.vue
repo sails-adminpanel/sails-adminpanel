@@ -5,8 +5,9 @@
 				class="min-w-full text-left text-sm font-light text-surface dark:text-white">
 				<colgroup>
 					<col span="1" style="width: 40%;">
-					<col span="1" style="width: 30%;">
-					<col span="1" style="width: 30%;">
+					<col span="1" style="width: 25%;">
+					<col span="1" style="width: 25%;">
+					<col span="1" style="width: 10%;">
 				</colgroup>
 				<thead
 					class="border-b border-neutral-200 font-medium dark:border-white/10">
@@ -14,6 +15,7 @@
 					<th scope="col" class="p-2 text-left">Файл</th>
 					<th scope="col" class="p-2 text-left">Размер</th>
 					<th scope="col" class="p-2 text-left">W x H</th>
+					<th scope="col" class="p-2 text-left"></th>
 				</tr>
 				</thead>
 				<tbody>
@@ -26,6 +28,11 @@
 					</td>
 					<td class="p-2">
 						{{ item.image_size.width }}x{{ item.image_size.height }}
+					</td>
+					<td class="p-2">
+						<button class="btn btn-back btn-text" @click="preview(item)">
+							Preview
+						</button>
 					</td>
 				</tr>
 				</tbody>
@@ -57,12 +64,18 @@ onMounted(async () => {
 
 async function getData(){
 	let res = await ky.post(uploadUrl, {json: {_method: 'getChildren', id: props.item.id}}).json()
-	if(res.data) mediaList.value = res.data
+	if(res.data) {
+		mediaList.value = [props.item, ...res.data]
+	}
 }
 
 function getDate(t){
 	let date = new Date(t)
 	return date.toLocaleDateString()
+}
+
+function preview(item){
+	window.open(item.url, '_blank').focus();
 }
 
 </script>

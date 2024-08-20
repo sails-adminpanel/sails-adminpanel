@@ -87,7 +87,7 @@ export declare class DefaultMediaManager extends AbstractMediaManager {
         resMIME: string;
     }>;
     protected checkConvert(config: config, file: UploaderFile): boolean;
-    protected getConvertExtantions(s: string): string;
+    protected getConvertExtensions(s: string): string;
     protected createSizes(parent: {
         id: string;
         size: {
