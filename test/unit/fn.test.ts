@@ -1,9 +1,15 @@
-function getConvertExtensions(s: string): string {
-	const obj:{[key: string]: string} = {
-		"image/jpeg": "jpg",
-		"image/webp": "webp"
+function checkMIMEType(allowedTypes: string[], type: string) {
+	const partsFileType = type.split('/');
+
+	for (const type1 of allowedTypes) {
+		let parts = type1.split('/');
+		if(partsFileType[0] === parts[0]) {
+			if(parts[1] === '*'){
+				return false
+			} else return parts[1] !== partsFileType[1];
+		}
 	}
-	return obj[s]
 }
 
-console.log(getConvertExtensions('image/webp'))
+const allowMIME = ['image/*', 'application/*', 'text/*']
+console.log(checkMIMEType(allowMIME, 'image/png'))

@@ -172,7 +172,7 @@ export interface AdminpanelConfig {
      *  Path to modules views
      */
     modulesViewsPath?: string;
-    mediamanager: MediaManagerConfig;
+    mediamanager?: MediaManagerConfig;
 }
 export interface ModelConfig {
     title: string;
@@ -408,9 +408,9 @@ export interface NavigationConfig {
     movingGroupsRootOnly: boolean;
 }
 export interface MediaManagerConfig {
-    allowMIME: string[];
-    maxByteSize: number;
-    imageSizes: {
+    allowMIME?: string[];
+    maxByteSize?: number;
+    imageSizes?: {
         [key: string]: {
             width: number;
             height: number;

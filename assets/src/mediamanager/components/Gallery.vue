@@ -88,6 +88,10 @@ provide('pushData', (elem) => {
 	mediaList.value = [...elem, ...mediaList.value]
 })
 
+// provide('updateData', (item) => {
+// 	console.log(item)
+// })
+
 async function loadMore(){
 	skip.value += count
 	let data = await ky.get(`${uploadUrl}?count=${count}&skip=${skip.value}`).json()

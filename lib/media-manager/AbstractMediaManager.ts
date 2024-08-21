@@ -15,9 +15,6 @@ export interface Item {
 	cropType: 'thumb' | string
 	url: string
 	filename: string
-	/**
-	 * @param {string} meta - Assoc model id
-	 */
 	meta: string
 }
 
@@ -39,7 +36,6 @@ export interface imageSizes {
 }
 
 export abstract class File<T extends Item> {
-	public abstract id: string
 	public abstract type:
 		"application" |
 		"audio" |
@@ -63,21 +59,46 @@ export abstract class File<T extends Item> {
 		this.metaModel = metaModel
 	}
 
-	public abstract upload(file: UploaderFile, filename: string, origFileName: string, imageSizes: imageSizes): Promise<T>
-	public abstract getMeta(id: string): Promise<{key: string, value: string}[]>
-	public abstract setMeta(id: string, data: {[key: string]: string}): Promise<{msg: "success"}>
-	protected abstract createThumb(parentId: string, file: UploaderFile, filename: string, origFileName: string,): Promise<void>
+	/**
+	 *
+	 * @param file
+	 * @param filename
+	 * @param origFileName
+	 * @param imageSizes
+	 */
+	public abstract upload(file: UploaderFile, filename: string, origFileName: string, imageSizes?: imageSizes | {}): Promise<T>
 
-	protected async convertImage(input: string, output: string,) {
-		return await sharp(input)
-			.toFile(output)
-	}
+	/**
+	 *
+	 * @param id
+	 */
+	public abstract getMeta(id: string): Promise<{ key: string, value: string }[]>
 
-	protected async resizeImage(input: string, output: string, width: number, height: number) {
-		return await sharp(input)
-			.resize({width: width, height: height})
-			.toFile(output)
-	}
+	/**
+	 *
+	 * @param id
+	 * @param data
+	 */
+	public abstract setMeta(id: string, data: { [key: string]: string }): Promise<{ msg: "success" }>
+
+	/**
+	 *
+	 * @param id
+	 * @param file
+	 * @param filename
+	 * @param origFileName
+	 * @protected
+	 */
+	protected abstract createThumb(id: string, file: UploaderFile, filename: string, origFileName: string,): Promise<void>
+
+	public abstract getChildren(id: string): Promise<Item[]>
+
+	public abstract uploadCropped(item: Item, file: UploaderFile, fileName: string, config: {
+		width: number,
+		height: number
+	}): Promise<Item>
+
+	public abstract  delete(id: string): Promise<void>
 }
 
 export abstract class AbstractMediaManager {
@@ -94,7 +115,7 @@ export abstract class AbstractMediaManager {
 		this.model = model
 	}
 
-	public upload(file: UploaderFile, filename: string, origFileName: string, imageSizes: imageSizes) {
+	public upload(file: UploaderFile, filename: string, origFileName: string, imageSizes?: imageSizes | {}) {
 		const mimeType = file.type;
 		const parts = mimeType.split('/');
 		return this.getItemType(parts[0])?.upload(file, filename, origFileName, imageSizes)
@@ -104,20 +125,33 @@ export abstract class AbstractMediaManager {
 		return this.itemTypes.find((it) => it.type === type);
 	}
 
-	public abstract getLibrary(limit: number, skip: number, sort: string): Promise<{ data: Item[], next: boolean }>
+	public abstract getAll(limit: number, skip: number, sort: string): Promise<{ data: Item[], next: boolean }>
 
-	public abstract getChildren(req: ReqType, res: ResType): Promise<sails.Response>
-
-
-	public getMeta(id: string, mimeType: string): Promise<{key: string, value: string}[]>{
-		const parts = mimeType.split('/');
-		return this.getItemType(parts[0])?.getMeta(id)
+	public getChildren(item: Item): Promise<Item[]> {
+		const parts = item.mimeType.split('/');
+		return this.getItemType(parts[0])?.getChildren(item.id)
 	}
 
-	public setMeta(id: string, mimeType: string, data: {[key: string]: string}): Promise<{msg: "success"}>{
-		const parts = mimeType.split('/');
-		return this.getItemType(parts[0])?.setMeta(id, data)
+	public uploadCropped(item: Item, file: UploaderFile, fileName: string, config: {
+		width: number,
+		height: number
+	}): Promise<Item> {
+		const parts = item.mimeType.split('/');
+		return this.getItemType(parts[0])?.uploadCropped(item, file, fileName, config)
 	}
 
-	public abstract uploadCropped(req: ReqType, res: ResType): Promise<sails.Response | void>
+	public getMeta(item: Item): Promise<{ key: string, value: string }[]> {
+		const parts = item.mimeType.split('/');
+		return this.getItemType(parts[0])?.getMeta(item.id)
+	}
+
+	public setMeta(item: Item, data: { [key: string]: string }): Promise<{ msg: "success" }> {
+		const parts = item.mimeType.split('/');
+		return this.getItemType(parts[0])?.setMeta(item.id, data)
+	}
+
+	public delete(item: Item): Promise<void>{
+		const parts = item.mimeType.split('/');
+		return this.getItemType(parts[0])?.delete(item.id)
+	}
 }

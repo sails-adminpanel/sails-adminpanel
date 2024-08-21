@@ -1,9 +1,16 @@
 "use strict";
-function getConvertExtensions(s) {
-    const obj = {
-        "image/jpeg": "jpg",
-        "image/webp": "webp"
-    };
-    return obj[s];
+function checkMIMEType(allowedTypes, type) {
+    const partsFileType = type.split('/');
+    for (const type1 of allowedTypes) {
+        let parts = type1.split('/');
+        if (partsFileType[0] === parts[0]) {
+            if (parts[1] === '*') {
+                return false;
+            }
+            else
+                return parts[1] !== partsFileType[1];
+        }
+    }
 }
-console.log(getConvertExtensions('image/webp'));
+const allowMIME = ['image/*', 'application/*', 'text/*'];
+console.log(checkMIMEType(allowMIME, 'image/png'));

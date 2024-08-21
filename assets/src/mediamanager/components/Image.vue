@@ -7,6 +7,7 @@
 				<li class="capitalize" @click="openFile">Посмотреть</li>
 				<li v-if="imagesTypes.has(item.mimeType)" class="capitalize" @click="openCropper">Обрезать</li>
 				<li v-if="imagesTypes.has(item.mimeType)" class="capitalize" @click="openSizes">Размеры</li>
+				<li class="capitalize" @click="destroy">Удалить</li>
 			</ul>
 		</div>
 	</div>
@@ -19,19 +20,25 @@
 import Meta from "./Meta.vue";
 import Cropper from "./Cropper.vue";
 import Sizes from "./Sizes.vue";
-import {provide, ref, computed, onMounted} from "vue";
+import {provide, ref, computed, onMounted, inject} from "vue";
 
 const props = defineProps(['item', 'initClass'])
 const metaVisible = ref(false)
 const cropperVisible = ref(false)
 const sizesVisible = ref(false)
 const menu = ref(null)
+const uploadUrl = inject('uploadUrl')
 const imagesTypes = new Set([
 	"image/gif",
 	"image/jpeg",
 	"image/png",
 	"image/webp",
 ]);
+
+async function destroy(){
+	let res = await ky.delete(uploadUrl, {json: {item: props.item}}).json()
+	console.log(res)
+}
 
 function openMeta() {
 	metaVisible.value = true

@@ -227,7 +227,7 @@ export interface AdminpanelConfig {
 	 */
 	modulesViewsPath?: string
 
-	mediamanager: MediaManagerConfig
+	mediamanager?: MediaManagerConfig
 }
 
 export interface ModelConfig {
@@ -471,9 +471,9 @@ export interface NavigationConfig {
 }
 
 export interface MediaManagerConfig {
-	allowMIME: string[]
-	maxByteSize: number
-	imageSizes: {
+	allowMIME?: string[]
+	maxByteSize?: number
+	imageSizes?: {
 		[key: string]: {
 			width: number
 			height: number

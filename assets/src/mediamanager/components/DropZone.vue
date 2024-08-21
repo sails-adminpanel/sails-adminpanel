@@ -1,4 +1,14 @@
 <template>
+	<div class="alert bg-red-600 rounded font-medium mt-8 mb-4" v-if="alert">
+		<div class="alert-items">
+			<div class="alert-item flex gap-2 p-2 text-white">
+				<div class="alert-icon-wrapper">
+					<i class="las la-exclamation-triangle text-sm"></i>
+				</div>
+				<span class="alert-text">{{alert}}</span>
+			</div>
+		</div>
+	</div>
 	<div class="relative transition" :class="loading ? 'opacity-60' : ''">
 		<div @drop.prevent="onDrop" class="drop-zone" @click="fileInput.click()">
 			<span class="text-sm text-[#C6BBBB]">dropzone</span>
@@ -15,7 +25,7 @@ const fileInput = ref(null)
 const uploadUrl = inject('uploadUrl')
 const config = inject('config')
 const loading = ref(false)
-
+const alert = ref('')
 
 const pushData = inject('pushData')
 
@@ -34,6 +44,7 @@ async function onLoad(e) {
 }
 
 async function upload(file) {
+	alert.value = ''
 	let form = new FormData()
 	form.append('name', file.name)
 	form.append('_method', 'upload')
@@ -41,9 +52,12 @@ async function upload(file) {
 	form.append('file', file)
 	let res = await ky.post(uploadUrl, {body: form}).json()
 	console.log(res.data)
-	if (res.msg === 'success'){
+	if (res.msg === 'success') {
 		loading.value = false
 		pushData(res.data)
+	} else {
+		loading.value = false
+		alert.value = res.msg
 	}
 }
 
@@ -82,10 +96,11 @@ onUnmounted(() => {
 .drop-zone:hover {
 	background-color: #e1e5ff;
 }
+
 .loader {
 	width: 48px;
 	height: 48px;
-	border: 5px dotted  rgb(107 114 128);
+	border: 5px dotted rgb(107 114 128);
 	border-radius: 50%;
 	display: inline-block;
 	position: absolute;
@@ -97,10 +112,12 @@ onUnmounted(() => {
 	opacity: 0;
 	visibility: hidden;
 }
-.loader--active{
+
+.loader--active {
 	opacity: 1;
 	visibility: visible;
 }
+
 @keyframes rotation {
 	0% {
 		transform: rotate(0deg);

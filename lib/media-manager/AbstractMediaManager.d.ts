@@ -1,4 +1,3 @@
-import * as sharp from "sharp";
 export interface Item {
     id: string;
     parent: string;
@@ -14,9 +13,6 @@ export interface Item {
     cropType: 'thumb' | string;
     url: string;
     filename: string;
-    /**
-     * @param {string} meta - Assoc model id
-     */
     meta: string;
 }
 export interface UploaderFile {
@@ -35,26 +31,53 @@ export interface imageSizes {
     };
 }
 export declare abstract class File<T extends Item> {
-    abstract id: string;
     abstract type: "application" | "audio" | "example" | "image" | "message" | "model" | "multipart" | "text" | "video";
     path: string;
     dir: string;
     model: string;
     metaModel: string;
     protected constructor(path: string, dir: string, model: string, metaModel: string);
-    abstract upload(file: UploaderFile, filename: string, origFileName: string, imageSizes: imageSizes): Promise<T>;
+    /**
+     *
+     * @param file
+     * @param filename
+     * @param origFileName
+     * @param imageSizes
+     */
+    abstract upload(file: UploaderFile, filename: string, origFileName: string, imageSizes?: imageSizes | {}): Promise<T>;
+    /**
+     *
+     * @param id
+     */
     abstract getMeta(id: string): Promise<{
         key: string;
         value: string;
     }[]>;
+    /**
+     *
+     * @param id
+     * @param data
+     */
     abstract setMeta(id: string, data: {
         [key: string]: string;
     }): Promise<{
         msg: "success";
     }>;
-    protected abstract createThumb(parentId: string, file: UploaderFile, filename: string, origFileName: string): Promise<void>;
-    protected convertImage(input: string, output: string): Promise<sharp.OutputInfo>;
-    protected resizeImage(input: string, output: string, width: number, height: number): Promise<sharp.OutputInfo>;
+    /**
+     *
+     * @param id
+     * @param file
+     * @param filename
+     * @param origFileName
+     * @protected
+     */
+    protected abstract createThumb(id: string, file: UploaderFile, filename: string, origFileName: string): Promise<void>;
+    abstract getChildren(id: string): Promise<Item[]>;
+    abstract uploadCropped(item: Item, file: UploaderFile, fileName: string, config: {
+        width: number;
+        height: number;
+    }): Promise<Item>;
+    abstract delete(id: string): Promise<void>;
 }
 export declare abstract class AbstractMediaManager {
     id: string;
@@ -63,21 +86,25 @@ export declare abstract class AbstractMediaManager {
     model: string;
     readonly itemTypes: File<Item>[];
     protected constructor(id: string, path: string, dir: string, model: string);
-    upload(file: UploaderFile, filename: string, origFileName: string, imageSizes: imageSizes): Promise<Item>;
+    upload(file: UploaderFile, filename: string, origFileName: string, imageSizes?: imageSizes | {}): Promise<Item>;
     protected getItemType(type: string): File<Item>;
-    abstract getLibrary(limit: number, skip: number, sort: string): Promise<{
+    abstract getAll(limit: number, skip: number, sort: string): Promise<{
         data: Item[];
         next: boolean;
     }>;
-    abstract getChildren(req: ReqType, res: ResType): Promise<sails.Response>;
-    getMeta(id: string, mimeType: string): Promise<{
+    getChildren(item: Item): Promise<Item[]>;
+    uploadCropped(item: Item, file: UploaderFile, fileName: string, config: {
+        width: number;
+        height: number;
+    }): Promise<Item>;
+    getMeta(item: Item): Promise<{
         key: string;
         value: string;
     }[]>;
-    setMeta(id: string, mimeType: string, data: {
+    setMeta(item: Item, data: {
         [key: string]: string;
     }): Promise<{
         msg: "success";
     }>;
-    abstract uploadCropped(req: ReqType, res: ResType): Promise<sails.Response | void>;
+    delete(item: Item): Promise<void>;
 }

@@ -43,6 +43,9 @@ interface MediaManagerAP extends Partial<ModelOptions> {
 export default MediaManagerAP;
 declare const model: {
     beforeCreate(record: MediaManagerAP, cb: (err?: Error | string) => void): void;
+    beforeDestroy(criteria: {
+        where: object;
+    }, cb: (err?: Error | string) => void): Promise<void>;
     primaryKey: string;
     attributes: {
         readonly id: {
