@@ -9,5 +9,10 @@ export declare class MediaManagerAdapter {
     upload(req: ReqType, res: ResType): Promise<void>;
     getMeta(req: ReqType, res: ResType): Promise<import("sails-typescript").default.Response>;
     setMeta(req: ReqType, res: ResType): Promise<import("sails-typescript").default.Response>;
+    /**
+     * Check file type. Return false if the type is allowed.
+     * @param allowedTypes
+     * @param type
+     */
     checkMIMEType(allowedTypes: string[], type: string): boolean;
 }

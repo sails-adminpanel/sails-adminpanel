@@ -1,11 +1,19 @@
 <template>
 	<div class="alert bg-red-600 rounded font-medium mt-8 mb-4" v-if="alert">
 		<div class="alert-items">
-			<div class="alert-item flex gap-2 p-2 text-white">
-				<div class="alert-icon-wrapper">
-					<i class="las la-exclamation-triangle text-sm"></i>
+			<div class="alert-item flex gap-2 p-2 text-white justify-between">
+				<div class="flex gap-2">
+					<div class="alert-icon-wrapper">
+						<i class="las la-exclamation-triangle text-sm"></i>
+					</div>
+					<span class="alert-text">{{ alert }}</span>
 				</div>
-				<span class="alert-text">{{alert}}</span>
+				<div class="cursor-pointer" @click="alert = ''">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+						<path fill="currentColor"
+							  d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z"></path>
+					</svg>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -44,7 +52,6 @@ async function onLoad(e) {
 }
 
 async function upload(file) {
-	alert.value = ''
 	let form = new FormData()
 	form.append('name', file.name)
 	form.append('_method', 'upload')

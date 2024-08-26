@@ -93,18 +93,17 @@ class MediaManagerAdapter {
     async setMeta(req, res) {
         return res.send({ data: await this.manager.setMeta(req.body.item, req.body.data) });
     }
+    /**
+     * Check file type. Return false if the type is allowed.
+     * @param allowedTypes
+     * @param type
+     */
     checkMIMEType(allowedTypes, type) {
         const partsFileType = type.split('/');
-        for (const type1 of allowedTypes) {
-            let parts = type1.split('/');
-            if (partsFileType[0] === parts[0]) {
-                if (parts[1] === '*') {
-                    return false;
-                }
-                else
-                    return parts[1] !== partsFileType[1];
-            }
-        }
+        const allowedType = `${partsFileType[0]}/*`;
+        if (allowedTypes.includes(allowedType))
+            return false;
+        return !allowedTypes.includes(type);
     }
 }
 exports.MediaManagerAdapter = MediaManagerAdapter;

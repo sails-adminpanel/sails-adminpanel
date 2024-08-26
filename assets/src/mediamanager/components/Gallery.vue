@@ -88,6 +88,10 @@ provide('pushData', (elem) => {
 	mediaList.value = [...elem, ...mediaList.value]
 })
 
+provide('deleteData', (elem) => {
+	mediaList.value = mediaList.value.filter(obj => obj.id !== elem.id)
+})
+
 // provide('updateData', (item) => {
 // 	console.log(item)
 // })

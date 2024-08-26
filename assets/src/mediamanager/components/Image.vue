@@ -28,6 +28,7 @@ const cropperVisible = ref(false)
 const sizesVisible = ref(false)
 const menu = ref(null)
 const uploadUrl = inject('uploadUrl')
+const deleteData = inject('deleteData')
 const imagesTypes = new Set([
 	"image/gif",
 	"image/jpeg",
@@ -37,7 +38,7 @@ const imagesTypes = new Set([
 
 async function destroy(){
 	let res = await ky.delete(uploadUrl, {json: {item: props.item}}).json()
-	console.log(res)
+	if(res.msg === 'ok') deleteData(props.item)
 }
 
 function openMeta() {
