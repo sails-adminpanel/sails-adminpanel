@@ -14,6 +14,34 @@ export class ImageItem extends File<Item> {
 		super(path, dir, model, metaModel);
 	}
 
+	public async getItems(limit: number, skip: number, sort: string): Promise<{ data: Item[]; next: boolean }> {
+		let data: Item[] = await sails.models[this.model].find({
+			where: {parent: null, mimeType: { contains: this.type}},
+			limit: limit,
+			skip: skip,
+			sort: sort//@ts-ignore
+		}).populate('children', {sort: sort})
+
+		let next: number = (await sails.models[this.model].find({
+			where: {parent: null, mimeType: { contains: this.type}},
+			limit: limit,
+			skip: skip === 0 ? limit : skip + limit,
+			sort: sort
+		})).length
+
+		return {
+			data: data,
+			next: !!next
+		}
+	}
+
+	public async search(s: string): Promise<Item[]>{
+		return await sails.models[this.model].find({
+			where: {filename: {contains: s}, mimeType: { contains: this.type}, parent: null},
+			sort: 'createdAt DESC'
+		}).populate('children', {sort: 'createdAt DESC'})
+	}
+
 	public async upload(file: UploaderFile, filename: string, origFileName: string, imageSizes?: imageSizes | {}): Promise<Item> {
 
 		let parent: Item = await sails.models[this.model].create({
@@ -137,7 +165,7 @@ export class ImageItem extends File<Item> {
 	}
 
 	async delete(id: string): Promise<void> {
-		await sails.models[this.model].destroy({where: {id: id}})
+		await sails.models[this.model].destroy({where: {id: id}}).fetch()
 	}
 }
 
@@ -181,4 +209,8 @@ export class TextItem extends ImageItem {
 }
 export class ApplicationItem extends TextItem {
 	public type: "application" = "application";
+}
+
+export class VideoItem extends TextItem {
+	public type: "video" = "video";
 }

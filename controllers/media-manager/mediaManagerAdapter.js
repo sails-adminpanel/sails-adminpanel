@@ -10,12 +10,31 @@ class MediaManagerAdapter {
         await this.manager.delete(req.body.item);
         return res.send({ msg: 'ok' });
     }
-    async getAll(req, res) {
-        let { data, next } = await this.manager.getAll(+req.param('count'), +req.param('skip'), 'createdAt DESC');
+    async get(req, res) {
+        let type = req.query.type;
+        let result;
+        if (type === 'all') {
+            result = await this.manager.getAll(+req.query.count, +req.query.skip, 'createdAt DESC');
+        }
+        else {
+            result = await this.manager.getItems(type, +req.query.count, +req.query.skip, 'createdAt DESC');
+        }
         return res.send({
-            data: data,
-            next: !!next
+            data: result.data,
+            next: !!result.next
         });
+    }
+    async search(req, res) {
+        let s = req.body.s;
+        let type = req.body.type;
+        let data;
+        if (type === 'all') {
+            data = await this.manager.searchAll(s);
+        }
+        else {
+            data = await this.manager.searchItems(s, type);
+        }
+        return res.send({ data: data });
     }
     async getChildren(req, res) {
         return res.send({

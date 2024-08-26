@@ -46,6 +46,7 @@ declare const model: {
     beforeDestroy(criteria: {
         where: object;
     }, cb: (err?: Error | string) => void): Promise<void>;
+    afterDestroy(destroyedRecord: MediaManagerAP, cb: (err?: Error | string) => void): Promise<void>;
     primaryKey: string;
     attributes: {
         readonly id: {

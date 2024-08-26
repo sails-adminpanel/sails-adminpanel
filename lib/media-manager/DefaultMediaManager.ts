@@ -1,14 +1,16 @@
 import {AbstractMediaManager, Item, File} from "./AbstractMediaManager";
-import {ApplicationItem, ImageItem, TextItem} from "./Items";
+import {ApplicationItem, ImageItem, TextItem, VideoItem} from "./Items";
+import {contains} from "@interactjs/utils/arr";
 
 export class DefaultMediaManager extends AbstractMediaManager {
 	public readonly itemTypes: File<Item>[] = [];
 
 	constructor(id: string, path: string, dir: string, model: string, metaModel: string) {
 		super(id, path, dir, model);
-		this.itemTypes.push(new ImageItem( path, dir, model, metaModel))
-		this.itemTypes.push(new TextItem( path, dir, model, metaModel))
-		this.itemTypes.push(new ApplicationItem( path, dir, model, metaModel))
+		this.itemTypes.push(new ImageItem(path, dir, model, metaModel))
+		this.itemTypes.push(new TextItem(path, dir, model, metaModel))
+		this.itemTypes.push(new ApplicationItem(path, dir, model, metaModel))
+		this.itemTypes.push(new VideoItem(path, dir, model, metaModel))
 	}
 
 	public async getAll(limit: number, skip: number, sort: string): Promise<{ data: Item[], next: boolean }> {
@@ -30,5 +32,12 @@ export class DefaultMediaManager extends AbstractMediaManager {
 			data: data,
 			next: !!next
 		}
+	}
+
+	public async searchAll(s: string): Promise<Item[]> {
+		return await sails.models[this.model].find({
+			where: {filename: {contains: s}, parent: null},
+			sort: 'createdAt DESC'
+		}).populate('children', {sort: 'createdAt DESC'})
 	}
 }

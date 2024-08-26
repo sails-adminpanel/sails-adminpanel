@@ -1,8 +1,6 @@
-import {AbstractMediaManager, imageSizes, Item} from "../../lib/media-manager/AbstractMediaManager";
-import _ = require("lodash");
+import {AbstractMediaManager, Item} from "../../lib/media-manager/AbstractMediaManager";
 import {randomFileName} from "../../lib/media-manager/helpers/MediaManagerHelper";
 import {MediaManagerConfig} from "../../interfaces/adminpanelConfig";
-import sizeOf from "image-size";
 
 export class MediaManagerAdapter {
 	protected manager: AbstractMediaManager
@@ -16,12 +14,34 @@ export class MediaManagerAdapter {
 		return res.send({msg:'ok'})
 	}
 
-	public async getAll(req: ReqType, res: ResType) {
-		let {data, next} = await this.manager.getAll(+req.param('count'), +req.param('skip'), 'createdAt DESC')
+	public async get(req: ReqType, res: ResType) {
+		let type = req.query.type as string
+		interface resultType {
+			data: Item[]
+			next: boolean
+		}
+		let result: resultType
+		if(type === 'all'){
+			result = await this.manager.getAll(+req.query.count, +req.query.skip, 'createdAt DESC') as resultType
+		} else {
+			result = await this.manager.getItems(type, +req.query.count, +req.query.skip, 'createdAt DESC') as resultType
+		}
 		return res.send({
-			data: data,
-			next: !!next
+			data: result.data,
+			next: !!result.next
 		})
+	}
+
+	public async search(req: ReqType, res: ResType) {
+		let s = req.body.s as string
+		let type = req.body.type as string
+		let data: Item[]
+		if(type === 'all'){
+			data = await this.manager.searchAll(s)
+		} else {
+			data = await this.manager.searchItems(s, type)
+		}
+		return res.send({ data: data})
 	}
 
 	public async getChildren(req: ReqType, res: ResType) {

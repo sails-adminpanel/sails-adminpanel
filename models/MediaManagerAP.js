@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const uuid_1 = require("uuid");
-const fs = require("node:fs");
+const fs = require('fs').promises;
 let a;
 const attributes = a = {
     id: {
@@ -41,12 +41,19 @@ const attributes = a = {
         via: 'parent'
     }
 };
-function deleteFile(file) {
-    if (fs.existsSync(file)) {
-        fs.unlinkSync(file);
+async function deleteFile(file) {
+    try {
+        await fs.access(file);
+        await fs.unlink(file);
+        console.log('The file was successfully deleted');
     }
-    else {
-        console.log('File not found : ' + file);
+    catch (err) {
+        if (err.code === 'ENOENT') {
+            console.log('The file does not exist');
+        }
+        else {
+            console.error(`The file could not be deleted: ${err}`);
+        }
     }
 }
 const methods = {
@@ -64,9 +71,12 @@ const methods = {
         }
         let children = (await MediaManagerAP.find(criteria).populate('children'))[0].children;
         for (const child of children) {
-            await MediaManagerAP.destroy({ id: child.id });
+            await MediaManagerAP.destroy({ id: child.id }).fetch();
         }
-        deleteFile(parent.path);
+        cb();
+    },
+    async afterDestroy(destroyedRecord, cb) {
+        await deleteFile(destroyedRecord.path);
         cb();
     }
 };

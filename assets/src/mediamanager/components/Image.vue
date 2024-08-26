@@ -3,11 +3,11 @@
 		<img :src="imageUrl" alt="" @contextmenu="openMenu" :class="initClass">
 		<div class="contextmenu flex flex-col absolute opacity-0 invisible bg-gray-50" ref="menu">
 			<ul class="custom-catalog__actions-items">
-				<li class="capitalize" @click="openMeta">Редактировать</li>
-				<li class="capitalize" @click="openFile">Посмотреть</li>
-				<li v-if="imagesTypes.has(item.mimeType)" class="capitalize" @click="openCropper">Обрезать</li>
-				<li v-if="imagesTypes.has(item.mimeType)" class="capitalize" @click="openSizes">Размеры</li>
-				<li class="capitalize" @click="destroy">Удалить</li>
+				<li @click="openMeta">Meta данные</li>
+				<li @click="openFile">Посмотреть</li>
+				<li v-if="imagesTypes.has(item.mimeType)" @click="openCropper">Обрезать</li>
+				<li v-if="imagesTypes.has(item.mimeType)" @click="openSizes">Размеры</li>
+				<li @click="destroy">Удалить</li>
 			</ul>
 		</div>
 	</div>
@@ -20,7 +20,7 @@
 import Meta from "./Meta.vue";
 import Cropper from "./Cropper.vue";
 import Sizes from "./Sizes.vue";
-import {provide, ref, computed, onMounted, inject} from "vue";
+import {provide, ref, computed, inject} from "vue";
 
 const props = defineProps(['item', 'initClass'])
 const metaVisible = ref(false)
@@ -70,7 +70,6 @@ provide('closeSizes', () => {
 
 const imageUrl = computed(() => {
 	if (props.item.children.length) {
-
 		return props.item.children.find(e => e.cropType === 'thumb').url
 	} else {
 		if (imagesTypes.has(props.item.mimeType)) {

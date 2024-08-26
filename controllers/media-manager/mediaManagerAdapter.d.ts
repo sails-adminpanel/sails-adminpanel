@@ -3,7 +3,8 @@ export declare class MediaManagerAdapter {
     protected manager: AbstractMediaManager;
     constructor(manager: AbstractMediaManager);
     delete(req: ReqType, res: ResType): Promise<import("sails-typescript").default.Response>;
-    getAll(req: ReqType, res: ResType): Promise<import("sails-typescript").default.Response>;
+    get(req: ReqType, res: ResType): Promise<import("sails-typescript").default.Response>;
+    search(req: ReqType, res: ResType): Promise<import("sails-typescript").default.Response>;
     getChildren(req: ReqType, res: ResType): Promise<import("sails-typescript").default.Response>;
     uploadCropped(req: ReqType, res: ResType): Promise<void>;
     upload(req: ReqType, res: ResType): Promise<void>;

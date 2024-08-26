@@ -1,8 +1,6 @@
 import {Attributes, ModelTypeDetection, Model} from "sails-typescript";
 import {v4 as uuid} from "uuid";
-import {WhereCriteriaQuery} from "sails-typescript/criteria";
-import MediaManagerMetaAP from "./MediaManagerMetaAP";
-import * as fs from "node:fs";
+const fs = require('fs').promises;
 
 let a: Attributes;
 const attributes = a = {
@@ -51,11 +49,17 @@ interface MediaManagerAP extends Partial<ModelOptions> {
 
 export default MediaManagerAP;
 
-function deleteFile(file:string) {
-	if (fs.existsSync(file)) {
-		fs.unlinkSync(file);
-	} else {
-		console.log('File not found : '+ file);
+async function deleteFile(file:string) {
+	try {
+		await fs.access(file);
+		await fs.unlink(file);
+		console.log('The file was successfully deleted');
+	} catch (err) {
+		if (err.code === 'ENOENT') {
+			console.log('The file does not exist');
+		} else {
+			console.error(`The file could not be deleted: ${err}`);
+		}
 	}
 }
 
@@ -74,9 +78,13 @@ const methods = {
 		}
 		let children = (await MediaManagerAP.find(criteria).populate('children'))[0].children
 		for (const child of children) {
-			await MediaManagerAP.destroy({id: child.id})
+			await MediaManagerAP.destroy({id: child.id}).fetch()
 		}
-		deleteFile(parent.path)
+		cb();
+	},
+
+	async afterDestroy(destroyedRecord:MediaManagerAP, cb: (err?: Error | string) => void){
+		await deleteFile(destroyedRecord.path)
 		cb();
 	}
 };

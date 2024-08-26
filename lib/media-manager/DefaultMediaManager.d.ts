@@ -6,4 +6,5 @@ export declare class DefaultMediaManager extends AbstractMediaManager {
         data: Item[];
         next: boolean;
     }>;
+    searchAll(s: string): Promise<Item[]>;
 }

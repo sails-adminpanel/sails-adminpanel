@@ -112,6 +112,7 @@ const closeCropper = inject('closeCropper')
 const previewShow = ref(false)
 const previewRef = ref(null)
 const uploadUrl = inject('uploadUrl')
+const updateData = inject('updateData')
 
 const convertWebp = ref(false)
 const convertJpeg = ref(false)
@@ -200,6 +201,7 @@ async function save() {
 		form.append('file', blob)
 		let res = await ky.post(uploadUrl, {body: form}).json()
 		if (res.data){
+			updateData(props.item, res.data)
 			cropperPopup.value.closeModal()
 		}
 	}, convert, 0.9)
