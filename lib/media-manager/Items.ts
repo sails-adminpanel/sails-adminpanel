@@ -207,6 +207,7 @@ export class TextItem extends ImageItem {
 	}
 
 }
+
 export class ApplicationItem extends TextItem {
 	public type: "application" = "application";
 }

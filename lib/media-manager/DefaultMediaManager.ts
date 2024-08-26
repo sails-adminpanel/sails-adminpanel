@@ -1,6 +1,5 @@
 import {AbstractMediaManager, Item, File} from "./AbstractMediaManager";
 import {ApplicationItem, ImageItem, TextItem, VideoItem} from "./Items";
-import {contains} from "@interactjs/utils/arr";
 
 export class DefaultMediaManager extends AbstractMediaManager {
 	public readonly itemTypes: File<Item>[] = [];
