@@ -57,8 +57,10 @@ async function deleteFile(file:string) {
 	} catch (err) {
 		if (err.code === 'ENOENT') {
 			console.log('The file does not exist');
+		} else if (err.code === 'EPERM') {
+			console.log('You do not have permission to delete this file');
 		} else {
-			console.error(`The file could not be deleted: ${err}`);
+			console.error(`An error occurred: ${err}`);
 		}
 	}
 }

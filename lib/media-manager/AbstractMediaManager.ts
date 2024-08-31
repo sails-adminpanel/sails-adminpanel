@@ -1,9 +1,14 @@
-import * as sharp from "sharp";
-
 export interface Item {
 	id: string
+	/**
+	 * it's mean version of the item
+	 */
 	parent: string
+	/**
+	 * it's mean version
+	 */
 	children: Item[]
+	// version?: null
 	mimeType: string
 	path: string
 	size: number
@@ -15,7 +20,7 @@ export interface Item {
 	cropType: 'thumb' | string
 	url: string
 	filename: string
-	meta: string
+	meta: string[]
 }
 
 export interface UploaderFile {

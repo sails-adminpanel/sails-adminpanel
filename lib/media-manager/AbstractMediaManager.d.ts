@@ -1,6 +1,12 @@
 export interface Item {
     id: string;
+    /**
+     * it's mean version of the item
+     */
     parent: string;
+    /**
+     * it's mean version
+     */
     children: Item[];
     mimeType: string;
     path: string;
@@ -13,7 +19,7 @@ export interface Item {
     cropType: 'thumb' | string;
     url: string;
     filename: string;
-    meta: string;
+    meta: string[];
 }
 export interface UploaderFile {
     fd: string;

@@ -11,7 +11,7 @@ const attributes = a = {
         type: 'string'
     },
     value: {
-        type: 'string'
+        type: 'json'
     },
     parent: {
         model: 'MediaManagerAP'
