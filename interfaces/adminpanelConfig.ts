@@ -456,7 +456,7 @@ export interface NavigationItemTypeConfig {
 	model: string
 	title: string
 	/**
-	 *  /page/:slug
+	 *  /page/${data.record.slug}
 	 */
 	urlPath: string | ((v: any) => string)
 }
@@ -465,7 +465,6 @@ export interface NavigationConfig {
 	model?: string
 	sections: string[]
 	groupField: { name: string, required: boolean }[]
-	allowContentInGroup?: boolean
 	items: NavigationItemTypeConfig[],
 	movingGroupsRootOnly: boolean
 }
