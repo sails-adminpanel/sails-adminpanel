@@ -13,6 +13,7 @@ Functionality:
 Widgets config:
 - [Wysiwyg](CKeditorWidget.md)
 - [FileUploader](FileUploaderWidget.md)
+- [Catalog](Catalog.md)
 - [Navigation](NavigationWidget.md)
 - [Schedule](ScheduleWidget.md)
 - [Ace Editor](AceEditorWidget.md)

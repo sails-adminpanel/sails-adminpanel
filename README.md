@@ -36,6 +36,7 @@ Key Features and Components:
 - **Navbar:** Manage the navigation bar for easy access to different sections.
 - **Translations:** Implement internationalization features for multiple language support.
 - **Forms:** Create and manage forms for data input and manipulation.
+- **Catalog:** Create tree structure catalogs based on models or any other elements
 - **NavigationWidget:** Utilize a widget to enhance navigation capabilities.
 - **Widget:** General reference to customizable and extensible components.
 - **Installer:** Product ready. Create an installer as a wizard
