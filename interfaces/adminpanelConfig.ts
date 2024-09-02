@@ -47,6 +47,7 @@ type FieldsTypes =
 	"select-many" |
 	"table" |
 	"geojson" |
+	"mediamanager" |
 
 	/**
 	 * it will be needed only for polygon data

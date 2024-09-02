@@ -1,7 +1,7 @@
 import sails from "@42pub/typed-sails";
 import { LineAwesomeIcon } from "./lineAwesome";
 export type AdminpanelIcon = LineAwesomeIcon;
-type FieldsTypes = "string" | "password" | "date" | "datetime" | "time" | "integer" | "number" | "float" | "color" | "email" | "month" | "week" | "range" | "boolean" | "binary" | "text" | "longtext" | "mediumtext" | "ckeditor" | "wysiwyg" | "texteditor" | "word" | "jsoneditor" | "json" | "array" | "object" | "ace" | "html" | "xml" | "aceeditor" | "image" | "images" | "file" | "files" | "menu" | "navigation" | "schedule" | "worktime" | "association" | "association-many" | "select" | "select-many" | "table" | "geojson" | 
+type FieldsTypes = "string" | "password" | "date" | "datetime" | "time" | "integer" | "number" | "float" | "color" | "email" | "month" | "week" | "range" | "boolean" | "binary" | "text" | "longtext" | "mediumtext" | "ckeditor" | "wysiwyg" | "texteditor" | "word" | "jsoneditor" | "json" | "array" | "object" | "ace" | "html" | "xml" | "aceeditor" | "image" | "images" | "file" | "files" | "menu" | "navigation" | "schedule" | "worktime" | "association" | "association-many" | "select" | "select-many" | "table" | "geojson" | "mediamanager" | 
 /**
  * it will be needed only for polygon data
  */
@@ -392,7 +392,7 @@ export interface NavigationItemTypeConfig {
     model: string;
     title: string;
     /**
-     *  /page/:slug
+     *  /page/${data.record.slug}
      */
     urlPath: string | ((v: any) => string);
 }
@@ -403,7 +403,6 @@ export interface NavigationConfig {
         name: string;
         required: boolean;
     }[];
-    allowContentInGroup?: boolean;
     items: NavigationItemTypeConfig[];
     movingGroupsRootOnly: boolean;
 }

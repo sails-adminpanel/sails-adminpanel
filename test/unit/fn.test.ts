@@ -6,5 +6,22 @@ function checkMIMEType(allowedTypes: string[], type: string) {
 
 }
 
-const allowMIME = ['image/*', 'application/*', 'text/*']
-console.log(checkMIMEType(allowMIME, 'image/webp'))
+// const allowMIME = ['image/*', 'application/*', 'text/*']
+// console.log(checkMIMEType(allowMIME, 'image/webp'))
+
+
+let arr = [
+	{
+		name: 'a'
+	},
+	{
+		name: 'b'
+	},
+	{
+		name: 'c'
+	}
+]
+
+for (const [key, value] of arr.entries()) {
+	console.log(key, value)
+}

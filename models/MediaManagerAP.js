@@ -39,6 +39,10 @@ const attributes = a = {
     meta: {
         collection: 'MediaManagerMetaAP',
         via: 'parent'
+    },
+    modelAssociation: {
+        collection: 'MediaManagerAssociationsAP',
+        via: 'file'
     }
 };
 async function deleteFile(file) {

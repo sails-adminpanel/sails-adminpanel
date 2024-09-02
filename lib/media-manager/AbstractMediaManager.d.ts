@@ -21,6 +21,17 @@ export interface Item {
     filename: string;
     meta: string[];
 }
+export interface WidgetItem {
+    id: string;
+}
+export interface widgetJSON {
+    list: WidgetItem[];
+    mediaManagerId: string;
+}
+export interface Data {
+    list: WidgetItem[];
+    mediaManagerId: string;
+}
 export interface UploaderFile {
     fd: string;
     size: number;
@@ -131,9 +142,24 @@ export declare abstract class AbstractMediaManager {
     id: string;
     path: string;
     dir: string;
+    /**
+     * Main model.
+     */
     model: string;
+    /**
+     * Associations model.
+     */
+    modelAssoc: string;
     readonly itemTypes: File<Item>[];
-    protected constructor(id: string, path: string, dir: string, model: string);
+    /**
+     * @param id
+     * @param path
+     * @param dir
+     * @param model
+     * @param modelAssoc
+     * @protected
+     */
+    protected constructor(id: string, path: string, dir: string, model: string, modelAssoc: string);
     /**
      * Upload an item.
      * @param file
@@ -159,6 +185,17 @@ export declare abstract class AbstractMediaManager {
         next: boolean;
     }>;
     /**
+     * Save Relations.
+     * @param data
+     * @param model
+     * @param modelId
+     * @param modelAttribute
+     */
+    abstract saveRelations(data: Data, model: string, modelId: string, modelAttribute: string): Promise<void>;
+    abstract getRelations(items: WidgetItem[]): Promise<WidgetItem[]>;
+    abstract updateRelations(data: Data, model: string, modelId: string, modelAttribute: string): Promise<void>;
+    abstract deleteRelations(model: string, modelId: string): Promise<void>;
+    /**
      * Get items of a type.
      * @param type
      * @param limit
@@ -169,7 +206,16 @@ export declare abstract class AbstractMediaManager {
         data: Item[];
         next: boolean;
     }>;
+    /**
+     * Search all items.
+     * @param s
+     */
     abstract searchAll(s: string): Promise<Item[]>;
+    /**
+     * Search items by type.
+     * @param s
+     * @param type
+     */
     searchItems(s: string, type: string): Promise<Item[]>;
     /**
      * Get children of an item.

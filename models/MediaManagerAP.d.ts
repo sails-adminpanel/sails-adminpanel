@@ -36,6 +36,10 @@ declare const attributes: {
         readonly collection: "MediaManagerMetaAP";
         readonly via: "parent";
     };
+    readonly modelAssociation: {
+        readonly collection: "MediaManagerAssociationsAP";
+        readonly via: "file";
+    };
 };
 type ModelOptions = ModelTypeDetection<typeof attributes>;
 interface MediaManagerAP extends Partial<ModelOptions> {
@@ -84,6 +88,10 @@ declare const model: {
         readonly meta: {
             readonly collection: "MediaManagerMetaAP";
             readonly via: "parent";
+        };
+        readonly modelAssociation: {
+            readonly collection: "MediaManagerAssociationsAP";
+            readonly via: "file";
         };
     };
 };

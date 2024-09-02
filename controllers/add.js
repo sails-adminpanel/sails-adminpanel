@@ -5,6 +5,7 @@ const adminUtil_1 = require("../lib/adminUtil");
 const requestProcessor_1 = require("../lib/requestProcessor");
 const fieldsHelper_1 = require("../helper/fieldsHelper");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
+const MediaManagerHelper_1 = require("../lib/media-manager/helpers/MediaManagerHelper");
 async function add(req, res) {
     let entity = adminUtil_1.AdminUtil.findEntityObject(req);
     if (!entity.model) {
@@ -68,6 +69,8 @@ async function add(req, res) {
         }
         try {
             let record = await entity.model.create(reqData).fetch();
+            // save associations media to json
+            await (0, MediaManagerHelper_1.saveRelationsMediaManager)(fields, reqData, entity.name, record.id);
             sails.log.debug(`A new record was created: `, record);
             if (req.body.jsonPopupCatalog) {
                 return res.json({ record: record });

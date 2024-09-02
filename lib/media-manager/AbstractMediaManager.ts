@@ -8,6 +8,7 @@ export interface Item {
 	 * it's mean version
 	 */
 	children: Item[]
+	// TODO: create versions realization
 	// version?: null
 	mimeType: string
 	path: string
@@ -21,6 +22,20 @@ export interface Item {
 	url: string
 	filename: string
 	meta: string[]
+}
+
+export interface WidgetItem {
+	id: string
+}
+
+export interface widgetJSON {
+		list: WidgetItem[]
+		mediaManagerId: string
+}
+
+export interface Data {
+	list: WidgetItem[]
+	mediaManagerId: string
 }
 
 export interface UploaderFile {
@@ -118,7 +133,7 @@ export abstract class File<T extends Item> {
 	 * Delete an item.
 	 * @param id
 	 */
-	public abstract  delete(id: string): Promise<void>
+	public abstract delete(id: string): Promise<void>
 
 	/**
 	 * Get all items of a type.
@@ -151,14 +166,30 @@ export abstract class AbstractMediaManager {
 	public id: string
 	public path: string
 	public dir: string
+	/**
+	 * Main model.
+	 */
 	public model: string
+	/**
+	 * Associations model.
+	 */
+	public modelAssoc: string
 	public readonly itemTypes: File<Item>[] = [];
 
-	protected constructor(id: string, path: string, dir: string, model: string) {
+	/**
+	 * @param id
+	 * @param path
+	 * @param dir
+	 * @param model
+	 * @param modelAssoc
+	 * @protected
+	 */
+	protected constructor(id: string, path: string, dir: string, model: string, modelAssoc: string) {
 		this.id = id
 		this.path = path
 		this.dir = dir
 		this.model = model
+		this.modelAssoc = modelAssoc
 	}
 
 	/**
@@ -192,19 +223,43 @@ export abstract class AbstractMediaManager {
 	public abstract getAll(limit: number, skip: number, sort: string): Promise<{ data: Item[], next: boolean }>
 
 	/**
+	 * Save Relations.
+	 * @param data
+	 * @param model
+	 * @param modelId
+	 * @param modelAttribute
+	 */
+	public abstract saveRelations(data: Data, model: string, modelId: string, modelAttribute: string): Promise<void>
+
+	public abstract getRelations(items: WidgetItem[]): Promise<WidgetItem[]>
+
+	public abstract updateRelations(data: Data, model: string, modelId: string, modelAttribute: string): Promise<void>
+
+	public abstract deleteRelations(model: string, modelId: string,): Promise<void>
+
+	/**
 	 * Get items of a type.
 	 * @param type
 	 * @param limit
 	 * @param skip
 	 * @param sort
 	 */
-	public getItems(type: string, limit: number, skip: number, sort: string): Promise<{ data: Item[], next: boolean }>{
+	public getItems(type: string, limit: number, skip: number, sort: string): Promise<{ data: Item[], next: boolean }> {
 		return this.getItemType(type)?.getItems(limit, skip, sort)
 	}
 
-	public abstract searchAll(s:string): Promise<Item[]>
+	/**
+	 * Search all items.
+	 * @param s
+	 */
+	public abstract searchAll(s: string): Promise<Item[]>
 
-	public searchItems(s:string, type: string): Promise<Item[]>{
+	/**
+	 * Search items by type.
+	 * @param s
+	 * @param type
+	 */
+	public searchItems(s: string, type: string): Promise<Item[]> {
 		return this.getItemType(type)?.search(s)
 	}
 
@@ -255,7 +310,7 @@ export abstract class AbstractMediaManager {
 	 * Delete an item.
 	 * @param item
 	 */
-	public delete(item: Item): Promise<void>{
+	public delete(item: Item): Promise<void> {
 		const parts = item.mimeType.split('/');
 		return this.getItemType(parts[0])?.delete(item.id)
 	}

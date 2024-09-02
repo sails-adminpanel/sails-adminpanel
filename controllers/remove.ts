@@ -2,6 +2,7 @@ import { AdminUtil } from "../lib/adminUtil";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import { stdin } from "node:process";
 import { SailsModelAnyInstance } from "sails-adminpanel/interfaces/StrippedORMModel";
+import {deleteRelationsMediaManager} from "../lib/media-manager/helpers/MediaManagerHelper";
 
 export default async function remove(req: ReqType, res: ResType) {
     //Checking id of the record
@@ -59,7 +60,10 @@ export default async function remove(req: ReqType, res: ResType) {
     let destroyedRecord;
     try {
         const fieldId = entity.config.identifierField ?? sails.config.adminpanel.identifierField;
-        await entity.model.destroyOne(record[fieldId] as number | string).fetch()       
+		destroyedRecord = await entity.model.destroy(record[fieldId] as number | string).fetch()
+
+		// delete relations media manager
+		await deleteRelationsMediaManager(entity.name, destroyedRecord)
     } catch (e) {
         sails.log.error('adminpanel > error', e);
     }

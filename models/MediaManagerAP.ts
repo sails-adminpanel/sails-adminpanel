@@ -1,5 +1,6 @@
 import {Attributes, ModelTypeDetection, Model} from "sails-typescript";
 import {v4 as uuid} from "uuid";
+
 const fs = require('fs').promises;
 
 let a: Attributes;
@@ -39,6 +40,10 @@ const attributes = a = {
 	meta: {
 		collection: 'MediaManagerMetaAP',
 		via: 'parent'
+	},
+	modelAssociation: {
+		collection: 'MediaManagerAssociationsAP',
+		via: 'file'
 	}
 } as const;
 
@@ -49,7 +54,7 @@ interface MediaManagerAP extends Partial<ModelOptions> {
 
 export default MediaManagerAP;
 
-async function deleteFile(file:string) {
+async function deleteFile(file: string) {
 	try {
 		await fs.access(file);
 		await fs.unlink(file);
@@ -72,7 +77,7 @@ const methods = {
 		}
 		cb();
 	},
-	async beforeDestroy(criteria: {where: object}, cb: (err?: Error | string) => void) {
+	async beforeDestroy(criteria: { where: object }, cb: (err?: Error | string) => void) {
 		let parent = (await MediaManagerAP.find(criteria).populate('meta'))[0]
 		let meta = parent.meta
 		for (const metaElement of meta) {
@@ -85,7 +90,7 @@ const methods = {
 		cb();
 	},
 
-	async afterDestroy(destroyedRecord:MediaManagerAP, cb: (err?: Error | string) => void){
+	async afterDestroy(destroyedRecord: MediaManagerAP, cb: (err?: Error | string) => void) {
 		await deleteFile(destroyedRecord.path)
 		cb();
 	}

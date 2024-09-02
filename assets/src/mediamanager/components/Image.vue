@@ -1,6 +1,15 @@
 <template>
 	<div class="relative">
-		<img :src="imageUrl" alt="" @contextmenu="openMenu" :class="initClass">
+		<div class="relative cursor-pointer">
+			<img :src="imageUrl" alt="" @contextmenu="openMenu" :class="initClass"
+				 @click="addItem(item)">
+			<div class="absolute top-0 left-0 z-10 w-[20px] h-[20px] bg-white flex items-center justify-center" v-if="checkItem(item.id)">
+				<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 1200 1200">
+					<path fill="currentColor"
+						  d="m1004.237 99.152l-611.44 611.441l-198.305-198.305L0 706.779l198.305 198.306l195.762 195.763L588.56 906.355L1200 294.916z"/>
+				</svg>
+			</div>
+		</div>
 		<div class="contextmenu flex flex-col absolute opacity-0 invisible bg-gray-50" ref="menu">
 			<ul class="custom-catalog__actions-items">
 				<li @click="openMeta">Meta данные</li>
@@ -29,6 +38,8 @@ const sizesVisible = ref(false)
 const menu = ref(null)
 const uploadUrl = inject('uploadUrl')
 const deleteData = inject('deleteData')
+const addItem = inject('addItem')
+const checkItem = inject('checkItem')
 const imagesTypes = new Set([
 	"image/gif",
 	"image/jpeg",
@@ -36,9 +47,9 @@ const imagesTypes = new Set([
 	"image/webp",
 ]);
 
-async function destroy(){
+async function destroy() {
 	let res = await ky.delete(uploadUrl, {json: {item: props.item}}).json()
-	if(res.msg === 'ok') deleteData(props.item)
+	if (res.msg === 'ok') deleteData(props.item)
 }
 
 function openMeta() {
@@ -50,7 +61,7 @@ provide('closeMeta', () => {
 	menu.value.previousSibling.classList.remove('border-2', 'border-blue-500')
 })
 
-function openCropper(){
+function openCropper() {
 	cropperVisible.value = true
 }
 
@@ -59,7 +70,7 @@ provide('closeCropper', () => {
 	menu.value.previousSibling.classList.remove('border-2', 'border-blue-500')
 })
 
-function openSizes(){
+function openSizes() {
 	sizesVisible.value = true
 }
 
@@ -99,7 +110,7 @@ function openMenu(e) {
 	const documentClickHandler = function () {
 		// Hide the menu
 		menuVisible(false)
-		if(menu.value) menu.value.previousSibling.classList.remove('border-2', 'border-blue-500')
+		if (menu.value) menu.value.previousSibling.classList.remove('border-2', 'border-blue-500')
 		// Remove the event handler
 		document.removeEventListener('click', documentClickHandler);
 	};
@@ -107,7 +118,7 @@ function openMenu(e) {
 }
 
 function menuVisible(bool) {
-	if(menu.value) {
+	if (menu.value) {
 		menu.value.style.opacity = bool ? 1 : 0
 		menu.value.style.visibility = bool ? 'visible' : 'hidden'
 	}
