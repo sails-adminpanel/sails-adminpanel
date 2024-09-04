@@ -1,19 +1,21 @@
 <template>
-	<div class="px-12 py-14 max-w-[1440px] w-full mx-auto overflow-y-auto h-full" ref="sizesRef">
+	<div class="pl-12 py-14 max-w-[1440px] w-full mx-auto overflow-y-auto h-full" ref="sizesRef">
 		<div>
 			<table
-				class="min-w-full text-left text-sm font-light text-surface dark:text-white">
+				class="min-w-full w-full text-left text-sm font-light text-surface dark:text-white">
 				<colgroup>
 					<col span="1" style="width: 40%;">
-					<col span="1" style="width: 25%;">
-					<col span="1" style="width: 25%;">
-					<col span="1" style="width: 10%;">
+					<col span="1" style="width: 15%;">
+					<col span="1" style="width: 15%;">
+					<col span="1" style="width: 15%;">
+					<col span="1" style="width: 15%;">
 				</colgroup>
 				<thead
 					class="border-b border-neutral-200 font-medium dark:border-white/10">
 				<tr>
 					<th scope="col" class="p-2 text-left">Файл</th>
 					<th scope="col" class="p-2 text-left">Размер</th>
+					<th scope="col" class="p-2 text-left">Тип</th>
 					<th scope="col" class="p-2 text-left">W x H</th>
 					<th scope="col" class="p-2 text-left"></th>
 				</tr>
@@ -26,6 +28,7 @@
 					<td class="p-2">
 						{{ (item.size / 1024 / 1024).toFixed(4) }} Mb
 					</td>
+					<td class="p-2">{{ item.mimeType}}</td>
 					<td class="p-2">
 						{{ item.image_size.width }}x{{ item.image_size.height }}
 					</td>
@@ -63,7 +66,7 @@ onMounted(async () => {
 })
 
 async function getData(){
-	let res = await ky.post(uploadUrl, {json: {_method: 'getChildren', id: props.item.id}}).json()
+	let res = await ky.post(uploadUrl, {json: {_method: 'getChildren', item: props.item,}}).json()
 	if(res.data) {
 		mediaList.value = [props.item, ...res.data]
 	}

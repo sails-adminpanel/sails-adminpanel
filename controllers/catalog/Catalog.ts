@@ -31,12 +31,6 @@ export async function catalogController(req: ReqType, res: ResType) {
 			return res.sendStatus(404);
 		}
 	}
-	// else {
-	// 	if (idList.length) {
-	// 		id = idList[0]
-	// 	}
-	// }
-
 
 	const method = req.method.toUpperCase();
 	if (method === 'GET') {

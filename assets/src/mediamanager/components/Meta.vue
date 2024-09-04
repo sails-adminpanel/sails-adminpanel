@@ -47,8 +47,7 @@ onMounted(async () => {
 async function getMeta() {
 	let res = await ky.post(uploadUrl, {
 		json: {
-			id: props.item.id,
-			mimeType: props.item.mimeType,
+			item: props.item,
 			_method: 'getMeta',
 		}
 	}).json()
@@ -64,8 +63,7 @@ async function save() {
 	}
 	let res = await ky.post(uploadUrl, {
 		json: {
-			id: props.item.id,
-			mimeType: props.item.mimeType,
+			item: props.item,
 			data: data,
 			_method: 'addMeta',
 		}

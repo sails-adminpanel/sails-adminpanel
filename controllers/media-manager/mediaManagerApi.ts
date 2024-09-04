@@ -12,7 +12,7 @@ export async function mediaManagerController(req: ReqType, res: ResType) {
 	const _manager = MediaManagerHandler.get(id)
 	const manager = new MediaManagerAdapter(_manager)
 	if (method === 'GET') {
-		return await manager.getLibrary(req, res)
+		return await manager.get(req, res)
 	}
 
 	if (method === 'POST') {
@@ -27,6 +27,11 @@ export async function mediaManagerController(req: ReqType, res: ResType) {
 				return await manager.uploadCropped(req, res)
 			case 'getChildren':
 				return await manager.getChildren(req, res)
+			case 'search':
+				return await manager.search(req, res)
 		}
+	}
+	if (method === 'DELETE') {
+		return await manager.delete(req, res)
 	}
 }

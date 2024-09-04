@@ -8,7 +8,7 @@ declare const attributes: {
         readonly type: "string";
     };
     readonly value: {
-        readonly type: "string";
+        readonly type: "json";
     };
     readonly parent: {
         readonly model: "MediaManagerAP";
@@ -30,7 +30,7 @@ declare const model: {
             readonly type: "string";
         };
         readonly value: {
-            readonly type: "string";
+            readonly type: "json";
         };
         readonly parent: {
             readonly model: "MediaManagerAP";

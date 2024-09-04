@@ -1,11 +1,14 @@
 <%
  const config = field.config.options?.config ? JSON.stringify(field.config.options.config) : JSON.stringify({})
  %>
-<%- config %>
 <script>
 	if (document.readyState === "complete" || document.readyState === "loaded") {
 		MountMediaManager({
-			id: "#mediamanager-<%= key %>"
+			id: "#mediamanager-<%= key %>",
+			url: "/admin/media-manager-uploader/<%= field.config.options?.id ? field.config.options.id : 'default'%>",
+			toJsonId: "mediamanager-json-<%= key %>",
+			config: <%- config %>,
+			list: <%- value ? JSON.stringify(value) : JSON.stringify([]) %>
 		})
 	} else {
 		document.addEventListener('DOMContentLoaded', function () {
@@ -13,11 +16,12 @@
 				id: "#mediamanager-<%= key %>",
                 url: "/admin/media-manager-uploader/<%= field.config.options?.id ? field.config.options.id : 'default'%>",
                 toJsonId: "mediamanager-json-<%= key %>",
-                config: <%- config %>
+                config: <%- config %>,
+				list: <%- value ? JSON.stringify(value) : JSON.stringify([]) %>
 			})
 		})
 	}
 </script>
 <div id="mediamanager-<%= key %>"></div>
-<textarea name="" id="mediamanager-json-<%= key %>" class="w-full mt-4" rows="10"></textarea>
+<textarea id="mediamanager-json-<%= key %>" class="w-full mt-4" rows="10" name="<%= key %>"></textarea>
 

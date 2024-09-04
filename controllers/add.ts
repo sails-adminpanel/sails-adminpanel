@@ -3,6 +3,7 @@ import {RequestProcessor} from "../lib/requestProcessor";
 import {FieldsHelper} from "../helper/fieldsHelper";
 import {CreateUpdateConfig} from "../interfaces/adminpanelConfig";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
+import {saveRelationsMediaManager} from "../lib/media-manager/helpers/MediaManagerHelper";
 
 export default async function add(req: ReqType, res: ResType) {
 	let entity = AdminUtil.findEntityObject(req);
@@ -30,8 +31,8 @@ export default async function add(req: ReqType, res: ResType) {
 
 	if (req.method.toUpperCase() === 'POST') {
 		let reqData: any = RequestProcessor.processRequest(req, fields);
-
 		for (let prop in reqData) {
+
 			if (Number.isNaN(reqData[prop]) || reqData[prop] === undefined || reqData[prop] === null) {
 				delete reqData[prop]
 			}
@@ -80,6 +81,10 @@ export default async function add(req: ReqType, res: ResType) {
 
 		try {
 			let record = await entity.model.create(reqData).fetch();
+
+			// save associations media to json
+			await saveRelationsMediaManager(fields, reqData, entity.name, record.id)
+
 			sails.log.debug(`A new record was created: `, record);
 			if (req.body.jsonPopupCatalog) {
 				return res.json({record: record})

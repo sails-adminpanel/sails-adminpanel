@@ -13,10 +13,12 @@
 				}"
 				@start="dragging = true"
 				@end="dragging = false"
+				@change="change"
 			>
 				<transition-group type="transition" name="flip-list">
 					<div v-for="element in list" :key="element.id" class="flex gap-1">
-						<img :src="element.src" alt="" class="cursor-move w-[100px] h-[100px] sm:w-[70px] sm:h-[70px]">
+						<img :src="imageUrl(element)" alt=""
+							 class="cursor-move w-[100px] h-[100px] sm:w-[70px] sm:h-[70px]">
 						<svg class="hover:text-red-600 transition w-3 h-3 cursor-pointer"
 							 xmlns="http://www.w3.org/2000/svg" fill="none" @click="remove(element.id)"
 							 viewBox="0 0 14 14">
@@ -40,15 +42,30 @@
 </template>
 
 <script setup>
-import {ref, provide} from 'vue'
+import {ref, provide, inject, onMounted} from 'vue'
 import Gallery from "./components/Gallery.vue";
 import {VueDraggableNext} from 'vue-draggable-next'
 import {v4 as uuid} from "uuid";
 
 const list = ref([]);
+const toJsonId = inject('toJsonId')
+const initConfig = inject('config')
+const initList = inject('initList')
 
-const galleryVisible = ref(true)
+const galleryVisible = ref(false)
 const dragging = ref(false)
+
+const imagesTypes = new Set([
+	"image/gif",
+	"image/jpeg",
+	"image/png",
+	"image/webp",
+]);
+
+onMounted(() => {
+	list.value = initList
+	setData()
+})
 
 function openGallery() {
 	galleryVisible.value = true
@@ -58,12 +75,42 @@ provide('closeGallery', () => {
 	galleryVisible.value = false
 })
 
+provide('addItem', (item) => {
+	list.value.push(item)
+	setData()
+})
+
+provide('checkItem', (id) => {
+	return list.value.some(e => e.id === id)
+})
+
 function remove(id) {
 	list.value = list.value.filter(e => e.id !== id)
+	setData()
 }
 
-function checkMove() {
-	console.log(list.value)
+function change() {
+	setData()
+}
+
+function setData() {
+	document.getElementById(toJsonId).value = JSON.stringify({
+		list: list.value.map((e) => {
+			return {id: e.id}
+		}), mediaManagerId: initConfig.id ?? 'default'
+	})
+}
+
+function imageUrl(item) {
+	if (item.children.length) {
+		return item.children.find(e => e.cropType === 'thumb').url
+	} else {
+		if (imagesTypes.has(item.mimeType)) {
+			return item.url
+		} else {
+			return `/admin/assets/fileuploader/icons/${item.url.split(/[#?]/)[0].split('.').pop().trim()}.svg`
+		}
+	}
 }
 
 </script>

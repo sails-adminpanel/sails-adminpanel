@@ -5,6 +5,13 @@ import {CreateUpdateConfig} from "../interfaces/adminpanelConfig";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import {CatalogHandler} from "../lib/catalog/CatalogHandler";
 import { strict } from "assert";
+import {MediaManagerHandler} from "../lib/media-manager/MediaManagerHandler";
+import {
+	getRelationsMediaManager,
+	saveRelationsMediaManager,
+	updateRelationsMediaManager
+} from "../lib/media-manager/helpers/MediaManagerHelper";
+import {widgetJSON} from "../lib/media-manager/AbstractMediaManager";
 
 export default async function edit(req: ReqType, res: ResType) {
 	//Check id
@@ -109,6 +116,10 @@ export default async function edit(req: ReqType, res: ResType) {
 
 		try {
 			let newRecord = await entity.model.update(params, reqData).fetch();
+
+			// save associations media to json
+			await updateRelationsMediaManager(fields, reqData, entity.name, newRecord[0].id)
+
 			sails.log.debug(`Record was updated: `, newRecord);
 			if (req.body.jsonPopupCatalog) {
 				return res.json({record: newRecord})
@@ -133,6 +144,12 @@ export default async function edit(req: ReqType, res: ResType) {
 			sails.log.error(e);
 			req.session.messages.adminError.push(e.message || 'Something went wrong...');
 			return e;
+		}
+	}
+
+	for (const field of Object.keys(fields)) {
+		if(fields[field].config.type ==='mediamanager') {
+			record[field] = await getRelationsMediaManager(record[field] as widgetJSON)
 		}
 	}
 

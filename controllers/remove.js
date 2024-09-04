@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = remove;
 const adminUtil_1 = require("../lib/adminUtil");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
+const MediaManagerHelper_1 = require("../lib/media-manager/helpers/MediaManagerHelper");
 async function remove(req, res) {
     //Checking id of the record
     if (!req.param('id')) {
@@ -55,7 +56,9 @@ async function remove(req, res) {
     let destroyedRecord;
     try {
         const fieldId = entity.config.identifierField ?? sails.config.adminpanel.identifierField;
-        await entity.model.destroyOne(record[fieldId]).fetch();
+        destroyedRecord = await entity.model.destroy(record[fieldId]).fetch();
+        // delete relations media manager
+        await (0, MediaManagerHelper_1.deleteRelationsMediaManager)(entity.name, destroyedRecord);
     }
     catch (e) {
         sails.log.error('adminpanel > error', e);

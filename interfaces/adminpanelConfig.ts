@@ -47,6 +47,7 @@ type FieldsTypes =
 	"select-many" |
 	"table" |
 	"geojson" |
+	"mediamanager" |
 
 	/**
 	 * it will be needed only for polygon data
@@ -227,7 +228,7 @@ export interface AdminpanelConfig {
 	 */
 	modulesViewsPath?: string
 
-	mediamanager: MediaManagerConfig
+	mediamanager?: MediaManagerConfig
 }
 
 export interface ModelConfig {
@@ -456,7 +457,7 @@ export interface NavigationItemTypeConfig {
 	model: string
 	title: string
 	/**
-	 *  /page/:slug
+	 *  /page/${data.record.slug}
 	 */
 	urlPath: string | ((v: any) => string)
 }
@@ -465,15 +466,14 @@ export interface NavigationConfig {
 	model?: string
 	sections: string[]
 	groupField: { name: string, required: boolean }[]
-	allowContentInGroup?: boolean
 	items: NavigationItemTypeConfig[],
 	movingGroupsRootOnly: boolean
 }
 
 export interface MediaManagerConfig {
-	allowMIME: string[]
-	maxByteSize: number
-	imageSizes: {
+	allowMIME?: string[]
+	maxByteSize?: number
+	imageSizes?: {
 		[key: string]: {
 			width: number
 			height: number

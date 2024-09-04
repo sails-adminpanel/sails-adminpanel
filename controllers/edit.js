@@ -6,6 +6,7 @@ const requestProcessor_1 = require("../lib/requestProcessor");
 const fieldsHelper_1 = require("../helper/fieldsHelper");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 const CatalogHandler_1 = require("../lib/catalog/CatalogHandler");
+const MediaManagerHelper_1 = require("../lib/media-manager/helpers/MediaManagerHelper");
 async function edit(req, res) {
     //Check id
     if (!req.param('id')) {
@@ -92,6 +93,8 @@ async function edit(req, res) {
         }
         try {
             let newRecord = await entity.model.update(params, reqData).fetch();
+            // save associations media to json
+            await (0, MediaManagerHelper_1.updateRelationsMediaManager)(fields, reqData, entity.name, newRecord[0].id);
             sails.log.debug(`Record was updated: `, newRecord);
             if (req.body.jsonPopupCatalog) {
                 return res.json({ record: newRecord });
@@ -116,6 +119,11 @@ async function edit(req, res) {
             sails.log.error(e);
             req.session.messages.adminError.push(e.message || 'Something went wrong...');
             return e;
+        }
+    }
+    for (const field of Object.keys(fields)) {
+        if (fields[field].config.type === 'mediamanager') {
+            record[field] = await (0, MediaManagerHelper_1.getRelationsMediaManager)(record[field]);
         }
     }
     if (req.query.without_layout) {

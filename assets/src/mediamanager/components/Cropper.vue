@@ -64,6 +64,20 @@
 				Save
 			</button>
 		</div>
+		<div class="grid grid-cols-4 gap-2 mt-4">
+			<div class="checkbox relative flex items-center gap-2 justify-start w-max">
+				<label for="conv-webp">Convert WebP</label>
+				<input type="checkbox" class="check-flex" id="conv-webp" name="conv-webp" v-model="convertWebp"
+					   @change="convertJpeg = false">
+				<span class="check"></span>
+			</div>
+			<div class="checkbox relative flex items-center gap-2 justify-start w-max">
+				<label for="conv-jpeg">Convert Jpeg</label>
+				<input type="checkbox" class="check-flex" id="conv-jpeg" name="conv-jpeg" v-model="convertJpeg"
+					   @change="convertWebp = false">
+				<span class="check"></span>
+			</div>
+		</div>
 		<div class="w-screen h-screen bg-black/90 fixed z-[10000] top-0 left-0 transition" :class="previewModalClass">
 			<div tabindex="-1"
 				 class="fixed top-0 left-0 right-0 z-50 p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-screen max-h-full">
@@ -86,7 +100,7 @@
 </template>
 
 <script setup>
-import {ref, onMounted, inject, reactive, computed} from 'vue'
+import {ref, onMounted, inject, reactive, computed, watch} from 'vue'
 import VueCropper from '@ballcat/vue-cropper';
 import 'cropperjs/dist/cropper.css';
 
@@ -97,8 +111,11 @@ const cropperPopup = ref()
 const closeCropper = inject('closeCropper')
 const previewShow = ref(false)
 const previewRef = ref(null)
-const config = inject('config')
 const uploadUrl = inject('uploadUrl')
+const updateData = inject('updateData')
+
+const convertWebp = ref(false)
+const convertJpeg = ref(false)
 
 const coord = reactive({
 	x: '',
@@ -164,26 +181,30 @@ function preview() {
 		const urlCreator = window.URL || window.webkitURL
 		const imageUrl = urlCreator.createObjectURL(blob)
 		previewRef.value.src = imageUrl
-	}, props.item.mimeType)
+	}, props.item.mimeType, 1)
 }
 
 async function save() {
+	let convert = convertWebp.value ? 'image/webp' : convertJpeg.value ? 'image/jpeg' : props.item.mimeType
 	vueCropperRef.value.getCroppedCanvas().toBlob(async (blob) => {
-		let name = `${props.item.filename}_${coord.width}x${coord.height}.png`
-		let fileData = {
-			name: `${props.item.filename}.${props.item.url.split(/[#?]/)[0].split('.').pop().trim()}`,
+		const parts = convert.split('/')
+		let config = {
 			width: coord.width,
 			height: coord.height,
-			id: props.item.id
 		}
+		let name = `${props.item.filename}_${config.width}x${config.height}.${parts[1]}`
 		const form = new FormData();
-		form.append('fileData', JSON.stringify(fileData))
-		form.append('_method', 'cropped')
 		form.append('config', JSON.stringify(config))
+		form.append('name', name)
+		form.append('item', JSON.stringify(props.item))
+		form.append('_method', 'cropped')
 		form.append('file', blob)
 		let res = await ky.post(uploadUrl, {body: form}).json()
-		if (res.msg === 'success') cropperPopup.value.closeModal()
-	}, props.item.mimeType)
+		if (res.data){
+			updateData(props.item, res.data)
+			cropperPopup.value.closeModal()
+		}
+	}, convert, 0.9)
 }
 
 </script>

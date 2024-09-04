@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const uuid_1 = require("uuid");
+const fs = require('fs').promises;
 let a;
 const attributes = a = {
     id: {
@@ -38,8 +39,30 @@ const attributes = a = {
     meta: {
         collection: 'MediaManagerMetaAP',
         via: 'parent'
+    },
+    modelAssociation: {
+        collection: 'MediaManagerAssociationsAP',
+        via: 'file'
     }
 };
+async function deleteFile(file) {
+    try {
+        await fs.access(file);
+        await fs.unlink(file);
+        console.log('The file was successfully deleted');
+    }
+    catch (err) {
+        if (err.code === 'ENOENT') {
+            console.log('The file does not exist');
+        }
+        else if (err.code === 'EPERM') {
+            console.log('You do not have permission to delete this file');
+        }
+        else {
+            console.error(`An error occurred: ${err}`);
+        }
+    }
+}
 const methods = {
     beforeCreate(record, cb) {
         if (!record.id) {
@@ -47,7 +70,22 @@ const methods = {
         }
         cb();
     },
-    /** ... Any model methods here ... */
+    async beforeDestroy(criteria, cb) {
+        let parent = (await MediaManagerAP.find(criteria).populate('meta'))[0];
+        let meta = parent.meta;
+        for (const metaElement of meta) {
+            await MediaManagerMetaAP.destroy({ id: metaElement.id });
+        }
+        let children = (await MediaManagerAP.find(criteria).populate('children'))[0].children;
+        for (const child of children) {
+            await MediaManagerAP.destroy({ id: child.id }).fetch();
+        }
+        cb();
+    },
+    async afterDestroy(destroyedRecord, cb) {
+        await deleteFile(destroyedRecord.path);
+        cb();
+    }
 };
 const model = {
     primaryKey: "id",
