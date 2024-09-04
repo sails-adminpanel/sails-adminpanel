@@ -1,5 +1,5 @@
 import { Fields } from "../../../helper/fieldsHelper";
-import { WidgetItem, widgetJSON } from "../AbstractMediaManager";
+import { MediaManagerWidgetItem, MediaManagerWidgetJSON } from "../AbstractMediaManager";
 type PostParams = Record<string, string | number | boolean | object | string[] | number[] | null>;
 /**
  * Create a random file name with prefix and type. If prefix is true, the file name will be prefixed with a random string.
@@ -16,9 +16,9 @@ export declare function randomFileName(filenameOrig: string, type: string, prefi
  * @param recordId
  */
 export declare function saveRelationsMediaManager(fields: Fields, reqData: PostParams, model: string, recordId: string): Promise<void>;
-export declare function getRelationsMediaManager(data: widgetJSON): Promise<WidgetItem[]>;
+export declare function getRelationsMediaManager(data: MediaManagerWidgetJSON): Promise<MediaManagerWidgetItem[]>;
 export declare function updateRelationsMediaManager(fields: Fields, reqData: PostParams, model: string, recordId: string): Promise<void>;
 export declare function deleteRelationsMediaManager(model: string, record: {
-    [p: string]: string | WidgetItem[];
+    [p: string]: string | MediaManagerWidgetItem[];
 }[]): Promise<void>;
 export {};

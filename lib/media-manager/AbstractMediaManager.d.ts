@@ -21,15 +21,15 @@ export interface Item {
     filename: string;
     meta: string[];
 }
-export interface WidgetItem {
+export interface MediaManagerWidgetItem {
     id: string;
 }
-export interface widgetJSON {
-    list: WidgetItem[];
+export interface MediaManagerWidgetJSON {
+    list: MediaManagerWidgetItem[];
     mediaManagerId: string;
 }
 export interface Data {
-    list: WidgetItem[];
+    list: MediaManagerWidgetItem[];
     mediaManagerId: string;
 }
 export interface UploaderFile {
@@ -192,7 +192,7 @@ export declare abstract class AbstractMediaManager {
      * @param modelAttribute
      */
     abstract saveRelations(data: Data, model: string, modelId: string, modelAttribute: string): Promise<void>;
-    abstract getRelations(items: WidgetItem[]): Promise<WidgetItem[]>;
+    abstract getRelations(items: MediaManagerWidgetItem[]): Promise<MediaManagerWidgetItem[]>;
     abstract updateRelations(data: Data, model: string, modelId: string, modelAttribute: string): Promise<void>;
     abstract deleteRelations(model: string, modelId: string): Promise<void>;
     /**
