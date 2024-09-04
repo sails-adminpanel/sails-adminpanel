@@ -5,7 +5,7 @@ const { MenuHelper } = require('./helper/menuHelper');
 const { ConfigHelper } = require('./helper/configHelper');
 const { AccessRightsHelper } = require('./helper/accessRightsHelper');
 const { InstallStepper } = require("./lib/installStepper/installStepper");
-const { CatalogHandler } = require("./lib/catalog/CatalogHandler");
+const CatalogHandler_1 = require("./lib/catalog/CatalogHandler");
 module.exports = function () {
     let libInitialize = require("./lib/initialize");
     return {
@@ -30,6 +30,6 @@ module.exports = function () {
         enoughPermissions: AccessRightsHelper.enoughPermissions,
         getInstallStepper: () => InstallStepper,
         getWidgetHandler: () => widgetHandler_1.WidgetHandler,
-        CatalogHandler: () => CatalogHandler,
+        getCatalogHandler: () => CatalogHandler_1.CatalogHandler,
     };
 };

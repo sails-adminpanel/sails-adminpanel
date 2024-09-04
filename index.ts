@@ -8,7 +8,7 @@ const { ConfigHelper } = require('./helper/configHelper');
 const { AccessRightsHelper } = require('./helper/accessRightsHelper');
 const {InstallStepper} = require("./lib/installStepper/installStepper");
 
-const {CatalogHandler} = require("./lib/catalog/CatalogHandler")
+import {CatalogHandler} from "./lib/catalog/CatalogHandler";
 
 module.exports = function () {
 
@@ -41,6 +41,6 @@ module.exports = function () {
         enoughPermissions: AccessRightsHelper.enoughPermissions,
         getInstallStepper: () => InstallStepper,
         getWidgetHandler: () => WidgetHandler,
-		CatalogHandler: () => CatalogHandler,
+		getCatalogHandler: () => CatalogHandler,
     };
 };
