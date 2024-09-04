@@ -3,6 +3,18 @@
 Create tree structure catalogs based on models or any other elements
 All catalogs must be added to the [CatalogHandler](#CatalogHandler) catalog handler
 
+### Catalog Items
+Each item within the catalog, whether it's a file or a group of files, is represented as an object of the `BaseItem` class. This class is also abstract and defines common properties and methods for all types of items. Items can be organized into a tree structure, allowing for hierarchical management and grouping.
+
+### Context Menu and Actions
+Catalogs support the creation of a context menu, which can be invoked by right-clicking or through a mobile interface. This menu allows users to perform various actions on catalog items, such as adding, editing, deleting, and moving items. These actions are implemented using `ActionHandler` classes, which define how each action should be executed.
+
+### Mobile Catalog
+Catalogs also support user interaction on mobile devices, providing access to the same functions available on desktop computers through adapted mobile interfaces. Actions and the context menu can be triggered through special gestures or buttons, ensuring usability across all platforms.
+
+### Versatility of the Catalog
+The catalog can be used for any tree-like structures where items can be opened, edited, and actions can be performed, including the ability to drag and drop these structures. It is ideally suited for creating product catalogs in stores and was originally designed with this purpose in mind.
+
 **For an example of the implementation, see the [Navigation](../lib/catalog/Navigation.ts)**
 
 ***
@@ -64,8 +76,6 @@ This is an abstract class that serves as a base for all catalog items. It define
 ### Methods
 
 - addActionHandler(contextHandler: ActionHandler): Adds a new action handler to the list of available action handlers.
-- _enrich(item: T): Adds the required fields to the item.
-- _find(itemId: string | number, catalogId: string): Finds an item by its id and enriches it with the required fields.
 - find(itemId: string | number, catalogId: string): An abstract method that should be implemented in each concrete class. It represents the logic of finding an item by its id.
 - update(itemId: string | number, data: T, catalogId: string): An abstract method that should be implemented in each concrete class. It represents the logic of updating an item.
 - updateModelItems(modelId: string | number, data: any, catalogId: string): An abstract method that should be implemented in each concrete class. It represents the logic of updating model items.
@@ -73,7 +83,6 @@ This is an abstract class that serves as a base for all catalog items. It define
 - deleteItem(itemId: string | number, catalogId: string): An abstract method that should be implemented in each concrete class. It represents the logic of deleting an item.
 - getAddHTML(loc: string): An abstract method that should be implemented in each concrete class. It represents the logic of getting the HTML for adding a new item.
 - getEditHTML(id: string | number, catalogId: string, loc: string, modelId?: string | number): An abstract method that should be implemented in each concrete class. It represents the logic of getting the HTML for editing an item.
-- _getChilds(parentId: string | number | null, catalogId: string): Finds all child items of a parent item and enriches them with the required fields.
 - getChilds(parentId: string | number | null, catalogId: string): An abstract method that should be implemented in each concrete class. It represents the logic of finding child items of a parent item.
 - search(s: string, catalogId: string): An abstract method that should be implemented in each concrete class. It represents the logic of searching for items.
 

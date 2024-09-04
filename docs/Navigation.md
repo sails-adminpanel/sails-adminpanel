@@ -2,15 +2,26 @@
 
 Navigation should be added via **config/adminpanel.{js,ts}** in your sails js project
 
+
+Navigation is a specialized catalog type that we have pre-configured for your convenience. If you choose not to use it, the corresponding model will not be loaded. However, you can explore how the catalog is structured to either rewrite the navigation or create your own custom navigation system.
+
+
 ```typescript
 interface NavigationItemTypeConfig {
+	/**
+	 * A model that will be available for editing in navigation
+	 */
 	model: string
 	title: string
 	/**
-	 *  /page/${data.record.slug}
+	 * Specify how the link to your page will be generated 
+	 * `/page/${data.record.slug}`
+	 * 
 	 */
 	urlPath: string | ((v: any) => string)
 }
+
+
 interface NavigationConfig {
 	model?: string
 	sections: string[]
@@ -27,6 +38,8 @@ This interface describes the configuration for an individual item in the navigat
 - model: A string representing the model associated with this navigation item. [*](#notes)
 - title: A string representing the title of this navigation item.
 - urlPath: A string or a function that generates the URL path for this navigation item. It can either be a static string or a function that takes an argument and returns a string. Note: **'/page/${data.record.slug}'**, where slug is the attribute for the slug shown by you in the Page model.
+
+> ⚠️ You must understand that `urlPath` will only be a link, you must register the controllers yourself
 
 ## NavigationConfig
 
@@ -52,7 +65,7 @@ navigation: {
 		{
 			title: 'Category',
 			model: "category",
-			urlPath: '/longlinkkkkk/category/${data.record.slug}'
+			urlPath: '/category/${data.record.slug}'
 		}
 	],
 		// Links in the admin panel leading to different navigation data (for example: header, footer) should end the same way as you specify in the array
