@@ -79,7 +79,7 @@ export class DefaultMediaManager extends AbstractMediaManager {
 	}
 
 	public async updateRelations(data: Data, model: string, modelId: string, modelAttribute: string): Promise<void>{
-		await  this.deleteRelations(model, modelId)
+		await this.deleteRelations(model, modelId)
 		await this.saveRelations(data, model, modelId, modelAttribute)
 	}
 
