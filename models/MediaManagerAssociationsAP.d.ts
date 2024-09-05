@@ -4,6 +4,7 @@ declare const attributes: {
         readonly type: "string";
         readonly allowNull: false;
     };
+    /** тут это не надо хранить так как эта модель только для дефолтного */
     readonly mediaManagerId: {
         readonly type: "string";
     };
@@ -32,6 +33,7 @@ declare const model: {
             readonly type: "string";
             readonly allowNull: false;
         };
+        /** тут это не надо хранить так как эта модель только для дефолтного */
         readonly mediaManagerId: {
             readonly type: "string";
         };

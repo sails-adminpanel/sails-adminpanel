@@ -7,6 +7,7 @@ const attributes = a = {
         type: "string",
         allowNull: false,
     },
+    /** тут это не надо хранить так как эта модель только для дефолтного */
     mediaManagerId: {
         type: 'string'
     },
