@@ -262,7 +262,7 @@ export interface BaseFieldConfig {
     /**
      * Options for widgets like 'Navigation', 'Schedule' and 'FileUploader'
      * */
-    options?: NavigationOptionsField | ScheduleOptionsField | FileUploaderOptionsField | any;
+    options?: NavigationOptionsField | ScheduleOptionsField | FileUploaderOptionsField | MediaManagerOptionsField;
     /**
      * Function that makes data modification on list view
      * */
@@ -284,6 +284,7 @@ export interface BaseFieldConfig {
 }
 /**
  * @deprecated
+ * TODO: delete in version 4
  */
 export interface NavigationOptionsField {
     /**
@@ -328,6 +329,9 @@ export interface NavigationOptionsField {
      * set the property, that would be title of the element
      * */
     titleProperties?: string;
+}
+export interface MediaManagerOptionsField {
+    mediaManagerId?: string;
 }
 interface ScheduleOptionsField {
     supportOldVersion?: boolean;

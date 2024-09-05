@@ -196,7 +196,13 @@ export class VueCatalog {
 
 
 	async updateItem(item: any, modelId: string, data: any) {
-		return await this.catalog.updateModelItems(modelId, item.type, data);
+		
+		//data = VueCatalogUtils.refinement(data);
+		if(this.catalog.slug !== "navigation"){
+			return await this.catalog.updateModelItems(data.modelId, data.type, data.record);
+		} else {
+			return await this.catalog.updateModelItems(modelId, item.type, data);
+		}
 	}
 
 	async deleteItem(items: NodeModel<any>[]) {

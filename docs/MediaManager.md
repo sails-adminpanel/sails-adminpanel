@@ -1,0 +1,1 @@
+> All data uploaded to the media manager is public
