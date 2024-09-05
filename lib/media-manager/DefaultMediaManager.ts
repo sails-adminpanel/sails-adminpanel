@@ -1,4 +1,4 @@
-import {AbstractMediaManager, Item, File, WidgetItem, Data, widgetJSON} from "./AbstractMediaManager";
+import {AbstractMediaManager, Item, File, MediaManagerWidgetItem, Data, MediaManagerWidgetJSON} from "./AbstractMediaManager";
 import {ApplicationItem, ImageItem, TextItem, VideoItem} from "./Items";
 
 export class DefaultMediaManager extends AbstractMediaManager {
@@ -41,7 +41,7 @@ export class DefaultMediaManager extends AbstractMediaManager {
 	}
 
 	public async saveRelations(data: Data, model: string, modelId: string, modelAttribute: string): Promise<void> {
-		let widgetItems: WidgetItem[] = []
+		let widgetItems: MediaManagerWidgetItem[] = []
 		for (const [key, widgetItem] of data.list.entries()) {
 			let record = await sails.models[this.modelAssoc].create({
 				mediaManagerId: this.id,
@@ -55,15 +55,15 @@ export class DefaultMediaManager extends AbstractMediaManager {
 			})
 		}
 
-		let updateData: { [key: string]: widgetJSON } = {}
+		let updateData: { [key: string]: MediaManagerWidgetJSON } = {}
 
 		updateData[modelAttribute] = {list: widgetItems, mediaManagerId: this.id}
 
 		await sails.models[model].update({id: modelId}, updateData)
 	}
 
-	public async getRelations(items: WidgetItem[]): Promise<WidgetItem[]> {
-		interface widgetItemVUE extends WidgetItem {
+	public async getRelations(items: MediaManagerWidgetItem[]): Promise<MediaManagerWidgetItem[]> {
+		interface widgetItemVUE extends MediaManagerWidgetItem {
 			children: Item[]
 		}
 		let widgetItems: widgetItemVUE[] = []
@@ -79,7 +79,7 @@ export class DefaultMediaManager extends AbstractMediaManager {
 	}
 
 	public async updateRelations(data: Data, model: string, modelId: string, modelAttribute: string): Promise<void>{
-		await  this.deleteRelations(model, modelId)
+		await this.deleteRelations(model, modelId)
 		await this.saveRelations(data, model, modelId, modelAttribute)
 	}
 

@@ -24,17 +24,17 @@ export interface Item {
 	meta: string[]
 }
 
-export interface WidgetItem {
+export interface MediaManagerWidgetItem {
 	id: string
 }
 
-export interface widgetJSON {
-		list: WidgetItem[]
+export interface MediaManagerWidgetJSON {
+		list: MediaManagerWidgetItem[]
 		mediaManagerId: string
 }
 
 export interface Data {
-	list: WidgetItem[]
+	list: MediaManagerWidgetItem[]
 	mediaManagerId: string
 }
 
@@ -231,7 +231,7 @@ export abstract class AbstractMediaManager {
 	 */
 	public abstract saveRelations(data: Data, model: string, modelId: string, modelAttribute: string): Promise<void>
 
-	public abstract getRelations(items: WidgetItem[]): Promise<WidgetItem[]>
+	public abstract getRelations(items: MediaManagerWidgetItem[]): Promise<MediaManagerWidgetItem[]>
 
 	public abstract updateRelations(data: Data, model: string, modelId: string, modelAttribute: string): Promise<void>
 

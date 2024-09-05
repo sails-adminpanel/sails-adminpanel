@@ -11,7 +11,7 @@ import {
 	saveRelationsMediaManager,
 	updateRelationsMediaManager
 } from "../lib/media-manager/helpers/MediaManagerHelper";
-import {widgetJSON} from "../lib/media-manager/AbstractMediaManager";
+import {MediaManagerWidgetJSON} from "../lib/media-manager/AbstractMediaManager";
 
 export default async function edit(req: ReqType, res: ResType) {
 	//Check id
@@ -177,6 +177,7 @@ export default async function edit(req: ReqType, res: ResType) {
 			} else if(fields[field].model.type === "json") {
 				record[field] = await getRelationsMediaManager(record[field] as widgetJSON)
 			}
+			record[field] = await getRelationsMediaManager(record[field] as MediaManagerWidgetJSON)
 		}
 	}
 

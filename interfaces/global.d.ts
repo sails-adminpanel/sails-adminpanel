@@ -34,6 +34,9 @@ declare global {
             pathname: string;
         };
         setLocale: (locale: string) => void;
+        route: {
+            [key: string]: string;
+        };
     };
     type ResType = sails.Response & {
         viewAdmin<T>(variables: T): void;
