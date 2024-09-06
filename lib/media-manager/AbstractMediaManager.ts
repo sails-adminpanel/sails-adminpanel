@@ -54,10 +54,7 @@ export interface imageSizes {
 		height: number
 	}
 }
-
-export abstract class File<T extends Item> {
-	public abstract type:
-		"application" |
+export type MediaFileType = "application" |
 		"audio" |
 		"example" |
 		"image" |
@@ -67,12 +64,24 @@ export abstract class File<T extends Item> {
 		"text" |
 		"video"
 
+export abstract class File<T extends Item> {
+	public abstract type: MediaFileType
+
 	public path: string
 	public dir: string
 	public model: string
 	public metaModel: string
 
-	protected constructor(path: string, dir: string, model: string, metaModel: string) {
+
+	// TODO: надо удалить model из конструктора, и metaModel
+	protected constructor(path: string, dir: string, 
+		/** @deprecated */
+		model: string, 
+		
+		/** @deprecated */
+		metaModel: string
+	) {
+		console.warn('TODO: надо удалить model из конструктора, и metaModel | line: sails-adminpanel/blob/mediamanager/lib/media-manager/AbstractMediaManager.ts#L84')
 		this.path = path
 		this.dir = dir
 		this.model = model
