@@ -1,5 +1,5 @@
-import {File, Item, UploaderFile, imageSizes} from './AbstractMediaManager'
-import {randomFileName} from "./helpers/MediaManagerHelper";
+import { File, Item, UploaderFile, imageSizes } from './AbstractMediaManager'
+import { randomFileName } from "./helpers/MediaManagerHelper";
 import sizeOf from "image-size";
 import * as sharp from "sharp";
 
@@ -16,14 +16,14 @@ export class ImageItem extends File<Item> {
 
 	public async getItems(limit: number, skip: number, sort: string): Promise<{ data: Item[]; next: boolean }> {
 		let data: Item[] = await sails.models[this.model].find({
-			where: {parent: null, mimeType: { contains: this.type}},
+			where: { parent: null, mimeType: { contains: this.type } },
 			limit: limit,
 			skip: skip,
 			sort: sort//@ts-ignore
-		}).populate('children', {sort: sort})
+		}).populate('children', { sort: sort })
 
 		let next: number = (await sails.models[this.model].find({
-			where: {parent: null, mimeType: { contains: this.type}},
+			where: { parent: null, mimeType: { contains: this.type } },
 			limit: limit,
 			skip: skip === 0 ? limit : skip + limit,
 			sort: sort
@@ -35,11 +35,11 @@ export class ImageItem extends File<Item> {
 		}
 	}
 
-	public async search(s: string): Promise<Item[]>{
+	public async search(s: string): Promise<Item[]> {
 		return await sails.models[this.model].find({
-			where: {filename: {contains: s}, mimeType: { contains: this.type}, parent: null},
+			where: { filename: { contains: s }, mimeType: { contains: this.type }, parent: null },
 			sort: 'createdAt DESC'
-		}).populate('children', {sort: 'createdAt DESC'})
+		}).populate('children', { sort: 'createdAt DESC' })
 	}
 
 	public async upload(file: UploaderFile, filename: string, origFileName: string, imageSizes?: imageSizes | {}): Promise<Item> {
@@ -58,7 +58,7 @@ export class ImageItem extends File<Item> {
 		await this.createEmptyMeta(parent.id)
 
 		if (parent.image_size.width > 150 && parent.image_size.height > 150) {
-			await this.createThumb(parent.id, file, filename, origFileName)
+			await this.createThumb(parent.id, file, filename, origFileName) // создать класс, передавать бинарный файл по ссылке. Генерить тумбочку по запросу.
 		}
 
 		if (Object.keys(imageSizes).length) {
@@ -66,21 +66,21 @@ export class ImageItem extends File<Item> {
 		}
 
 		return sails.models[this.model].find({
-			where: {id: parent.id}
+			where: { id: parent.id }
 		}).populate('children') as Item;
 	}
 
 	public async getChildren(id: string): Promise<Item[]> {
 		return (await sails.models[this.model].findOne({
-			where: {id: id}
-		}).populate('children', {sort: 'createdAt DESC'})).children
+			where: { id: id }
+		}).populate('children', { sort: 'createdAt DESC' })).children
 	}
 
 	protected async createSizes(file: UploaderFile, parent: Item, filename: string, imageSizes: imageSizes): Promise<void> {
 		for (const sizeKey of Object.keys(imageSizes)) {
 			let sizeName = randomFileName(filename, sizeKey, false)
 
-			let {width, height} = imageSizes[sizeKey]
+			let { width, height } = imageSizes[sizeKey]
 
 			if (parent.image_size.width < width || parent.image_size.height < height) continue
 
@@ -137,14 +137,14 @@ export class ImageItem extends File<Item> {
 
 	async setMeta(id: string, data: { [p: string]: string }): Promise<{ msg: "success" }> {
 		for (const key of Object.keys(data)) {
-			await sails.models[this.metaModel].update({parent: id, key: key}, {value: data[key]})
+			await sails.models[this.metaModel].update({ parent: id, key: key }, { value: data[key] })
 		}
-		return {msg: "success"}
+		return { msg: "success" }
 	}
 
 	protected async resizeImage(input: string, output: string, width: number, height: number) {
 		return await sharp(input)
-			.resize({width: width, height: height})
+			.resize({ width: width, height: height })
 			.toFile(output)
 	}
 
@@ -165,7 +165,7 @@ export class ImageItem extends File<Item> {
 	}
 
 	async delete(id: string): Promise<void> {
-		await sails.models[this.model].destroy({where: {id: id}}).fetch()
+		await sails.models[this.model].destroy({ where: { id: id } }).fetch()
 	}
 }
 
@@ -191,7 +191,7 @@ export class TextItem extends ImageItem {
 		await this.createEmptyMeta(parent.id)
 
 		return sails.models[this.model].find({
-			where: {id: parent.id}
+			where: { id: parent.id }
 		}).populate('children');
 	}
 
