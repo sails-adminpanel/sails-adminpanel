@@ -17,6 +17,8 @@ The catalog can be used for any tree-like structures where items can be opened, 
 
 **For an example of the implementation, see the [Navigation](../lib/catalog/Navigation.ts)**
 
+Use links in adminpanel **/admin/catalog/:slug/:id**
+
 ***
 
 ## AbstractCatalog Class Documentation
