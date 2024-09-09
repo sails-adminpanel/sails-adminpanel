@@ -47,13 +47,18 @@ export interface imageSizes {
         height: number;
     };
 }
+export type MediaFileType = "application" | "audio" | "example" | "image" | "message" | "model" | "multipart" | "text" | "video";
 export declare abstract class File<T extends Item> {
-    abstract type: "application" | "audio" | "example" | "image" | "message" | "model" | "multipart" | "text" | "video";
+    abstract type: MediaFileType;
     path: string;
     dir: string;
     model: string;
     metaModel: string;
-    protected constructor(path: string, dir: string, model: string, metaModel: string);
+    protected constructor(path: string, dir: string, 
+    /** @deprecated */
+    model: string, 
+    /** @deprecated */
+    metaModel: string);
     /**
      * Upload a file.
      * @param file
@@ -88,7 +93,6 @@ export declare abstract class File<T extends Item> {
      * @param origFileName
      * @protected
      */
-    protected abstract createThumb(id: string, file: UploaderFile, filename: string, origFileName: string): Promise<void>;
     /**
      * Get children of an item.
      * @param id
@@ -121,6 +125,7 @@ export declare abstract class File<T extends Item> {
         next: boolean;
     }>;
     abstract search(s: string): Promise<Item[]>;
+    abstract getOrirgin(id: string): Promise<string>;
 }
 /**
  *
@@ -241,6 +246,7 @@ export declare abstract class AbstractMediaManager {
         key: string;
         value: string;
     }[]>;
+    getOrigin(id: string): Promise<string>;
     /**
      *  Set metadata of an item.
      * @param item

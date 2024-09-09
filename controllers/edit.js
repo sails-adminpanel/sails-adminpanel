@@ -152,6 +152,7 @@ async function edit(req, res) {
             else if (fields[field].model.type === "json") {
                 record[field] = await (0, MediaManagerHelper_1.getRelationsMediaManager)(record[field]);
             }
+            record[field] = await (0, MediaManagerHelper_1.getRelationsMediaManager)(record[field]);
         }
     }
     if (req.query.without_layout) {

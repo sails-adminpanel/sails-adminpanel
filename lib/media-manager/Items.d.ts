@@ -11,7 +11,7 @@ export declare class ImageItem extends File<Item> {
     upload(file: UploaderFile, filename: string, origFileName: string, imageSizes?: imageSizes | {}): Promise<Item>;
     getChildren(id: string): Promise<Item[]>;
     protected createSizes(file: UploaderFile, parent: Item, filename: string, imageSizes: imageSizes): Promise<void>;
-    protected createThumb(id: string, file: UploaderFile, filename: string, origFileName: string): Promise<void>;
+    getOrirgin(id: string): Promise<string>;
     protected createEmptyMeta(id: string): Promise<void>;
     getMeta(id: string): Promise<{
         key: string;
@@ -31,7 +31,6 @@ export declare class ImageItem extends File<Item> {
 }
 export declare class TextItem extends ImageItem {
     type: "application" | "audio" | "example" | "image" | "message" | "model" | "multipart" | "text" | "video";
-    protected createThumb(id: string, file: UploaderFile, filename: string, origFileName: string): Promise<void>;
     upload(file: UploaderFile, filename: string, origFileName: string, imageSizes: imageSizes | {} | undefined): Promise<Item>;
     getChildren(id: string): Promise<Item[]>;
     uploadCropped(item: Item, file: UploaderFile, fileName: string, config: {

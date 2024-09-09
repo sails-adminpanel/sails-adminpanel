@@ -12,17 +12,18 @@ import _upload from "../controllers/upload";
 import _uploadCKeditor5 from "../controllers/ckeditorUpload";
 import _form from "../controllers/form";
 import _normalizeNavigationConfig from "../controllers/normalizeNavigationConfig";
-import {CreateUpdateConfig} from "../interfaces/adminpanelConfig";
+import { CreateUpdateConfig } from "../interfaces/adminpanelConfig";
 import bindPolicies from "../lib/bindPolicies";
-import {widgetSwitchController} from "../controllers/widgets/switch";
-import {getAllWidgets} from "./widgets/widgetHandler";
-import {widgetsDB} from "./widgets/widgetHandler";
-import {widgetInfoController} from '../controllers/widgets/Info';
-import {widgetActionController} from '../controllers/widgets/Action';
-import {widgetCustomController} from "../controllers/widgets/Custom";
-import {debounce} from "utils-decorators";
-import {catalogController} from "../controllers/catalog/Catalog";
-import {mediaManagerController} from "../controllers/media-manager/mediaManagerApi";
+import { widgetSwitchController } from "../controllers/widgets/switch";
+import { getAllWidgets } from "./widgets/widgetHandler";
+import { widgetsDB } from "./widgets/widgetHandler";
+import { widgetInfoController } from '../controllers/widgets/Info';
+import { widgetActionController } from '../controllers/widgets/Action';
+import { widgetCustomController } from "../controllers/widgets/Custom";
+import { debounce } from "utils-decorators";
+import { catalogController } from "../controllers/catalog/Catalog";
+import { mediaManagerController } from "../controllers/media-manager/mediaManagerApi";
+import { thumbController } from "../controllers/media-manager/ThumbController";
 
 
 export default class Router {
@@ -109,6 +110,7 @@ export default class Router {
 		 * Media Manager
 		 */
 		sails.router.bind(`${config.routePrefix}/media-manager-uploader/:id`, bindPolicies(policies, mediaManagerController));
+		sails.router.bind(`${config.routePrefix}/get-thumbs`, bindPolicies(policies, thumbController));
 
 		/**
 		 * List of records

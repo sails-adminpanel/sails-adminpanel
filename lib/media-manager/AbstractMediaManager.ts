@@ -1,3 +1,5 @@
+import { Z_VERSION_ERROR } from "zlib"
+
 export interface Item {
 	id: string
 	/**
@@ -29,8 +31,8 @@ export interface MediaManagerWidgetItem {
 }
 
 export interface MediaManagerWidgetJSON {
-		list: MediaManagerWidgetItem[]
-		mediaManagerId: string
+	list: MediaManagerWidgetItem[]
+	mediaManagerId: string
 }
 
 export interface Data {
@@ -55,14 +57,14 @@ export interface imageSizes {
 	}
 }
 export type MediaFileType = "application" |
-		"audio" |
-		"example" |
-		"image" |
-		"message" |
-		"model" |
-		"multipart" |
-		"text" |
-		"video"
+	"audio" |
+	"example" |
+	"image" |
+	"message" |
+	"model" |
+	"multipart" |
+	"text" |
+	"video"
 
 export abstract class File<T extends Item> {
 	public abstract type: MediaFileType
@@ -74,10 +76,10 @@ export abstract class File<T extends Item> {
 
 
 	// TODO: надо удалить model из конструктора, и metaModel
-	protected constructor(path: string, dir: string, 
+	protected constructor(path: string, dir: string,
 		/** @deprecated */
-		model: string, 
-		
+		model: string,
+
 		/** @deprecated */
 		metaModel: string
 	) {
@@ -118,7 +120,7 @@ export abstract class File<T extends Item> {
 	 * @param origFileName
 	 * @protected
 	 */
-	protected abstract createThumb(id: string, file: UploaderFile, filename: string, origFileName: string,): Promise<void>
+	// protected abstract createThumb(id: string, file: UploaderFile, filename: string, origFileName: string,): Promise<void>
 
 	/**
 	 * Get children of an item.
@@ -153,6 +155,8 @@ export abstract class File<T extends Item> {
 	public abstract getItems(limit: number, skip: number, sort: string): Promise<{ data: Item[], next: boolean }>
 
 	public abstract search(s: string): Promise<Item[]>
+
+	public abstract getOrirgin(id: string): Promise<string>
 }
 
 /**
@@ -303,6 +307,10 @@ export abstract class AbstractMediaManager {
 	public getMeta(item: Item): Promise<{ key: string, value: string }[]> {
 		const parts = item.mimeType.split('/');
 		return this.getItemType(parts[0])?.getMeta(item.id)
+	}
+
+	public getOrigin(id: string) {
+		return this.getItemType('image')?.getOrirgin(id)
 	}
 
 	/**

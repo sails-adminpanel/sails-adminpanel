@@ -8,6 +8,7 @@ interface Meta {
 }
 
 export class ImageItem extends File<Item> {
+
 	public type: "application" | "audio" | "example" | "image" | "message" | "model" | "multipart" | "text" | "video" = "image";
 
 	constructor(path: string, dir: string, model: string, metaModel: string) {
@@ -28,7 +29,6 @@ export class ImageItem extends File<Item> {
 			skip: skip === 0 ? limit : skip + limit,
 			sort: sort
 		})).length
-
 		return {
 			data: data,
 			next: !!next
@@ -57,9 +57,9 @@ export class ImageItem extends File<Item> {
 
 		await this.createEmptyMeta(parent.id)
 
-		if (parent.image_size.width > 150 && parent.image_size.height > 150) {
-			await this.createThumb(parent.id, file, filename, origFileName) // создать класс, передавать бинарный файл по ссылке. Генерить тумбочку по запросу.
-		}
+		// if (parent.image_size.width > 150 && parent.image_size.height > 150) {
+		// 	await this.createThumb(parent.id, file, filename, origFileName) // создать класс, передавать бинарный файл по ссылке. Генерить тумбочку по запросу.
+		// }
 
 		if (Object.keys(imageSizes).length) {
 			await this.createSizes(file, parent, filename, imageSizes)
@@ -98,21 +98,26 @@ export class ImageItem extends File<Item> {
 		}
 	}
 
-	protected async createThumb(id: string, file: UploaderFile, filename: string, origFileName: string): Promise<void> {
-		const thumbName = randomFileName(filename, 'thumb', false)
-		const thumb = await this.resizeImage(file.fd, `${this.dir}${thumbName}`, 150, 150)
-
-		await sails.models[this.model].create({
-			parent: id,
-			mimeType: file.type,
-			size: thumb.size,
-			cropType: 'thumb',
-			path: `${this.dir}${thumbName}`,
-			filename: origFileName,
-			image_size: sizeOf(`${this.dir}${thumbName}`),
-			url: `/${this.path}/${thumbName}`
-		})
+	public async getOrirgin(id: string): Promise<string> {
+		return (await sails.models[this.model].findOne({
+			where: { id: id }
+		})).path
 	}
+	// protected async createThumb(id: string, file: UploaderFile, filename: string, origFileName: string): Promise<void> {
+	// 	const thumbName = randomFileName(filename, 'thumb', false)
+	// 	const thumb = await this.resizeImage(file.fd, `${this.dir}${thumbName}`, 150, 150)
+
+	// 	await sails.models[this.model].create({
+	// 		parent: id,
+	// 		mimeType: file.type,
+	// 		size: thumb.size,
+	// 		cropType: 'thumb',
+	// 		path: `${this.dir}${thumbName}`,
+	// 		filename: origFileName,
+	// 		image_size: sizeOf(`${this.dir}${thumbName}`),
+	// 		url: `/${this.path}/${thumbName}`
+	// 	})
+	// }
 
 	protected async createEmptyMeta(id: string) {
 		//create empty meta
@@ -172,9 +177,9 @@ export class ImageItem extends File<Item> {
 export class TextItem extends ImageItem {
 	public type: "application" | "audio" | "example" | "image" | "message" | "model" | "multipart" | "text" | "video" = "text";
 
-	protected createThumb(id: string, file: UploaderFile, filename: string, origFileName: string): Promise<void> {
-		return Promise.resolve(undefined);
-	}
+	// protected createThumb(id: string, file: UploaderFile, filename: string, origFileName: string): Promise<void> {
+	// 	return Promise.resolve(undefined);
+	// }
 
 	public async upload(file: UploaderFile, filename: string, origFileName: string, imageSizes: imageSizes | {} | undefined): Promise<Item> {
 		let parent: Item = await sails.models[this.model].create({
