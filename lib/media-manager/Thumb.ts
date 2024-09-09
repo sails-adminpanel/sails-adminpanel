@@ -1,5 +1,4 @@
 import sharp = require("sharp");
-import { UploaderFile } from "./AbstractMediaManager";
 import { promises as fs } from 'fs';
 import { MediaManagerHandler } from "./MediaManagerHandler";
 

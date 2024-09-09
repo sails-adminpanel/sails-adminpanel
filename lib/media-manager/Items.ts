@@ -20,7 +20,7 @@ export class ImageItem extends File<Item> {
 			where: { parent: null, mimeType: { contains: this.type } },
 			limit: limit,
 			skip: skip,
-			sort: sort//@ts-ignore
+			sort: sort
 		}).populate('children', { sort: sort })
 
 		let next: number = (await sails.models[this.model].find({
@@ -181,7 +181,7 @@ export class TextItem extends ImageItem {
 	// 	return Promise.resolve(undefined);
 	// }
 
-	public async upload(file: UploaderFile, filename: string, origFileName: string, imageSizes: imageSizes | {} | undefined): Promise<Item> {
+	public async upload(file: UploaderFile, filename: string, origFileName: string): Promise<Item> {
 		let parent: Item = await sails.models[this.model].create({
 			parent: null,
 			mimeType: file.type,
@@ -200,14 +200,11 @@ export class TextItem extends ImageItem {
 		}).populate('children');
 	}
 
-	getChildren(id: string): Promise<Item[]> {
+	getChildren(): Promise<Item[]> {
 		return Promise.resolve([]);
 	}
 
-	uploadCropped(item: Item, file: UploaderFile, fileName: string, config: {
-		width: number;
-		height: number
-	}): Promise<Item> {
+	uploadCropped(): Promise<Item> {
 		return Promise.resolve(undefined);
 	}
 
