@@ -16,7 +16,7 @@ export interface Item {
         height: number;
         type: string;
     };
-    cropType: 'thumb' | string;
+    cropType: "thumb" | string;
     url: string;
     filename: string;
     meta: string[];
@@ -54,11 +54,7 @@ export declare abstract class File<T extends Item> {
     dir: string;
     model: string;
     metaModel: string;
-    protected constructor(path: string, dir: string, 
-    /** @deprecated */
-    model: string, 
-    /** @deprecated */
-    metaModel: string);
+    protected constructor(path: string, dir: string);
     /**
      * Upload a file.
      * @param file
@@ -66,7 +62,7 @@ export declare abstract class File<T extends Item> {
      * @param origFileName
      * @param imageSizes
      */
-    abstract upload(file: UploaderFile, filename: string, origFileName: string, imageSizes?: imageSizes | {}): Promise<T>;
+    abstract upload(file: UploaderFile, filename: string, origFileName: string): Promise<T[]>;
     /**
      * Get metadata for an item.
      * @param id
@@ -86,14 +82,6 @@ export declare abstract class File<T extends Item> {
         msg: "success";
     }>;
     /**
-     * Create a thumbnail of an item.
-     * @param id
-     * @param file
-     * @param filename
-     * @param origFileName
-     * @protected
-     */
-    /**
      * Get children of an item.
      * @param id
      */
@@ -105,10 +93,11 @@ export declare abstract class File<T extends Item> {
      * @param fileName
      * @param config
      */
-    abstract uploadCropped(item: Item, file: UploaderFile, fileName: string, config: {
+    abstract uploadVarinat(item: Item, file: UploaderFile, fileName: string, config: {
         width: number;
         height: number;
     }): Promise<Item>;
+    abstract createVariants(file: UploaderFile, parent: Item, filename: string, imageSizes: imageSizes): Promise<void>;
     /**
      * Delete an item.
      * @param id
@@ -164,7 +153,7 @@ export declare abstract class AbstractMediaManager {
      * @param modelAssoc
      * @protected
      */
-    protected constructor(id: string, path: string, dir: string, model: string, modelAssoc: string);
+    protected constructor(id: string, path: string, dir: string);
     /**
      * Upload an item.
      * @param file
@@ -172,7 +161,7 @@ export declare abstract class AbstractMediaManager {
      * @param origFileName
      * @param imageSizes
      */
-    upload(file: UploaderFile, filename: string, origFileName: string, imageSizes?: imageSizes | {}): Promise<Item>;
+    upload(file: UploaderFile, filename: string, origFileName: string): Promise<Item[]>;
     /**
      * Get item type.
      * @param type
@@ -196,10 +185,8 @@ export declare abstract class AbstractMediaManager {
      * @param modelId
      * @param modelAttribute
      */
-    abstract saveRelations(data: Data, model: string, modelId: string, modelAttribute: string): Promise<void>;
+    abstract saveRelations(data: Data, model: string, modelId: string, widgetName: string): Promise<void>;
     abstract getRelations(items: MediaManagerWidgetItem[]): Promise<MediaManagerWidgetItem[]>;
-    abstract updateRelations(data: Data, model: string, modelId: string, modelAttribute: string): Promise<void>;
-    abstract deleteRelations(model: string, modelId: string): Promise<void>;
     /**
      * Get items of a type.
      * @param type
@@ -227,6 +214,7 @@ export declare abstract class AbstractMediaManager {
      * @param item
      */
     getChildren(item: Item): Promise<Item[]>;
+    createVariants(item: Item, file: UploaderFile, parent: Item, filename: string, imageSizes: imageSizes): Promise<void>;
     /**
      * Upload cropped image.
      * @param item
@@ -234,7 +222,7 @@ export declare abstract class AbstractMediaManager {
      * @param fileName
      * @param config
      */
-    uploadCropped(item: Item, file: UploaderFile, fileName: string, config: {
+    uploadVariant(item: Item, file: UploaderFile, fileName: string, config: {
         width: number;
         height: number;
     }): Promise<Item>;

@@ -17,6 +17,9 @@ const attributes = a = {
     modelId: {
         type: 'json'
     },
+    widgetName: {
+        type: 'string'
+    },
     sortOrder: {
         type: 'number'
     },

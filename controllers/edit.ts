@@ -1,17 +1,14 @@
-import {AdminUtil} from "../lib/adminUtil";
-import {RequestProcessor} from "../lib/requestProcessor";
-import {FieldsHelper} from "../helper/fieldsHelper";
-import {CreateUpdateConfig, MediaManagerOptionsField} from "../interfaces/adminpanelConfig";
-import {AccessRightsHelper} from "../helper/accessRightsHelper";
-import {CatalogHandler} from "../lib/catalog/CatalogHandler";
-import { strict } from "assert";
-import {MediaManagerHandler} from "../lib/media-manager/MediaManagerHandler";
+import { AdminUtil } from "../lib/adminUtil";
+import { RequestProcessor } from "../lib/requestProcessor";
+import { FieldsHelper } from "../helper/fieldsHelper";
+import { CreateUpdateConfig, MediaManagerOptionsField } from "../interfaces/adminpanelConfig";
+import { AccessRightsHelper } from "../helper/accessRightsHelper";
+import { CatalogHandler } from "../lib/catalog/CatalogHandler";
 import {
 	getRelationsMediaManager,
-	saveRelationsMediaManager,
-	updateRelationsMediaManager
+	saveRelationsMediaManager
 } from "../lib/media-manager/helpers/MediaManagerHelper";
-import {MediaManagerWidgetJSON} from "../lib/media-manager/AbstractMediaManager";
+import { MediaManagerWidgetJSON } from "../lib/media-manager/AbstractMediaManager";
 
 export default async function edit(req: ReqType, res: ResType) {
 	//Check id
@@ -87,25 +84,25 @@ export default async function edit(req: ReqType, res: ResType) {
 
 			if (fields[prop].config.type === 'mediamanager' && fields[prop].model.type === 'association-many') {
 				if (typeof reqData[prop] === "object" && !Array.isArray(reqData[prop]) && reqData[prop] !== null) {
-					reqData[prop] = (reqData[prop]).list.map((i: { id: string| number }) => i.id);
+					reqData[prop] = (reqData[prop] as MediaManagerWidgetJSON).list.map((i: { id: string | number }) => i.id);
 				} else {
 					try {
 						const parsed = JSON.parse(reqData[prop] as string);
 						if (typeof parsed === "object" && !Array.isArray(parsed) && parsed !== null) {
-							reqData[prop] = parsed.list.map((i: { id: string| number }) => i.id);
+							reqData[prop] = parsed.list.map((i: { id: string | number }) => i.id);
 						}
 					} catch (error) {
 						throw `Error assign association-many mediamanager data for ${prop}, ${reqData[prop]}`
 					}
 				}
-			 	reqData[prop] = (reqData[prop] as []).filter(str => str !== '');
-				if(Array.isArray(reqData[prop]) && reqData[prop].length === 0) {
-					delete(reqData[prop]);
+				reqData[prop] = (reqData[prop] as []).filter(str => str !== '');
+				if (Array.isArray(reqData[prop]) && reqData[prop].length === 0) {
+					delete (reqData[prop]);
 				}
 			}
 
 			if (fields[prop] && fields[prop].model && fields[prop].model.type === 'json' && reqData[prop] !== '') {
-				if(typeof reqData[prop] === "string") {
+				if (typeof reqData[prop] === "string") {
 					try {
 						reqData[prop] = JSON.parse(reqData[prop] as string);
 					} catch (e) {
@@ -138,11 +135,11 @@ export default async function edit(req: ReqType, res: ResType) {
 			let newRecord = await entity.model.update(params, reqData).fetch();
 
 			// save associations media to json
-			await updateRelationsMediaManager(fields, reqData, entity.name, newRecord[0].id)
+			await saveRelationsMediaManager(fields, reqData, entity.name, newRecord[0].id)
 
 			sails.log.debug(`Record was updated: `, newRecord);
 			if (req.body.jsonPopupCatalog) {
-				return res.json({record: newRecord})
+				return res.json({ record: newRecord })
 			} else {
 
 				// update navigation tree after model updated
@@ -151,8 +148,8 @@ export default async function edit(req: ReqType, res: ResType) {
 						let navigation = CatalogHandler.getCatalog('navigation')
 						navigation.setID(section)
 						let navItem = navigation.itemTypes.find(item => item.type === entity.name)
-						if(navItem) {
-							await navItem.updateModelItems(newRecord[0].id, {record: newRecord[0]}, section)
+						if (navItem) {
+							await navItem.updateModelItems(newRecord[0].id, { record: newRecord[0] }, section)
 						}
 					}
 				}
@@ -168,19 +165,17 @@ export default async function edit(req: ReqType, res: ResType) {
 	}
 
 	for (const field of Object.keys(fields)) {
-		if(fields[field].config.type ==='mediamanager') {
-			if(fields[field].model.type === 'association-many')  {
+		if (fields[field].config.type === 'mediamanager') {
+			if (fields[field].model.type === 'association-many') {
 				record[field] = await getRelationsMediaManager({
 					list: record[field],
-					mediaManagerId: (fields[field].config.options as MediaManagerOptionsField).mediaManagerId ?? "default"
+					mediaManagerId: (fields[field].config.options as MediaManagerOptionsField).id ?? "default"
 				})
-			} else if(fields[field].model.type === "json") {
-				record[field] = await getRelationsMediaManager(record[field] as widgetJSON)
+			} else if (fields[field].model.type === "json") {
+				record[field] = await getRelationsMediaManager(record[field] as MediaManagerWidgetJSON)
 			}
-			record[field] = await getRelationsMediaManager(record[field] as MediaManagerWidgetJSON)
 		}
 	}
-
 	if (req.query.without_layout) {
 		return res.viewAdmin("./../ejs/partials/content/editPopup.ejs", {
 			entity: entity,

@@ -1,0 +1,31 @@
+export = Dropzone;
+declare function Dropzone(el: any, options: any): any;
+declare namespace Dropzone {
+    export let version: string;
+    export let options: {};
+    export function optionsForElement(element: any): any;
+    export let instances: any[];
+    export function forElement(element: any): any;
+    export let autoDiscover: boolean;
+    export function discover(): any[];
+    export let blacklistedBrowsers: RegExp[];
+    export function isBrowserSupported(): boolean;
+    export function dataURItoBlob(dataURI: any): Blob;
+    export function createElement(string: any): ChildNode;
+    export function elementInside(element: any, container: any): boolean;
+    export function getElement(el: any, name: any): any;
+    export function getElements(els: any, name: any): any;
+    export function confirm(question: any, accepted: any, rejected: any): any;
+    export function isValidFile(file: any, acceptedFiles: any): boolean;
+    export let ADDED: string;
+    export let QUEUED: string;
+    import ACCEPTED = QUEUED;
+    export { ACCEPTED };
+    export let UPLOADING: string;
+    import PROCESSING = UPLOADING;
+    export { PROCESSING };
+    export let CANCELED: string;
+    export let ERROR: string;
+    export let SUCCESS: string;
+    export function _autoDiscoverFunction(): any;
+}

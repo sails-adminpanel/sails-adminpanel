@@ -21,6 +21,7 @@ async function normalizeNavigationConfig(req, res) {
         if (typeof entity !== "boolean") {
             const fieldConfig = entity.fields[req.body.key];
             if (typeof fieldConfig !== "string" && typeof fieldConfig === "object" && 'options' in fieldConfig) {
+                //@ts-ignore
                 editNavigationWidgetConfig = fieldConfig.options;
             }
         }
@@ -28,6 +29,7 @@ async function normalizeNavigationConfig(req, res) {
     else {
         const fieldConfig = sails.config.adminpanel[`${entityType}s`].data[req.param("entityName")][req.body.key];
         if (typeof fieldConfig === "object" && 'options' in fieldConfig) {
+            //@ts-ignore
             editNavigationWidgetConfig = fieldConfig.options;
         }
     }

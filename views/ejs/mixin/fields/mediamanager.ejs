@@ -19,7 +19,7 @@
         toJsonId: "mediamanager-json-<%= key %>",
         config: <%- config %>,
 				list: <%- value ? JSON.stringify(value) : JSON.stringify([]) %>,
-				managerId: "<%= field.config.options?.id ? field.config.options.id : 'default'%>"
+				managerId: "<%- field.config.options?.id ? field.config.options.id : 'default' %>"
 				})
 		})
 	}

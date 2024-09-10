@@ -1,5 +1,5 @@
-import {Attributes, ModelTypeDetection, Model} from "sails-typescript";
-import {v4 as uuid} from "uuid";
+import { Attributes, ModelTypeDetection, Model } from "sails-typescript";
+import { v4 as uuid } from "uuid";
 
 let a: Attributes;
 const attributes = a = {
@@ -17,9 +17,12 @@ const attributes = a = {
     modelId: {
         type: 'json'
     },
-	sortOrder: {
-		type: 'number'
-	},
+    widgetName: {
+        type: 'string'
+    },
+    sortOrder: {
+        type: 'number'
+    },
     file: {
         model: 'MediaManagerAP'
     }

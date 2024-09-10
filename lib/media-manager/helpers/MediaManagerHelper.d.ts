@@ -17,7 +17,6 @@ export declare function randomFileName(filenameOrig: string, type: string, prefi
  */
 export declare function saveRelationsMediaManager(fields: Fields, reqData: PostParams, model: string, recordId: string): Promise<void>;
 export declare function getRelationsMediaManager(data: MediaManagerWidgetJSON): Promise<MediaManagerWidgetItem[]>;
-export declare function updateRelationsMediaManager(fields: Fields, reqData: PostParams, model: string, recordId: string): Promise<void>;
 export declare function deleteRelationsMediaManager(model: string, record: {
     [p: string]: string | MediaManagerWidgetItem[];
 }[]): Promise<void>;

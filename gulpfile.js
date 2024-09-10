@@ -2,17 +2,17 @@ const gulp = require('gulp');
 const del = require('del');  // del@6.1.1
 const webpackStream = require('webpack-stream');
 const Fpath = require('path');
-const {styles} = require('@ckeditor/ckeditor5-dev-utils');
+const { styles } = require('@ckeditor/ckeditor5-dev-utils');
 const CKEditorWebpackPlugin = require('@ckeditor/ckeditor5-dev-webpack-plugin');
 
-const {copy_styles_files, scss, scssProd} = require('./gulp/styles')
-const {js, jsProd} = require('./gulp/js')
-const {vueWidgets, vueWidgetsProd} = require('./gulp/vue/widgets')
-const {vueCatalog, vueCatalogProd} = require('./gulp/vue/catalog')
-const {vueInstallStepper, vueInstallStepperProd} = require('./gulp/vue/install-stepper')
-const {vueMediamanagerProd, vueMediamanager} = require('./gulp/vue/mediamanager')
+const { copy_styles_files, scss, scssProd } = require('./gulp/styles')
+const { js, jsProd } = require('./gulp/js')
+const { vueWidgets, vueWidgetsProd } = require('./gulp/vue/widgets')
+const { vueCatalog, vueCatalogProd } = require('./gulp/vue/catalog')
+const { vueInstallStepper, vueInstallStepperProd } = require('./gulp/vue/install-stepper')
+const { vueMediamanagerProd, vueMediamanager } = require('./gulp/vue/mediamanager')
 
-const {path, buildFolder, srcFolder} = require('./gulp/path')
+const { path, buildFolder, srcFolder } = require('./gulp/path')
 
 const browserSync = require("browser-sync").create()
 
@@ -39,11 +39,11 @@ const reload = (done) => {
 }
 
 const ckeditorBuild = () => {
-	return gulp.src(`${srcFolder}/scripts/ckeditor5/app.js`, {sourcemaps: true})
+	return gulp.src(`${srcFolder}/scripts/ckeditor5/app.js`, { sourcemaps: true })
 		.pipe(webpackStream({
 			mode: 'production',
 			devtool: 'source-map',
-			performance: {hints: false},
+			performance: { hints: false },
 			entry: `${srcFolder}/scripts/ckeditor5/app.js`,
 
 			// https://webpack.js.org/configuration/output/
@@ -103,7 +103,7 @@ const ckeditorBuild = () => {
 			devtool: 'source-map',
 
 			// By default, webpack logs warnings if the bundle is bigger than 200kb.
-			performance: {hints: false}
+			performance: { hints: false }
 		}))
 		.pipe(gulp.dest(`${path.build.js}/ckeditor5/`));
 };
@@ -113,22 +113,22 @@ function watcher() {
 	gulp.watch(path.src.scss, gulp.series(scss, reload))
 }
 
-function vueWidgetsWatcher(){
+function vueWidgetsWatcher() {
 	gulp.watch(`${srcFolder}/widgets/**/*.*`, gulp.series(vueWidgets, reload))
 	gulp.watch(path.watch.scss, gulp.series(scss, reload))
 }
-function vueCaalogWatcher(){
+function vueCaalogWatcher() {
 	gulp.watch(`${srcFolder}/catalog/**/*.*`, gulp.series(vueCatalog, reload))
 	gulp.watch(path.watch.scss, gulp.series(scss, reload))
 	gulp.watch(path.watch.catalogVue, gulp.series(scss, reload))
 }
-function vueMMWatcher(){
+function vueMMWatcher() {
 	gulp.watch(`${srcFolder}/mediamanager/**/*.*`, gulp.series(vueMediamanager, reload))
 	gulp.watch(path.watch.scss, gulp.series(scss, reload))
 	gulp.watch(path.watch.MMVue, gulp.series(scss, reload))
 }
 
-function vueInstallStepperWatcher(){
+function vueInstallStepperWatcher() {
 	gulp.watch(`${srcFolder}/installStepper/**/*.*`, gulp.series(vueInstallStepper, reload))
 	gulp.watch(path.watch.scss, gulp.series(scss, reload))
 }
@@ -149,10 +149,10 @@ gulp.task('jsProd', jsProd);
 gulp.task('styles-prod', scssProd);
 gulp.task('styles', gulp.series(scss, gulp.parallel(serve, watcher)))
 
-gulp.task('vue', gulp.series(vueWidgets, gulp.parallel(serve, vueWidgetsWatcher) ,gulp.parallel(serve, vueInstallStepperWatcher)))
+gulp.task('vue', gulp.series(vueWidgets, gulp.parallel(serve, vueWidgetsWatcher), gulp.parallel(serve, vueInstallStepperWatcher)))
 
 gulp.task('catalog', gulp.series(vueCatalog, gulp.parallel(serve, vueCaalogWatcher)))
 gulp.task('prodCat', vueCatalogProd)
 
-gulp.task('mm', gulp.series(vueMediamanager, gulp.parallel(serve,vueMMWatcher)))
+gulp.task('mm', gulp.series(vueMediamanager, gulp.parallel(serve, vueMMWatcher)))
 gulp.task('prodMediamanager', vueMediamanagerProd)

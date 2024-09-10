@@ -14,6 +14,9 @@ declare const attributes: {
     readonly modelId: {
         readonly type: "json";
     };
+    readonly widgetName: {
+        readonly type: "string";
+    };
     readonly sortOrder: {
         readonly type: "number";
     };
@@ -42,6 +45,9 @@ declare const model: {
         };
         readonly modelId: {
             readonly type: "json";
+        };
+        readonly widgetName: {
+            readonly type: "string";
         };
         readonly sortOrder: {
             readonly type: "number";

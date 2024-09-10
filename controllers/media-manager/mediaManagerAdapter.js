@@ -8,27 +8,27 @@ class MediaManagerAdapter {
     }
     async delete(req, res) {
         await this.manager.delete(req.body.item);
-        return res.send({ msg: 'ok' });
+        return res.send({ msg: "ok" });
     }
     async get(req, res) {
         let type = req.query.type;
         let result;
-        if (type === 'all') {
-            result = await this.manager.getAll(+req.query.count, +req.query.skip, 'createdAt DESC');
+        if (type === "all") {
+            result = (await this.manager.getAll(+req.query.count, +req.query.skip, "createdAt DESC"));
         }
         else {
-            result = await this.manager.getItems(type, +req.query.count, +req.query.skip, 'createdAt DESC');
+            result = (await this.manager.getItems(type, +req.query.count, +req.query.skip, "createdAt DESC"));
         }
         return res.send({
             data: result.data,
-            next: !!result.next
+            next: !!result.next,
         });
     }
     async search(req, res) {
         let s = req.body.s;
         let type = req.body.type;
         let data;
-        if (type === 'all') {
+        if (type === "all") {
             data = await this.manager.searchAll(s);
         }
         else {
@@ -38,22 +38,22 @@ class MediaManagerAdapter {
     }
     async getChildren(req, res) {
         return res.send({
-            data: await this.manager.getChildren(req.body.item)
+            data: await this.manager.getChildren(req.body.item),
         });
     }
     async uploadCropped(req, res) {
         const item = JSON.parse(req.body.item);
         const config = JSON.parse(req.body.config);
-        let filename = (0, MediaManagerHelper_1.randomFileName)(req.body.name, '', true);
-        req.file('file').upload({
+        let filename = (0, MediaManagerHelper_1.randomFileName)(req.body.name, "", true);
+        req.file("file").upload({
             dirname: this.manager.dir,
-            saveAs: filename
+            saveAs: filename,
         }, async (err, file) => {
             if (err)
                 return res.serverError(err);
             try {
                 return res.send({
-                    data: await this.manager.uploadCropped(item, file[0], filename, config)
+                    data: await this.manager.uploadVariant(item, file[0], filename, config),
                 });
             }
             catch (e) {
@@ -64,40 +64,49 @@ class MediaManagerAdapter {
     async upload(req, res) {
         const config = sails.config.adminpanel.mediamanager || null;
         //@ts-ignore
-        const upload = req.file('file')._files[0].stream, headers = upload.headers, byteCount = upload.byteCount, settings = {
+        const upload = req.file("file")._files[0].stream, headers = upload.headers, byteCount = upload.byteCount, settings = {
             allowedTypes: config?.allowMIME ?? [],
-            maxBytes: config?.maxByteSize ?? 2 * 1024 * 1024 // 2 Mb
+            maxBytes: config?.maxByteSize ?? 2 * 1024 * 1024, // 2 Mb
         };
         let validated = true;
-        let isDefault = this.manager.id === 'default';
+        let isDefault = this.manager.id === "default";
         let imageSizes = {};
         if (isDefault) {
             imageSizes = config?.imageSizes ?? {};
             // Check file type
-            if (settings.allowedTypes.length && this.checkMIMEType(settings.allowedTypes, headers['content-type'])) {
+            if (settings.allowedTypes.length &&
+                this.checkMIMEType(settings.allowedTypes, headers["content-type"])) {
                 validated = false;
-                res.send({ msg: 'Wrong filetype (' + headers['content-type'] + ').' });
+                res.send({
+                    msg: "Wrong filetype (" + headers["content-type"] + ").",
+                });
             }
             // Check file size
             if (byteCount > settings.maxBytes) {
                 validated = false;
-                res.send({ msg: `The file size is larger than the allowed value: ${+settings.maxBytes / 1024 / 1024} Mb` });
+                res.send({
+                    msg: `The file size is larger than the allowed value: ${+settings.maxBytes / 1024 / 1024} Mb`,
+                });
             }
         }
         if (validated) {
-            let filename = (0, MediaManagerHelper_1.randomFileName)(req.body.name.replace(' ', '_'), '', true);
-            let origFileName = req.body.name.replace(/\.[^\.]+$/, '');
+            let filename = (0, MediaManagerHelper_1.randomFileName)(req.body.name.replace(" ", "_"), "", true);
+            let origFileName = req.body.name.replace(/\.[^\.]+$/, "");
             //save file
-            req.file('file').upload({
+            req.file("file").upload({
                 dirname: this.manager.dir,
-                saveAs: filename
+                saveAs: filename,
             }, async (err, file) => {
                 if (err)
                     return res.serverError(err);
                 try {
+                    let item = await this.manager.upload(file[0], filename, origFileName);
+                    if (Object.keys(imageSizes).length) {
+                        await this.manager.createVariants(item[0], file[0], item[0], filename, imageSizes);
+                    }
                     return res.send({
                         msg: "success",
-                        data: await this.manager.upload(file[0], filename, origFileName, imageSizes)
+                        data: item,
                     });
                 }
                 catch (e) {
@@ -110,7 +119,9 @@ class MediaManagerAdapter {
         return res.send({ data: await this.manager.getMeta(req.body.item) });
     }
     async setMeta(req, res) {
-        return res.send({ data: await this.manager.setMeta(req.body.item, req.body.data) });
+        return res.send({
+            data: await this.manager.setMeta(req.body.item, req.body.data),
+        });
     }
     /**
      * Check file type. Return false if the type is allowed.
@@ -118,7 +129,7 @@ class MediaManagerAdapter {
      * @param type
      */
     checkMIMEType(allowedTypes, type) {
-        const partsFileType = type.split('/');
+        const partsFileType = type.split("/");
         const allowedType = `${partsFileType[0]}/*`;
         if (allowedTypes.includes(allowedType))
             return false;

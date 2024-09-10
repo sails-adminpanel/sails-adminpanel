@@ -66,7 +66,7 @@ async function edit(req, res) {
             }
             if (fields[prop].config.type === 'mediamanager' && fields[prop].model.type === 'association-many') {
                 if (typeof reqData[prop] === "object" && !Array.isArray(reqData[prop]) && reqData[prop] !== null) {
-                    reqData[prop] = (reqData[prop]).list.map((i) => i.id);
+                    reqData[prop] = reqData[prop].list.map((i) => i.id);
                 }
                 else {
                     try {
@@ -114,7 +114,7 @@ async function edit(req, res) {
         try {
             let newRecord = await entity.model.update(params, reqData).fetch();
             // save associations media to json
-            await (0, MediaManagerHelper_1.updateRelationsMediaManager)(fields, reqData, entity.name, newRecord[0].id);
+            await (0, MediaManagerHelper_1.saveRelationsMediaManager)(fields, reqData, entity.name, newRecord[0].id);
             sails.log.debug(`Record was updated: `, newRecord);
             if (req.body.jsonPopupCatalog) {
                 return res.json({ record: newRecord });
@@ -146,13 +146,12 @@ async function edit(req, res) {
             if (fields[field].model.type === 'association-many') {
                 record[field] = await (0, MediaManagerHelper_1.getRelationsMediaManager)({
                     list: record[field],
-                    mediaManagerId: fields[field].config.options.mediaManagerId ?? "default"
+                    mediaManagerId: fields[field].config.options.id ?? "default"
                 });
             }
             else if (fields[field].model.type === "json") {
                 record[field] = await (0, MediaManagerHelper_1.getRelationsMediaManager)(record[field]);
             }
-            record[field] = await (0, MediaManagerHelper_1.getRelationsMediaManager)(record[field]);
         }
     }
     if (req.query.without_layout) {

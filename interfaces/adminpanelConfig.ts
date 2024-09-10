@@ -1,5 +1,5 @@
 import sails from "@42pub/typed-sails";
-import {LineAwesomeIcon} from "./lineAwesome"
+import { LineAwesomeIcon } from "./lineAwesome"
 
 export type AdminpanelIcon = LineAwesomeIcon
 type FieldsTypes =
@@ -392,7 +392,7 @@ export interface NavigationOptionsField {
 }
 
 export interface MediaManagerOptionsField {
-	mediaManagerId?: string
+	id?: string
 }
 
 interface ScheduleOptionsField {

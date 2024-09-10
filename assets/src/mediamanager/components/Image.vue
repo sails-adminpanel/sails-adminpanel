@@ -36,7 +36,7 @@
                     Обрезать
                 </li>
                 <li v-if="imagesTypes.has(item.mimeType)" @click="openSizes">
-                    Размеры
+                    Варианты
                 </li>
                 <li @click="destroy">Удалить</li>
             </ul>
@@ -44,13 +44,13 @@
     </div>
     <Meta v-if="metaVisible" :item="item" />
     <Cropper v-if="cropperVisible" :item="item" />
-    <Sizes v-if="sizesVisible" :item="item" />
+    <Variants v-if="sizesVisible" :item="item" />
 </template>
 
 <script setup>
 import Meta from "./Meta.vue";
 import Cropper from "./Cropper.vue";
-import Sizes from "./Sizes.vue";
+import Variants from "./Variants.vue";
 import { provide, ref, computed, inject } from "vue";
 
 const props = defineProps(["item", "initClass"]);
@@ -103,16 +103,11 @@ provide("closeSizes", () => {
 });
 
 const imageUrl = computed(() => {
-    //if (props.item.children.length) {
-    // return props.item.children.find((e) => e.cropType === "thumb").url;
-    //} else {
-
     if (imagesTypes.has(props.item.mimeType)) {
         return `/admin/get-thumbs?id=${props.item.id}&managerId=${managerId}`;
     } else {
         return `/admin/assets/fileuploader/icons/${props.item.url.split(/[#?]/)[0].split(".").pop().trim()}.svg`;
     }
-    //}
 });
 
 function openFile() {
