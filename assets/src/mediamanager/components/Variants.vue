@@ -42,9 +42,7 @@
                         </td>
                         <td class="p-2">{{ item.mimeType }}</td>
                         <td class="p-2">
-                            {{ item.image_size.width }}x{{
-                                item.image_size.height
-                            }}
+                            {{ imageSize(item.meta) }}
                         </td>
                         <td class="p-2">
                             <button
@@ -96,6 +94,15 @@ function getDate(t) {
     return date.toLocaleDateString();
 }
 
+function imageSize(meta) {
+    console.log(meta);
+    if (meta.length) {
+        let size = meta.find((e) => e.key === "imageSizes");
+        return `${size.value.width}x${size.value.height}`;
+    } else {
+        return "---";
+    }
+}
 function preview(item) {
     window.open(item.url, "_blank").focus();
 }

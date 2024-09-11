@@ -4,37 +4,37 @@ export declare class ImageItem extends File<Item> {
     type: MediaFileType;
     model: string;
     metaModel: string;
+    imageSizes: imageSizes;
     constructor(path: string, dir: string);
-    getItems(limit: number, skip: number, sort: string): Promise<{
+    getItems(limit: number, skip: number, sort: string, group: string): Promise<{
         data: Item[];
         next: boolean;
     }>;
-    search(s: string): Promise<Item[]>;
-    upload(file: UploaderFile, filename: string, origFileName: string): Promise<Item[]>;
-    getChildren(id: string): Promise<Item[]>;
-    createVariants(file: UploaderFile, parent: Item, filename: string, imageSizes: imageSizes): Promise<void>;
+    search(s: string, group: string): Promise<Item[]>;
+    upload(file: UploaderFile, filename: string, origFileName: string, group: string): Promise<Item[]>;
+    getVariants(id: string): Promise<Item[]>;
+    protected createVariants(file: UploaderFile, parent: Item, filename: string): Promise<void>;
     getOrirgin(id: string): Promise<string>;
-    protected createEmptyMeta(id: string): Promise<void>;
+    protected createMeta(id: string): Promise<void>;
+    protected addFileMeta(file: string, id: string): Promise<void>;
     getMeta(id: string): Promise<{
         key: string;
         value: string;
     }[]>;
     setMeta(id: string, data: {
         [p: string]: string;
-    }): Promise<{
-        msg: "success";
-    }>;
+    }): Promise<void>;
     protected resizeImage(input: string, output: string, width: number, height: number): Promise<sharp.OutputInfo>;
-    uploadVarinat(parent: Item, file: UploaderFile, filename: string, config: {
+    uploadVariant(parent: Item, file: UploaderFile, filename: string, config: {
         width: number;
         height: number;
-    }): Promise<Item>;
+    }, group: string): Promise<Item>;
     delete(id: string): Promise<void>;
 }
 export declare class TextItem extends ImageItem {
     type: MediaFileType;
-    upload(file: UploaderFile, filename: string, origFileName: string): Promise<Item[]>;
-    getChildren(): Promise<Item[]>;
+    upload(file: UploaderFile, filename: string, origFileName: string, group: string): Promise<Item[]>;
+    getvariants(): Promise<Item[]>;
     uploadCropped(): Promise<Item>;
     createVariants(): Promise<void>;
 }

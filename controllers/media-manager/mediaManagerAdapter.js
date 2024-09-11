@@ -14,10 +14,10 @@ class MediaManagerAdapter {
         let type = req.query.type;
         let result;
         if (type === "all") {
-            result = (await this.manager.getAll(+req.query.count, +req.query.skip, "createdAt DESC"));
+            result = (await this.manager.getAll(+req.query.count, +req.query.skip, "createdAt DESC", req.query.group));
         }
         else {
-            result = (await this.manager.getItems(type, +req.query.count, +req.query.skip, "createdAt DESC"));
+            result = (await this.manager.getItems(type, +req.query.count, +req.query.skip, "createdAt DESC", req.query.group));
         }
         return res.send({
             data: result.data,
@@ -36,15 +36,16 @@ class MediaManagerAdapter {
         }
         return res.send({ data: data });
     }
-    async getChildren(req, res) {
+    async getVariants(req, res) {
         return res.send({
-            data: await this.manager.getChildren(req.body.item),
+            data: await this.manager.getVariants(req.body.item),
         });
     }
     async uploadCropped(req, res) {
         const item = JSON.parse(req.body.item);
         const config = JSON.parse(req.body.config);
         let filename = (0, MediaManagerHelper_1.randomFileName)(req.body.name, "", true);
+        const group = req.body.group;
         req.file("file").upload({
             dirname: this.manager.dir,
             saveAs: filename,
@@ -53,7 +54,7 @@ class MediaManagerAdapter {
                 return res.serverError(err);
             try {
                 return res.send({
-                    data: await this.manager.uploadVariant(item, file[0], filename, config),
+                    data: await this.manager.uploadVariant(item, file[0], filename, config, group),
                 });
             }
             catch (e) {
@@ -63,6 +64,7 @@ class MediaManagerAdapter {
     }
     async upload(req, res) {
         const config = sails.config.adminpanel.mediamanager || null;
+        const group = req.body.group;
         //@ts-ignore
         const upload = req.file("file")._files[0].stream, headers = upload.headers, byteCount = upload.byteCount, settings = {
             allowedTypes: config?.allowMIME ?? [],
@@ -70,9 +72,7 @@ class MediaManagerAdapter {
         };
         let validated = true;
         let isDefault = this.manager.id === "default";
-        let imageSizes = {};
         if (isDefault) {
-            imageSizes = config?.imageSizes ?? {};
             // Check file type
             if (settings.allowedTypes.length &&
                 this.checkMIMEType(settings.allowedTypes, headers["content-type"])) {
@@ -93,17 +93,11 @@ class MediaManagerAdapter {
             let filename = (0, MediaManagerHelper_1.randomFileName)(req.body.name.replace(" ", "_"), "", true);
             let origFileName = req.body.name.replace(/\.[^\.]+$/, "");
             //save file
-            req.file("file").upload({
-                dirname: this.manager.dir,
-                saveAs: filename,
-            }, async (err, file) => {
+            req.file("file").upload({ dirname: this.manager.dir, saveAs: filename }, async (err, file) => {
                 if (err)
                     return res.serverError(err);
                 try {
-                    let item = await this.manager.upload(file[0], filename, origFileName);
-                    if (Object.keys(imageSizes).length) {
-                        await this.manager.createVariants(item[0], file[0], item[0], filename, imageSizes);
-                    }
+                    let item = await this.manager.upload(file[0], filename, origFileName, group);
                     return res.send({
                         msg: "success",
                         data: item,
@@ -119,9 +113,13 @@ class MediaManagerAdapter {
         return res.send({ data: await this.manager.getMeta(req.body.item) });
     }
     async setMeta(req, res) {
-        return res.send({
-            data: await this.manager.setMeta(req.body.item, req.body.data),
-        });
+        try {
+            await this.manager.setMeta(req.body.item, req.body.data);
+            return res.send({ massage: 'ok' });
+        }
+        catch (e) {
+            console.log(e);
+        }
     }
     /**
      * Check file type. Return false if the type is allowed.

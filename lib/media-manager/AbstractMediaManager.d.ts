@@ -1,22 +1,15 @@
 export interface Item {
     id: string;
-    /**
-     * it's mean version of the item
-     */
     parent: string;
-    /**
-     * it's mean version
-     */
-    children: Item[];
+    variants: Item[];
     mimeType: string;
     path: string;
     size: number;
-    image_size: {
-        width: number;
-        height: number;
-        type: string;
-    };
-    cropType: "thumb" | string;
+    /**
+     * size: lm | sm | any or locale: en | de | fr
+     */
+    tag: string;
+    group?: string;
     url: string;
     filename: string;
     meta: string[];
@@ -62,7 +55,7 @@ export declare abstract class File<T extends Item> {
      * @param origFileName
      * @param imageSizes
      */
-    abstract upload(file: UploaderFile, filename: string, origFileName: string): Promise<T[]>;
+    abstract upload(file: UploaderFile, filename: string, origFileName: string, group?: string): Promise<T[]>;
     /**
      * Get metadata for an item.
      * @param id
@@ -78,14 +71,12 @@ export declare abstract class File<T extends Item> {
      */
     abstract setMeta(id: string, data: {
         [key: string]: string;
-    }): Promise<{
-        msg: "success";
-    }>;
+    }): Promise<void>;
     /**
      * Get children of an item.
      * @param id
      */
-    abstract getChildren(id: string): Promise<Item[]>;
+    abstract getVariants(id: string): Promise<Item[]>;
     /**
      * Upload cropped image.
      * @param item
@@ -93,11 +84,10 @@ export declare abstract class File<T extends Item> {
      * @param fileName
      * @param config
      */
-    abstract uploadVarinat(item: Item, file: UploaderFile, fileName: string, config: {
+    abstract uploadVariant(item: Item, file: UploaderFile, fileName: string, config: {
         width: number;
         height: number;
-    }): Promise<Item>;
-    abstract createVariants(file: UploaderFile, parent: Item, filename: string, imageSizes: imageSizes): Promise<void>;
+    }, group?: string): Promise<Item>;
     /**
      * Delete an item.
      * @param id
@@ -108,12 +98,13 @@ export declare abstract class File<T extends Item> {
      * @param limit
      * @param skip
      * @param sort
+     * @param group
      */
-    abstract getItems(limit: number, skip: number, sort: string): Promise<{
+    abstract getItems(limit: number, skip: number, sort: string, group?: string): Promise<{
         data: Item[];
         next: boolean;
     }>;
-    abstract search(s: string): Promise<Item[]>;
+    abstract search(s: string, group?: string): Promise<Item[]>;
     abstract getOrirgin(id: string): Promise<string>;
 }
 /**
@@ -160,8 +151,9 @@ export declare abstract class AbstractMediaManager {
      * @param filename
      * @param origFileName
      * @param imageSizes
+     * @param group
      */
-    upload(file: UploaderFile, filename: string, origFileName: string): Promise<Item[]>;
+    upload(file: UploaderFile, filename: string, origFileName: string, group?: string): Promise<Item[]>;
     /**
      * Get item type.
      * @param type
@@ -172,9 +164,22 @@ export declare abstract class AbstractMediaManager {
      * Get all items.
      * @param limit
      * @param skip
+     * @param group
      * @param sort
      */
-    abstract getAll(limit: number, skip: number, sort: string): Promise<{
+    abstract getAll(limit: number, skip: number, sort: string, group?: string): Promise<{
+        data: Item[];
+        next: boolean;
+    }>;
+    /**
+     * Get items of a type.
+     * @param type
+     * @param limit
+     * @param skip
+     * @param sort
+     * @param group?
+     */
+    getItems(type: string, limit: number, skip: number, sort: string, group?: string): Promise<{
         data: Item[];
         next: boolean;
     }>;
@@ -188,33 +193,21 @@ export declare abstract class AbstractMediaManager {
     abstract saveRelations(data: Data, model: string, modelId: string, widgetName: string): Promise<void>;
     abstract getRelations(items: MediaManagerWidgetItem[]): Promise<MediaManagerWidgetItem[]>;
     /**
-     * Get items of a type.
-     * @param type
-     * @param limit
-     * @param skip
-     * @param sort
-     */
-    getItems(type: string, limit: number, skip: number, sort: string): Promise<{
-        data: Item[];
-        next: boolean;
-    }>;
-    /**
      * Search all items.
      * @param s
      */
-    abstract searchAll(s: string): Promise<Item[]>;
+    abstract searchAll(s: string, group?: string): Promise<Item[]>;
     /**
      * Search items by type.
      * @param s
      * @param type
      */
-    searchItems(s: string, type: string): Promise<Item[]>;
+    searchItems(s: string, type: string, group?: string): Promise<Item[]>;
     /**
      * Get children of an item.
      * @param item
      */
-    getChildren(item: Item): Promise<Item[]>;
-    createVariants(item: Item, file: UploaderFile, parent: Item, filename: string, imageSizes: imageSizes): Promise<void>;
+    getVariants(item: Item): Promise<Item[]>;
     /**
      * Upload cropped image.
      * @param item
@@ -225,7 +218,7 @@ export declare abstract class AbstractMediaManager {
     uploadVariant(item: Item, file: UploaderFile, fileName: string, config: {
         width: number;
         height: number;
-    }): Promise<Item>;
+    }, group?: string): Promise<Item>;
     /**
      * Get metadata of an item.
      * @param item
@@ -242,9 +235,7 @@ export declare abstract class AbstractMediaManager {
      */
     setMeta(item: Item, data: {
         [key: string]: string;
-    }): Promise<{
-        msg: "success";
-    }>;
+    }): Promise<void>;
     /**
      * Delete an item.
      * @param item

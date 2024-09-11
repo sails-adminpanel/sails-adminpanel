@@ -1,11 +1,5 @@
-import {
-    File,
-    Item,
-    MediaFileType,
-    UploaderFile,
-    imageSizes,
-} from "./AbstractMediaManager";
-import { randomFileName } from "./helpers/MediaManagerHelper";
+import { File, Item, MediaFileType, UploaderFile, imageSizes } from "./AbstractMediaManager";
+import { randomFileName, populateVariants } from "./helpers/MediaManagerHelper";
 import sizeOf from "image-size";
 import * as sharp from "sharp";
 
@@ -20,102 +14,93 @@ export class ImageItem extends File<Item> {
 
     public metaModel: string = "mediamanagermetaap";
 
+    public imageSizes: imageSizes = sails.config.adminpanel.mediamanager.imageSizes || {}
+
     constructor(path: string, dir: string) {
         super(path, dir);
     }
 
-    public async getItems(
-        limit: number,
-        skip: number,
-        sort: string,
-    ): Promise<{ data: Item[]; next: boolean }> {
+    public async getItems(limit: number, skip: number, sort: string, group: string): Promise<{ data: Item[]; next: boolean }> {
         let data: Item[] = await sails.models[this.model]
             .find({
-                where: { parent: null, mimeType: { contains: this.type } },
+                where: { parent: null, mimeType: { contains: this.type }, group: group },
                 limit: limit,
                 skip: skip,
                 sort: sort,
             })
-            .populate("children", { sort: sort });
+            .populate("variants", { sort: sort }).populate('meta');
 
         let next: number = (
             await sails.models[this.model].find({
-                where: { parent: null, mimeType: { contains: this.type } },
+                where: { parent: null, mimeType: { contains: this.type }, group: group },
                 limit: limit,
                 skip: skip === 0 ? limit : skip + limit,
                 sort: sort,
             })
         ).length;
+
+        for (let elem of data) {
+            elem.variants = await populateVariants(elem.variants, this.model)
+        }
+
         return {
             data: data,
             next: !!next,
         };
     }
 
-    public async search(s: string): Promise<Item[]> {
-        return await sails.models[this.model]
-            .find({
-                where: {
-                    filename: { contains: s },
-                    mimeType: { contains: this.type },
-                    parent: null,
-                },
-                sort: "createdAt DESC",
-            })
-            .populate("children", { sort: "createdAt DESC" });
+    public async search(s: string, group: string): Promise<Item[]> {
+        let data: Item[] = await sails.models[this.model]
+            .find({ where: { filename: { contains: s }, mimeType: { contains: this.type }, parent: null, group: group }, sort: "createdAt DESC", })
+            .populate("variants", { sort: "createdAt DESC" });
+        for (let elem of data) {
+            elem.variants = await populateVariants(elem.variants, this.model)
+        }
+        return data
     }
 
-    public async upload(
-        file: UploaderFile,
-        filename: string,
-        origFileName: string,
-    ): Promise<Item[]> {
+    public async upload(file: UploaderFile, filename: string, origFileName: string, group: string): Promise<Item[]> {
         let parent: Item = await sails.models[this.model]
             .create({
                 parent: null,
                 mimeType: file.type,
                 size: file.size,
                 path: file.fd,
-                cropType: "origin",
+                group: group,
+                tag: "origin",
                 filename: origFileName,
-                image_size: sizeOf(file.fd),
                 url: `/${this.path}/${filename}`,
             })
             .fetch();
 
-        await this.createEmptyMeta(parent.id);
+        await this.createMeta(parent.id);
+        await this.addFileMeta(file.fd, parent.id)
 
-        return (await sails.models[this.model]
-            .find({
-                where: { id: parent.id },
-            })
-            .populate("children")) as Item[];
+        // create file variants
+        if (Object.keys(this.imageSizes).length) {
+            await this.createVariants(file, parent, filename);
+        }
+
+
+        const item = (await sails.models[this.model].find({ where: { id: parent.id }, }).populate("variants").populate("meta"))[0] as Item;
+        item.variants = await populateVariants(item.variants, this.model)
+        return [item]
     }
 
-    public async getChildren(id: string): Promise<Item[]> {
-        return (
-            await sails.models[this.model]
-                .findOne({
-                    where: { id: id },
-                })
-                .populate("children", { sort: "createdAt DESC" })
-        ).children;
+    public async getVariants(id: string): Promise<Item[]> {
+        let items = (await sails.models[this.model].findOne({ where: { id: id }, }).populate("variants", { sort: "createdAt DESC" })).variants
+        return (await populateVariants(items, this.model))
     }
 
-    public async createVariants(
-        file: UploaderFile,
-        parent: Item,
-        filename: string,
-        imageSizes: imageSizes,
-    ): Promise<void> {
-        for (const sizeKey of Object.keys(imageSizes)) {
+    protected async createVariants(file: UploaderFile, parent: Item, filename: string): Promise<void> {
+        for (const sizeKey of Object.keys(this.imageSizes)) {
             let sizeName = randomFileName(filename, sizeKey, false);
 
-            let { width, height } = imageSizes[sizeKey];
+            let { width, height } = this.imageSizes[sizeKey];
 
             if (
-                parent.image_size.width < width ||
-                parent.image_size.height < height
+                sizeOf(file.fd).width < width ||
+                sizeOf(file.fd).height < height
             )
                 continue;
 
@@ -125,28 +110,27 @@ export class ImageItem extends File<Item> {
                 width,
                 height,
             );
-            await sails.models[this.model].create({
+
+            let newSize = await sails.models[this.model].create({
                 parent: parent.id,
                 mimeType: parent.mimeType,
                 size: newFile.size,
                 filename: parent.filename,
                 path: `${this.dir}${sizeName}`,
-                cropType: sizeKey,
-                image_size: sizeOf(`${this.dir}${sizeName}`),
+                tag: `saze:${sizeKey}`,
                 url: `/${this.path}/${sizeName}`,
-            });
+            }).fetch();
+
+            await this.addFileMeta(`${this.dir}${sizeName}`, newSize.id)
+
         }
     }
 
     public async getOrirgin(id: string): Promise<string> {
-        return (
-            await sails.models[this.model].findOne({
-                where: { id: id },
-            })
-        ).path;
+        return (await sails.models[this.model].findOne({ where: { id: id }, })).path;
     }
 
-    protected async createEmptyMeta(id: string) {
+    protected async createMeta(id: string): Promise<void> {
         //create empty meta
         let metaData: Meta = {
             author: "",
@@ -159,62 +143,57 @@ export class ImageItem extends File<Item> {
                 key: key,
                 value: metaData[key],
                 parent: id,
+                isPublic: true
             });
         }
+
     }
 
-    public async getMeta(
-        id: string,
-    ): Promise<{ key: string; value: string }[]> {
-        return (await sails.models[this.model].findOne(id).populate("meta"))
-            .meta;
+    protected async addFileMeta(file: string, id: string): Promise<void> {
+        await sails.models[this.metaModel].create({
+            key: 'imageSizes',
+            value: sizeOf(file),
+            parent: id,
+            isPublic: false
+        });
     }
 
-    async setMeta(
-        id: string,
-        data: { [p: string]: string },
-    ): Promise<{ msg: "success" }> {
+    public async getMeta(id: string,): Promise<{ key: string; value: string }[]> {
+        return (await sails.models[this.model].findOne(id).populate("meta", { where: { isPublic: true } })).meta;
+    }
+
+    async setMeta(id: string, data: { [p: string]: string },): Promise<void> {
         for (const key of Object.keys(data)) {
             await sails.models[this.metaModel].update(
                 { parent: id, key: key },
                 { value: data[key] },
             );
         }
-        return { msg: "success" };
     }
 
-    protected async resizeImage(
-        input: string,
-        output: string,
-        width: number,
-        height: number,
-    ) {
+    protected async resizeImage(input: string, output: string, width: number, height: number,) {
         return await sharp(input)
             .resize({ width: width, height: height })
             .toFile(output);
     }
 
-    public async uploadVarinat(
-        parent: Item,
-        file: UploaderFile,
-        filename: string,
-        config: {
-            width: number;
-            height: number;
-        },
-    ): Promise<Item> {
-        return await sails.models[this.model]
+    public async uploadVariant(parent: Item, file: UploaderFile, filename: string, config: { width: number; height: number; }, group: string): Promise<Item> {
+        let item: Item = await sails.models[this.model]
             .create({
                 parent: parent.id,
                 mimeType: file.type,
                 size: file.size,
                 path: file.fd,
+                group: group,
                 cropType: `${config.width}x${config.height}`,
                 filename: parent.filename,
                 image_size: sizeOf(file.fd),
                 url: `/${this.path}/${filename}`,
-            })
-            .fetch();
+            }).fetch();
+
+        await this.addFileMeta(file.fd, item.id)
+
+        return item
     }
 
     async delete(id: string): Promise<void> {
@@ -225,17 +204,14 @@ export class ImageItem extends File<Item> {
 export class TextItem extends ImageItem {
     public type: MediaFileType = "text";
 
-    public async upload(
-        file: UploaderFile,
-        filename: string,
-        origFileName: string,
-    ): Promise<Item[]> {
+    public async upload(file: UploaderFile, filename: string, origFileName: string, group: string): Promise<Item[]> {
         let parent: Item = await sails.models[this.model]
             .create({
                 parent: null,
                 mimeType: file.type,
                 size: file.size,
                 path: file.fd,
+                group: group,
                 filename: origFileName,
                 cropType: "origin",
                 image_size: null,
@@ -243,16 +219,16 @@ export class TextItem extends ImageItem {
             })
             .fetch();
 
-        await this.createEmptyMeta(parent.id);
+        await this.createMeta(parent.id);
 
         return sails.models[this.model]
             .find({
                 where: { id: parent.id },
             })
-            .populate("children");
+            .populate("variants");
     }
 
-    getChildren(): Promise<Item[]> {
+    getvariants(): Promise<Item[]> {
         return Promise.resolve([]);
     }
 

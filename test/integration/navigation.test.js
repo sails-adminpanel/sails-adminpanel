@@ -8,7 +8,7 @@ chai.use(chaiHttp);
 describe('Navigation', function () {
     this.timeout(50000);
     it("Check if the navigation is added correctly", async function () {
-        let CatalogHandler = sails.hooks.adminpanel.CatalogHandler();
+        let CatalogHandler = sails.hooks.adminpanel.getCatalogHandler();
         let navigation = await CatalogHandler.getCatalog('navigation');
         (0, chai_1.expect)(navigation.slug).to.equal('navigation');
     });

@@ -5,7 +5,7 @@ export declare class MediaManagerAdapter {
     delete(req: ReqType, res: ResType): Promise<import("sails-typescript").default.Response>;
     get(req: ReqType, res: ResType): Promise<import("sails-typescript").default.Response>;
     search(req: ReqType, res: ResType): Promise<import("sails-typescript").default.Response>;
-    getChildren(req: ReqType, res: ResType): Promise<import("sails-typescript").default.Response>;
+    getVariants(req: ReqType, res: ResType): Promise<import("sails-typescript").default.Response>;
     uploadCropped(req: ReqType, res: ResType): Promise<void>;
     upload(req: ReqType, res: ResType): Promise<void>;
     getMeta(req: ReqType, res: ResType): Promise<import("sails-typescript").default.Response>;

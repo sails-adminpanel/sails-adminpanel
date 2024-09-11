@@ -7,6 +7,7 @@ export function MountMediaManager(data) {
     app.provide("toJsonId", data.toJsonId);
     app.provide("config", data.config);
     app.provide("managerId", data.managerId);
+    app.provide("group", data.group);
     app.provide("initList", data.list);
     app.mount(data.id);
 }

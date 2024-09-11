@@ -1,4 +1,4 @@
-import {createApp} from 'vue';
+import { createApp } from 'vue';
 import App from './App.vue'
 import GridLayout from 'vue3-drr-grid-layout'
 
@@ -7,7 +7,7 @@ import ky from "ky";
 window.widgetsInit = {}
 
 const localLayout = JSON.parse(localStorage.getItem('widgets_layout'))
-let {widgetsDB} = await ky.get('/admin/widgets-get-all-db').json()
+let { widgetsDB } = await ky.get('/admin/widgets-get-all-db').json()
 
 widgetsDB = widgetsDB ?? []
 
@@ -26,13 +26,13 @@ async function init() {
 			findItem = widgetsDB.find(e => e.id === widget.id)
 		}
 		if (findItem && findItem.added) {
-			initWidgets.push({...widget, added: true})
+			initWidgets.push({ ...widget, added: true })
 		} else {
 			initWidgets.push(widget)
 		}
 	}
 	//console.log(initWidgets)
-	return {widgets: initWidgets}
+	return { widgets: initWidgets }
 }
 
 init().then(res => {

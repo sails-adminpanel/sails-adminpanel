@@ -1,6 +1,6 @@
 <template>
     <div class="relative">
-        <div class="relative cursor-pointer">
+        <div class="relative cursor-pointer w-fit">
             <img
                 :src="imageUrl"
                 alt=""

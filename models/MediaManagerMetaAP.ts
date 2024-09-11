@@ -1,5 +1,5 @@
-import {Attributes, ModelTypeDetection, Model} from "sails-typescript";
-import {v4 as uuid} from "uuid";
+import { Attributes, ModelTypeDetection, Model } from "sails-typescript";
+import { v4 as uuid } from "uuid";
 
 let a: Attributes;
 const attributes = a = {
@@ -12,6 +12,9 @@ const attributes = a = {
 	},
 	value: {
 		type: 'json'
+	},
+	isPublic: {
+		type: 'boolean'
 	},
 	parent: {
 		model: 'MediaManagerAP'

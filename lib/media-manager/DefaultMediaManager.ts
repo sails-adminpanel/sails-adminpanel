@@ -5,6 +5,7 @@ import {
     MediaManagerWidgetItem,
     Data,
 } from "./AbstractMediaManager";
+import { populateVariants } from "./helpers/MediaManagerHelper";
 import { ApplicationItem, ImageItem, TextItem, VideoItem } from "./Items";
 
 export class DefaultMediaManager extends AbstractMediaManager {
@@ -20,28 +21,28 @@ export class DefaultMediaManager extends AbstractMediaManager {
         this.itemTypes.push(new VideoItem(path, dir));
     }
 
-    public async getAll(
-        limit: number,
-        skip: number,
-        sort: string,
-    ): Promise<{ data: Item[]; next: boolean }> {
+    public async getAll(limit: number, skip: number, sort: string, group: string): Promise<{ data: Item[]; next: boolean }> {
         let data: Item[] = await sails.models[this.model]
             .find({
-                where: { parent: null },
+                where: { parent: null, group: group },
                 limit: limit,
                 skip: skip,
                 sort: sort, //@ts-ignore
             })
-            .populate("children", { sort: sort });
+            .populate("variants", { sort: sort }).populate('meta');
 
         let next: number = (
             await sails.models[this.model].find({
-                where: { parent: null },
+                where: { parent: null, group: group },
                 limit: limit,
                 skip: skip === 0 ? limit : skip + limit,
                 sort: sort,
             })
         ).length;
+
+        for (let elem of data) {
+            elem.variants = await populateVariants(elem.variants, this.model)
+        }
 
         return {
             data: data,
@@ -49,21 +50,20 @@ export class DefaultMediaManager extends AbstractMediaManager {
         };
     }
 
-    public async searchAll(s: string): Promise<Item[]> {
-        return await sails.models[this.model]
-            .find({
-                where: { filename: { contains: s }, parent: null },
-                sort: "createdAt DESC",
-            })
-            .populate("children", { sort: "createdAt DESC" });
+    public async searchAll(s: string, group: string): Promise<Item[]> {
+        let data: Item[] = await sails.models[this.model].find({
+            where: { filename: { contains: s }, parent: null, group: group },
+            sort: "createdAt DESC",
+        }).populate("variants", { sort: "createdAt DESC" }).populate('meta');
+
+        for (let elem of data) {
+            elem.variants = await populateVariants(elem.variants, this.model)
+        }
+
+        return data;
     }
 
-    public async saveRelations(
-        data: Data,
-        model: string,
-        modelId: string,
-        widgetName: string,
-    ): Promise<void> {
+    public async saveRelations(data: Data, model: string, modelId: string, widgetName: string,): Promise<void> {
         let modelAssociations = await sails.models[this.modelAssoc].find({
             where: { modelId: modelId, model: model, widgetName: widgetName },
         });
@@ -86,12 +86,10 @@ export class DefaultMediaManager extends AbstractMediaManager {
         }
     }
 
-    public async getRelations(
-        items: MediaManagerWidgetItem[],
-    ): Promise<MediaManagerWidgetItem[]> {
+    public async getRelations(items: MediaManagerWidgetItem[],): Promise<MediaManagerWidgetItem[]> {
         interface widgetItemVUE extends MediaManagerWidgetItem {
             mimeType: string;
-            children: Item[];
+            variants: Item[];
             url: string;
         }
         let widgetItems: widgetItemVUE[] = [];
@@ -99,39 +97,39 @@ export class DefaultMediaManager extends AbstractMediaManager {
             let file = (
                 await sails.models[this.model]
                     .find({ where: { id: item.id } })
-                    .populate("children", { sort: "createdAt DESC" })
+                    .populate("variants", { sort: "createdAt DESC" })
             )[0] as Item;
             widgetItems.push({
                 id: file.id,
                 mimeType: file.mimeType,
                 url: file.url,
-                children: file.children,
+                variants: file.variants,
             });
         }
         return widgetItems;
     }
 
-    public async updateRelations(
-        data: Data,
-        model: string,
-        modelId: string,
-        modelAttribute: string,
-    ): Promise<void> {
-        await this.deleteRelations(model, modelId);
-        await this.saveRelations(data, model, modelId, modelAttribute);
-    }
+    // public async updateRelations(
+    //     data: Data,
+    //     model: string,
+    //     modelId: string,
+    //     modelAttribute: string,
+    // ): Promise<void> {
+    //     await this.deleteRelations(model, modelId);
+    //     await this.saveRelations(data, model, modelId, modelAttribute);
+    // }
 
-    public async deleteRelations(
-        model: string,
-        modelId: string,
-    ): Promise<void> {
-        let modelAssociations = await sails.models[this.modelAssoc].find({
-            where: { modelId: modelId, model: model },
-        });
-        for (const modelAssociation of modelAssociations) {
-            await sails.models[this.modelAssoc]
-                .destroy(modelAssociation.id)
-                .fetch();
-        }
-    }
+    // public async deleteRelations(
+    //     model: string,
+    //     modelId: string,
+    // ): Promise<void> {
+    //     let modelAssociations = await sails.models[this.modelAssoc].find({
+    //         where: { modelId: modelId, model: model },
+    //     });
+    //     for (const modelAssociation of modelAssociations) {
+    //         await sails.models[this.modelAssoc]
+    //             .destroy(modelAssociation.id)
+    //             .fetch();
+    //     }
+    // }
 }

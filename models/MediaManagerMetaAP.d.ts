@@ -10,6 +10,9 @@ declare const attributes: {
     readonly value: {
         readonly type: "json";
     };
+    readonly isPublic: {
+        readonly type: "boolean";
+    };
     readonly parent: {
         readonly model: "MediaManagerAP";
     };
@@ -31,6 +34,9 @@ declare const model: {
         };
         readonly value: {
             readonly type: "json";
+        };
+        readonly isPublic: {
+            readonly type: "boolean";
         };
         readonly parent: {
             readonly model: "MediaManagerAP";

@@ -1,21 +1,21 @@
 import "mocha";
 import * as chai from "chai";
 import chaiHttp = require('chai-http');
-import {expect} from "chai";
+import { expect } from "chai";
 
 chai.use(chaiHttp);
 
-describe('Navigation', function () {
+describe('Navigation', function() {
 	this.timeout(50000);
-	it("Check if the navigation is added correctly", async function () {
-		let CatalogHandler = sails.hooks.adminpanel.CatalogHandler()
+	it("Check if the navigation is added correctly", async function() {
+		let CatalogHandler = sails.hooks.adminpanel.getCatalogHandler()
 		let navigation = await CatalogHandler.getCatalog('navigation')
 		expect(navigation.slug).to.equal('navigation');
 	})
 
-// TODO
-// The test does not pass. The rights access testing system should be refactored and rewritten
-	it("Checking access rights(TODO)", async function () {
+	// TODO
+	// The test does not pass. The rights access testing system should be refactored and rewritten
+	it("Checking access rights(TODO)", async function() {
 		// await GroupAP.destroy({name: "Test Group"});
 		// await UserAP.destroy({login: "test"});
 		//
@@ -28,7 +28,7 @@ describe('Navigation', function () {
 		// expect(res2.status).to.equal(403);
 	})
 
-	it("Write data", async function () {
+	it("Write data", async function() {
 		let agent = chai.request.agent(sails.hooks.http.app);
 		let s: string = ''
 		const res = await agent.post('/admin/model/page/add')
@@ -43,11 +43,11 @@ describe('Navigation', function () {
 
 		await agent.post('/admin/catalog/navigation/header')
 			.type('json')
-			.send({data: {record: res.body.record, parentId: "", type: "page"}, _method: 'createItem'});
+			.send({ data: { record: res.body.record, parentId: "", type: "page" }, _method: 'createItem' });
 
 		await agent.post('/admin/catalog/navigation/header')
 			.type('form')
-			.send({_method: 'getCatalog'});
+			.send({ _method: 'getCatalog' });
 
 		await agent.post('/admin/catalog/navigation/header')
 			.type('json')
@@ -65,7 +65,7 @@ describe('Navigation', function () {
 
 		const res5 = await agent.post('/admin/catalog/navigation/header')
 			.type('form')
-			.send({_method: 'getCatalog'});
+			.send({ _method: 'getCatalog' });
 
 		let page_1 = res5.body.catalog.nodes.filter((e: { title: string; }) => e.title === 'Page 1');
 		let group_1 = res5.body.catalog.nodes.filter((e_1: { title: string; }) => e_1.title === 'Group 1');

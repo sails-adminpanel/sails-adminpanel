@@ -4,13 +4,11 @@ export declare class DefaultMediaManager extends AbstractMediaManager {
     model: string;
     modelAssoc: string;
     constructor(id: string, path: string, dir: string);
-    getAll(limit: number, skip: number, sort: string): Promise<{
+    getAll(limit: number, skip: number, sort: string, group: string): Promise<{
         data: Item[];
         next: boolean;
     }>;
-    searchAll(s: string): Promise<Item[]>;
+    searchAll(s: string, group: string): Promise<Item[]>;
     saveRelations(data: Data, model: string, modelId: string, widgetName: string): Promise<void>;
     getRelations(items: MediaManagerWidgetItem[]): Promise<MediaManagerWidgetItem[]>;
-    updateRelations(data: Data, model: string, modelId: string, modelAttribute: string): Promise<void>;
-    deleteRelations(model: string, modelId: string): Promise<void>;
 }

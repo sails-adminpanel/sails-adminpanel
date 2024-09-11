@@ -119,6 +119,7 @@ const skip = ref(0);
 const isLoadMore = ref(true);
 const count = 5;
 const closeGallery = inject("closeGallery");
+const group = inject("group");
 
 onMounted(async () => {
     let galleryPopup = AdminPopUp.new();
@@ -134,7 +135,7 @@ onMounted(async () => {
 
 async function getData(type) {
     let data = await ky
-        .get(`${uploadUrl}?count=${count}&skip=0&type=${type}`)
+        .get(`${uploadUrl}?count=${count}&skip=0&type=${type}&group=${group}`)
         .json();
     mediaList.value = data.data;
     console.log(data);
@@ -154,7 +155,7 @@ provide("updateData", (item, newItem) => {
         if (obj.id === item.id) {
             return {
                 ...obj,
-                children: [...obj.children, newItem],
+                variants: [...obj.variants, newItem],
             };
         }
         return obj;
@@ -194,6 +195,7 @@ const search = debounce(async (e) => {
                 json: {
                     _method: "search",
                     type: type.value,
+                    group: group,
                     s: e.target.value,
                 },
             })

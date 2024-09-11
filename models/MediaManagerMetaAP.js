@@ -13,6 +13,9 @@ const attributes = a = {
     value: {
         type: 'json'
     },
+    isPublic: {
+        type: 'boolean'
+    },
     parent: {
         model: 'MediaManagerAP'
     }

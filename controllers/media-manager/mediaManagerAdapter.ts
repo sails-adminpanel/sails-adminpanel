@@ -1,8 +1,4 @@
-import {
-    AbstractMediaManager,
-    Item,
-    UploaderFile,
-} from "../../lib/media-manager/AbstractMediaManager";
+import { AbstractMediaManager, Item } from "../../lib/media-manager/AbstractMediaManager";
 import { randomFileName } from "../../lib/media-manager/helpers/MediaManagerHelper";
 import { MediaManagerConfig } from "../../interfaces/adminpanelConfig";
 
@@ -30,6 +26,7 @@ export class MediaManagerAdapter {
                 +req.query.count,
                 +req.query.skip,
                 "createdAt DESC",
+                req.query.group
             )) as resultType;
         } else {
             result = (await this.manager.getItems(
@@ -37,6 +34,7 @@ export class MediaManagerAdapter {
                 +req.query.count,
                 +req.query.skip,
                 "createdAt DESC",
+                req.query.group
             )) as resultType;
         }
         return res.send({
@@ -57,9 +55,9 @@ export class MediaManagerAdapter {
         return res.send({ data: data });
     }
 
-    public async getChildren(req: ReqType, res: ResType) {
+    public async getVariants(req: ReqType, res: ResType) {
         return res.send({
-            data: await this.manager.getChildren(req.body.item),
+            data: await this.manager.getVariants(req.body.item),
         });
     }
 
@@ -67,6 +65,7 @@ export class MediaManagerAdapter {
         const item: Item = JSON.parse(req.body.item);
         const config = JSON.parse(req.body.config);
         let filename = randomFileName(req.body.name, "", true);
+        const group = req.body.group as string
         req.file("file").upload(
             {
                 dirname: this.manager.dir,
@@ -81,6 +80,7 @@ export class MediaManagerAdapter {
                             file[0],
                             filename,
                             config,
+                            group
                         ),
                     });
                 } catch (e) {
@@ -91,8 +91,9 @@ export class MediaManagerAdapter {
     }
 
     public async upload(req: ReqType, res: ResType) {
-        const config: MediaManagerConfig | null =
-            sails.config.adminpanel.mediamanager || null;
+        const config: MediaManagerConfig | null = sails.config.adminpanel.mediamanager || null;
+        const group = req.body.group as string
+
         //@ts-ignore
         const upload = req.file("file")._files[0].stream,
             headers = upload.headers,
@@ -104,9 +105,7 @@ export class MediaManagerAdapter {
         let validated: boolean = true;
         let isDefault = this.manager.id === "default";
 
-        let imageSizes = {};
         if (isDefault) {
-            imageSizes = config?.imageSizes ?? {};
             // Check file type
             if (
                 settings.allowedTypes.length &&
@@ -130,44 +129,23 @@ export class MediaManagerAdapter {
         }
 
         if (validated) {
-            let filename = randomFileName(
-                req.body.name.replace(" ", "_"),
-                "",
-                true,
-            );
+            let filename = randomFileName(req.body.name.replace(" ", "_"), "", true);
             let origFileName = req.body.name.replace(/\.[^\.]+$/, "");
-            //save file
-            req.file("file").upload(
-                {
-                    dirname: this.manager.dir,
-                    saveAs: filename,
-                },
-                async (err, file) => {
-                    if (err) return res.serverError(err);
-                    try {
-                        let item = await this.manager.upload(
-                            file[0],
-                            filename,
-                            origFileName,
-                        );
-                        if (Object.keys(imageSizes).length) {
-                            await this.manager.createVariants(
-                                item[0],
-                                file[0],
-                                item[0],
-                                filename,
-                                imageSizes,
-                            );
-                        }
 
-                        return res.send({
-                            msg: "success",
-                            data: item,
-                        });
-                    } catch (e) {
-                        console.error(e);
-                    }
-                },
+            //save file
+            req.file("file").upload({ dirname: this.manager.dir, saveAs: filename }, async (err, file) => {
+                if (err) return res.serverError(err);
+                try {
+                    let item = await this.manager.upload(file[0], filename, origFileName, group);
+
+                    return res.send({
+                        msg: "success",
+                        data: item,
+                    });
+                } catch (e) {
+                    console.error(e);
+                }
+            },
             );
         }
     }
@@ -177,9 +155,12 @@ export class MediaManagerAdapter {
     }
 
     public async setMeta(req: ReqType, res: ResType) {
-        return res.send({
-            data: await this.manager.setMeta(req.body.item, req.body.data),
-        });
+        try {
+            await this.manager.setMeta(req.body.item, req.body.data)
+            return res.send({ massage: 'ok' });
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     /**

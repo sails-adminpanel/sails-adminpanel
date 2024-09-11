@@ -7,7 +7,7 @@ declare const attributes: {
     readonly parent: {
         readonly model: "MediaManagerAP";
     };
-    readonly children: {
+    readonly variants: {
         readonly collection: "MediaManagerAP";
         readonly via: "parent";
     };
@@ -20,10 +20,10 @@ declare const attributes: {
     readonly size: {
         readonly type: "number";
     };
-    readonly image_size: {
-        readonly type: "json";
+    readonly group: {
+        readonly type: "string";
     };
-    readonly cropType: {
+    readonly tag: {
         readonly type: "string";
     };
     readonly url: {
@@ -60,7 +60,7 @@ declare const model: {
         readonly parent: {
             readonly model: "MediaManagerAP";
         };
-        readonly children: {
+        readonly variants: {
             readonly collection: "MediaManagerAP";
             readonly via: "parent";
         };
@@ -73,10 +73,10 @@ declare const model: {
         readonly size: {
             readonly type: "number";
         };
-        readonly image_size: {
-            readonly type: "json";
+        readonly group: {
+            readonly type: "string";
         };
-        readonly cropType: {
+        readonly tag: {
             readonly type: "string";
         };
         readonly url: {

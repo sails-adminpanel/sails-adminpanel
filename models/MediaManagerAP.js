@@ -11,7 +11,7 @@ const attributes = a = {
     parent: {
         model: 'MediaManagerAP'
     },
-    children: {
+    variants: {
         collection: 'MediaManagerAP',
         via: 'parent'
     },
@@ -24,10 +24,10 @@ const attributes = a = {
     size: {
         type: 'number'
     },
-    image_size: {
-        type: "json"
+    group: {
+        type: "string"
     },
-    cropType: {
+    tag: {
         type: 'string'
     },
     url: {
@@ -76,8 +76,8 @@ const methods = {
         for (const metaElement of meta) {
             await MediaManagerMetaAP.destroy({ id: metaElement.id });
         }
-        let children = (await MediaManagerAP.find(criteria).populate('children'))[0].children;
-        for (const child of children) {
+        let variants = (await MediaManagerAP.find(criteria).populate('variants'))[0].variants;
+        for (const child of variants) {
             await MediaManagerAP.destroy({ id: child.id }).fetch();
         }
         cb();

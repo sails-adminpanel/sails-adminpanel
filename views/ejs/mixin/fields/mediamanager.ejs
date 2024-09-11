@@ -1,25 +1,25 @@
 <%
- const config = field.config.options?.config ? JSON.stringify(field.config.options.config) : JSON.stringify({})
+ const config = field.config
  %>
 <script>
 	if (document.readyState === "complete" || document.readyState === "loaded") {
 		MountMediaManager({
 			id: "#mediamanager-<%= key %>",
-			url: "/admin/media-manager-uploader/<%= field.config.options?.id ? field.config.options.id : 'default'%>",
+			url: "/admin/media-manager-uploader/<%= config.options?.id ? config.options.id : 'default'%>",
 			toJsonId: "mediamanager-json-<%= key %>",
-			config: <%- config %>,
+			group: "<%- config.options?.group ? config.options.group : '' %>",
 			list: <%- value ? JSON.stringify(value) : JSON.stringify([]) %>,
-			managerId: "<%= field.config.options?.id ? field.config.options.id : 'default'%>"
+			managerId: "<%= config.options?.id ? config.options.id : 'default'%>"
 			})
 	} else {
 		document.addEventListener('DOMContentLoaded', function () {
 			MountMediaManager({
 				id: "#mediamanager-<%= key %>",
-        url: "/admin/media-manager-uploader/<%= field.config.options?.id ? field.config.options.id : 'default'%>",
+        url: "/admin/media-manager-uploader/<%= config.options?.id ? config.options.id : 'default'%>",
         toJsonId: "mediamanager-json-<%= key %>",
-        config: <%- config %>,
+				group: "<%- config.options?.group ? config.options.group : '' %>",
 				list: <%- value ? JSON.stringify(value) : JSON.stringify([]) %>,
-				managerId: "<%- field.config.options?.id ? field.config.options.id : 'default' %>"
+				managerId: "<%- config.options?.id ? config.options.id : 'default' %>"
 				})
 		})
 	}

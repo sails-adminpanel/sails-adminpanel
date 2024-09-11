@@ -65,3 +65,15 @@ export async function deleteRelationsMediaManager(model: string, record: { [p: s
 		}
 	}
 }
+
+/**
+ * @param items
+ */
+export async function populateVariants(variants: Item[], model: string): Promise<Item[]> {
+	let items: Item[] = []
+	for (let variant of variants) {
+		variant = (await sails.models[model].find({ where: { id: variant.id } }).populate("meta"))[0]
+		items.push(variant)
+	}
+	return items;
+}
