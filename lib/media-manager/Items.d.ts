@@ -13,7 +13,7 @@ export declare class ImageItem extends File<Item> {
     search(s: string, group: string): Promise<Item[]>;
     upload(file: UploaderFile, filename: string, origFileName: string, group: string): Promise<Item[]>;
     getVariants(id: string): Promise<Item[]>;
-    protected createVariants(file: UploaderFile, parent: Item, filename: string): Promise<void>;
+    protected createVariants(file: UploaderFile, parent: Item, filename: string, group: string): Promise<void>;
     getOrirgin(id: string): Promise<string>;
     protected createMeta(id: string): Promise<void>;
     protected addFileMeta(file: string, id: string): Promise<void>;
@@ -25,18 +25,15 @@ export declare class ImageItem extends File<Item> {
         [p: string]: string;
     }): Promise<void>;
     protected resizeImage(input: string, output: string, width: number, height: number): Promise<sharp.OutputInfo>;
-    uploadVariant(parent: Item, file: UploaderFile, filename: string, config: {
-        width: number;
-        height: number;
-    }, group: string): Promise<Item>;
+    uploadVariant(parent: Item, file: UploaderFile, filename: string, group: string, localeId: string): Promise<Item>;
     delete(id: string): Promise<void>;
 }
 export declare class TextItem extends ImageItem {
     type: MediaFileType;
     upload(file: UploaderFile, filename: string, origFileName: string, group: string): Promise<Item[]>;
     getvariants(): Promise<Item[]>;
-    uploadCropped(): Promise<Item>;
-    createVariants(): Promise<void>;
+    uploadVariant(parent: Item, file: UploaderFile, filename: string, group: string, localeId: string): Promise<Item>;
+    getVariants(id: string): Promise<Item[]>;
 }
 export declare class ApplicationItem extends TextItem {
     type: MediaFileType;

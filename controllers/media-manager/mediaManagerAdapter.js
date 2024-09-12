@@ -41,20 +41,38 @@ class MediaManagerAdapter {
             data: await this.manager.getVariants(req.body.item),
         });
     }
-    async uploadCropped(req, res) {
+    async uploadVariant(req, res) {
         const item = JSON.parse(req.body.item);
-        const config = JSON.parse(req.body.config);
         let filename = (0, MediaManagerHelper_1.randomFileName)(req.body.name, "", true);
         const group = req.body.group;
-        req.file("file").upload({
-            dirname: this.manager.dir,
-            saveAs: filename,
-        }, async (err, file) => {
+        const isCropped = req.body.isCropped;
+        if (!isCropped) {
+            const config = sails.config.adminpanel.mediamanager || null;
+            //@ts-ignore
+            const upload = req.file("file")._files[0].stream, headers = upload.headers, byteCount = upload.byteCount, settings = {
+                allowedTypes: config?.allowMIME ?? [],
+                maxBytes: config?.maxByteSize ?? 2 * 1024 * 1024, // 2 Mb
+            };
+            // Check file type
+            if (settings.allowedTypes.length && this.checkMIMEType(settings.allowedTypes, headers["content-type"])) {
+                return res.send({
+                    msg: "Wrong filetype (" + headers["content-type"] + ").",
+                });
+            }
+            // Check file size
+            if (byteCount > settings.maxBytes) {
+                return res.send({
+                    msg: `The file size is larger than the allowed value: ${+settings.maxBytes / 1024 / 1024} Mb`,
+                });
+            }
+        }
+        req.file("file").upload({ dirname: this.manager.dir, saveAs: filename }, async (err, file) => {
             if (err)
                 return res.serverError(err);
             try {
                 return res.send({
-                    data: await this.manager.uploadVariant(item, file[0], filename, config, group),
+                    msg: "success",
+                    data: await this.manager.uploadVariant(item, file[0], filename, group, req.body.localeId),
                 });
             }
             catch (e) {
@@ -70,44 +88,42 @@ class MediaManagerAdapter {
             allowedTypes: config?.allowMIME ?? [],
             maxBytes: config?.maxByteSize ?? 2 * 1024 * 1024, // 2 Mb
         };
-        let validated = true;
         let isDefault = this.manager.id === "default";
         if (isDefault) {
             // Check file type
-            if (settings.allowedTypes.length &&
-                this.checkMIMEType(settings.allowedTypes, headers["content-type"])) {
-                validated = false;
-                res.send({
+            if (settings.allowedTypes.length && this.checkMIMEType(settings.allowedTypes, headers["content-type"])) {
+                // validated = false;
+                return res.send({
                     msg: "Wrong filetype (" + headers["content-type"] + ").",
                 });
             }
             // Check file size
             if (byteCount > settings.maxBytes) {
-                validated = false;
-                res.send({
+                // validated = false;
+                return res.send({
                     msg: `The file size is larger than the allowed value: ${+settings.maxBytes / 1024 / 1024} Mb`,
                 });
             }
         }
-        if (validated) {
-            let filename = (0, MediaManagerHelper_1.randomFileName)(req.body.name.replace(" ", "_"), "", true);
-            let origFileName = req.body.name.replace(/\.[^\.]+$/, "");
-            //save file
-            req.file("file").upload({ dirname: this.manager.dir, saveAs: filename }, async (err, file) => {
-                if (err)
-                    return res.serverError(err);
-                try {
-                    let item = await this.manager.upload(file[0], filename, origFileName, group);
-                    return res.send({
-                        msg: "success",
-                        data: item,
-                    });
-                }
-                catch (e) {
-                    console.error(e);
-                }
-            });
-        }
+        // if (validated) {
+        let filename = (0, MediaManagerHelper_1.randomFileName)(req.body.name.replace(" ", "_"), "", true);
+        let origFileName = req.body.name.replace(/\.[^\.]+$/, "");
+        //save file
+        req.file("file").upload({ dirname: this.manager.dir, saveAs: filename }, async (err, file) => {
+            if (err)
+                return res.serverError(err);
+            try {
+                let item = await this.manager.upload(file[0], filename, origFileName, group);
+                return res.send({
+                    msg: "success",
+                    data: item,
+                });
+            }
+            catch (e) {
+                console.error(e);
+            }
+        });
+        // }
     }
     async getMeta(req, res) {
         return res.send({ data: await this.manager.getMeta(req.body.item) });

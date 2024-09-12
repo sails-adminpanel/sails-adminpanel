@@ -193,7 +193,7 @@ const closeCropper = inject("closeCropper");
 const previewShow = ref(false);
 const previewRef = ref(null);
 const uploadUrl = inject("uploadUrl");
-const updateData = inject("updateData");
+const addVariant = inject("addVariant");
 const group = inject("group");
 const convertWebp = ref(false);
 const convertJpeg = ref(false);
@@ -284,15 +284,15 @@ async function save() {
             };
             let name = `${props.item.filename}_${config.width}x${config.height}.${parts[1]}`;
             const form = new FormData();
-            form.append("config", JSON.stringify(config));
             form.append("name", name);
             form.append("group", group);
+            form.append("isCropped", true);
             form.append("item", JSON.stringify(props.item));
-            form.append("_method", "cropped");
+            form.append("_method", "variant");
             form.append("file", blob);
             let res = await ky.post(uploadUrl, { body: form }).json();
-            if (res.data) {
-                updateData(props.item, res.data);
+            if (res.msg === "success") {
+                addVariant(props.item, res.data);
                 cropperPopup.value.closeModal();
             }
         },

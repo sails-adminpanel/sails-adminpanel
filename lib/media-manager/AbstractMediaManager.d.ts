@@ -84,10 +84,7 @@ export declare abstract class File<T extends Item> {
      * @param fileName
      * @param config
      */
-    abstract uploadVariant(item: Item, file: UploaderFile, fileName: string, config: {
-        width: number;
-        height: number;
-    }, group?: string): Promise<Item>;
+    abstract uploadVariant(item: Item, file: UploaderFile, fileName: string, group?: string, localeId?: string): Promise<Item>;
     /**
      * Delete an item.
      * @param id
@@ -145,6 +142,7 @@ export declare abstract class AbstractMediaManager {
      * @protected
      */
     protected constructor(id: string, path: string, dir: string);
+    private _bindAccessRight;
     /**
      * Upload an item.
      * @param file
@@ -215,10 +213,7 @@ export declare abstract class AbstractMediaManager {
      * @param fileName
      * @param config
      */
-    uploadVariant(item: Item, file: UploaderFile, fileName: string, config: {
-        width: number;
-        height: number;
-    }, group?: string): Promise<Item>;
+    uploadVariant(item: Item, file: UploaderFile, fileName: string, group?: string, localeId?: string): Promise<Item>;
     /**
      * Get metadata of an item.
      * @param item

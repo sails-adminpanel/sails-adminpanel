@@ -1,6 +1,6 @@
 <template>
     <div class="relative">
-        <div class="relative cursor-pointer w-fit">
+        <div class="relative cursor-pointer w-fit" :class="wrapperClass">
             <img
                 :src="imageUrl"
                 alt=""
@@ -35,9 +35,7 @@
                 <li v-if="imagesTypes.has(item.mimeType)" @click="openCropper">
                     Обрезать
                 </li>
-                <li v-if="imagesTypes.has(item.mimeType)" @click="openSizes">
-                    Варианты
-                </li>
+                <li @click="openSizes">Варианты</li>
                 <li @click="destroy">Удалить</li>
             </ul>
         </div>
@@ -53,7 +51,7 @@ import Cropper from "./Cropper.vue";
 import Variants from "./Variants.vue";
 import { provide, ref, computed, inject } from "vue";
 
-const props = defineProps(["item", "initClass"]);
+const props = defineProps(["item", "initClass", "wrapperClass"]);
 const metaVisible = ref(false);
 const cropperVisible = ref(false);
 const sizesVisible = ref(false);

@@ -1,3 +1,5 @@
+import { AccessRightsHelper } from "../../helper/accessRightsHelper";
+
 export interface Item {
     id: string;
     parent: string;
@@ -107,7 +109,7 @@ export abstract class File<T extends Item> {
      * @param fileName
      * @param config
      */
-    public abstract uploadVariant(item: Item, file: UploaderFile, fileName: string, config: { width: number; height: number; }, group?: string): Promise<Item>;
+    public abstract uploadVariant(item: Item, file: UploaderFile, fileName: string, group?: string, localeId?: string): Promise<Item>;
 
     /**
      * Delete an item.
@@ -171,6 +173,18 @@ export abstract class AbstractMediaManager {
         this.id = id;
         this.path = path;
         this.dir = dir;
+        this._bindAccessRight()
+    }
+
+    private _bindAccessRight() {
+        setTimeout(() => {
+            AccessRightsHelper.registerToken({
+                id: `mediaManager-${this.id}`,
+                name: this.id,
+                description: `Access to edit catalog for ${this.id}`,
+                department: 'catalog'
+            });
+        }, 100)
     }
 
     /**
@@ -259,9 +273,9 @@ export abstract class AbstractMediaManager {
      * @param fileName
      * @param config
      */
-    public uploadVariant(item: Item, file: UploaderFile, fileName: string, config: { width: number; height: number; }, group?: string): Promise<Item> {
+    public uploadVariant(item: Item, file: UploaderFile, fileName: string, group?: string, localeId?: string): Promise<Item> {
         const parts = item.mimeType.split("/");
-        return this.getItemType(parts[0])?.uploadVariant(item, file, fileName, config, group);
+        return this.getItemType(parts[0])?.uploadVariant(item, file, fileName, group, localeId);
     }
 
     /**

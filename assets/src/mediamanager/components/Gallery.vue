@@ -150,7 +150,19 @@ provide("deleteData", (elem) => {
     mediaList.value = mediaList.value.filter((obj) => obj.id !== elem.id);
 });
 
-provide("updateData", (item, newItem) => {
+provide("deleteVariant", (item, variant) => {
+    mediaList.value = mediaList.value.map((obj) => {
+        if (obj.id === item.id) {
+            return {
+                ...obj,
+                variants: obj.variants.filter((e) => e.id !== variant.id),
+            };
+        }
+        return obj;
+    });
+});
+
+provide("addVariant", (item, newItem) => {
     mediaList.value = mediaList.value.map((obj) => {
         if (obj.id === item.id) {
             return {

@@ -1,11 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.mediaManagerController = mediaManagerController;
+const accessRightsHelper_1 = require("../../helper/accessRightsHelper");
 const MediaManagerHandler_1 = require("../../lib/media-manager/MediaManagerHandler");
 const mediaManagerAdapter_1 = require("./mediaManagerAdapter");
 async function mediaManagerController(req, res) {
     const method = req.method.toUpperCase();
     let id = req.param('id') ? req.param('id') : '';
+    if (sails.config.adminpanel.auth) {
+        if (!req.session.UserAP) {
+            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+        }
+        else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`catalog-${id}`, req.session.UserAP)) {
+            return res.sendStatus(403);
+        }
+    }
     if (!id) {
         return res.sendStatus(404);
     }
@@ -22,8 +31,8 @@ async function mediaManagerController(req, res) {
                 return await manager.setMeta(req, res);
             case 'getMeta':
                 return await manager.getMeta(req, res);
-            case 'cropped':
-                return await manager.uploadCropped(req, res);
+            case 'variant':
+                return await manager.uploadVariant(req, res);
             case 'getChildren':
                 return await manager.getVariants(req, res);
             case 'search':

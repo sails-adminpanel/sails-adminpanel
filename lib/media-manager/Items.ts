@@ -78,9 +78,8 @@ export class ImageItem extends File<Item> {
 
         // create file variants
         if (Object.keys(this.imageSizes).length) {
-            await this.createVariants(file, parent, filename);
+            await this.createVariants(file, parent, filename, group);
         }
-
 
         const item = (await sails.models[this.model].find({ where: { id: parent.id }, }).populate("variants").populate("meta"))[0] as Item;
         item.variants = await populateVariants(item.variants, this.model)
@@ -92,7 +91,7 @@ export class ImageItem extends File<Item> {
         return (await populateVariants(items, this.model))
     }
 
-    protected async createVariants(file: UploaderFile, parent: Item, filename: string): Promise<void> {
+    protected async createVariants(file: UploaderFile, parent: Item, filename: string, group: string): Promise<void> {
         for (const sizeKey of Object.keys(this.imageSizes)) {
             let sizeName = randomFileName(filename, sizeKey, false);
 
@@ -116,6 +115,7 @@ export class ImageItem extends File<Item> {
                 mimeType: parent.mimeType,
                 size: newFile.size,
                 filename: parent.filename,
+                group: group,
                 path: `${this.dir}${sizeName}`,
                 tag: `saze:${sizeKey}`,
                 url: `/${this.path}/${sizeName}`,
@@ -177,7 +177,8 @@ export class ImageItem extends File<Item> {
             .toFile(output);
     }
 
-    public async uploadVariant(parent: Item, file: UploaderFile, filename: string, config: { width: number; height: number; }, group: string): Promise<Item> {
+    public async uploadVariant(parent: Item, file: UploaderFile, filename: string, group: string, localeId: string): Promise<Item> {
+        let { width, height } = sizeOf(file.fd)
         let item: Item = await sails.models[this.model]
             .create({
                 parent: parent.id,
@@ -185,15 +186,15 @@ export class ImageItem extends File<Item> {
                 size: file.size,
                 path: file.fd,
                 group: group,
-                cropType: `${config.width}x${config.height}`,
+                tag: localeId ? `loc:${localeId}` : `size:${width}x${height}`,
                 filename: parent.filename,
-                image_size: sizeOf(file.fd),
                 url: `/${this.path}/${filename}`,
             }).fetch();
 
         await this.addFileMeta(file.fd, item.id)
 
-        return item
+        const variant = (await sails.models[this.model].find({ where: { id: item.id }, }).populate("meta"))[0] as Item;
+        return variant
     }
 
     async delete(id: string): Promise<void> {
@@ -201,6 +202,9 @@ export class ImageItem extends File<Item> {
     }
 }
 
+/*
+ * Text item
+ */
 export class TextItem extends ImageItem {
     public type: MediaFileType = "text";
 
@@ -213,31 +217,43 @@ export class TextItem extends ImageItem {
                 path: file.fd,
                 group: group,
                 filename: origFileName,
-                cropType: "origin",
-                image_size: null,
+                tag: "origin",
                 url: `/${this.path}/${filename}`,
             })
             .fetch();
 
         await this.createMeta(parent.id);
 
-        return sails.models[this.model]
-            .find({
-                where: { id: parent.id },
-            })
-            .populate("variants");
+        const item = (await sails.models[this.model].find({ where: { id: parent.id }, }).populate("variants").populate("meta"))[0] as Item;
+        item.variants = await populateVariants(item.variants, this.model)
+        return [item]
     }
 
     getvariants(): Promise<Item[]> {
         return Promise.resolve([]);
     }
 
-    uploadCropped(): Promise<Item> {
-        return Promise.resolve(undefined);
+    public async uploadVariant(parent: Item, file: UploaderFile, filename: string, group: string, localeId: string): Promise<Item> {
+        let variants = parent.variants.filter(e => /^loc:/.test(e.tag) === false)
+        let item: Item = await sails.models[this.model]
+            .create({
+                parent: parent.id,
+                mimeType: file.type,
+                size: file.size,
+                path: file.fd,
+                group: group,
+                tag: localeId ? `loc:${localeId}` : `ver: ${variants.length + 1}`,
+                filename: parent.filename,
+                url: `/${this.path}/${filename}`,
+            }).fetch();
+
+        const variant = (await sails.models[this.model].find({ where: { id: item.id }, }).populate("meta"))[0] as Item;
+        return variant
     }
 
-    createVariants(): Promise<void> {
-        return Promise.resolve(undefined)
+    public async getVariants(id: string): Promise<Item[]> {
+        let items = (await sails.models[this.model].findOne({ where: { id: id }, }).populate("variants", { sort: "createdAt DESC" })).variants
+        return (await populateVariants(items, this.model))
     }
 }
 

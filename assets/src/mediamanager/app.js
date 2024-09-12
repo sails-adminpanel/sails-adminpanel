@@ -1,5 +1,6 @@
 import { createApp } from "vue";
 import App from "./App.vue";
+import './style.css'
 
 export function MountMediaManager(data) {
     let app = createApp(App);

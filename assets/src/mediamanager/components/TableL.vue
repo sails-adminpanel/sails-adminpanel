@@ -21,7 +21,12 @@
                                 <th scope="col" class="p-2 text-left">
                                     W x H (orig.)
                                 </th>
-                                <th scope="col" class="p-2 text-left">Sizes</th>
+                                <th scope="col" class="p-2 text-left">
+                                    Sizes/Ver
+                                </th>
+                                <th scope="col" class="p-2 text-left">
+                                    Locales
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -33,6 +38,7 @@
                                     <Image
                                         :item="item"
                                         init-class="w-full h-full max-w-[75px]"
+                                        wrapper-class="max-w-[75px]"
                                         alt=""
                                     />
                                 </td>
@@ -54,8 +60,40 @@
                                 </td>
                                 <td class="p-2">
                                     <template v-if="item.variants.length">
+                                        <p v-for="variant in item.variants">
+                                            <span
+                                                v-if="
+                                                    imagesTypes.has(
+                                                        item.mimeType,
+                                                    )
+                                                "
+                                            >
+                                                {{ imageSize(variant.meta) }}
+                                            </span>
+                                            <span v-else>
+                                                <template
+                                                    v-if="
+                                                        /^ver:/.test(
+                                                            variant.tag,
+                                                        )
+                                                    "
+                                                >
+                                                    {{ variant.tag }}
+                                                </template>
+                                            </span>
+                                        </p>
+                                    </template>
+                                    <span v-else>---</span>
+                                </td>
+                                <td class="p-2">
+                                    <template v-if="item.variants.length">
                                         <p v-for="item in item.variants">
-                                            {{ imageSize(item.meta) }}
+                                            <span
+                                                v-if="/^loc:/.test(item.tag)"
+                                                >{{
+                                                    item.tag.replace("loc:", "")
+                                                }}</span
+                                            >
                                         </p>
                                     </template>
                                     <span v-else>---</span>
@@ -79,6 +117,12 @@ export default {
 import Image from "./Image.vue";
 
 const props = defineProps(["mediaList"]);
+const imagesTypes = new Set([
+    "image/gif",
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+]);
 
 function getDate(t) {
     let date = new Date(t);
