@@ -1,4 +1,4 @@
-import { AbstractMediaManager, Item } from "../../lib/media-manager/AbstractMediaManager";
+import { AbstractMediaManager, MediaManagerItem } from "../../lib/media-manager/AbstractMediaManager";
 import { randomFileName } from "../../lib/media-manager/helpers/MediaManagerHelper";
 import { MediaManagerConfig } from "../../interfaces/adminpanelConfig";
 
@@ -17,7 +17,7 @@ export class MediaManagerAdapter {
     public async get(req: ReqType, res: ResType) {
         let type = req.query.type as string;
         interface resultType {
-            data: Item[];
+            data: MediaManagerItem[];
             next: boolean;
         }
         let result: resultType;
@@ -46,7 +46,7 @@ export class MediaManagerAdapter {
     public async search(req: ReqType, res: ResType) {
         let s = req.body.s as string;
         let type = req.body.type as string;
-        let data: Item[];
+        let data: MediaManagerItem[];
         if (type === "all") {
             data = await this.manager.searchAll(s);
         } else {
@@ -61,8 +61,8 @@ export class MediaManagerAdapter {
         });
     }
 
-    public async uploadVariant(req: ReqType, res: ResType) {
-        const item: Item = JSON.parse(req.body.item);
+    public async uploadVariant(req: ReqType, res: ResType): Promise<void> {
+        const item: MediaManagerItem = JSON.parse(req.body.item);
         let filename = randomFileName(req.body.name, "", true);
         const group = req.body.group as string
         const isCropped = req.body.isCropped
@@ -80,15 +80,17 @@ export class MediaManagerAdapter {
                 };
             // Check file type
             if (settings.allowedTypes.length && this.checkMIMEType(settings.allowedTypes, headers["content-type"])) {
-                return res.send({
+                res.send({
                     msg: "Wrong filetype (" + headers["content-type"] + ").",
                 });
+                return 
             }
             // Check file size
             if (byteCount > settings.maxBytes) {
-                return res.send({
+                res.send({
                     msg: `The file size is larger than the allowed value: ${+settings.maxBytes / 1024 / 1024} Mb`,
                 });
+                return 
             }
 
         }
@@ -112,7 +114,7 @@ export class MediaManagerAdapter {
         });
     }
 
-    public async upload(req: ReqType, res: ResType) {
+    public async upload(req: ReqType, res: ResType): Promise<void> {
         const config: MediaManagerConfig | null = sails.config.adminpanel.mediamanager || null;
         const group = req.body.group as string
 
@@ -130,16 +132,18 @@ export class MediaManagerAdapter {
             // Check file type
             if (settings.allowedTypes.length && this.checkMIMEType(settings.allowedTypes, headers["content-type"])) {
                 // validated = false;
-                return res.send({
+                res.send({
                     msg: "Wrong filetype (" + headers["content-type"] + ").",
                 });
+                return 
             }
             // Check file size
             if (byteCount > settings.maxBytes) {
                 // validated = false;
-                return res.send({
+                res.send({
                     msg: `The file size is larger than the allowed value: ${+settings.maxBytes / 1024 / 1024} Mb`,
                 });
+                return 
             }
         }
 
@@ -169,10 +173,11 @@ export class MediaManagerAdapter {
         return res.send({ data: await this.manager.getMeta(req.body.item) });
     }
 
-    public async setMeta(req: ReqType, res: ResType) {
+    public async setMeta(req: ReqType, res: ResType): Promise<void> {
         try {
             await this.manager.setMeta(req.body.item, req.body.data)
-            return res.send({ massage: 'ok' });
+            res.send({ massage: 'ok' });
+            return 
         } catch (e) {
             console.log(e)
         }

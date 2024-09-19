@@ -7,6 +7,8 @@ export class FormHelper {
     public static get(slug: string): AdminpanelConfig["forms"]["data"][0] {
         if (sails.config.adminpanel.forms && sails.config.adminpanel.forms !== null) {
             return sails.config.adminpanel.forms.data[slug]
+        } else {
+            throw `Form with slug ${slug} not found`
         }
     }
 

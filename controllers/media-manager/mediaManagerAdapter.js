@@ -55,15 +55,17 @@ class MediaManagerAdapter {
             };
             // Check file type
             if (settings.allowedTypes.length && this.checkMIMEType(settings.allowedTypes, headers["content-type"])) {
-                return res.send({
+                res.send({
                     msg: "Wrong filetype (" + headers["content-type"] + ").",
                 });
+                return;
             }
             // Check file size
             if (byteCount > settings.maxBytes) {
-                return res.send({
+                res.send({
                     msg: `The file size is larger than the allowed value: ${+settings.maxBytes / 1024 / 1024} Mb`,
                 });
+                return;
             }
         }
         req.file("file").upload({ dirname: this.manager.dir, saveAs: filename }, async (err, file) => {
@@ -93,16 +95,18 @@ class MediaManagerAdapter {
             // Check file type
             if (settings.allowedTypes.length && this.checkMIMEType(settings.allowedTypes, headers["content-type"])) {
                 // validated = false;
-                return res.send({
+                res.send({
                     msg: "Wrong filetype (" + headers["content-type"] + ").",
                 });
+                return;
             }
             // Check file size
             if (byteCount > settings.maxBytes) {
                 // validated = false;
-                return res.send({
+                res.send({
                     msg: `The file size is larger than the allowed value: ${+settings.maxBytes / 1024 / 1024} Mb`,
                 });
+                return;
             }
         }
         // if (validated) {
@@ -131,7 +135,8 @@ class MediaManagerAdapter {
     async setMeta(req, res) {
         try {
             await this.manager.setMeta(req.body.item, req.body.data);
-            return res.send({ massage: 'ok' });
+            res.send({ massage: 'ok' });
+            return;
         }
         catch (e) {
             console.log(e);

@@ -13,10 +13,12 @@ async function listJson(req, res) {
         }
         if (sails.config.adminpanel.auth) {
             if (!req.session.UserAP) {
-                return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+                res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+                return;
             }
             else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`read-${entity.name}-model`, req.session.UserAP)) {
-                return res.sendStatus(403);
+                res.sendStatus(403);
+                return;
             }
         }
         let fields = fieldsHelper_1.FieldsHelper.getFields(req, entity, 'list');
@@ -28,7 +30,8 @@ async function listJson(req, res) {
                 return;
             }
             // Directly send this data as output to Datatable
-            return res.send(data);
+            res.send(data);
+            return;
         });
     }
     catch (error) {

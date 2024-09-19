@@ -1,15 +1,19 @@
 import {
     AbstractMediaManager,
-    Item,
+    MediaManagerItem,
     File,
     MediaManagerWidgetItem,
-    Data,
+    MediaManagerWidgetData,
+    MediaManagerWidgetClientItem,
+    SortCriteria,
 } from "./AbstractMediaManager";
 import { populateVariants } from "./helpers/MediaManagerHelper";
 import { ApplicationItem, ImageItem, TextItem, VideoItem } from "./Items";
 
+
+
 export class DefaultMediaManager extends AbstractMediaManager {
-    public readonly itemTypes: File<Item>[] = [];
+    public readonly itemTypes: File<MediaManagerItem>[] = [];
     public model: string = "mediamanagerap";
     public modelAssoc: string = "mediamanagerassociationsap";
 
@@ -21,8 +25,8 @@ export class DefaultMediaManager extends AbstractMediaManager {
         this.itemTypes.push(new VideoItem(path, dir));
     }
 
-    public async getAll(limit: number, skip: number, sort: string, group: string): Promise<{ data: Item[]; next: boolean }> {
-        let data: Item[] = await sails.models[this.model]
+    public async getAll(limit: number, skip: number, sort: SortCriteria, group: string): Promise<{ data: MediaManagerItem[]; next: boolean }> {
+        let data: MediaManagerItem[] = await sails.models[this.model]
             .find({
                 where: { parent: null, group: group },
                 limit: limit,
@@ -50,11 +54,13 @@ export class DefaultMediaManager extends AbstractMediaManager {
         };
     }
 
-    public async searchAll(s: string, group: string): Promise<Item[]> {
-        let data: Item[] = await sails.models[this.model].find({
+    public async searchAll(s: string, group: string): Promise<MediaManagerItem[]> {
+        let data: MediaManagerItem[] = await sails.models[this.model].find({
             where: { filename: { contains: s }, parent: null, group: group },
             sort: "createdAt DESC",
-        }).populate("variants", { sort: "createdAt DESC" }).populate('meta');
+        }).populate("variants", { sort: "createdAt DESC" }).populate('meta')
+        // This limitation is made strictly, if your code solves this please make a PR
+        .limit(1000);
 
         for (let elem of data) {
             elem.variants = await populateVariants(elem.variants, this.model)
@@ -63,7 +69,7 @@ export class DefaultMediaManager extends AbstractMediaManager {
         return data;
     }
 
-    public async saveRelations(data: Data, model: string, modelId: string, widgetName: string,): Promise<void> {
+    public async setRelations(data: MediaManagerWidgetData, model: string, modelId: string, widgetName: string,): Promise<void> {
         let modelAssociations = await sails.models[this.modelAssoc].find({
             where: { modelId: modelId, model: model, widgetName: widgetName },
         });
@@ -86,19 +92,14 @@ export class DefaultMediaManager extends AbstractMediaManager {
         }
     }
 
-    public async getRelations(items: MediaManagerWidgetItem[],): Promise<MediaManagerWidgetItem[]> {
-        interface widgetItemVUE extends MediaManagerWidgetItem {
-            mimeType: string;
-            variants: Item[];
-            url: string;
-        }
-        let widgetItems: widgetItemVUE[] = [];
+    public async getRelations(items: MediaManagerWidgetItem[],): Promise<MediaManagerWidgetClientItem[]> {
+        let widgetItems: MediaManagerWidgetClientItem[] = [];
         for (const item of items) {
             let file = (
                 await sails.models[this.model]
                     .find({ where: { id: item.id } })
                     .populate("variants", { sort: "createdAt DESC" })
-            )[0] as Item;
+            )[0] as MediaManagerItem;
             widgetItems.push({
                 id: file.id,
                 mimeType: file.mimeType,
@@ -110,13 +111,13 @@ export class DefaultMediaManager extends AbstractMediaManager {
     }
 
     // public async updateRelations(
-    //     data: Data,
+    //     data: MediaManagerWidgetData,
     //     model: string,
     //     modelId: string,
     //     modelAttribute: string,
     // ): Promise<void> {
     //     await this.deleteRelations(model, modelId);
-    //     await this.saveRelations(data, model, modelId, modelAttribute);
+    //     await this.setRelations(data, model, modelId, modelAttribute);
     // }
 
     // public async deleteRelations(

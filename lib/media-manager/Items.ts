@@ -1,4 +1,4 @@
-import { File, Item, MediaFileType, UploaderFile, imageSizes } from "./AbstractMediaManager";
+import { File, MediaManagerItem, MediaFileType, UploaderFile, imageSizes, SortCriteria } from "./AbstractMediaManager";
 import { randomFileName, populateVariants } from "./helpers/MediaManagerHelper";
 import sizeOf from "image-size";
 import * as sharp from "sharp";
@@ -7,7 +7,7 @@ interface Meta {
     [key: string]: string;
 }
 
-export class ImageItem extends File<Item> {
+export class ImageItem extends File<MediaManagerItem> {
     public type: MediaFileType = "image";
 
     public model: string = "mediamanagerap";
@@ -20,8 +20,8 @@ export class ImageItem extends File<Item> {
         super(path, dir);
     }
 
-    public async getItems(limit: number, skip: number, sort: string, group: string): Promise<{ data: Item[]; next: boolean }> {
-        let data: Item[] = await sails.models[this.model]
+    public async getItems(limit: number, skip: number, sort: SortCriteria, group: string): Promise<{ data: MediaManagerItem[]; next: boolean }> {
+        let data: MediaManagerItem[] = await sails.models[this.model]
             .find({
                 where: { parent: null, mimeType: { contains: this.type }, group: group },
                 limit: limit,
@@ -49,8 +49,8 @@ export class ImageItem extends File<Item> {
         };
     }
 
-    public async search(s: string, group: string): Promise<Item[]> {
-        let data: Item[] = await sails.models[this.model]
+    public async search(s: string, group: string): Promise<MediaManagerItem[]> {
+        let data: MediaManagerItem[] = await sails.models[this.model]
             .find({ where: { filename: { contains: s }, mimeType: { contains: this.type }, parent: null, group: group }, sort: "createdAt DESC", })
             .populate("variants", { sort: "createdAt DESC" });
         for (let elem of data) {
@@ -59,8 +59,8 @@ export class ImageItem extends File<Item> {
         return data
     }
 
-    public async upload(file: UploaderFile, filename: string, origFileName: string, group: string): Promise<Item[]> {
-        let parent: Item = await sails.models[this.model]
+    public async upload(file: UploaderFile, filename: string, origFileName: string, group: string): Promise<MediaManagerItem[]> {
+        let parent: MediaManagerItem = await sails.models[this.model]
             .create({
                 parent: null,
                 mimeType: file.type,
@@ -81,17 +81,17 @@ export class ImageItem extends File<Item> {
             await this.createVariants(file, parent, filename, group);
         }
 
-        const item = (await sails.models[this.model].find({ where: { id: parent.id }, }).populate("variants").populate("meta"))[0] as Item;
+        const item = (await sails.models[this.model].find({ where: { id: parent.id }, }).populate("variants").populate("meta"))[0] as MediaManagerItem;
         item.variants = await populateVariants(item.variants, this.model)
         return [item]
     }
 
-    public async getVariants(id: string): Promise<Item[]> {
+    public async getVariants(id: string): Promise<MediaManagerItem[]> {
         let items = (await sails.models[this.model].findOne({ where: { id: id }, }).populate("variants", { sort: "createdAt DESC" })).variants
         return (await populateVariants(items, this.model))
     }
 
-    protected async createVariants(file: UploaderFile, parent: Item, filename: string, group: string): Promise<void> {
+    protected async createVariants(file: UploaderFile, parent: MediaManagerItem, filename: string, group: string): Promise<void> {
         for (const sizeKey of Object.keys(this.imageSizes)) {
             let sizeName = randomFileName(filename, sizeKey, false);
 
@@ -177,9 +177,9 @@ export class ImageItem extends File<Item> {
             .toFile(output);
     }
 
-    public async uploadVariant(parent: Item, file: UploaderFile, filename: string, group: string, localeId: string): Promise<Item> {
+    public async uploadVariant(parent: MediaManagerItem, file: UploaderFile, filename: string, group: string, localeId: string): Promise<MediaManagerItem> {
         let { width, height } = sizeOf(file.fd)
-        let item: Item = await sails.models[this.model]
+        let item: MediaManagerItem = await sails.models[this.model]
             .create({
                 parent: parent.id,
                 mimeType: file.type,
@@ -193,7 +193,7 @@ export class ImageItem extends File<Item> {
 
         await this.addFileMeta(file.fd, item.id)
 
-        const variant = (await sails.models[this.model].find({ where: { id: item.id }, }).populate("meta"))[0] as Item;
+        const variant = (await sails.models[this.model].find({ where: { id: item.id }, }).populate("meta"))[0] as MediaManagerItem;
         return variant
     }
 
@@ -208,8 +208,8 @@ export class ImageItem extends File<Item> {
 export class TextItem extends ImageItem {
     public type: MediaFileType = "text";
 
-    public async upload(file: UploaderFile, filename: string, origFileName: string, group: string): Promise<Item[]> {
-        let parent: Item = await sails.models[this.model]
+    public async upload(file: UploaderFile, filename: string, origFileName: string, group: string): Promise<MediaManagerItem[]> {
+        let parent: MediaManagerItem = await sails.models[this.model]
             .create({
                 parent: null,
                 mimeType: file.type,
@@ -224,18 +224,18 @@ export class TextItem extends ImageItem {
 
         await this.createMeta(parent.id);
 
-        const item = (await sails.models[this.model].find({ where: { id: parent.id }, }).populate("variants").populate("meta"))[0] as Item;
+        const item = (await sails.models[this.model].find({ where: { id: parent.id }, }).populate("variants").populate("meta"))[0] as MediaManagerItem;
         item.variants = await populateVariants(item.variants, this.model)
         return [item]
     }
 
-    getvariants(): Promise<Item[]> {
+    getvariants(): Promise<MediaManagerItem[]> {
         return Promise.resolve([]);
     }
 
-    public async uploadVariant(parent: Item, file: UploaderFile, filename: string, group: string, localeId: string): Promise<Item> {
+    public async uploadVariant(parent: MediaManagerItem, file: UploaderFile, filename: string, group: string, localeId: string): Promise<MediaManagerItem> {
         let variants = parent.variants.filter(e => /^loc:/.test(e.tag) === false)
-        let item: Item = await sails.models[this.model]
+        let item: MediaManagerItem = await sails.models[this.model]
             .create({
                 parent: parent.id,
                 mimeType: file.type,
@@ -247,11 +247,11 @@ export class TextItem extends ImageItem {
                 url: `/${this.path}/${filename}`,
             }).fetch();
 
-        const variant = (await sails.models[this.model].find({ where: { id: item.id }, }).populate("meta"))[0] as Item;
+        const variant = (await sails.models[this.model].find({ where: { id: item.id }, }).populate("meta"))[0] as MediaManagerItem;
         return variant
     }
 
-    public async getVariants(id: string): Promise<Item[]> {
+    public async getVariants(id: string): Promise<MediaManagerItem[]> {
         let items = (await sails.models[this.model].findOne({ where: { id: id }, }).populate("variants", { sort: "createdAt DESC" })).variants
         return (await populateVariants(items, this.model))
     }

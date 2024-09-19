@@ -1,7 +1,7 @@
-export interface Item {
+export interface MediaManagerItem {
     id: string;
     parent: string;
-    variants: Item[];
+    variants: MediaManagerItem[];
     mimeType: string;
     path: string;
     size: number;
@@ -13,15 +13,32 @@ export interface Item {
     url: string;
     filename: string;
     meta: string[];
+    createdAt: number;
+    updatedAt: number;
 }
+type NumericKeys<T> = {
+    [K in keyof T]: T[K] extends number ? K : never;
+}[keyof T];
+export type SortCriteria = `${NumericKeys<MediaManagerItem>} ${"ASC" | "DESC"}`;
 export interface MediaManagerWidgetItem {
     id: string;
+}
+/**
+ * This method is for receiving data in the client
+ */
+export interface MediaManagerWidgetClientItem extends MediaManagerWidgetItem {
+    /**
+     * need only mimeGroup like Imeage/xxx
+     */
+    mimeType: string;
+    variants: MediaManagerItem[];
+    url?: string;
 }
 export interface MediaManagerWidgetJSON {
     list: MediaManagerWidgetItem[];
     mediaManagerId: string;
 }
-export interface Data {
+export interface MediaManagerWidgetData {
     list: MediaManagerWidgetItem[];
     mediaManagerId: string;
 }
@@ -41,7 +58,7 @@ export interface imageSizes {
     };
 }
 export type MediaFileType = "application" | "audio" | "example" | "image" | "message" | "model" | "multipart" | "text" | "video";
-export declare abstract class File<T extends Item> {
+export declare abstract class File<T extends MediaManagerItem> {
     abstract type: MediaFileType;
     path: string;
     dir: string;
@@ -76,7 +93,7 @@ export declare abstract class File<T extends Item> {
      * Get children of an item.
      * @param id
      */
-    abstract getVariants(id: string): Promise<Item[]>;
+    abstract getVariants(id: string): Promise<MediaManagerItem[]>;
     /**
      * Upload cropped image.
      * @param item
@@ -84,7 +101,7 @@ export declare abstract class File<T extends Item> {
      * @param fileName
      * @param config
      */
-    abstract uploadVariant(item: Item, file: UploaderFile, fileName: string, group?: string, localeId?: string): Promise<Item>;
+    abstract uploadVariant(item: MediaManagerItem, file: UploaderFile, fileName: string, group?: string, localeId?: string): Promise<MediaManagerItem>;
     /**
      * Delete an item.
      * @param id
@@ -97,11 +114,11 @@ export declare abstract class File<T extends Item> {
      * @param sort
      * @param group
      */
-    abstract getItems(limit: number, skip: number, sort: string, group?: string): Promise<{
-        data: Item[];
+    abstract getItems(limit: number, skip: number, sort: SortCriteria, group?: string): Promise<{
+        data: MediaManagerItem[];
         next: boolean;
     }>;
-    abstract search(s: string, group?: string): Promise<Item[]>;
+    abstract search(s: string, group?: string): Promise<MediaManagerItem[]>;
     abstract getOrirgin(id: string): Promise<string>;
 }
 /**
@@ -132,7 +149,7 @@ export declare abstract class AbstractMediaManager {
      * Associations model.
      */
     modelAssoc: string;
-    readonly itemTypes: File<Item>[];
+    readonly itemTypes: File<MediaManagerItem>[];
     /**
      * @param id
      * @param path
@@ -151,13 +168,13 @@ export declare abstract class AbstractMediaManager {
      * @param imageSizes
      * @param group
      */
-    upload(file: UploaderFile, filename: string, origFileName: string, group?: string): Promise<Item[]>;
+    upload(file: UploaderFile, filename: string, origFileName: string, group?: string): Promise<MediaManagerItem[]>;
     /**
      * Get item type.
      * @param type
      * @protected
      */
-    protected getItemType(type: string): File<Item>;
+    protected getItemType(type: string): File<MediaManagerItem>;
     /**
      * Get all items.
      * @param limit
@@ -165,8 +182,8 @@ export declare abstract class AbstractMediaManager {
      * @param group
      * @param sort
      */
-    abstract getAll(limit: number, skip: number, sort: string, group?: string): Promise<{
-        data: Item[];
+    abstract getAll(limit: number, skip: number, sort: SortCriteria, group?: string): Promise<{
+        data: MediaManagerItem[];
         next: boolean;
     }>;
     /**
@@ -177,35 +194,43 @@ export declare abstract class AbstractMediaManager {
      * @param sort
      * @param group?
      */
-    getItems(type: string, limit: number, skip: number, sort: string, group?: string): Promise<{
-        data: Item[];
+    getItems(type: string, limit: number, skip: number, sort: SortCriteria, group?: string): Promise<{
+        data: MediaManagerItem[];
         next: boolean;
     }>;
     /**
      * Save Relations.
      * @param data
-     * @param model
-     * @param modelId
+     * @param model model in which a mediafile connection was added
+     * @param modelId Id in the model in which the mediafile was added
      * @param modelAttribute
      */
-    abstract saveRelations(data: Data, model: string, modelId: string, widgetName: string): Promise<void>;
-    abstract getRelations(items: MediaManagerWidgetItem[]): Promise<MediaManagerWidgetItem[]>;
+    abstract setRelations(data: MediaManagerWidgetData, 
+    /**
+     * widget model in which a mediafile connection was added
+     */
+    model: string, 
+    /**
+     * widget Id in the model in which the mediafile was added
+     */
+    modelId: string, widgetName: string): Promise<void>;
+    abstract getRelations(items: MediaManagerWidgetItem[]): Promise<MediaManagerWidgetClientItem[]>;
     /**
      * Search all items.
      * @param s
      */
-    abstract searchAll(s: string, group?: string): Promise<Item[]>;
+    abstract searchAll(s: string, group?: string): Promise<MediaManagerItem[]>;
     /**
      * Search items by type.
      * @param s
      * @param type
      */
-    searchItems(s: string, type: string, group?: string): Promise<Item[]>;
+    searchItems(s: string, type: string, group?: string): Promise<MediaManagerItem[]>;
     /**
      * Get children of an item.
      * @param item
      */
-    getVariants(item: Item): Promise<Item[]>;
+    getVariants(item: MediaManagerItem): Promise<MediaManagerItem[]>;
     /**
      * Upload cropped image.
      * @param item
@@ -213,12 +238,12 @@ export declare abstract class AbstractMediaManager {
      * @param fileName
      * @param config
      */
-    uploadVariant(item: Item, file: UploaderFile, fileName: string, group?: string, localeId?: string): Promise<Item>;
+    uploadVariant(item: MediaManagerItem, file: UploaderFile, fileName: string, group?: string, localeId?: string): Promise<MediaManagerItem>;
     /**
      * Get metadata of an item.
      * @param item
      */
-    getMeta(item: Item): Promise<{
+    getMeta(item: MediaManagerItem): Promise<{
         key: string;
         value: string;
     }[]>;
@@ -228,12 +253,13 @@ export declare abstract class AbstractMediaManager {
      * @param item
      * @param data
      */
-    setMeta(item: Item, data: {
+    setMeta(item: MediaManagerItem, data: {
         [key: string]: string;
     }): Promise<void>;
     /**
      * Delete an item.
      * @param item
      */
-    delete(item: Item): Promise<void>;
+    delete(item: MediaManagerItem): Promise<void>;
 }
+export {};

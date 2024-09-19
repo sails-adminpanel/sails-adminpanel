@@ -4,7 +4,7 @@ import { ConfigHelper } from "../helper/configHelper";
 import { AccessRightsHelper } from "../helper/accessRightsHelper";
 import { NodeTable } from "../lib/datatable/NodeTable";
 
-export default async function listJson(req: ReqType, res: ResType) {
+export default async function listJson(req: ReqType, res: ResType): Promise<void> {
     try {
 
         let entity = AdminUtil.findEntityObject(req);
@@ -14,9 +14,11 @@ export default async function listJson(req: ReqType, res: ResType) {
 
         if (sails.config.adminpanel.auth) {
             if (!req.session.UserAP) {
-                return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+                res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+                return 
             } else if (!AccessRightsHelper.havePermission(`read-${entity.name}-model`, req.session.UserAP)) {
-                return res.sendStatus(403);
+                res.sendStatus(403);
+                return 
             }
         }
 
@@ -24,14 +26,15 @@ export default async function listJson(req: ReqType, res: ResType) {
         const nodeTable = new NodeTable(req.body, entity.model, fields);
 
         //@ts-ignore
-        nodeTable.output((err: Error, data: []) => {
+        nodeTable.output((err: Error, data: []): void => {
             if (err) {
                 sails.log.error(err);
-                return;
+                return
             }
 
             // Directly send this data as output to Datatable
-            return res.send(data)
+            res.send(data)
+            return 
         })
     } catch (error) {
         sails.log.error(error)

@@ -17,7 +17,7 @@ export default class FinalizeStep extends InstallStepAbstract {
     renderer: "ejs" = "ejs";
     isProcessed = false;
 
-    async check() {
+    async check(): Promise<boolean> {
         if(this.isProcessed){
             return true
         } else { 
@@ -26,6 +26,7 @@ export default class FinalizeStep extends InstallStepAbstract {
                 this.canBeSkipped = true;
             }   
         }
+        return false;
     }
 
     async process(data: any) {
@@ -43,9 +44,9 @@ export default class FinalizeStep extends InstallStepAbstract {
     }
 
     finally(): Promise<void> {
-        return;
+        return Promise.resolve();
     }
-
+    
     toFinally() {
         return;
     }

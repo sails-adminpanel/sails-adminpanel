@@ -1,6 +1,6 @@
 import { Fields } from "../../../helper/fieldsHelper";
 import { MediaManagerHandler } from "../MediaManagerHandler";
-import { Data, Item, MediaManagerWidgetItem, MediaManagerWidgetJSON } from "../AbstractMediaManager"
+import { MediaManagerWidgetData, MediaManagerItem, MediaManagerWidgetItem, MediaManagerWidgetJSON } from "../AbstractMediaManager"
 import { BaseFieldConfig, MediaManagerOptionsField, ModelConfig } from "../../../interfaces/adminpanelConfig";
 
 type PostParams = Record<string, string | number | boolean | object | string[] | number[] | null>;
@@ -29,9 +29,9 @@ export function randomFileName(filenameOrig: string, type: string, prefix: boole
 export async function saveRelationsMediaManager(fields: Fields, reqData: PostParams, model: string, recordId: string) {
 	for (let prop in reqData) {
 		if (fields[prop]?.config?.type === 'mediamanager') {
-			let data = reqData[prop] as Data;
+			let data = reqData[prop] as MediaManagerWidgetData;
 			let mediaManager = MediaManagerHandler.get(data.mediaManagerId)
-			await mediaManager.saveRelations(data, model, recordId, prop)
+			await mediaManager.setRelations(data, model, recordId, prop)
 		}
 	}
 }
@@ -57,11 +57,11 @@ export async function deleteRelationsMediaManager(model: string, record: { [p: s
 		if (field && field.type === 'mediamanager') {
 			const option = field.options as MediaManagerOptionsField
 			let mediaManager = MediaManagerHandler.get(option?.id ?? 'default')
-			let emptyData: Data = {
+			let emptyData: MediaManagerWidgetData = {
 				list: [],
 				mediaManagerId: ''
 			}
-			await mediaManager.saveRelations(emptyData, model, record[0].id as string, key)
+			await mediaManager.setRelations(emptyData, model, record[0].id as string, key)
 		}
 	}
 }
@@ -69,8 +69,8 @@ export async function deleteRelationsMediaManager(model: string, record: { [p: s
 /**
  * @param items
  */
-export async function populateVariants(variants: Item[], model: string): Promise<Item[]> {
-	let items: Item[] = []
+export async function populateVariants(variants: MediaManagerItem[], model: string): Promise<MediaManagerItem[]> {
+	let items: MediaManagerItem[] = []
 	for (let variant of variants) {
 		variant = (await sails.models[model].find({ where: { id: variant.id } }).populate("meta"))[0]
 		items.push(variant)

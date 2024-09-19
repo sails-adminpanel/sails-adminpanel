@@ -8,7 +8,8 @@ function upload(req, res) {
     let entity = adminUtil_1.AdminUtil.findEntityObject(req);
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            return;
         }
         else if (!accessRightsHelper_1.AccessRightsHelper.enoughPermissions([
             `update-${entity.name}-model`,
@@ -16,7 +17,8 @@ function upload(req, res) {
             `update-${entity.name}-form`,
             `create-${entity.name}-form`
         ], req.session.UserAP)) {
-            return res.sendStatus(403);
+            res.sendStatus(403);
+            return;
         }
     }
     if (req.method.toUpperCase() === 'POST') {

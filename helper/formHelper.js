@@ -8,6 +8,9 @@ class FormHelper {
         if (sails.config.adminpanel.forms && sails.config.adminpanel.forms !== null) {
             return sails.config.adminpanel.forms.data[slug];
         }
+        else {
+            throw `Form with slug ${slug} not found`;
+        }
     }
     static loadForms(formsPath) {
         try {
