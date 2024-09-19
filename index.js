@@ -6,6 +6,7 @@ const { ConfigHelper } = require('./helper/configHelper');
 const { AccessRightsHelper } = require('./helper/accessRightsHelper');
 const { InstallStepper } = require("./lib/installStepper/installStepper");
 const CatalogHandler_1 = require("./lib/catalog/CatalogHandler");
+const MediaManagerHandler_1 = require("./lib/media-manager/MediaManagerHandler");
 module.exports = function () {
     let libInitialize = require("./lib/initialize");
     return {
@@ -31,5 +32,6 @@ module.exports = function () {
         getInstallStepper: () => InstallStepper,
         getWidgetHandler: () => widgetHandler_1.WidgetHandler,
         getCatalogHandler: () => CatalogHandler_1.CatalogHandler,
+        getMediaManagerHandler: () => MediaManagerHandler_1.MediaManagerHandler,
     };
 };

@@ -167,6 +167,7 @@ export default async function edit(req: ReqType, res: ResType) {
 	for (const field of Object.keys(fields)) {
 		if (fields[field].config.type === 'mediamanager') {
 			if (fields[field].model.type === 'association-many') {
+				console.log(fields[field].config.options);
 				record[field] = await getRelationsMediaManager({
 					list: record[field],
 					mediaManagerId: (fields[field].config.options as MediaManagerOptionsField).id ?? "default"

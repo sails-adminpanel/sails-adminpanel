@@ -68,6 +68,7 @@ class MediaManagerAdapter {
                 return;
             }
         }
+        // Todo: this.manager.dir manager temp dir
         req.file("file").upload({ dirname: this.manager.dir, saveAs: filename }, async (err, file) => {
             if (err)
                 return res.serverError(err);
@@ -91,6 +92,7 @@ class MediaManagerAdapter {
             maxBytes: config?.maxByteSize ?? 2 * 1024 * 1024, // 2 Mb
         };
         let isDefault = this.manager.id === "default";
+        // TODO: add from abstract
         if (isDefault) {
             // Check file type
             if (settings.allowedTypes.length && this.checkMIMEType(settings.allowedTypes, headers["content-type"])) {
@@ -113,18 +115,26 @@ class MediaManagerAdapter {
         let filename = (0, MediaManagerHelper_1.randomFileName)(req.body.name.replace(" ", "_"), "", true);
         let origFileName = req.body.name.replace(/\.[^\.]+$/, "");
         //save file
-        req.file("file").upload({ dirname: this.manager.dir, saveAs: filename }, async (err, file) => {
+        // TODO: create dir if not exist ${process.cwd()}/.tmp/uploads
+        req.file("file").upload({ dirname: `${process.cwd()}/.tmp/uploads`, saveAs: filename }, async (err, file) => {
             if (err)
                 return res.serverError(err);
             try {
                 let item = await this.manager.upload(file[0], filename, origFileName, group);
-                return res.send({
-                    msg: "success",
-                    data: item,
-                });
+                console.log(item);
+                if (item) {
+                    return res.send({
+                        msg: "success",
+                        data: item,
+                    });
+                }
+                else {
+                    return res.serverError(`The file was not processed, check manager.upload`);
+                }
             }
             catch (e) {
                 console.error(e);
+                return res.serverError(`error:`, e);
             }
         });
         // }

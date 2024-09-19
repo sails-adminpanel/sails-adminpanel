@@ -57,6 +57,9 @@ export interface MediaManagerWidgetData {
 }
 
 export interface UploaderFile {
+    /**
+     * Full file path
+     */
     fd: string;
     size: number;
     type: string;
@@ -85,16 +88,20 @@ export type MediaFileType =
 
 export abstract class File<T extends MediaManagerItem> {
     public abstract type: MediaFileType;
-
     public path: string;
     public dir: string;
     public model: string;
     public metaModel: string;
 
-    // TODO: надо удалить model из конструктора, и metaModel
-    protected constructor(path: string, dir: string) {
-        this.path = path;
-        this.dir = dir;
+
+    /**
+     * 
+     * @param path 
+     * @param dir 
+     */
+    constructor(urlPathPrefix: string, fileStoragePath: string) {
+        this.path = urlPathPrefix;
+        this.dir = fileStoragePath;
     }
 
     /**
@@ -171,31 +178,27 @@ export abstract class File<T extends MediaManagerItem> {
  * ╚═╝░░░░░╚═╝╚══════╝╚═════╝░╚═╝╚═╝░░╚═╝╚═╝░░░░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝╚═╝░░╚═╝░╚═════╝░╚══════╝╚═╝░░╚═╝
  */
 export abstract class AbstractMediaManager {
-    public id: string;
-    public path: string;
-    public dir: string;
+    public uploadMaxBytes: number;
+    public uloadAllowedTypes: string[];
+
     /**
-     * Main model.
+     * Разрешает или нет поиск по названию
      */
-    public model: string;
+    public allowSearch: boolean;
+    /**  ⚠️ ВЫШЕ НАСТРОЙКИ КОТОРЫЕ НАДО РЕАЛИЗОВАТЬ */
+    ///
+
     /**
-     * Associations model.
+     * id for mediamanager instance
      */
-    public modelAssoc: string;
+    abstract id: string;
+
     public readonly itemTypes: File<MediaManagerItem>[] = [];
 
     /**
-     * @param id
-     * @param path
-     * @param dir
-     * @param model
-     * @param modelAssoc
      * @protected
      */
-    protected constructor(id: string, path: string, dir: string) {
-        this.id = id;
-        this.path = path;
-        this.dir = dir;
+    protected constructor() {
         this._bindAccessRight()
     }
 
@@ -221,7 +224,12 @@ export abstract class AbstractMediaManager {
     public upload(file: UploaderFile, filename: string, origFileName: string, group?: string) {
         const mimeType = file.type;
         const parts = mimeType.split("/");
-        return this.getItemType(parts[0])?.upload(file, filename, origFileName, group);
+        const item  = this.getItemType(parts[0]);
+        if(item) {
+            return item.upload(file, filename, origFileName, group);
+        } else {
+            throw `item not found for \`${parts[0]}\` in ${JSON.stringify(this.itemTypes.map((i)=> i.type))}`
+        }
     }
 
     /**
@@ -278,6 +286,7 @@ export abstract class AbstractMediaManager {
 
     /**
      * Search all items.
+     * If not this.allowSearch = true then it will not come here
      * @param s
      */
     public abstract searchAll(s: string, group?: string): Promise<MediaManagerItem[]>;

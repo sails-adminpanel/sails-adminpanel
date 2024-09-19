@@ -9,6 +9,7 @@ const { AccessRightsHelper } = require('./helper/accessRightsHelper');
 const {InstallStepper} = require("./lib/installStepper/installStepper");
 
 import {CatalogHandler} from "./lib/catalog/CatalogHandler";
+import { MediaManagerHandler } from "./lib/media-manager/MediaManagerHandler";
 
 module.exports = function () {
 
@@ -42,5 +43,7 @@ module.exports = function () {
         getInstallStepper: () => InstallStepper,
         getWidgetHandler: () => WidgetHandler,
 		getCatalogHandler: () => CatalogHandler,
+        getMediaManagerHandler: () => MediaManagerHandler,
+
     };
 };

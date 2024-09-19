@@ -16,8 +16,8 @@ export class ImageItem extends File<MediaManagerItem> {
 
     public imageSizes: imageSizes = sails.config.adminpanel.mediamanager.imageSizes || {}
 
-    constructor(path: string, dir: string) {
-        super(path, dir);
+    constructor(urlPathPrefix: string, fileStoragePath: string) {
+        super(urlPathPrefix, fileStoragePath);
     }
 
     public async getItems(limit: number, skip: number, sort: SortCriteria, group: string): Promise<{ data: MediaManagerItem[]; next: boolean }> {

@@ -1,3 +1,4 @@
+import path = require("node:path");
 import {
     AbstractMediaManager,
     MediaManagerItem,
@@ -15,14 +16,20 @@ import { ApplicationItem, ImageItem, TextItem, VideoItem } from "./Items";
 export class DefaultMediaManager extends AbstractMediaManager {
     public readonly itemTypes: File<MediaManagerItem>[] = [];
     public model: string = "mediamanagerap";
-    public modelAssoc: string = "mediamanagerassociationsap";
+    public modelAssoc: string = "mediamanagerassociationsap";       
+    id: string;
+    path: string;
+    dir: string;
 
-    constructor(id: string, path: string, dir: string) {
-        super(id, path, dir);
-        this.itemTypes.push(new ImageItem(path, dir));
-        this.itemTypes.push(new TextItem(path, dir));
-        this.itemTypes.push(new ApplicationItem(path, dir));
-        this.itemTypes.push(new VideoItem(path, dir));
+    constructor(id: string, urlPathPrefix: string, fileStoragePath: string) {
+        super();
+        this.id = id;
+        this.path = urlPathPrefix;
+        this.dir = fileStoragePath;    
+        this.itemTypes.push(new ImageItem(urlPathPrefix, fileStoragePath));
+        this.itemTypes.push(new TextItem(urlPathPrefix, fileStoragePath));
+        this.itemTypes.push(new ApplicationItem(urlPathPrefix, fileStoragePath));
+        this.itemTypes.push(new VideoItem(urlPathPrefix, fileStoragePath));
     }
 
     public async getAll(limit: number, skip: number, sort: SortCriteria, group: string): Promise<{ data: MediaManagerItem[]; next: boolean }> {

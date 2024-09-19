@@ -43,6 +43,9 @@ export interface MediaManagerWidgetData {
     mediaManagerId: string;
 }
 export interface UploaderFile {
+    /**
+     * Full file path
+     */
     fd: string;
     size: number;
     type: string;
@@ -64,7 +67,12 @@ export declare abstract class File<T extends MediaManagerItem> {
     dir: string;
     model: string;
     metaModel: string;
-    protected constructor(path: string, dir: string);
+    /**
+     *
+     * @param path
+     * @param dir
+     */
+    constructor(urlPathPrefix: string, fileStoragePath: string);
     /**
      * Upload a file.
      * @param file
@@ -138,27 +146,22 @@ export declare abstract class File<T extends MediaManagerItem> {
  * ╚═╝░░░░░╚═╝╚══════╝╚═════╝░╚═╝╚═╝░░╚═╝╚═╝░░░░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝╚═╝░░╚═╝░╚═════╝░╚══════╝╚═╝░░╚═╝
  */
 export declare abstract class AbstractMediaManager {
-    id: string;
-    path: string;
-    dir: string;
+    uploadMaxBytes: number;
+    uloadAllowedTypes: string[];
     /**
-     * Main model.
+     * Разрешает или нет поиск по названию
      */
-    model: string;
+    allowSearch: boolean;
+    /**  ⚠️ ВЫШЕ НАСТРОЙКИ КОТОРЫЕ НАДО РЕАЛИЗОВАТЬ */
     /**
-     * Associations model.
+     * id for mediamanager instance
      */
-    modelAssoc: string;
+    abstract id: string;
     readonly itemTypes: File<MediaManagerItem>[];
     /**
-     * @param id
-     * @param path
-     * @param dir
-     * @param model
-     * @param modelAssoc
      * @protected
      */
-    protected constructor(id: string, path: string, dir: string);
+    protected constructor();
     private _bindAccessRight;
     /**
      * Upload an item.
@@ -217,6 +220,7 @@ export declare abstract class AbstractMediaManager {
     abstract getRelations(items: MediaManagerWidgetItem[]): Promise<MediaManagerWidgetClientItem[]>;
     /**
      * Search all items.
+     * If not this.allowSearch = true then it will not come here
      * @param s
      */
     abstract searchAll(s: string, group?: string): Promise<MediaManagerItem[]>;

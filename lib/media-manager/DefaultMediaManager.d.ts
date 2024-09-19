@@ -3,7 +3,10 @@ export declare class DefaultMediaManager extends AbstractMediaManager {
     readonly itemTypes: File<MediaManagerItem>[];
     model: string;
     modelAssoc: string;
-    constructor(id: string, path: string, dir: string);
+    id: string;
+    path: string;
+    dir: string;
+    constructor(id: string, urlPathPrefix: string, fileStoragePath: string);
     getAll(limit: number, skip: number, sort: SortCriteria, group: string): Promise<{
         data: MediaManagerItem[];
         next: boolean;

@@ -5,7 +5,7 @@ export declare class ImageItem extends File<MediaManagerItem> {
     model: string;
     metaModel: string;
     imageSizes: imageSizes;
-    constructor(path: string, dir: string);
+    constructor(urlPathPrefix: string, fileStoragePath: string);
     getItems(limit: number, skip: number, sort: SortCriteria, group: string): Promise<{
         data: MediaManagerItem[];
         next: boolean;
