@@ -131,11 +131,13 @@ export default async function edit(req: ReqType, res: ResType) {
 			reqData = entityEdit.entityModifier(reqData);
 		}
 
-		try {
+		try {	
+			const cloneReqData = {...reqData};
 			let newRecord = await entity.model.update(params, reqData).fetch();
 
+
 			// save associations media to json
-			await saveRelationsMediaManager(fields, reqData, entity.name, newRecord[0].id)
+			await saveRelationsMediaManager(fields, cloneReqData, entity.model.identity, newRecord[0].id)
 
 			sails.log.debug(`Record was updated: `, newRecord);
 			if (req.body.jsonPopupCatalog) {
@@ -162,7 +164,7 @@ export default async function edit(req: ReqType, res: ResType) {
 			req.session.messages.adminError.push(e.message || 'Something went wrong...');
 			return e;
 		}
-	}
+	} // END POST
 
 	for (const field of Object.keys(fields)) {
 		if (fields[field].config.type === 'mediamanager') {

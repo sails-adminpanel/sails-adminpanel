@@ -68,9 +68,10 @@ async function add(req, res) {
             reqData = entityAdd.entityModifier(reqData);
         }
         try {
+            const cloneReqData = { ...reqData };
             let record = await entity.model.create(reqData).fetch();
             // save associations media to json
-            await (0, MediaManagerHelper_1.saveRelationsMediaManager)(fields, reqData, entity.name, record.id);
+            await (0, MediaManagerHelper_1.saveRelationsMediaManager)(fields, cloneReqData, entity.model.identity, record.id);
             sails.log.debug(`A new record was created: `, record);
             if (req.body.jsonPopupCatalog) {
                 return res.json({ record: record });

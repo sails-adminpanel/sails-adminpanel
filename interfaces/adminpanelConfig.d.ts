@@ -331,7 +331,7 @@ export interface NavigationOptionsField {
     titleProperties?: string;
 }
 export interface MediaManagerOptionsField {
-    id?: string;
+    id: string;
 }
 interface ScheduleOptionsField {
     supportOldVersion?: boolean;
