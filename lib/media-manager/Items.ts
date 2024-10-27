@@ -2,6 +2,8 @@ import { File, MediaManagerItem, MediaFileType, UploaderFile, imageSizes, SortCr
 import { randomFileName, populateVariants } from "./helpers/MediaManagerHelper";
 import sizeOf from "image-size";
 import * as sharp from "sharp";
+import * as fs from 'fs';
+import * as path from 'path';
 
 interface Meta {
     [key: string]: string;
@@ -172,6 +174,15 @@ export class ImageItem extends File<MediaManagerItem> {
     }
 
     protected async resizeImage(input: string, output: string, width: number, height: number,) {
+        // Get the directory from the output path
+        const outputDir = path.dirname(output);
+
+        // Check if the directory exists, and create it if it doesn't
+        if (!fs.existsSync(outputDir)) {
+            fs.mkdirSync(outputDir, { recursive: true });
+        }
+
+        // Resize the image and save it to the output path
         return await sharp(input)
             .resize({ width: width, height: height })
             .toFile(output);

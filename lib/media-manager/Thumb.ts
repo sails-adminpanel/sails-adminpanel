@@ -8,12 +8,14 @@ export class MediaManagerThumb {
 
         const manager = MediaManagerHandler.get(managerId)
         const path = await manager.getOrigin(id)
-        const thumb = `${process.cwd()}/.tmp/public/media-manager/thumb/${id}_thumb.webp`
 
+        const baseThumbPath = `${process.cwd()}/.tmp/thumbs`
+        if (!await fileExists(baseThumbPath)) await fs.mkdir(baseThumbPath);
+        
+        const thumb = `${baseThumbPath}/${id}_thumb.webp`
         if (await fileExists(thumb)) {
             return await fs.readFile(thumb)
         } else {
-            if (!await fileExists(`${process.cwd()}/.tmp/public/media-manager/thumb`)) await fs.mkdir(`${process.cwd()}/.tmp/public/media-manager/thumb`);
             await sharp(path)
                 .resize({ width: 150, height: 150 })
                 .toFile(thumb)

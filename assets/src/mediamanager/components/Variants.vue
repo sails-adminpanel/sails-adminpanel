@@ -231,10 +231,15 @@ const locDropzoneClass = computed(() => {
 });
 
 function imageUrl(item) {
-    if (imagesTypes.has(item.mimeType)) {
+    if (item.mimeType && item.mimeType.split("/")[0] === 'image') {
         return `/admin/get-thumbs?id=${item.id}&managerId=${managerId}`;
     } else {
-        return `/admin/assets/fileuploader/icons/${item.url.split(/[#?]/)[0].split(".").pop().trim()}.svg`;
+        let iconPath = `/admin/assets/fileuploader/icons/default.svg`;
+        if (item.url) {
+            const extension = item.url.split(/[#?]/)[0].split(".").pop().trim();
+            iconPath = `/admin/assets/fileuploader/icons/${extension}.svg`;
+        }
+        return iconPath;
     }
 }
 

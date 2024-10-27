@@ -101,10 +101,15 @@ provide("closeSizes", () => {
 });
 
 const imageUrl = computed(() => {
-    if (imagesTypes.has(props.item.mimeType)) {
+    if (props.item.mimeType && props.item.mimeType.split("/")[0] === 'image') {
         return `/admin/get-thumbs?id=${props.item.id}&managerId=${managerId}`;
     } else {
-        return `/admin/assets/fileuploader/icons/${props.item.url.split(/[#?]/)[0].split(".").pop().trim()}.svg`;
+        let iconPath = `/admin/assets/fileuploader/icons/default.svg`;
+        if (props.item.url) {
+            const extension = props.item.url.split(/[#?]/)[0].split(".").pop().trim();
+            iconPath = `/admin/assets/fileuploader/icons/${extension}.svg`;
+        }
+        return iconPath;
     }
 });
 
