@@ -14,7 +14,7 @@ export declare class ImageItem extends File<MediaManagerItem> {
     upload(file: UploaderFile, filename: string, origFileName: string, group: string): Promise<MediaManagerItem[]>;
     getVariants(id: string): Promise<MediaManagerItem[]>;
     protected createVariants(file: UploaderFile, parent: MediaManagerItem, filename: string, group: string): Promise<void>;
-    getOrirgin(id: string): Promise<string>;
+    getOrigin(id: string): Promise<string>;
     protected createMeta(id: string): Promise<void>;
     protected addFileMeta(file: string, id: string): Promise<void>;
     getMeta(id: string): Promise<{

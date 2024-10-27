@@ -158,7 +158,7 @@ export abstract class File<T extends MediaManagerItem> {
 
     public abstract search(s: string, group?: string): Promise<MediaManagerItem[]>;
 
-    public abstract getOrirgin(id: string): Promise<string>;
+    public abstract getOrigin(id: string): Promise<string>;
 }
 
 /**
@@ -331,7 +331,7 @@ export abstract class AbstractMediaManager {
     }
 
     public getOrigin(id: string) {
-        return this.getItemType("image")?.getOrirgin(id);
+        return this.getItemType("image")?.getOrigin(id);
     }
 
     /**

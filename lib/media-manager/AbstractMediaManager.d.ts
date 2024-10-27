@@ -127,7 +127,7 @@ export declare abstract class File<T extends MediaManagerItem> {
         next: boolean;
     }>;
     abstract search(s: string, group?: string): Promise<MediaManagerItem[]>;
-    abstract getOrirgin(id: string): Promise<string>;
+    abstract getOrigin(id: string): Promise<string>;
 }
 /**
  *

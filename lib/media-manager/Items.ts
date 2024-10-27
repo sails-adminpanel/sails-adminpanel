@@ -128,7 +128,7 @@ export class ImageItem extends File<MediaManagerItem> {
         }
     }
 
-    public async getOrirgin(id: string): Promise<string> {
+    public async getOrigin(id: string): Promise<string> {
         return (await sails.models[this.model].findOne({ where: { id: id }, })).path;
     }
 
