@@ -29,18 +29,8 @@ export function randomFileName(filenameOrig: string, type: string, prefix: boole
 export async function saveRelationsMediaManager(fields: Fields, reqData: PostParams, model: string, recordId: string) {
 	for (let prop in reqData) {
 		if (fields[prop]?.config?.type === 'mediamanager') {
-			let reqData_prop = reqData[prop] as string[];
-			let cfg = fields[prop]?.config.options as MediaManagerOptionsField
-
-			/**
-			 * Тут заново приходится востанавливать в MediaManagerWidgetData лучше былобы просто передавать массивом
-			 */
-			const data = {
-				list: reqData_prop.map(id => ({ id })),
-				mediaManagerId: cfg.id
-			};
-
-			let mediaManager = MediaManagerHandler.get(cfg.id)
+			let data = reqData[prop] as MediaManagerWidgetData;
+			let mediaManager = MediaManagerHandler.get(data.mediaManagerId)
 			await mediaManager.setRelations(data, model, recordId, prop)
 		}
 	}
