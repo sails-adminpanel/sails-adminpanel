@@ -56,6 +56,10 @@ export default async function edit(req: ReqType, res: ResType) {
 		} = {};
 		params[entity.config.identifierField || sails.config.adminpanel.identifierField] = req.param('id');
 
+		/**
+		 * Here means reqData adapt for model data, but rawReqData is processed for widget processing
+		 */
+		const rawReqData = {...reqData};
 
 		for (let prop in reqData) {
 			if (fields[prop].model.type === 'boolean') {
@@ -82,23 +86,14 @@ export default async function edit(req: ReqType, res: ResType) {
 				}
 			}
 
-			if (fields[prop].config.type === 'mediamanager' && fields[prop].model.type === 'association-many') {
-				if (typeof reqData[prop] === "object" && !Array.isArray(reqData[prop]) && reqData[prop] !== null) {
-					reqData[prop] = (reqData[prop] as MediaManagerWidgetJSON).list.map((i: { id: string | number }) => i.id);
-				} else {
-					try {
-						const parsed = JSON.parse(reqData[prop] as string);
-						if (typeof parsed === "object" && !Array.isArray(parsed) && parsed !== null) {
-							reqData[prop] = parsed.list.map((i: { id: string | number }) => i.id);
-						}
-					} catch (error) {
-						throw `Error assign association-many mediamanager data for ${prop}, ${reqData[prop]}`
-					}
+			if (fields[prop].config.type === 'mediamanager' && typeof reqData[prop] === "string") {
+				try {
+					const parsed = JSON.parse(reqData[prop] as string);
+					rawReqData[prop]  = parsed
+				} catch (error) {
+					throw `Error assign association-many mediamanager data for ${prop}, ${reqData[prop]}`
 				}
-				reqData[prop] = (reqData[prop] as []).filter(str => str !== '');
-				if (Array.isArray(reqData[prop]) && reqData[prop].length === 0) {
-					delete (reqData[prop]);
-				}
+				delete reqData[prop]
 			}
 
 			if (fields[prop] && fields[prop].model && fields[prop].model.type === 'json' && reqData[prop] !== '') {
@@ -115,8 +110,8 @@ export default async function edit(req: ReqType, res: ResType) {
 			}
 
 			// split string for association-many
-			if (fields[prop] && fields[prop].model && fields[prop].model.type === 'association-many' && reqData[prop]) {
-				reqData[prop] = reqData[prop].toString().split(",")
+			if (fields[prop] && fields[prop].model && fields[prop].model.type === 'association-many' && reqData[prop] &&  typeof reqData[prop] === "string") {
+				reqData[prop] = reqData[prop].split(",")
 			}
 
 			// HardFix: Long string was splitted as array of strings. https://github.com/balderdashy/sails/issues/7262
@@ -132,12 +127,8 @@ export default async function edit(req: ReqType, res: ResType) {
 		}
 
 		try {	
-			const cloneReqData = {...reqData};
 			let newRecord = await entity.model.update(params, reqData).fetch();
-
-
-			// save associations media to json
-			await saveRelationsMediaManager(fields, cloneReqData, entity.model.identity, newRecord[0].id)
+			await saveRelationsMediaManager(fields, rawReqData, entity.model.identity, newRecord[0].id)
 
 			sails.log.debug(`Record was updated: `, newRecord);
 			if (req.body.jsonPopupCatalog) {

@@ -31,6 +31,12 @@ export default async function add(req: ReqType, res: ResType) {
 
 	if (req.method.toUpperCase() === 'POST') {
 		let reqData: any = RequestProcessor.processRequest(req, fields);
+	
+		/**
+		 * Here means reqData adapt for model data, but rawReqData is processed for widget processing
+		 */
+		const rawReqData = {...reqData};
+
 		for (let prop in reqData) {
 
 			if (Number.isNaN(reqData[prop]) || reqData[prop] === undefined || reqData[prop] === null) {
@@ -55,6 +61,16 @@ export default async function add(req: ReqType, res: ResType) {
 				}
 			}
 
+			if (fields[prop].config.type === 'mediamanager' && typeof reqData[prop] === "string") {
+				try {
+					const parsed = JSON.parse(reqData[prop] as string);
+					rawReqData[prop]  = parsed
+				} catch (error) {
+					throw `Error assign association-many mediamanager data for ${prop}, ${reqData[prop]}`
+				}
+				delete reqData[prop]
+			}
+
 			// delete property from association-many and association if empty
 			if (fields[prop] && fields[prop].model && (fields[prop].model.type === 'association-many' || fields[prop].model.type === 'association')) {
 				if (!reqData[prop]) {
@@ -63,7 +79,7 @@ export default async function add(req: ReqType, res: ResType) {
 			}
 
 			// split string for association-many
-			if (fields[prop] && fields[prop].model && fields[prop].model.type === 'association-many' && reqData[prop]) {
+			if (fields[prop] && fields[prop].model && fields[prop].model.type === 'association-many' && reqData[prop] && typeof reqData[prop] === "string") {
 				reqData[prop] = reqData[prop].split(",")
 			}
 
@@ -80,11 +96,10 @@ export default async function add(req: ReqType, res: ResType) {
 		}
 
 		try {
-			const cloneReqData = {...reqData};
-			let record = await entity.model.create(reqData).fetch();
+=			let record = await entity.model.create(reqData).fetch();
 
 			// save associations media to json
-			await saveRelationsMediaManager(fields, cloneReqData, entity.model.identity,, record.id)
+			await saveRelationsMediaManager(fields,  rawReqData, entity.model.identity, record.id)
 
 			sails.log.debug(`A new record was created: `, record);
 			if (req.body.jsonPopupCatalog) {
