@@ -1,5 +1,7 @@
 import sails from "@42pub/typed-sails";
 import { LineAwesomeIcon } from "./lineAwesome"
+import UserAP from "../models/UserAP";
+import GroupAP from "../models/GroupAP";
 
 export type AdminpanelIcon = LineAwesomeIcon
 type FieldsTypes =
@@ -192,6 +194,12 @@ export interface AdminpanelConfig {
 		login: string
 		password: string
 	}
+	// TODO (look in task.md)
+	registration?: {
+		enable: boolean
+		defaultUserGroup: string
+		confirmationRequired: boolean
+	}
 	/**
 	 * Enable/disable displaying createdAt and updatedAt fields in `edit` and `add` sections
 	 * */
@@ -302,14 +310,21 @@ export interface ModelConfig {
 	 * Force set primary key
 	 * */
 	identifierField?: string
+	// TODO (look in task.md)
+	userAccessRelation?: string
+	userAccessRelationCallback?: (userWithGroups: UserWithGroups, record: any) => boolean
 }
+
+type UserWithGroups = UserAP & {groups: GroupAP[]}
 
 export interface FieldsForms {
 	[key: string]: FormFieldConfig
 }
 
+export type ModelFieldConfig = BaseFieldConfig & {groupsAccessRight: string[]}
+
 export interface FieldsModels {
-	[key: string]: boolean | string | BaseFieldConfig
+	[key: string]: boolean | string | ModelFieldConfig
 }
 
 interface FormFieldConfig extends BaseFieldConfig {
@@ -471,6 +486,7 @@ export interface NavigationConfig {
 	model?: string
 	sections: string[]
 	groupField: { name: string, required: boolean }[]
+	allowContentInGroup?: boolean
 	items: NavigationItemTypeConfig[],
 	movingGroupsRootOnly: boolean
 }
