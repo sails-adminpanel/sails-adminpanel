@@ -53,6 +53,7 @@
         <%# global variables %>
         <script>
 			var jsonEditor = {};
+			var tuiEditor = {};
 			var aceCounter = 0;
 			let editor = [];
 			let textarea = [];
@@ -93,7 +94,13 @@
 				return false;
 			}
 		}
-		;
+
+		// Assign TUIEditor value to form textarea
+		for (var id in tuiEditor) {
+			const editor = tuiEditor[id];
+			document.querySelector(`#form-${id}`).value = editor.getMarkdown();
+		}
+
 		for (var id in apTables) {
 			try {
 				var schema = apTables[id].getSchema();

@@ -41,6 +41,12 @@
     <%- include("fields/widgetWysiwyg") %>
 <% } %>
 
+<%# tui editor %>
+<% var widgetTuiEditorTypes = ['tui', 'tuieditor', 'toast-ui'] %>
+<% if (widgetTuiEditorTypes.includes(type)) { %>
+    <%- include("fields/widgetTuiEditor") %>
+<% } %>
+
 <%# jsoneditor %>
 <% var widgetJsonEditorTypes = ['jsoneditor', 'json', 'array', 'object'] %>
 <% if (widgetJsonEditorTypes.includes(type)) { %>
