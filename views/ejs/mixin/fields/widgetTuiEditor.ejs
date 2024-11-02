@@ -4,12 +4,14 @@
 
 <script>
   // Initialize TUI Editor
+  let options<%=key%> = <%- JSON.stringify(field.config.options) %>;
   tuiEditor['<%= key %>']  = new toastui.Editor({
     el: document.querySelector('#form-<%= key %>-tui-editor'),
     height: '400px',
     initialEditType: 'markdown',
     previewStyle: 'vertical',
     hideModeSwitch: true,
-    initialValue: document.querySelector('#form-<%= key %>').value || ""  // Set initial value from the textarea
+    initialValue: document.querySelector('#form-<%= key %>').value || "",  // Set initial value from the textarea
+    ...options<%=key%>
   });
 </script>
