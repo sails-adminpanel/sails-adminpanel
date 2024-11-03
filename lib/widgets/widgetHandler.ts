@@ -16,14 +16,10 @@ export interface WidgetConfig {
 	description: string;
 	icon: AdminpanelIcon;
 	name: string;
-	scriptUrl?: string;
-	constructorName?: string;
-	constructorOption?: string;
 	backgroundCSS: string;
 	scriptUrl?: string;
 	constructorName?: string,
 	constructorOption?:  any,
-	hideAdminPanelUI?: boolean
 	size?: { h: number; w: number; };
 	added?: boolean;
 	hideAdminPanelUI?:boolean

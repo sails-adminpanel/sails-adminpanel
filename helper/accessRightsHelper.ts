@@ -1,4 +1,4 @@
-import GroupAP from "sails-adminpanel/models/GroupAP";
+import GroupAP from "../models/GroupAP";
 import {AccessRightsToken} from "../interfaces/types";
 import UserAP from "../models/UserAP";
 import userAP from "../models/UserAP";

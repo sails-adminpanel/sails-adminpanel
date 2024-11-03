@@ -1,4 +1,4 @@
-import sails from "@42pub/typed-sails";
+import sails from "sails-typescript";
 import {LineAwesomeIcon} from "./lineAwesome"
 
 export type AdminpanelIcon = LineAwesomeIcon

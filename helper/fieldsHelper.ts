@@ -1,4 +1,4 @@
-import { SailsModelAnyInstance } from "sails-adminpanel/interfaces/StrippedORMModel";
+import { SailsModelAnyInstance } from "../interfaces/StrippedORMModel";
 import { ActionType, BaseFieldConfig } from "../interfaces/adminpanelConfig";
 import { Entity } from "../interfaces/types";
 import { AdminUtil } from "../lib/adminUtil";
