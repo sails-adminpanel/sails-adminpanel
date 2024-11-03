@@ -9,6 +9,8 @@ export default abstract class InstallStepAbstract {
     abstract description: string;
     abstract scriptsUrl: string;
     abstract stylesUrl: string;
+    /** For custom modules to set the list of settings wanted to set in this step */
+    settingsKeys: string[];
     /** Absolute path to ejs template */
     abstract ejsPath: string;
     abstract renderer: "ejs" | "jsonforms";
@@ -41,7 +43,10 @@ export default abstract class InstallStepAbstract {
     protected abstract skip(): Promise<void>;
     /** This method will be called by InstallStepper and is a wrapper for "skip" method */
     skipIt(): Promise<void>;
-    /** Checks that step should be processed during install */
+    /**
+     * Checks that step should be processed during install
+     * `true` means that the step has been completed and does not need to be shown
+    */
     abstract check(): Promise<boolean>;
     onInit(): Promise<void>;
 }

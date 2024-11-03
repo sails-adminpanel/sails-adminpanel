@@ -21,7 +21,7 @@ exports.up = function (db, callback) {
     (cb) => db.createTable('groupap', {
     columns: {
     "id": {
-        "type": "int",
+        "type": "serial",
         "autoIncrement": true,
         "primaryKey": true
     },
@@ -47,7 +47,7 @@ exports.up = function (db, callback) {
 (cb) => db.createTable('userap', {
     columns: {
     "id": {
-        "type": "int",
+        "type": "serial",
         "autoIncrement": true,
         "primaryKey": true
     },
@@ -97,7 +97,7 @@ exports.up = function (db, callback) {
 (cb) => db.createTable('groupap_users__userap_groups', {
     columns: {
     "id": {
-        "type": "int",
+        "type": "serial",
         "autoIncrement": true
     },
     "groupap_users": {

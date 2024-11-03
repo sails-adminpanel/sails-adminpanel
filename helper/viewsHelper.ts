@@ -1,4 +1,6 @@
 import * as path from "path";
+import { Field } from "sails-adminpanel/helper/fieldsHelper";
+import { SailsModelAnyField, SailsModelAnyInstance } from "sails-adminpanel/interfaces/StrippedORMModel";
 
 export class ViewsHelper {
 
@@ -10,11 +12,11 @@ export class ViewsHelper {
 
     /**
      * Generate path to views files for given view engine
-     *
+     * @deprecated only EJS support
      * @param {string} engine - View engine name. E.g. 'jade', 'ejs'...
      * @returns {string}
      */
-    public static getPathToEngine(engine) {
+    public static getPathToEngine(engine: "ejs"): string {
         return path.join(this.BASE_VIEWS_PATH, engine, '/')
     }
 
@@ -24,7 +26,7 @@ export class ViewsHelper {
      * @param {string} view
      * @returns {string}
      */
-    public static getViewPath(view) {
+    public static getViewPath(view: string): string {
         return path.resolve(sails.config.adminpanel.pathToViews, view);
     }
 
@@ -33,7 +35,7 @@ export class ViewsHelper {
      * @param {IncomingMessage} req
      * @param {string} key Types: adminError|adminSuccess
      */
-    public static hasMessages(req, key) {
+    public static hasMessages(req: ReqType, key: "adminError" | "adminSuccess") {
         return (req.session.messages && req.session.messages[key]);
     }
 
@@ -44,21 +46,23 @@ export class ViewsHelper {
      * @param {object} field
      * @param {Array} data
      */
-    public static getFieldValue(key, field, data) {
+    public static getFieldValue(key: string, field: Field, data: SailsModelAnyInstance): SailsModelAnyField {
         let value = data[key];
-        if (typeof value === "object" && value !== null && field.config.type == 'association') {
-            value = value[field.config.identifierField];
+    
+        if (typeof value === "object" && value !== null) {
+            if (field.config.type === 'association' && !Array.isArray(value)) {
+                // Here we assert that value is an object and has the identifierField
+                return value[field.config.identifierField as keyof typeof value] as SailsModelAnyField;
+            }
+    
+            if (Array.isArray(value) && field.config.type === 'association-many') {
+                return value.map(val => (val as any)[field.config.identifierField]) as SailsModelAnyField;
+            }
         }
-
-        if (value !== null && Array.isArray(value) && field.config.type == 'association-many') {
-            let result = [];
-            value.forEach(function (val) {
-                result.push(val[field.config.identifierField]);
-            });
-            return result;
-        }
-        return value;
+    
+        return value as SailsModelAnyField;
     }
+    
 
     /**
      * Check if given option equals value or is in array
@@ -67,7 +71,7 @@ export class ViewsHelper {
      * @param {string|number|Array} value
      * @returns {boolean}
      */
-    public static isOptionSelected(option, value) {
+    public static isOptionSelected(option: string | number | boolean, value: string | number | boolean | (string | number | boolean)[]): boolean {
         if (Array.isArray(value)) {
             return value.includes(option);
         } else {
@@ -81,24 +85,24 @@ export class ViewsHelper {
      * @param {string|number|boolean|object|Array} value
      * @param {object} field
      */
-    public static getAssociationValue(value, field) {
+    public static getAssociationValue(value: SailsModelAnyField, field: Field): string {
         if (!value) {
             return '-----------';
         }
-
-        let displayField = field.config.displayField || 'id';
+    
+        const displayField = field.config.displayField || 'id';
+    
         if (Array.isArray(value)) {
-            let result = '';
-            value.forEach(function (val) {
-                result += val[displayField] + '<br/>';
-            });
-            return result;
+            return value
+                .map(val => (val as unknown as { [key: string]: any })[displayField])
+                .join('<br/>');
         }
-
-        if (typeof value === "object") {
-            return value[displayField];
+    
+        if (typeof value === 'object' && value !== null) {
+            return (value as { [key: string]: any })[displayField];
         }
-
-        return value;
+    
+        return String(value);
     }
+    
 }

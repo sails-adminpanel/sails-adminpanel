@@ -1,15 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = add;
 const adminUtil_1 = require("../lib/adminUtil");
 const requestProcessor_1 = require("../lib/requestProcessor");
 const fieldsHelper_1 = require("../helper/fieldsHelper");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
+const MediaManagerHelper_1 = require("../lib/media-manager/helpers/MediaManagerHelper");
 async function add(req, res) {
     let entity = adminUtil_1.AdminUtil.findEntityObject(req);
     if (!entity.model) {
         return res.notFound();
     }
-    if (!entity.config.add) {
+    if (!entity.config?.add) {
         return res.redirect(entity.uri);
     }
     if (sails.config.adminpanel.auth) {
@@ -28,6 +30,9 @@ async function add(req, res) {
         for (let prop in reqData) {
             if (Number.isNaN(reqData[prop]) || reqData[prop] === undefined || reqData[prop] === null) {
                 delete reqData[prop];
+            }
+            if (reqData[prop] === "" && fields[prop].model.allowNull === true) {
+                reqData[prop] = null;
             }
             if (fields[prop].config.type === 'select-many') {
                 reqData[prop] = reqData[prop].split(",");
@@ -64,9 +69,16 @@ async function add(req, res) {
         }
         try {
             let record = await entity.model.create(reqData).fetch();
+            // save associations media to json
+            await (0, MediaManagerHelper_1.saveRelationsMediaManager)(fields, reqData, entity.name, record.id);
             sails.log.debug(`A new record was created: `, record);
-            req.session.messages.adminSuccess.push('Your record was created !');
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
+            if (req.body.jsonPopupCatalog) {
+                return res.json({ record: record });
+            }
+            else {
+                req.session.messages.adminSuccess.push('Your record was created !');
+                return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
+            }
         }
         catch (e) {
             sails.log.error(e);
@@ -74,8 +86,8 @@ async function add(req, res) {
             data = reqData;
         }
     }
-    if (req.query.without_layout) {
-        return res.viewAdmin("./../ejs/partials/content/add.ejs", {
+    if (req.query?.without_layout) {
+        return res.viewAdmin("./../ejs/partials/content/addPopup.ejs", {
             entity: entity,
             fields: fields,
             data: data
@@ -89,5 +101,4 @@ async function add(req, res) {
         });
     }
 }
-exports.default = add;
 ;

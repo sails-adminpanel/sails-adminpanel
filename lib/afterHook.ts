@@ -5,6 +5,10 @@ import bindDev from "./bindDev";
 import bindForms from "./bindForms";
 import bindDashboardWidgets from "./bindDashboardWidgets";
 import Router from "./Router";
+
+import bindNavigation from "./bindNavigation";
+import bindMediaManager from "./bindMediaManager";
+
 export default async function () {
     // Binding list of function for rendering
     require('./bindResView').default();
@@ -28,13 +32,20 @@ export default async function () {
         bindDev(sails.config.adminpanel)
     }
 
-    sails.on('lifted', async function() {
-        //binding all routes.
+    if(process.env.NODE_ENV === "production") {
+        sails.on('lifted', async function() {
+            // Why need wait?
+            Router.bind();
+        })
+    } else {
         Router.bind();
-    })
+    }
 
     bindForms();
     bindDashboardWidgets();
+
+	bindNavigation();
+	bindMediaManager();
 
     //bind access rights
     bindAccessRights();
@@ -59,5 +70,6 @@ export default async function () {
      * This call is used so that other hooks can know that the admin panel is present in the panel and has been loaded, and can activate their logic.
      */
     sails.emit('Adminpanel:afterHook:loaded');
-    return
+
+	return
 };

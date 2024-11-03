@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.widgetCustomController = void 0;
+exports.widgetCustomController = widgetCustomController;
 const accessRightsHelper_1 = require("../../helper/accessRightsHelper");
 const widgetHandler_1 = require("../../lib/widgets/widgetHandler");
 async function widgetCustomController(req, res) {
@@ -39,4 +39,3 @@ async function widgetCustomController(req, res) {
     // 	}
     // }
 }
-exports.widgetCustomController = widgetCustomController;

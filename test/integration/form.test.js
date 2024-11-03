@@ -22,11 +22,12 @@ describe('Form test', function () {
     it("Writing to file works", function () {
         chai.request(process.env.HTTP_TEST_LOCALHOST)
             .post(`${process.env.BASE_ROUTE}/form/testForm`)
-            .send({ label: "Label123" })
+            .send({ label: "Label123", test_seed_json: { test: true } })
             .end(function (err, res) {
             (0, chai_1.expect)(err).to.be.null;
             let formFromFile = require("../fixture/.tmp/adminpanel_file_storage.json");
             (0, chai_1.expect)(formFromFile['testForm'].label).to.equal("Label123");
+            (0, chai_1.expect)(formFromFile['testForm'].test_seed_json.test).to.equal(true);
         });
     });
     it("Seeding form data", async function () {

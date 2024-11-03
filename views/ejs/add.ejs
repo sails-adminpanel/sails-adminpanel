@@ -40,11 +40,9 @@
 
         <%# global variables %>
         <script>
-			var jsonEditor = {};
 			var aceCounter = 0;
 			let editor = [];
 			let textarea = [];
-			var tables = {};
         </script>
         <div class="mt-14 flex flex-col gap-10 max-w-[1144px]">
 						<%- include("./partials/content/add.ejs") %>
@@ -79,10 +77,10 @@
 				return false;
 			}
 		};
-		for (var id in tables) {
+		for (var id in apTables) {
 			try {
-				var schema = tables[id].getSchema();
-				var table = tables[id].getData();
+				var schema = apTables[id].getSchema();
+				var table = apTables[id].getData();
 				table = table.filter(item => {
 					return !([...new Set(item)].length === 1 && [...new Set(item)][0] === null);
 				});

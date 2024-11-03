@@ -3,14 +3,24 @@
  *
  * @constructor
  */
-import {ModelConfig} from "../interfaces/adminpanelConfig";
+import {ActionType, AdminpanelConfig, HrefConfig, ModelConfig} from "../interfaces/adminpanelConfig";
+
+export type MenuItem = { 
+    link: string; 
+    title: string; 
+    id: string; 
+    actions: HrefConfig[]; 
+    icon: string; 
+    accessRightsToken: string; 
+    entityName?: string; 
+}
 
 let _ = require("lodash") // заменить lodash реджексом
 export class MenuHelper {
 
     private static config: any;
 
-    constructor(config) {
+    constructor(config: AdminpanelConfig) {
         MenuHelper.config = config
     }
 
@@ -57,66 +67,92 @@ export class MenuHelper {
     /**
      * Check if global actions buttons added to action
      *
-     * @param {Object} ModelConfig
+     * @param {Object} modelConfig
      * @param {string=} [action] Defaults to `list`
      * @returns {boolean}
      */
-    public hasGlobalActions(ModelConfig, action) {
-        action = action || 'list';
-        if (!ModelConfig[action] || !ModelConfig[action].actions || !ModelConfig[action].actions.global) {
+    public hasGlobalActions(modelConfig: ModelConfig, action: ActionType): boolean {
+        action = action ?? 'list';
+
+        const config = modelConfig[action];
+        if (typeof config === "object" && config !== null && 'actions' in config) {
+            if (!config.actions || !config.actions.global) {
+                return false;
+            }
+            let actions = config.actions.global;
+            return actions.length > 0;
+        } else {
             return false;
         }
-
-        let actions = ModelConfig[action].actions.global;
-        return actions.length > 0;
+        
     }
 
     /**
      * Check if inline actions buttons added to action
      *
-     * @param {Object} ModelConfig
+     * @param {Object} modelConfig
      * @param {string=} [action] Defaults to `list`
      * @returns {boolean}
      */
-    public hasInlineActions(ModelConfig, action) {
-        action = action || 'list';
-        if (!ModelConfig[action] || !ModelConfig[action].actions || !ModelConfig[action].actions.inline) {
+    public hasInlineActions(modelConfig: ModelConfig, action: ActionType): boolean {
+        action = action ?? 'list';
+    
+        const config = modelConfig[action];
+    
+        if (typeof config !== "object" || config === null || !('actions' in config) || !config.actions.inline) {
             return false;
         }
-        let actions = ModelConfig[action].actions.inline;
+    
+        const actions = config.actions.inline;
         return actions.length > 0;
-
     }
-
+    
     /**
      * Get list of custom global buttons for action
      *
-     * @param {Object} ModelConfig
+     * @param {Object} modelConfig
      * @param {string=} [action]
      * @returns {Array}
      */
-    public getGlobalActions(ModelConfig, action) {
-        action = action || 'list';
-        if (!this.hasGlobalActions(ModelConfig, action)) {
+    public getGlobalActions(modelConfig: ModelConfig, action: ActionType): HrefConfig[] {
+        action = action ?? 'list';
+    
+        if (!this.hasGlobalActions(modelConfig, action)) {
             return [];
         }
-        return ModelConfig[action].actions.global;
+    
+        const config = modelConfig[action];
+    
+        if (typeof config === "object" && config !== null && 'actions' in config && config.actions.global) {
+            return config.actions.global;
+        }
+    
+        return [];
     }
-
+    
     /**
      * Get list of custom inline buttons for action
      *
-     * @param {Object} ModelConfig
+     * @param {Object} modelConfig
      * @param {string=} [action]
      * @returns {Array}
      */
-    public getInlineActions(ModelConfig, action) {
+    public getInlineActions(modelConfig: ModelConfig, action: ActionType): HrefConfig[] {
         action = action || 'list';
-        if (!this.hasInlineActions(ModelConfig, action)) {
+    
+        if (!this.hasInlineActions(modelConfig, action)) {
             return [];
         }
-        return ModelConfig[action].actions.inline;
+    
+        const config = modelConfig[action];
+    
+        if (typeof config === "object" && config !== null && 'actions' in config && config.actions.inline) {
+            return config.actions.inline;
+        }
+    
+        return [];
     }
+    
 
     /**
      * Replace fields in given URL and binds to model fields.
@@ -128,8 +164,8 @@ export class MenuHelper {
      * @param {Object} model
      * @returns {string}
      */
-    public static replaceModelFields(url, model) {
-        let words = (str, pat) => {
+    public static replaceModelFields(url: string, model: { [x: string]: string; }): string {
+        let words = (str: string, pat: RegExp) => {
             pat = pat || /\w+/g;
             str = str.toLowerCase();
             return str.match(pat);
@@ -155,10 +191,10 @@ export class MenuHelper {
      *
      * @returns {Array}
      */
-    public getMenuItems() {
-        let menus = [];
+    public getMenuItems(): MenuItem[] {
+        let menus: MenuItem[] = [];
         if (MenuHelper.config.navbar.additionalLinks && MenuHelper.config.navbar.additionalLinks.length > 0) {
-            MenuHelper.config.navbar.additionalLinks.forEach(function(additionalLink) {
+            MenuHelper.config.navbar.additionalLinks.forEach(function(additionalLink: { link: any; title: string; disabled: any; id: any; subItems: any; icon: any; accessRightsToken: any; }) {
                 if (!additionalLink.link || !additionalLink.title || additionalLink.disabled) {
                     return;
                 }

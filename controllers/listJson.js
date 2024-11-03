@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = listJson;
 const adminUtil_1 = require("../lib/adminUtil");
 const fieldsHelper_1 = require("../helper/fieldsHelper");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
@@ -20,6 +21,7 @@ async function listJson(req, res) {
         }
         let fields = fieldsHelper_1.FieldsHelper.getFields(req, entity, 'list');
         const nodeTable = new NodeTable_1.NodeTable(req.body, entity.model, fields);
+        //@ts-ignore
         nodeTable.output((err, data) => {
             if (err) {
                 sails.log.error(err);
@@ -33,5 +35,4 @@ async function listJson(req, res) {
         sails.log.error(error);
     }
 }
-exports.default = listJson;
 ;

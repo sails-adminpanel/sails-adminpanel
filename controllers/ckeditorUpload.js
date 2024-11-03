@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = upload;
 const adminUtil_1 = require("../lib/adminUtil");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 function upload(req, res) {
@@ -30,7 +31,7 @@ function upload(req, res) {
         }
         //save file
         const filenameOrig = req.body.name.replace(' ', '_');
-        let filename = filenameOrig.substr(0, filenameOrig.lastIndexOf('.')) + rand + '.' + filenameOrig.split('.').reverse()[0];
+        let filename = filenameOrig.replace(/$/, '_prefix');
         req.file('image').upload({
             dirname: dir,
             saveAs: filename
@@ -44,4 +45,3 @@ function upload(req, res) {
         });
     }
 }
-exports.default = upload;

@@ -1,0 +1,37 @@
+<div class="custom-catalog__form">
+    <div class="flex flex-col gap-3">
+        <div class="admin-panel__wrapper-title">
+            <label class="admin-panel__title" for="form-title">2 + 5 = ?</label>
+        </div>
+        <div class="admin-panel__widget">
+            <div class="widget_narrow ">
+                <input class="text-input w-full" type="text" placeholder="answer" value="" name="answer"
+                       id="action-html" required/>
+            </div>
+            <p id="action-html-info" style="margin-top: 25px"></p>
+        </div>
+    </div>
+</div>
+<script>
+	{
+		const answer = document.getElementById('action-html')
+		const info = document.getElementById('action-html-info')
+        const selectedNode = document.getElementById('selectedNode')
+		if (answer) {
+			answer.addEventListener('input', async function () {
+				if (+this.value === 7) {
+					let data = {
+						actionID: 'html_action',
+						items: JSON.parse(selectedNode.value),
+						config: ''
+					}
+					info.innerHTML = 'Done. Wait 5 seconds before the popup closes...'
+					let res = await ky.put('', {json: {data: data, _method: 'handleAction'}}).json()
+					if (res.data.ok) document.getElementById('checkbox-ready').click()
+				} else {
+					info.innerHTML = 'The answer is not correct'
+				}
+			})
+		}
+	}
+</script>

@@ -1,7 +1,7 @@
 import sails from "@42pub/typed-sails";
 import { LineAwesomeIcon } from "./lineAwesome";
 export type AdminpanelIcon = LineAwesomeIcon;
-type FieldsTypes = "string" | "password" | "date" | "datetime" | "time" | "integer" | "number" | "float" | "color" | "email" | "month" | "week" | "range" | "boolean" | "binary" | "text" | "longtext" | "mediumtext" | "ckeditor" | "wysiwyg" | "texteditor" | "word" | "jsoneditor" | "json" | "array" | "object" | "ace" | "html" | "xml" | "aceeditor" | "image" | "images" | "file" | "files" | "menu" | "navigation" | "schedule" | "worktime" | "association" | "association-many" | "select" | "select-many" | "table" | "geojson" | 
+type FieldsTypes = "string" | "password" | "date" | "datetime" | "time" | "integer" | "number" | "float" | "color" | "email" | "month" | "week" | "range" | "boolean" | "binary" | "text" | "longtext" | "mediumtext" | "ckeditor" | "wysiwyg" | "texteditor" | "word" | "jsoneditor" | "json" | "array" | "object" | "ace" | "html" | "xml" | "aceeditor" | "image" | "images" | "file" | "files" | "menu" | "navigation" | "schedule" | "worktime" | "association" | "association-many" | "select" | "select-many" | "table" | "geojson" | "mediamanager" | 
 /**
  * it will be needed only for polygon data
  */
@@ -31,11 +31,10 @@ export interface AdminpanelConfig {
     /**
      * @alpha
      * Models configuration
-     * @todo rewrite for EntityType
      * reference upload contoroller ~50 line
      * */
     models: {
-        [key: string]: ModelConfig;
+        [key: string]: ModelConfig | boolean;
     };
     /**
      * For custom adminpanel sections, displays inside header
@@ -91,7 +90,7 @@ export interface AdminpanelConfig {
          * */
         path?: string;
         defaultLocale: string;
-    } | boolean;
+    } | false;
     /**
      * Forms
      * */
@@ -103,7 +102,6 @@ export interface AdminpanelConfig {
          */
         path?: string;
         /**
-         * TODO: (wizards) rewrite to data -> setup
          * same for model (need entity config types)
          * */
         data: {
@@ -166,6 +164,15 @@ export interface AdminpanelConfig {
      * System field for store absolute root path adminpanel hookfolder
      */
     rootPath?: string;
+    /**
+     *  Navigation
+     */
+    navigation?: NavigationConfig;
+    /**
+     *  Path to modules views
+     */
+    modulesViewsPath?: string;
+    mediamanager?: MediaManagerConfig;
 }
 export interface ModelConfig {
     title: string;
@@ -245,7 +252,7 @@ export interface FieldsModels {
 interface FormFieldConfig extends BaseFieldConfig {
     value?: any;
 }
-interface BaseFieldConfig {
+export interface BaseFieldConfig {
     title?: string;
     type?: FieldsTypes;
     /**
@@ -275,7 +282,10 @@ interface BaseFieldConfig {
     /** Show as disabled element HTML */
     disabled?: boolean;
 }
-interface NavigationOptionsField {
+/**
+ * @deprecated
+ */
+export interface NavigationOptionsField {
     /**
      * max number of nested elements
      * */
@@ -358,7 +368,7 @@ export interface CreateUpdateConfig {
      *
      * Function(reqData) {return reqData}
      * */
-    entityModifier?: (reqData: string) => string;
+    entityModifier?: <T>(fieldData: T) => T;
     /**
      * You can change standard controller for any entity by this property
      * */
@@ -377,5 +387,33 @@ export interface HrefConfig {
      * For menu items only
      * */
     subItems?: HrefConfig[];
+}
+export interface NavigationItemTypeConfig {
+    model: string;
+    title: string;
+    /**
+     *  /page/${data.record.slug}
+     */
+    urlPath: string | ((v: any) => string);
+}
+export interface NavigationConfig {
+    model?: string;
+    sections: string[];
+    groupField: {
+        name: string;
+        required: boolean;
+    }[];
+    items: NavigationItemTypeConfig[];
+    movingGroupsRootOnly: boolean;
+}
+export interface MediaManagerConfig {
+    allowMIME?: string[];
+    maxByteSize?: number;
+    imageSizes?: {
+        [key: string]: {
+            width: number;
+            height: number;
+        };
+    };
 }
 export {};

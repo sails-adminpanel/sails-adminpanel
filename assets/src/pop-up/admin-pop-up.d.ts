@@ -16,6 +16,7 @@ declare class PopUp {
 export declare class AdminPopUp {
     static popups: PopUp[];
     static new(): PopUp;
+    static closeAll(): void;
     private static offsetToggle;
 }
 export {};

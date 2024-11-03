@@ -1,4 +1,5 @@
+import { AdminpanelConfig } from "sails-adminpanel/interfaces/adminpanelConfig";
 export declare class FormHelper {
-    static get(slug: string): Promise<object>;
-    static loadForms(formsPath: string): Promise<void>;
+    static get(slug: string): AdminpanelConfig["forms"]["data"][0];
+    static loadForms(formsPath: string): void;
 }

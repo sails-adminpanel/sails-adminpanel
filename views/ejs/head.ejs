@@ -15,6 +15,7 @@
     <script src="/admin/assets/build/js/ace/ace.js"></script>
     <script src="/admin/assets/build/js/jsoneditor/jsoneditor.min.js"></script>
     <script src="/admin/assets/build/js/vue-installStepper.js"></script>
+    <script src="/admin/assets/build/js/mediamanager.js" defer></script>
     <script src="/admin/assets/build/js/ckeditor5/ck5.js"></script>
     <% if (req.session.UserAP.locale !== 'en') { %>
         <script src="/admin/assets/build/js/ckeditor5/translations/<%= req.session.UserAP.locale %>.js"></script>
@@ -23,11 +24,15 @@
     <!-- Quill Editor -->
     <script src='//cdn.quilljs.com/1.3.6/quill.min.js'></script>
     <link rel='stylesheet' href='//cdn.quilljs.com/1.3.6/quill.snow.css'>
+    <script>
+        window.jsonEditor = {}
+		window.apTables = {};
+    </script>
 </head>
 
 <body>
 <div class="wrapper h-full md:flex md:flex-col">
-        <header class="bg-gray-800 dark:bg-neutral-900 h-[50px] md:fixed md:w-full md:z-[1001]">
+        <header class="bg-gray-800 dark:bg-neutral-900 h-[50px] md:h-[40px] md:fixed md:w-full md:z-[1001]">
             <div class="flex items-center h-full pl-5 justify-between">
                 <div class="flex-none flex items-center">
                     <a href="" class="flex items-center gap-2">

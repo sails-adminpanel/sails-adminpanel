@@ -1,4 +1,6 @@
-export default function bindDev(adminpanelConfig) {
+import { AdminpanelConfig } from "sails-adminpanel/interfaces/adminpanelConfig";
+
+export default function bindDev(adminpanelConfig: AdminpanelConfig) {
     if (adminpanelConfig.models) {
         Object.keys(sails.models).forEach((modelname) => {
             let modelName = sails.models[modelname].globalId;

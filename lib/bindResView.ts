@@ -3,7 +3,7 @@ import {AccessRightsHelper} from "../helper/accessRightsHelper";
 
 export default function bindResView() {
 
-    let bindResFunctions = function (req, res, next) {
+    let bindResFunctions = function (req: ReqType, res: ResType, next: ()=>void) {
 
         /**
          * Guess view name by request
@@ -11,7 +11,7 @@ export default function bindResView() {
          * @param {IncomingMessage} req
          * @returns {string}
          */
-        let guessViewName = function (req) {
+        let guessViewName = function (req: ReqType) {
             if (!req || !req.route || !req.route.path || typeof req.route.path !== "string") {
                 return '';
             }
@@ -47,7 +47,7 @@ export default function bindResView() {
                 cb_view = arguments[1];
             }
             if (!specifiedPath || typeof specifiedPath !== "string") {
-                specifiedPath = guessViewName(res.req);
+                specifiedPath = guessViewName(req);
             }
             // Set local layout to view engine
             if (sails.config.views.extension == 'ejs') {
@@ -70,7 +70,11 @@ export default function bindResView() {
 
             if (locals.section === undefined) locals.section = 'adminpanel';
 
-            return res.view(ViewsHelper.getViewPath(specifiedPath), locals, cb_view);
+            if(cb_view){
+                sails.log.warn((new Error).stack)
+                sails.log.warn(`Detected cb_view ${cb_view}`)
+            }
+            return res.view(ViewsHelper.getViewPath(specifiedPath), locals, );
         };
 
         next();

@@ -2,8 +2,8 @@ import { LineAwesomeIcon } from "../../interfaces/lineAwesome";
 
 export default abstract class BaseWidget {
 
-	/** Widget unique ID */
-	public abstract readonly ID: string;
+	/** Widget unique id */
+	public abstract readonly id: string;
 
 	/** Widget Name */
 	public abstract readonly name: string;

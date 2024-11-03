@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = form;
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 const formHelper_1 = require("../helper/formHelper");
 async function form(req, res) {
@@ -16,17 +17,19 @@ async function form(req, res) {
             return res.sendStatus(403);
         }
     }
+    let form = await formHelper_1.FormHelper.get(slug);
     for (let prop in req.body) {
-        try {
-            req.body[prop] = JSON.parse(req.body[prop]);
-        }
-        catch (e) {
-            if (typeof req.body[prop] === "string" && req.body[prop].replace(/(\r\n|\n|\r|\s{2,})/gm, "") && e.message !== "Unexpected end of JSON input" && !/Unexpected (token .|number) in JSON at position \d/.test(e.message)) {
-                sails.log.error(JSON.stringify(req.body[prop]), e);
+        if (form[prop].type === 'json' && typeof req.body[prop] === 'string') {
+            try {
+                req.body[prop] = JSON.parse(req.body[prop]);
+            }
+            catch (e) {
+                if (typeof req.body[prop] === "string" && req.body[prop].replace(/(\r\n|\n|\r|\s{2,})/gm, "") && e.message !== "Unexpected end of JSON input" && !/Unexpected (token .|number) in JSON at position \d/.test(e.message)) {
+                    sails.log.error(JSON.stringify(req.body[prop]), e);
+                }
             }
         }
     }
-    let form = await formHelper_1.FormHelper.get(slug);
     if (!form) {
         return res.status(404).send("Adminpanel > Form not found");
     }
@@ -60,4 +63,3 @@ async function form(req, res) {
     }
     res.viewAdmin("form", { formData: form, slug: slug });
 }
-exports.default = form;

@@ -1,21 +1,60 @@
-import WaterlineModel from "../interfaces/waterlineModel";
-import WaterlineEntity from "../interfaces/waterlineORM";
-import UserAP from "./UserAP";
-import { OptionalAll } from "../interfaces/toolsTS";
-declare let attributes: {
-    id: number;
-    name: string;
-    description: string;
-    tokens: string[];
-    users: UserAP[];
+import { ModelTypeDetection, Model } from "sails-typescript";
+declare const attributes: {
+    readonly id: {
+        readonly type: "number";
+        readonly autoIncrement: true;
+    };
+    readonly name: {
+        readonly type: "string";
+        readonly required: true;
+        readonly unique: true;
+    };
+    readonly description: {
+        readonly type: "string";
+    };
+    readonly tokens: {
+        readonly type: "json";
+    };
+    readonly users: {
+        readonly collection: "UserAP";
+        readonly via: "groups";
+    };
 };
-type attributes = typeof attributes & WaterlineEntity;
-interface GroupAP extends OptionalAll<attributes> {
+type ModelOptions = ModelTypeDetection<typeof attributes>;
+interface GroupAP extends Partial<ModelOptions> {
 }
 export default GroupAP;
-declare let model: {
-    beforeCreate: (item: any, next: any) => any;
+declare const model: {
+    beforeCreate(record: GroupAP, cb: (err?: Error | string) => void): void;
+    primaryKey: string;
+    attributes: {
+        readonly id: {
+            readonly type: "number";
+            readonly autoIncrement: true;
+        };
+        readonly name: {
+            readonly type: "string";
+            readonly required: true;
+            readonly unique: true;
+        };
+        readonly description: {
+            readonly type: "string";
+        };
+        readonly tokens: {
+            readonly type: "json";
+        };
+        readonly users: {
+            readonly collection: "UserAP";
+            readonly via: "groups";
+        };
+    };
 };
 declare global {
-    const GroupAP: typeof model & WaterlineModel<GroupAP, null>;
+    const GroupAP: Model<typeof model>;
+    interface Models {
+        GroupAP: GroupAP;
+    }
+    interface AppCustomJsonTypes {
+        tokens: string[];
+    }
 }

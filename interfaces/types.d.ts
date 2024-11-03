@@ -4,7 +4,7 @@ import {ModelConfig} from "./adminpanelConfig";
 export interface Entity {
     name: string
     config?: ModelConfig
-    model?: StrippedORMModel
+    model?: Model<Models[keyof Models]> & { attributes: SailsModelAnyInstance }
     uri: string
     type: string
 }

@@ -1,9 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = edit;
 const adminUtil_1 = require("../lib/adminUtil");
 const requestProcessor_1 = require("../lib/requestProcessor");
 const fieldsHelper_1 = require("../helper/fieldsHelper");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
+const CatalogHandler_1 = require("../lib/catalog/CatalogHandler");
+const MediaManagerHelper_1 = require("../lib/media-manager/helpers/MediaManagerHelper");
 async function edit(req, res) {
     //Check id
     if (!req.param('id')) {
@@ -26,7 +29,8 @@ async function edit(req, res) {
     }
     let record;
     try {
-        record = await entity.model.findOne(req.param('id')).populateAll();
+        const id = req.param('id');
+        record = await entity.model.findOne(id).populateAll();
     }
     catch (e) {
         sails.log.error('Admin edit error: ');
@@ -48,17 +52,22 @@ async function edit(req, res) {
             if (Number.isNaN(reqData[prop]) || reqData[prop] === undefined || reqData[prop] === null) {
                 delete reqData[prop];
             }
+            if (reqData[prop] === "" && fields[prop].model.allowNull === true) {
+                reqData[prop] = null;
+            }
             if (fields[prop].config.type === 'select-many') {
-                reqData[prop] = reqData[prop].split(",");
+                reqData[prop] = reqData[prop].toString().split(",");
             }
             if (fields[prop] && fields[prop].model && fields[prop].model.type === 'json' && reqData[prop] !== '') {
-                try {
-                    reqData[prop] = JSON.parse(reqData[prop]);
-                }
-                catch (e) {
-                    // Why it here?
-                    if (typeof reqData[prop] === "string" && reqData[prop].replace(/(\r\n|\n|\r|\s{2,})/gm, "")) {
-                        sails.log.error(JSON.stringify(reqData[prop]), e);
+                if (typeof reqData[prop] === "string") {
+                    try {
+                        reqData[prop] = JSON.parse(reqData[prop]);
+                    }
+                    catch (e) {
+                        // Why it here @roman?
+                        if (typeof reqData[prop] === "string" && reqData[prop].toString().replace(/(\r\n|\n|\r|\s{2,})/gm, "")) {
+                            sails.log.error(JSON.stringify(reqData[prop]), e);
+                        }
                     }
                 }
             }
@@ -70,7 +79,7 @@ async function edit(req, res) {
             }
             // split string for association-many
             if (fields[prop] && fields[prop].model && fields[prop].model.type === 'association-many' && reqData[prop]) {
-                reqData[prop] = reqData[prop].split(",");
+                reqData[prop] = reqData[prop].toString().split(",");
             }
             // HardFix: Long string was splitted as array of strings. https://github.com/balderdashy/sails/issues/7262
             if (fields[prop].model.type === 'string' && Array.isArray(reqData[prop])) {
@@ -84,9 +93,27 @@ async function edit(req, res) {
         }
         try {
             let newRecord = await entity.model.update(params, reqData).fetch();
+            // save associations media to json
+            await (0, MediaManagerHelper_1.updateRelationsMediaManager)(fields, reqData, entity.name, newRecord[0].id);
             sails.log.debug(`Record was updated: `, newRecord);
-            req.session.messages.adminSuccess.push('Your record was updated !');
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
+            if (req.body.jsonPopupCatalog) {
+                return res.json({ record: newRecord });
+            }
+            else {
+                // update navigation tree after model updated
+                if (sails.config.adminpanel.navigation) {
+                    for (const section of sails.config.adminpanel.navigation.sections) {
+                        let navigation = CatalogHandler_1.CatalogHandler.getCatalog('navigation');
+                        navigation.setID(section);
+                        let navItem = navigation.itemTypes.find(item => item.type === entity.name);
+                        if (navItem) {
+                            await navItem.updateModelItems(newRecord[0].id, { record: newRecord[0] }, section);
+                        }
+                    }
+                }
+                req.session.messages.adminSuccess.push('Your record was updated !');
+                return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
+            }
         }
         catch (e) {
             sails.log.error(e);
@@ -94,17 +121,13 @@ async function edit(req, res) {
             return e;
         }
     }
-    // if (reloadNeeded) {
-    //     try {
-    //         record = await entity.model.findOne(req.param('id')).populateAll();
-    //     } catch (e) {
-    //         sails.log.error('Admin edit error: ');
-    //         sails.log.error(e);
-    //         return res.serverError();
-    //     }
-    // }
+    for (const field of Object.keys(fields)) {
+        if (fields[field].config.type === 'mediamanager') {
+            record[field] = await (0, MediaManagerHelper_1.getRelationsMediaManager)(record[field]);
+        }
+    }
     if (req.query.without_layout) {
-        return res.viewAdmin("./../ejs/partials/content/edit.ejs", {
+        return res.viewAdmin("./../ejs/partials/content/editPopup.ejs", {
             entity: entity,
             record: record,
             fields: fields
@@ -118,5 +141,4 @@ async function edit(req, res) {
         });
     }
 }
-exports.default = edit;
 ;

@@ -3,7 +3,9 @@ import {expect} from "chai";
 
 describe('Models test', function () {
     it("Check User-Group association", async function() {
+        //@ts-ignore
         let groups = await GroupAP.createEach([{name: "group1"}, {name: "group2"}]).fetch();
+        //@ts-ignore
         let users = await UserAP.createEach([{fullName: "user1", login: "1", password: "1"}, {fullName: "user2", login: "2", password: "1"}]).fetch();
         // @ts-ignore
         await GroupAP.addToCollection(groups[0].id, "users").members([users[0].id, users[1].id]);

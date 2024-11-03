@@ -22,12 +22,18 @@ class AccessRightsHelper {
         return this._tokens;
     }
     static getTokensByDepartment(department) {
-        return this._tokens.filter((token) => { return token.department === department; });
+        return this._tokens.filter((token) => {
+            return token.department === department;
+        });
     }
     static getAllDepartments() {
         return this._tokens
-            .map((token) => { return token.department; })
-            .filter(function (item, pos, self) { return self.indexOf(item) == pos; });
+            .map((token) => {
+            return token.department;
+        })
+            .filter(function (item, pos, self) {
+            return self.indexOf(item) == pos;
+        });
     }
     static enoughPermissions(tokens, user) {
         if (user.isAdministrator) {
@@ -66,10 +72,6 @@ class AccessRightsHelper {
                 allow = true;
                 break;
             }
-        }
-        if (!allow) {
-            sails.log.error("Adminpanel > Access is not allowed");
-            return false;
         }
         return true;
     }

@@ -1,9 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminPopUp = void 0;
-let stylesheet = document.createElement("style");
-stylesheet.innerText = '.admin-modal-pu{z-index:99999;position:fixed;width:100vw;height:100vh;top:0;left:0;background-color:rgba(0,0,0,.62);opacity:0;visibility:hidden;transition:all .3s ease-in-out}.admin-modal-pu--active{opacity:1;visibility:visible}.admin-modal-pu-wrapper{position:absolute;top:0;left:120%;width:80%;height:100vh;background-color:#f0f8ff;transition:all .3s ease-in-out}.admin-modal-pu--active .admin-modal-pu-wrapper{left:20%}.admin-modal-pu--active .admin-modal-pu-wrapper.admin-modal-pu-offset{left:0;width:100%}.close-admin-modal-pu{cursor:pointer;position:absolute;top:15px;right:15px}.close-admin-modal-pu:hover svg path{fill:red}@media(max-width:768px){.admin-modal-pu-wrapper{left:100%;width:100%}.admin-modal-pu--active .admin-modal-pu-wrapper{left:0}}';
-document.head.appendChild(stylesheet);
 class PopUp {
     constructor() {
         this.eventHandlers = {};
@@ -20,7 +17,7 @@ class PopUp {
         this.modal.insertAdjacentHTML('afterbegin', `
         <div class="admin-modal-pu-wrapper">
             <div class="close-admin-modal-pu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z"/></svg></div>
-            <div id="content-${this.id}">
+            <div id="content-${this.id}" style="height: 100%">
         </div>
         `);
         document.body.appendChild(this.modal);
@@ -47,8 +44,8 @@ class PopUp {
         this.modal.classList.remove('admin-modal-pu--active');
         setTimeout(() => {
             this.modal.remove();
+            this.trigger('close');
         }, 300);
-        this.trigger('close');
     }
     on(event, callback) {
         if (!(event in this.eventHandlers)) {
@@ -102,6 +99,11 @@ class AdminPopUp {
             }, 300);
         });
         return popup;
+    }
+    static closeAll() {
+        for (const popup of this.popups) {
+            popup.closeModal();
+        }
     }
     static offsetToggle(prevModal) {
         if (prevModal !== null) {

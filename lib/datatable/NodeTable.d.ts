@@ -1,5 +1,8 @@
-import { Model } from 'sails';
 import { Fields } from '../../helper/fieldsHelper';
+import { Model } from "sails-typescript";
+type ORMModel = Model<Models[keyof Models]> & {
+    primaryKey: string;
+};
 interface Request {
     start: string;
     length: string;
@@ -24,17 +27,23 @@ interface Column {
 interface Search {
     value: string;
 }
+interface NodeOutput {
+    draw: string | number;
+    recordsTotal: Error & number;
+    recordsFiltered: Error & number;
+    data: object[];
+}
 export declare class NodeTable {
     request: Request;
-    model: Model;
+    model: ORMModel;
     fields: Fields;
     fieldsArray: string[];
-    constructor(request: Request, model: Model, fields: Fields);
+    constructor(request: Request, model: ORMModel, fields: Fields);
     limit(): Promise<number[]>;
     order(): string;
     filter(): any;
     buildQuery(): Promise<any>;
-    output(callback: Function): Promise<void>;
+    output(callback: (err: Error, output: NodeOutput) => void): Promise<void>;
     mapData(data: {
         [key: string]: any;
     }): object[];

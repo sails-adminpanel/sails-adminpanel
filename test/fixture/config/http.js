@@ -54,7 +54,7 @@ module.exports.http = {
   *                                                                           *
   ****************************************************************************/
 
-    // myRequestLogger: function (req, res, next) {
+    // myRequestLogger: function (req: ReqType, res: ResType, next) {
     //     console.log("Requested :: ", req.method, req.url);
     //     return next();
     // }
@@ -70,7 +70,7 @@ module.exports.http = {
   * Note that Sails uses an internal entity of Skipper by default; to      *
   * override it and specify more options, make sure to "npm install skipper" *
   * in your project first.  You can also specify a different body parser or  *
-  * a custom function with req, res and next parameters (just like any other *
+  * a custom function with req: ReqType, res: ResType and next parameters (just like any other *
   * middleware function).                                                    *
   *                                                                          *
   ***************************************************************************/

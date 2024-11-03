@@ -1,7 +1,7 @@
 import { AdminUtil } from "../lib/adminUtil";
 import { AccessRightsHelper } from "../helper/accessRightsHelper";
 
-export default function upload(req, res) {
+export default function upload(req: ReqType, res: ResType) {
 
 	//console.log('admin > CK-upload');
 	let entity = AdminUtil.findEntityObject(req);
@@ -33,7 +33,7 @@ export default function upload(req, res) {
 
 		//save file
 		const filenameOrig = req.body.name.replace(' ', '_');
-		let filename = filenameOrig.substr(0, filenameOrig.lastIndexOf('.')) + rand + '.' + filenameOrig.split('.').reverse()[0];
+		let filename = filenameOrig.replace(/$/, '_prefix');
 
 		req.file('image').upload({
 			dirname: dir,

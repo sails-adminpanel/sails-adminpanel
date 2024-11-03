@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = editGroup;
 const adminUtil_1 = require("../lib/adminUtil");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 async function editGroup(req, res) {
@@ -46,7 +47,7 @@ async function editGroup(req, res) {
         for (let key in req.body) {
             if (key.startsWith("user-checkbox-") && req.body[key] === "on") {
                 for (let user of users) {
-                    if (user.id == key.slice(14)) {
+                    if (user.id == parseInt(key.slice(14))) {
                         usersInThisGroup.push(user.id);
                     }
                 }
@@ -91,5 +92,4 @@ async function editGroup(req, res) {
     // console.log("GROUP", group)
     return res.viewAdmin("editGroup", { entity: entity, group: group, users: users, groupedTokens: groupedTokens });
 }
-exports.default = editGroup;
 ;

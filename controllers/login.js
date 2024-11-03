@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = login;
 let passwordHash = require("password-hash");
 async function login(req, res) {
     if (req.url.indexOf("login") >= 0) {
@@ -59,5 +60,4 @@ async function login(req, res) {
         res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
     }
 }
-exports.default = login;
 ;

@@ -1,3 +1,4 @@
+"use strict";
 module.exports = async function (req, res, proceed) {
     let locale = "";
     if (typeof sails.config.adminpanel.translation !== 'boolean') {
@@ -9,7 +10,7 @@ module.exports = async function (req, res, proceed) {
         }
         else {
             req.session.UserAP = {
-                id: "auth-false",
+                id: 0,
                 isAdministrator: true,
                 locale: locale
             };

@@ -7,7 +7,7 @@ import {resolve} from "path";
 import afterHook from "./afterHook";
 import bindInstallStepper from "./bindInstallStepper";
 
-export default async function(sails: any, cb) {
+export default async function(sails: any, cb: (err?: Error)=>void) {
 
 
 
@@ -42,6 +42,8 @@ export default async function(sails: any, cb) {
     sails.config.adminpanel.rootPath = path.resolve(__dirname + "/..")
 
     HookTools.waitForHooks("adminpanel", requiredHooks, afterHook);
+	const modelsToSkip = []
+	if(sails.config.adminpanel.navigation?.model) modelsToSkip.push('navigationap')
     await HookTools.bindModels(resolve(__dirname, "../models"));
 
     // add install stepper policy to check unfilled settings
@@ -52,6 +54,6 @@ export default async function(sails: any, cb) {
     //     .filter(function(item, pos, self) { return self.indexOf(item) == pos })
 
     // Bind assets
-    await bindAssets();
+    bindAssets();
     cb();
 };

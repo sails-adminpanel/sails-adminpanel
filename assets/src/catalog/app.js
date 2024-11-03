@@ -1,6 +1,15 @@
 import {createApp} from 'vue';
 import App from './App.vue'
-import 'sl-vue-tree-next/sl-vue-tree-next-dark.css'
+import ky from "ky";
 
-let app = createApp(App)
-app.mount('#catalog')
+
+async function init() {
+	return await ky.post('', {json: {_method: 'getLocales'}}).json()
+}
+
+init().then(({data}) => {
+	let app = createApp(App)
+	app.provide('messages', data)
+	app.mount('#catalog')
+})
+

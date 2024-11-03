@@ -1,12 +1,17 @@
-import {Callback} from "waterline";
-
 /**
  * As we generate adminpanel by models from config, we cannot pass model in generic
  */
 
+
 type CRUDBuilder = {
   fetch(): Promise<any>;
 };
+
+export type SailsModelAnyField = number | string | boolean | Date | Array<number | string | boolean> | { [key: string]: number | string | boolean | Date };
+
+export type SailsModelAnyInstance = {
+    [key: string]: SailsModelAnyField
+}
 
 type QueryBuilder = {
   where(condition: any): QueryBuilder;
@@ -23,13 +28,14 @@ type QueryBuilder = {
   sum(attribute: string): QueryBuilder;
   average(attribute: string): QueryBuilder;
   meta(options: any): QueryBuilder;
-};
+} & SailsModelAnyInstance;
 
 export default interface StrippedORMModel {
   create?(params: any): CRUDBuilder;
   create?(params: any[]): CRUDBuilder;
 
   find?(criteria?: any): QueryBuilder;
+  findOne?(criteria?: any): QueryBuilder;
   findOne?(criteria?: any): QueryBuilder;
   findOrCreate?(criteria?: any, values?: any): QueryBuilder;
 
@@ -39,15 +45,17 @@ export default interface StrippedORMModel {
   destroy?(criteria: any): CRUDBuilder;
   destroy?(criteria: any[]): CRUDBuilder;
   destroyOne?(criteria: any[]): CRUDBuilder;
+  destroyOne?(criteria: string | number): CRUDBuilder;
+
 
   count?(criteria?: any): number;
   count?(criteria: any[]): number;
 
-  query(sqlQuery: string, cb: Callback<any>): void;
-  query(sqlQuery: string, data: any, cb: Callback<any>): void;
+  query(sqlQuery: string, cb: ()=>void): void;
+  query(sqlQuery: string, data: any, cb: ()=>void): void;
   native(cb: (err: Error, collection: any) => void): void;
 
   stream?(criteria: any, writeEnd: any): NodeJS.WritableStream | Error;
 
-  attributes: any;
+  attributes: SailsModelAnyInstance;
 }

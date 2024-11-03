@@ -1,0 +1,8 @@
+node_modules
+test/fixture
+assets/build
+assets/handsontable
+assets/src/fileuploader
+assets/src/navigation
+*.js
+*.d.ts

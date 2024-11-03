@@ -2,7 +2,7 @@ import { AdminUtil } from "../lib/adminUtil";
 import { FieldsHelper } from "../helper/fieldsHelper";
 import { AccessRightsHelper } from "../helper/accessRightsHelper";
 
-export default async function list(req, res) {
+export default async function list(req: ReqType, res: ResType) {
   let entity = AdminUtil.findEntityObject(req);
   if (!entity.model) {
     return res.notFound();

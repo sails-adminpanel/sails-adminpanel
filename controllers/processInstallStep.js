@@ -1,22 +1,26 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = processInstallStep;
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 const installStepper_1 = require("../lib/installStepper/installStepper");
 const path = require("path");
 async function processInstallStep(req, res) {
     if (sails.config.adminpanel.auth) {
         if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            return;
         }
         else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`process-install-step`, req.session.UserAP)) {
-            return res.sendStatus(403);
+            res.sendStatus(403);
+            return;
         }
     }
     if (req.method.toUpperCase() === 'GET') {
         sails.log.debug("GET REQUEST TO PROCESS INSTALL STEP");
         let installStepper = installStepper_1.InstallStepper.getStepper(req.params.id);
         if (!installStepper) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}`);
+            res.redirect(`${sails.config.adminpanel.routePrefix}`);
+            return;
         }
         if (installStepper.hasUnprocessedSteps() || installStepper.hasUnfinalizedSteps()) {
             let renderData = installStepper.render(req.session.UserAP.locale);
@@ -27,13 +31,15 @@ async function processInstallStep(req, res) {
             }
             catch (e) {
                 console.log("ERROR IN PROCESS INSTALL STEP", e);
-                return res.viewAdmin(`installer/error`, { error: e, stepperId: installStepper.id });
+                res.viewAdmin(`installer/error`, { error: e, stepperId: installStepper.id });
+                return;
             }
-            return res.viewAdmin(`installer/${renderer}`, { ...renderData, stepperId: installStepper.id });
-            // return res.viewAdmin(`installer/dev`, {...renderData, stepperId: installStepper.id});
+            res.viewAdmin(`installer/${renderer}`, { ...renderData, stepperId: installStepper.id });
+            return;
         }
         else {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}`);
+            res.redirect(`${sails.config.adminpanel.routePrefix}`);
+            return;
         }
     }
     if (req.method.toUpperCase() === 'POST') {
@@ -69,34 +75,40 @@ async function processInstallStep(req, res) {
                 await installStepper.skipStep(currentStepId);
             }
             else {
-                return res.status(400).send("Invalid action parameter");
+                res.status(400).send("Invalid action parameter");
+                return;
             }
             // go back to stepper if there are more unprocessed steps, otherwise go back to /admin
             if (installStepper.hasUnprocessedSteps()) {
-                return res.redirect(`${sails.config.adminpanel.routePrefix}/install/${installStepper.id}`);
+                res.redirect(`${sails.config.adminpanel.routePrefix}/install/${installStepper.id}`);
+                return;
             }
             else {
-                return res.redirect(`${sails.config.adminpanel.routePrefix}`);
+                res.redirect(`${sails.config.adminpanel.routePrefix}`);
+                return;
             }
         }
         catch (error) {
             sails.log.error("Error processing step:", error);
-            return res.status(500).send("Error processing step");
+            res.status(500).send("Error processing step");
+            return;
         }
     }
     if (req.method.toUpperCase() === 'DELETE') {
         sails.log.debug("DELETE REQUEST TO PROCESS INSTALL STEP", req.body);
         try {
             installStepper_1.InstallStepper.deleteStepper(req.params.id);
-            return res.status(200).send("OK");
+            res.status(200).send("OK");
+            return;
         }
         catch (e) {
-            return res.status(403).send(e);
+            res.status(403).send(e);
+            return;
         }
     }
-    return res.status(500).send("Invalid request method");
+    res.status(500).send("Invalid request method");
+    return;
 }
-exports.default = processInstallStep;
 ;
 function uploadFiles(files, currentStepId) {
     // TODO: Investigate system hang when trying to save a file, and execution of the code after save block does not process.

@@ -4,6 +4,7 @@ module.exports = {
 		'./views/**/*.ejs',
 		'./assets/src/styles/style.scss',
 		'./assets/src/catalog/**/*.vue',
+		'./assets/src/mediamanager/**/*.vue',
 	],
 	theme: {
 		container: {

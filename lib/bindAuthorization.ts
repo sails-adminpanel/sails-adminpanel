@@ -22,7 +22,7 @@ export default async function bindAuthorization() {
     let baseRoute = sails.config.adminpanel.routePrefix + '/model/:entity';
 
 
-    let adminsCredentials = [];
+    let adminsCredentials: { fullName: string, login: string, password: string }[] = [];
     // if we have administrator profiles
     let config: AdminpanelConfig = sails.config.adminpanel;
 
@@ -37,7 +37,7 @@ export default async function bindAuthorization() {
 
         sails.log.debug(`Has Administrators with login [${adminsCredentials[0].login}]`)
 
-    } else if(process.env.ADMINPANEL_LAZY_GEN_ADMIN_DISABLE === undefined ) {
+    } else if(process.env.ADMINPANEL_LAZY_GEN_ADMIN_ENABLE !== undefined ) {
         let adminData;
 
         if (config.administrator && config.administrator.login && config.administrator.password) {
@@ -76,7 +76,7 @@ export default async function bindAuthorization() {
     }
 };
 
-function getRandomInt(min, max) {
+function getRandomInt(min: number, max: number) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min)) + min;

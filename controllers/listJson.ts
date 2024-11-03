@@ -4,7 +4,7 @@ import { ConfigHelper } from "../helper/configHelper";
 import { AccessRightsHelper } from "../helper/accessRightsHelper";
 import { NodeTable } from "../lib/datatable/NodeTable";
 
-export default async function listJson(req, res) {
+export default async function listJson(req: ReqType, res: ResType) {
     try {
 
         let entity = AdminUtil.findEntityObject(req);
@@ -23,7 +23,8 @@ export default async function listJson(req, res) {
         let fields = FieldsHelper.getFields(req, entity, 'list');
         const nodeTable = new NodeTable(req.body, entity.model, fields);
 
-        nodeTable.output((err, data) => {
+        //@ts-ignore
+        nodeTable.output((err: Error, data: []) => {
             if (err) {
                 sails.log.error(err);
                 return;

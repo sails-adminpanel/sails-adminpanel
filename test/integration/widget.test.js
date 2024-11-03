@@ -4,7 +4,7 @@ require("mocha");
 const chai_1 = require("chai");
 const abstractCustom_1 = require("../../lib/widgets/abstractCustom");
 class CustomOne extends abstractCustom_1.default {
-    constructor(ID) {
+    constructor(id) {
         super();
         this.icon = "dog";
         this.department = 'test';
@@ -20,7 +20,7 @@ class CustomOne extends abstractCustom_1.default {
         this.scriptUrl = "/test.js";
         this.constructorName = "Test";
         this.constructorOption = { test: "/test.js" };
-        this.ID = ID;
+        this.id = id;
     }
 }
 describe('Widget handler', function () {

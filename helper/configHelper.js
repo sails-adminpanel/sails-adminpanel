@@ -48,14 +48,19 @@ class ConfigHelper {
             throw new Error("Model name is not defined");
         }
         let config = sails.config.adminpanel;
-        let ModelConfig;
+        let modelConfig;
         Object.keys(config.models).forEach((entityName) => {
-            if (config.models[entityName].model === modelName.toLowerCase()) {
-                ModelConfig = config.models[entityName];
+            const model = config.models[entityName];
+            if (typeof model !== "boolean") {
+                if (model.model === modelName.toLowerCase()) {
+                    if (typeof config.models[entityName] !== "boolean") {
+                        modelConfig = config.models[entityName];
+                    }
+                }
             }
         });
-        if (ModelConfig && ModelConfig.identifierField) {
-            return ModelConfig.identifierField;
+        if (modelConfig && modelConfig.identifierField) {
+            return modelConfig.identifierField;
         }
         else if (sails.models[modelName.toLowerCase()].primaryKey) {
             return sails.models[modelName.toLowerCase()].primaryKey;

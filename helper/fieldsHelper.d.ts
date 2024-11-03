@@ -1,14 +1,21 @@
 import { ActionType, BaseFieldConfig } from "../interfaces/adminpanelConfig";
 import { Entity } from "../interfaces/types";
-export type Fields = {
-    [key: string]: {
-        config: BaseFieldConfig;
-        model: {
-            model: string;
-            required: boolean;
-            type: 'association' | 'association-many' | 'number' | 'json' | 'string' | 'boolean' | 'ref';
-        };
+export type FieldModel = {
+    allowNull?: boolean;
+    model?: string;
+    collection?: string;
+    required?: boolean;
+    type: 'association' | 'association-many' | 'number' | 'json' | 'string' | 'boolean' | 'ref';
+};
+export type Field = {
+    config: BaseFieldConfig & {
+        records: object[];
+        file?: string;
     };
+    model: FieldModel;
+};
+export type Fields = {
+    [key: string]: Field;
 };
 export declare class FieldsHelper {
     /**
@@ -99,14 +106,14 @@ export declare class FieldsHelper {
      * @param {Object} fields
      * @param {function=} [cb]
      */
-    static loadAssociations(fields: any): Promise<any>;
+    static loadAssociations(fields: Fields): Promise<Fields>;
     /**
      * Create list of populated models
      *
      * @param {Object} fields
      * @returns {Array}
      */
-    static getFieldsToPopulate(fields: any): any[];
+    static getFieldsToPopulate(fields: Fields): string[];
     /**
      * Basically it will fetch all attributes without functions
      *
@@ -133,5 +140,6 @@ export declare class FieldsHelper {
      * @param {string=} [type] Type of action that config should be loaded for. Example: list, edit, add, remove, view. Defaut: list
      * @returns {Object} Empty object or pbject with list of properties
      */
-    static getFields(req: ReqType, entity: Entity, type: ActionType): Fields;
+    static getFields(
+    /** @deprecated */ req: ReqType, entity: Entity, type: ActionType): Fields;
 }

@@ -10,6 +10,8 @@ export default abstract class InstallStepAbstract {
     public abstract description: string
     public abstract scriptsUrl: string
     public abstract stylesUrl: string
+		/** For custom modules to set the list of settings wanted to set in this step */
+		public settingsKeys: string[] = [];
     /** Absolute path to ejs template */
     public abstract ejsPath: string
     public abstract renderer: "ejs" | "jsonforms"
@@ -84,7 +86,10 @@ export default abstract class InstallStepAbstract {
         }
     }
 
-    /** Checks that step should be processed during install */
+    /**
+     * Checks that step should be processed during install
+     * `true` means that the step has been completed and does not need to be shown
+    */
     public abstract check(): Promise<boolean>
 
     public async onInit(): Promise<void> {

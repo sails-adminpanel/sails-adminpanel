@@ -11,10 +11,12 @@ import 'leaflet-draw'
 import {GeoJsonEditor} from '../geojson/geojson'
 import { AdminPopUp } from '../pop-up/admin-pop-up'
 import UploadAdapter from './ckeditor5/UploadAdapter'
+import ky from 'ky'
 
 import 'jquery-ui-dist/jquery-ui.js'
 
 import {register} from 'swiper/element/bundle';
+import {window} from "@interactjs/utils/window";
 
 // register Swiper custom elements
 register();
@@ -31,6 +33,7 @@ window.L = L
 window.GeoJsonEditor = GeoJsonEditor
 window.AdminPopUp = AdminPopUp
 window.UploadAdapter = UploadAdapter
+window.ky = ky
 
 import('../navigation/js/jquery-sortable-lists.min.js')
 import('bootstrap/dist/js/bootstrap.js')

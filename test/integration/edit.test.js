@@ -66,6 +66,7 @@ describe('Edit Test Entity', function () {
             // @ts-ignore
             let updatedTest = await Test.findOne({ id: newTest.id });
             for (let key in updatedData) {
+                //@ts-ignore
                 expect(updatedTest[key]).to.deep.equal(updatedData[key]);
             }
             // @ts-ignore

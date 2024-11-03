@@ -5,4 +5,4 @@
  * @param {*} res
  * @returns {dashboardController}
  */
-export default function (req: any, res: any): any;
+export default function (req: ReqType, res: ResType): void | import("sails-typescript").default.Response;

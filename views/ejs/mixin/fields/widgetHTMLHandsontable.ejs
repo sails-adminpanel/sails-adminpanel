@@ -55,7 +55,7 @@
 
     if(options<%=key%>.height === 'auto') options<%=key%>.height = 500
 
-    tables['<%= key %>'] = new Handsontable(container<%=key%>, {
+	apTables['<%= key %>'] = new Handsontable(container<%=key%>, {
         data: data<%=key%>,
         ...options<%=key%>
     });
@@ -98,7 +98,7 @@
     this.TEXTAREA_PARENT.style.width = quillWidth + 'px';
     this.TEXTAREA_PARENT.style.height = quillHeight + 'px';
     this.TEXTAREA_PARENT.style.display = 'none';
-    
+
     this.quill = new Quill(this.editableDiv, {
       theme: 'snow',
       modules: {

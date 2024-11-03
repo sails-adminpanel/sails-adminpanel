@@ -1,0 +1,305 @@
+//@ts-nocheck
+
+import { AdminUtil } from "../lib/adminUtil";
+import {AccessRightsHelper} from "../helper/accessRightsHelper";
+import * as path from "path";
+import { AdminpanelConfig, BaseFieldConfig } from "../interfaces/adminpanelConfig";
+const Jimp = require('jimp');
+
+// !TODO for images resizing need usage parameters to get request cat.jpg?150. It makes image inscribed in square 150*150px
+
+export default function upload(req: ReqType, res: ResType) {
+
+    // sails.log.debug('admin > upload');
+    let entity = AdminUtil.findEntityObject(req);
+
+    if (sails.config.adminpanel.auth) {
+        if (!req.session.UserAP) {
+            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+        } else if (!AccessRightsHelper.enoughPermissions([
+            `update-${entity.name}-model`,
+            `create-${entity.name}-model`,
+            `update-${entity.name}-form`,
+            `create-${entity.name}-form`
+        ], req.session.UserAP)) {
+            return res.sendStatus(403);
+        }
+    }
+
+
+    if (req.method.toUpperCase() === 'POST') {
+
+        // if this file must not be loaded
+        // if (req.body.stop === true) {
+        //     return res.badRequest();
+        // }
+
+        // sails.log.info(req.body);
+
+
+        // read field
+        if (!req.body.field) {
+            return res.serverError('No field name in request');
+        }
+        const field: string = req.body.field
+
+        // get options
+        let fieldConfig;
+
+
+        // TODO: wizards
+        // Need rewrite to EntityConfig in config adminpanel.
+        // Громоздко потомучто в конфиге сделали неодинаковые типы для ENTITY
+        let adminpanelConfig = sails.config.adminpanel as AdminpanelConfig
+        if (entity.type === 'model'){
+            const model = adminpanelConfig.models[entity.name]; 
+            if(typeof model !== "boolean") {
+                fieldConfig = model.fields[field] as BaseFieldConfig
+            }
+        } else if(entity.type === 'form'){
+            fieldConfig = adminpanelConfig.forms.data[entity.name][field] as BaseFieldConfig
+        }
+
+
+
+        // set upload directory
+        const dirDownload = `uploads/${entity.type}/${entity.name}/${req.body.field}`;
+        const dir = `/.tmp/public/${dirDownload}/`;
+        const assetsDir = `${process.cwd()}/assets/${dirDownload}/`;
+        let fullDir = process.cwd() + dir;
+
+
+
+        // small and large sizes
+        let small, large;
+        try {
+            small = parseInt(req.body.small) || 150;
+            large = parseInt(req.body.large) || 900;
+        } catch (e) {
+            return res.badRequest('Invalid request');
+        }
+
+        // resizes
+        if (!req.body.resize) {
+            return res.serverError('No resizes in request');
+        }
+        let resize;
+        try {
+            resize = JSON.parse(req.body.resize);
+        } catch (e) {
+            resize = [];
+        }
+
+        // if has no file name send error
+        if (!req.body.filename) {
+            return res.serverError('No file name in request');
+        }
+
+        // if request has noo file type send error
+        if (!req.body.type) {
+            return res.serverError('No type of file');
+        }
+
+        const type = req.body.type;
+
+        let aspect;
+        try {
+            aspect = JSON.parse(req.body.aspect);
+        } catch (e) {
+            aspect = '';
+        }
+
+        let size1;
+        try {
+            size1 = JSON.parse(req.body.size);
+            if (size1) {
+                if (!size1.width)
+                    size1.width = '>=0';
+                if (!size1.height)
+                    size1.height = '>=0';
+            }
+        } catch (e) {
+            size1 = '';
+        }
+
+        // make random string in end of file
+        let rand = '';
+        const possible = "abcdefghijklmnopqrstuvwxyz0123456789";
+        for (let i = 0; i < 10; i++) {
+            rand += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+
+        //save file
+        const filenameOrig = req.body.filename.replace(' ', '_');
+        let filename = filenameOrig.substr(0, filenameOrig.lastIndexOf('.')) + rand + '.' + filenameOrig.split('.').reverse()[0];
+        const nameSmall = filename.substr(0, filename.lastIndexOf('.')) + '_tumblrDEFAULT.' + filename.split('.').reverse()[0];
+        const nameLarge = filename.substr(0, filename.lastIndexOf('.')) + '_largeDEFAULT.' + filename.split('.').reverse()[0];
+
+
+        /**
+         * Saving in file
+         */
+        if(fieldConfig.type !== 'file' && fieldConfig.options.file !== undefined) {
+            return res.serverError('Only file full destination allowed');
+        } else if(fieldConfig.options.file !== undefined) {
+            fullDir=path.resolve(path.dirname(fieldConfig.options.file))
+            filename=path.basename(fieldConfig.options.file)
+        }
+
+        req.file('file').upload({
+            dirname: fullDir,
+            saveAs: filename,
+            maxBytes: 2 * 1000 * 1000 * 1000
+        }, function (err, file) {
+            if (err) return res.serverError(err);
+
+            // images
+            if (type === 'images' || type === 'image') {
+                //@ts-ignore
+                Jimp.read('.' + dir + filename, async function (err, image) {
+                    if (err) return res.serverError(err);
+                    //@ts-ignore
+                    image.write(assetsDir + filename, function (err, img) {
+                        if (err) sails.log.error("Can't save image in assets!");
+                    });
+
+                    const width = image.bitmap.width;
+                    const height = image.bitmap.height;
+                    const size = image.bitmap.data.length;
+
+                    // check image parameters
+                    const valid = checkValid(width, height, aspect, size1);
+                    if (valid === 'size') {
+                        return res.badRequest(invalidSize(width, height));
+                    }
+                    else if (valid === 'aspect') {
+                        return res.badRequest('Неправильное соотношение сторон');
+                    }
+
+                    let resizes = {};
+                    for await (let i of resize) {
+                        i.w = parseInt(i.w);
+                        i.h = parseInt(i.h);
+                        if(!i.quality) {
+                            i.quality = 60;
+                        }
+                        let name = await jimpResize(i);
+                        //@ts-ignore
+                        resizes[i.name] = `/${dirDownload}/${path.basename(name)}`;
+                    }
+
+                    async function jimpResize(i): Promise<string> {
+                        return new Promise((resolve, reject) => {
+                            const name = fullDir + filename.substr(0, filename.lastIndexOf('.')) + '_' + i.name + '.' + filename.split('.').reverse()[0];
+                            const name2 = assetsDir + filename.substr(0, filename.lastIndexOf('.')) + '_' + i.name + '.' + filename.split('.').reverse()[0];
+                            //@ts-ignore
+                            Jimp.read('.' + dir + filename, function (err, imageTemp) {
+                                imageTemp.resize(i.w === -1 ? Jimp.AUTO : i.w, i.h === -1 ? Jimp.AUTO : i.h).quality(i.quality).write(name, function (err, image) {
+                                    image.write(name2);
+                                    if (err) return reject(err);
+                                    return resolve(name2);
+                                });
+                            });
+                        });
+                    }
+                    //@ts-ignore
+                    Jimp.read('.' + dir + filename, function (err, image1) {
+                        if (err) return res.serverError(err);
+                        image1.scaleToFit(large, large).write(fullDir + nameLarge, function () {
+                            image1.write(assetsDir + nameLarge);
+                            image1.scaleToFit(small, small).write(fullDir + nameSmall, function () {
+                                image1.write(assetsDir + nameSmall);
+                                // return urls
+                                const url = `/${dirDownload}/${filename}`;
+                                const urlSmall = `/${dirDownload}/${nameSmall}`;
+                                const urlLarge = `/${dirDownload}/${nameLarge}`;
+                                let result = {
+                                    name: filenameOrig,
+                                    'url': url,
+                                    'url@0_5x': url,
+                                    'url@2x': url,
+                                    urlSmall: urlSmall,
+                                    urlLarge: urlLarge,
+                                    width: width,
+                                    height: height,
+                                    size: size,
+                                    sizes: resizes
+                                }
+                                res.status(201);
+                                res.send(result);
+                            });
+                        });
+                    });
+                });
+            } else if (type === 'files' || type === 'file') {
+                const ext = filename.substr(filename.lastIndexOf('.') + 1, filename.length);
+                const urlIcon = `/admin/assets/fileuploader/icons/${ext}.svg`;
+                const url = `/${dirDownload}/${filename}`;
+                res.status(201);
+                res.send({
+                    name: filenameOrig,
+                    url: url,
+                    urlSmall: urlIcon,
+                    urlLarge: urlIcon,
+                    size: file[0].size
+                });
+            }
+        });
+    }
+};
+
+function checkValid(w, h, aspect, size) {
+    // aspect
+    if (aspect){
+        if (Math.abs(w * aspect.width - h * aspect.height) !== 0){
+            return 'aspect';
+        }
+    }
+
+    // image size
+    let res = 'ok';
+    if (size) {
+        const a = [size.width, size.height];
+        const b = [w, h];
+
+        for (let i = 0; i < a.length; i++) {
+            if (!Array.isArray(a[i])) {
+                if (/[><=]/.test(a[i]))
+                    a[i] = [a[i]];
+                else if (a[i] !== b[i])
+                    res = 'size';
+            }
+
+            for (let j = 0; j < a[i].length; j++) {
+                let item = a[i][j];
+                let equal = false;
+                if (item.indexOf('=') >= 0)
+                    equal = true;
+                if (item.indexOf('>') >= 0) {
+                    if (equal) {
+                        if (b[i] < parseInt(item.replace(/\D+/, '')))
+                            res = 'size';
+                    } else {
+                        if (b[i] <= parseInt(item.replace(/\D+/, '')))
+                            res = 'size';
+                    }
+                }
+                if (item.indexOf('<') >= 0) {
+                    if (equal) {
+                        if (b[i] > parseInt(item.replace(/\D+/, '')))
+                            res = 'size';
+                    } else {
+                        if (b[i] >= parseInt(item.replace(/\D+/, '')))
+                            res = 'size';
+                    }
+                }
+            }
+        }
+    }
+
+    return res;
+}
+
+function invalidSize(width, height) {
+    return `Image not allowed by size\nWidth: ${width}, Height: ${height}`;
+}

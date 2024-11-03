@@ -369,7 +369,7 @@ This configuration loads all sail models as they are. Just place  in `config\adm
                     // Options for widgets like 'Navigation', 'Schedule' and 'FileUploader'. For more
                     // information open Navigation.md or Schedule.md
                     options: NavigationOptionsField | ScheduleOptionsField | FileUploaderOptionsField
-                    displayModifier: Function // Function that makes data modification on list view
+                    displayModifier: ()=>void // Function that makes data modification on list view
                 }[] | boolean | string
             }
             list: { // List display configuration
@@ -381,7 +381,7 @@ This configuration loads all sail models as they are. Just place  in `config\adm
                         // Options for widgets like 'Navigation', 'Schedule' and 'FileUploader'. For more
                         // information open Navigation.md or Schedule.md
                         options: NavigationOptionsField | ScheduleOptionsField | FileUploaderOptionsField
-                        displayModifier: Function // Function that makes data modification on list view
+                        displayModifier: ()=>void // Function that makes data modification on list view
                     }[] | boolean | string
                 }
                 actions: { // Actions configuration that will be displayed
@@ -413,10 +413,10 @@ This configuration loads all sail models as they are. Just place  in `config\adm
                         // Options for widgets like 'Navigation', 'Schedule' and 'FileUploader'. For more
                         // information open Navigation.md or Schedule.md
                         options: NavigationOptionsField | ScheduleOptionsField | FileUploaderOptionsField
-                        displayModifier: Function // Function that makes data modification on list view
+                        displayModifier: ()=>void // Function that makes data modification on list view
                     }[] | boolean | string
                 }
-                modelModifier: Function // callback for data modification before saving record
+                modelModifier: ()=>void // callback for data modification before saving record
                 controller: string // path to custom controller
             } | boolean
             // Configuration for 'update model' action or disabling/enabling it
@@ -429,10 +429,10 @@ This configuration loads all sail models as they are. Just place  in `config\adm
                         // Options for widgets like 'Navigation', 'Schedule' and 'FileUploader'. For more
                         // information open Navigation.md or Schedule.md
                         options: NavigationOptionsField | ScheduleOptionsField | FileUploaderOptionsField
-                        displayModifier: Function // Function that makes data modification on list view
+                        displayModifier: ()=>void // Function that makes data modification on list view
                     }[] | boolean | string
                 }
-                modelModifier: Function // callback for data modification before saving record
+                modelModifier: ()=>void // callback for data modification before saving record
                 controller: string // // path to custom controller
             } | boolean
             remove: boolean // Disabling/enabling 'delete model' action
@@ -505,8 +505,8 @@ This configuration loads all sail models as they are. Just place  in `config\adm
     forms: {
         path: string
         data: object
-        get: Function
-        set: Function
+        get: ()=>void
+        set: ()=>void
     }
     // Enable/disable displaying createdAt and updatedAt fields in `edit` and `add` sections
     showORMtime: boolean
@@ -525,3 +525,7 @@ string, password, date, datetime, time, integer, number, float, color, email, mo
 range, boolean, binary, text, longtext, mediumtext, ckeditor, wysiwyg, texteditor, word,
 jsoneditor, json, array, object, ace, html, xml, aceeditor, image, images, file, files, table
 menu, navigation, schedule, worktime, association, "association-many", select, select-many
+
+
+### Only routes create
+If the value of the model key is `true: boolean` then only add and edit routers will be created, as well as the corresponding rights for them

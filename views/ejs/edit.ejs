@@ -59,38 +59,7 @@
 			var tables = {};
         </script>
         <div class="mt-14 flex flex-col gap-10 max-w-[1144px]">
-            <% Object.keys(fields).forEach(function(key) { %>
-                <% if ((!config.showORMtime) && (key === 'createdAt' || key === 'updatedAt')) return %>
-                <% var field = fields[key] %>
-                <% var value = adminpanel.viewHelper.getFieldValue(key, field, data) %>
-                <div class="flex flex-col gap-3">
-                    <div class="admin-panel__wrapper-title">
-                        <label class="admin-panel__title"
-                               for="form-<%= key %>"><%= __(fields[key].config.title) %></label>
-                        <% if(fields[key].config.tooltip) { %>
-                            <div class="tooltip tooltip-right group cursor-pointer">
-                                <i class="las la-info-circle text-blue-400"></i>
-                                <div class="tooltip__content group-hover:visible group-hover:opacity-100">
-                                    <span><%= __(fields[key].config.tooltip) %></span>
-                                </div>
-                            </div>
-                        <% } %>
-                    </div>
-                    <% if (field.config.description) { %>
-                        <div class="admin-panel__description">
-                            <%- __(field.config.description) %>
-                        </div>
-                    <% } %>
-                    <div class="admin-panel__widget <%= field.config.disabled && 'disabled' %>">
-                        <%- include("mixin/fieldWidget", {field: field, value: value, key: key}) %>
-                    </div>
-                </div>
-            <% }) %>
-            <% if (adminpanel.configHelper.isCsrfEnabled()) { %>
-                <div>
-                    <input class="clr-input" type="hidden" name="_csrf" value="<%= _csrf %>"/>
-                </div>
-            <% } %>
+            <%- include("./partials/content/edit.ejs") %>
             <span id="error-btn-submit-text"
                   style="display: none"><b>One or more fields are filled in incorrectly</b></span>
             <p>
@@ -125,10 +94,10 @@
 			}
 		}
 		;
-		for (var id in tables) {
+		for (var id in apTables) {
 			try {
-				var schema = tables[id].getSchema();
-				var table = tables[id].getData();
+				var schema = apTables[id].getSchema();
+				var table = apTables[id].getData();
 				table = table.filter(item => {
 					return !([...new Set(item)].length === 1 && [...new Set(item)][0] === null);
 				});

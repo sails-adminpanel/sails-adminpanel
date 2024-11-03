@@ -2,7 +2,7 @@ import { AdminUtil } from "../lib/adminUtil";
 import { FieldsHelper } from "../helper/fieldsHelper";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 
-export default async function view(req, res) {
+export default async function view(req: ReqType, res: ResType) {
     //Check id
     if (!req.param('id')) {
         return res.notFound();

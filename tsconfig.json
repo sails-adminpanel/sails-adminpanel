@@ -7,7 +7,9 @@
     "removeComments": false,
     "skipLibCheck": true,
     "experimentalDecorators": true,
-
+    // "strict": true,
+    "alwaysStrict": true,
+    "noImplicitAny": true,
     "lib": [
       "dom"
     ],

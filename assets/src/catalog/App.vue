@@ -1,35 +1,69 @@
 <template>
-	<div class="flex items-center gap-4">
-		<button class="btn btn-add" @click="toolAddGroup('group')"><i
-			class="las la-plus"></i><span>create group</span>
-		</button>
-		<button class="btn btn-add" @click="toolAddGroup('item')"><i
-			class="las la-plus"></i><span>create item</span>
-		</button>
+	<div class="flex gap-4 items-center mb-4">
+		<h1 class="text-[28px] leading-[36px] text-black dark:text-gray-300">{{ messages[_catalog.name] }}</h1>
+			<select class="select select-small capitalize" v-if="_catalog.idList.length" @change="window.location = `/admin/catalog/${_catalog.slug}/${$event.target.value}`">
+				<option :selected="!_catalog.id" disabled value="">{{ messages["Select Ids"] }}</option>
+				<option v-for="id in _catalog.idList" :value="id" :selected="id === _catalog.id" class="capitalize">{{
+						id
+					}}
+				</option>
+			</select>
+	</div>
+	<div
+		class="grid grid-cols-[minmax(70px,_800px)_minmax(150px,_250px)] gap-10 justify-between md:flex md:flex-col md:gap-3.5">
+		<div class="sm:mr-[-24px]">
+			<swiper-container class="overflow-visible overflow-x-clip catalog-swiper" init="false">
+				<swiper-slide class="w-auto justify-center flex items-center h-9">
+					<button class="btn btn-add" @click="toolAddGroup" :disabled="selectedNode.length > 1"><i
+						class="las la-plus"></i><span>{{ messages.create }}</span>
+					</button>
+				</swiper-slide>
+				<swiper-slide class="w-auto justify-center flex items-center h-9">
+					<button class="btn btn-green" @click="updateItem"
+							:disabled="selectedNode.length > 1 || !selectedNode.length"><span>{{ messages.Edit }}</span>
+					</button>
+				</swiper-slide>
+				<swiper-slide class="w-auto justify-center flex items-center h-9">
+					<button class="btn btn-red" @click="initDel"
+							:disabled="!selectedNode.length"><span>{{ messages.Delete }}</span>
+					</button>
+				</swiper-slide>
+				<template v-for="action in actionsTools">
+					<swiper-slide class="w-auto justify-center flex items-center h-9">
+						<button class="btn btn-add" @click="initAction(action.id)"><i
+							:class="`las la-${action.icon}`"></i><span>{{ messages[action.name] }}</span>
+						</button>
+					</swiper-slide>
+				</template>
+			</swiper-container>
+		</div>
 		<div class="admin-panel__widget">
 			<div class="widget_narrow ">
-				<input class="text-input w-full input-search" type="text" placeholder="Search" value="" v-model="search" :disabled="searchDisabled"/>
+				<input class="text-input w-full input-search" type="text" :placeholder="messages.Search" value=""
+					   @input="search"
+					   v-model="searchText"/>
 			</div>
 		</div>
 	</div>
-	<div class="custom-catalog__container" v-show="nodes.length">
+	<div class="custom-catalog__container h-full" v-show="nodes.length">
 		<sl-vue-tree-next
 			v-model="nodes"
 			ref="slVueTreeRef"
 			id="slVueTree_id"
-			:allow-multiselect="false"
+			:allow-multiselect="true"
 			@select="nodeSelected"
 			@drop="nodeDropped"
 			@toggle="nodeToggled"
 			@nodecontextmenu="showContextMenu"
+			@nodedblclick="updateItemDBclick"
 		>
 			<template #title="{ node }">
                             <span class="item-icon">
-                                <i class="las la-file" v-if="node.isLeaf"></i>
-                                <i class="las la-folder" v-if="!node.isLeaf"></i>
+                                <i :class="`las la-${node.data.icon}`" v-if="node.isLeaf"></i>
+                                <i :class="`las la-${node.data.icon}`" v-if="!node.isLeaf"></i>
                             </span>
 
-				{{ node.title }}
+				<span :class="node.data.marked ? 'search' : ''">{{ node.title }}</span>
 			</template>
 
 			<template #toggle="{ node }">
@@ -48,305 +82,440 @@
 
 			<template #draginfo="draginfo"> {{ selectedNodesTitle }}</template>
 		</sl-vue-tree-next>
-		<div class="json-preview">
-			<h2>JSON Preview</h2>
-			<pre>{{ nodes }}</pre>
-		</div>
 	</div>
-	<div class="contextmenu" ref="contextmenu" id="contextmenu" v-show="contextMenuIsVisible">
+	<div class="contextmenu" :class="mobMenuClass" ref="contextmenu" id="contextmenu">
+		<div class="hidden md:flex justify-center items-center mt-3" :class="openContextMenu ? 'rotate-180' : ''"
+			 @click="openContextMenu = !openContextMenu" id="openContextMenu">
+			<i class="las la-angle-up"></i>
+		</div>
 		<ul class="custom-catalog__actions-items">
-			<li v-for="action in actions" @click="initAction(action.id)">
-				{{ action.name }}
+			<li @click="toolAddGroup" class="capitalize" :class="actionCreateClass">{{ messages.create }}</li>
+			<li @click="updateItem" class="capitalize" :class="actionEditClass">{{ messages.Edit }}</li>
+			<li @click="initDel" class="capitalize" :class="actionDeleteClass">{{ messages.Delete }}</li>
+			<li v-for="action in actionsContext" @click="initAction(action.id)">
+				<i v-if="action.icon" :class="`las la-${action.icon}`"></i>&nbsp;{{ action.name }}
 			</li>
 		</ul>
 	</div>
-	<pop-up @reset="closePopup" v-for="index in modalCount" :key="index" ref="parentPopUp">
-		<div v-if="isTollAdd && index === 1" class="custom-catalog__form">
-			<SelectItem :initItemsGroup="ItemsGroup" :initItemsItem="ItemsItem" :isGroupRootAdd="isGroupRootAdd"
-						:isItemRootAdd="isItemRootAdd" @createNewFolder="createNewFolder"
-						@createNewItem="initCreateNewItem"/>
+	<div style="display: none">
+		<div ref="refSelectItem">
+			<SelectItem :initItemsItem="ItemsItem" @createNewItem="createNewItem" v-if="isTollAdd"
+						:selectedNode="selectedNode" :movingGroupsRootOnly="_catalog.movingGroupsRootOnly"/>
 		</div>
-		<div v-if="isFolder && index === 2" class="custom-catalog__form">
-			<folder @save-folder="saveFolder" :html="HTML"/>
+		<div ref="refItemHTML" class="custom-catalog__form">
+			<ItemHTML :html="HTML" @close-all-popups="closeAllPopups" :selectedNode="selectedNode"
+					  :is-json-form="isJsonForm" :JSONFormSchema="JSONFormSchema" :PopupEvent="PopupEvent"
+					  v-if="isCreate"/>
 		</div>
-		<div v-if="isItem && index === 2" class="custom-catalog__form">
-			<MiddlewareItem :selectedItem="selectedItem" :getHTMLoading="getHTMLoading" @createNewItem="createNewItem"
-							@addItem="addCreatedItem"/>
+		<div ref="refActionPopup" class="custom-catalog__form">
+			<ActionPopUp v-if="isPopupAction" :html="actionHTML" :is-json-form="isJsonForm" :selectedNode="selectedNode"
+						 :JSONFormSchema="actionJsonFormSchema" :actionId="actionId" @closeAllPopups="closeAllPopups"/>
 		</div>
-		<div v-if="isItem && index === 3" class="custom-catalog__form">
-			<Item @save-item="saveItem" :html="HTML" :itemType="selectedItem"/>
+	</div>
+	<div class="w-screen h-screen bg-black/70 fixed z-[10000] top-0 left-0 transition" :class="delModalClass">
+		<div tabindex="-1"
+			 class="fixed top-0 left-0 right-0 z-50 p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+			<div class="absolute top-1/4 left-1/2 translate-x-[-50%] w-full sm:w-[90%] max-w-md max-h-full">
+				<div class="relative bg-white dark:bg-gray-600  rounded-lg shadow">
+					<button type="button" @click="delModalShow = false"
+							class="absolute top-3 right-2.5 text-gray-400 dark:text-gray-300 bg-transparent hover:text-red-600 dark:hover:text-red-600 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center">
+						<svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+							 viewBox="0 0 14 14">
+							<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+								  stroke-width="2"
+								  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+						</svg>
+						<span class="sr-only">Close modal</span>
+					</button>
+					<div class="p-6 text-center">
+						<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-300">
+							{{ messages["Are you sure?"] }}</h3>
+						<button type="button" @click="deleteItem"
+								class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
+							{{ messages["Yes, I'm sure"] }}
+						</button>
+						<button type="button" @click="delModalShow = false"
+								class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+							{{ messages["No, cancel"] }}
+						</button>
+					</div>
+				</div>
+			</div>
 		</div>
-		<div v-if="isActionPopUp && index === 1">
-			<ActionPopUp @update-folder="updateFolder" :html="HTML" @update-item="updateItem" :itemType="selectedNode.data.type"
-						 :isItem="selectedNode.isLeaf"/>
-		</div>
-	</pop-up>
+	</div>
 </template>
 
 <script setup>
-import {SlVueTreeNext} from 'sl-vue-tree-next'
-import {ref, onMounted, computed, reactive, watch} from 'vue'
-import PopUp from "./PopUp.vue";
-import Folder from "./Components/Folder.vue";
-import Item from "./Components/Item.vue";
+
+import {SlVueTreeNext} from '@sails-adminpanel/sl-vue-tree-next'
+import {ref, onMounted, computed, reactive, inject} from 'vue'
+import ItemHTML from "./Components/ItemHTML.vue";
 import SelectItem from "./Components/SelectItem.vue";
-import MiddlewareItem from "./Components/MiddlewareItem.vue";
 import ActionPopUp from "./Components/ActionPopUp.vue";
-import ky from "ky";
+import debounce from "lodash/debounce"
+import {window} from "@interactjs/utils/window";
+
+const messages = inject('messages')
 
 let nodes = ref([])
 
 let contextMenuIsVisible = ref(false)
 let selectedNodesTitle = ref('')
-let selectedNode = ref('')
+let selectedNode = ref([])
 let slVueTreeRef = ref(null)
 let contextmenu = ref(null)
-let modalCount = ref(0)
-let isFolder = ref(false)
-let isItem = ref(false)
-let parentPopUp = ref(null)
-let newFolder = ref(false)
+let refSelectItem = ref(null)
+let refItemHTML = ref(null)
+let refActionPopup = ref(null)
+let isPopupAction = ref(false)
+let isCreate = ref(false)
+let isJsonForm = ref(false)
+let PopupEvent = ref(null)
 let HTML = ref('')
-let ItemsGroup = ref([])
+let actionHTML = ref('')
+let actionJsonFormSchema = ref(null)
+let JSONFormSchema = ref(null)
 let ItemsItem = ref([])
-let selectedGroup = ref([])
-let selectedItem = ref('')
 let isTollAdd = ref(false)
-let isItemRootAdd = ref(false)
-let isGroupRootAdd = ref(false)
-let getHTMLoading = ref(false)
-let actions = ref([])
+let actionsTools = ref([])
+let actionsContext = ref([])
 let isActionPopUp = ref(false)
-let search = ref('')
-let searchDisabled = ref(false)
+let searchText = ref('')
+let subcribeChildren = ref({})
+let actionId = ref(null)
+let openContextMenu = ref(false)
+let delModalShow = ref(false)
+let _catalog = reactive({
+	name: null,
+	id: null,
+	slug: null,
+	movingGroupsRootOnly: null,
+	idList: []
+})
 
 onMounted(async () => {
 	document.addEventListener('click', function (e) {
 		const contextmenu = document.getElementById('contextmenu')
 		if (!e.composedPath().includes(contextmenu)) {
 			contextMenuIsVisible.value = false
-		}
-		const slVueTree_id = document.getElementById('slVueTree_id')
-		if (!e.composedPath().includes(slVueTree_id)) {
-			contextMenuIsVisible.value = false
-		}
-		const nodesList = document.querySelector('.sl-vue-tree-next-nodes-list')
-		if (!e.composedPath().includes(nodesList)) {
-			contextMenuIsVisible.value = false
+			actionsContext.value = []
 		}
 	})
 	getCatalog()
+
+	const action_swiperEl = document.querySelector('.catalog-swiper');
+	// swiper parameters
+	const actionSwiperParams = {
+		slidesPerView: 'auto',
+		speed: 500,
+		navigation: false,
+		spaceBetween: 6,
+		on: {
+			init: function () {
+				setTimeout(function () {
+					action_swiperEl.setAttribute('style', 'width: calc(100vw - 24px)')
+					action_swiperEl.style.width = 'auto'
+				}, 100)
+			},
+		},
+	};
+
+	// now we need to assign all parameters to Swiper element
+	Object.assign(action_swiperEl, actionSwiperParams);
+
+	// and now initialize it
+	action_swiperEl.initialize();
 })
 
+let actionCreateClass = computed(() => {
+	return selectedNode.value.length > 1 ? 'action-disabled' : ''
+})
 
-watch(search, async (newValue, oldValue) => {
-	if(newValue.length > 0){
+let delModalClass = computed(() => {
+	return delModalShow.value ? 'opacity-100 visible' : 'opacity-0 invisible';
+})
+
+let actionEditClass = computed(() => {
+	return selectedNode.value.length > 1 || !selectedNode.value.length ? 'action-disabled' : ''
+})
+let actionDeleteClass = computed(() => {
+	return !selectedNode.value.length ? 'action-disabled' : ''
+})
+let mobMenuClass = computed(() => {
+	if (openContextMenu.value && contextMenuIsVisible.value) {
+		return 'contextmenu--active contextmenu--active-show'
+	} else if (contextMenuIsVisible.value) {
+		return 'contextmenu--active'
+	}
+})
+const search = debounce(async () => {
+	if (searchText.value.length > 0) {
+		//remove subcribers
+		for (const key of Object.keys(subcribeChildren.value)) {
+			clearInterval(subcribeChildren.value[key])
+		}
 		await searchNodes()
 	} else {
-		getCatalog()
+		reloadCatalog()
+		subcribeChildren.value['root'] = setInterval(() => { // add root subscribe
+			reloadCatalog()
+		}, 30000)
 	}
-});
 
-async function searchNodes(){
-	let res = await ky.post('', {json: {s: search.value, _method: 'search'}}).json()
-	if (res.data){
-		setCatalog(res.data)
+}, 500)
+
+async function searchNodes() {
+	let res = await ky.post('', {json: {s: searchText.value, _method: 'search'}}).json()
+	if (res.data) {
+		for (const node of res.data) {
+			insertFoundNodes(node)
+		}
 	}
 }
 
+function insertFoundNodes(node) {
+	nodes.value = nodes.value.map(ENode => ENode.data.id === node.data.id ? node : ENode)
+}
+
 async function getCatalog() {
-	let {catalog, items} = await ky.post('', {json: {_method: 'getCatalog'}}).json()
+	let {catalog, items, toolsActions} = await ky.post('', {json: {_method: 'getCatalog'}}).json()
+	if (toolsActions) {
+		for (const re of toolsActions) {
+			actionsTools.value.push(re)
+		}
+	}
+	console.log(catalog)
 	if (items) {
-		console.log(catalog, items)
+		// console.log(catalog, items)
 		for (const catalogItem of items) {
-			if (catalogItem.isGroup) {
-				ItemsGroup.value.push(catalogItem)
-			} else {
-				ItemsItem.value.push(catalogItem)
-			}
+			ItemsItem.value.push(catalogItem)
 		}
 		setCatalog(catalog)
+		subcribeChildren.value['root'] = setInterval(() => { // add root subscribe
+			reloadCatalog()
+		}, 30000)
 	} else {
-		console.log(catalog)
+		// console.log(catalog)
 	}
 }
 
 async function reloadCatalog() {
 	let {catalog} = await ky.post('', {json: {_method: 'getCatalog'}}).json()
 	setCatalog(catalog)
+	selectedNode.value = []
+	console.log('root reloaded')
 }
 
-function toolAddGroup(type) {
-	modalCount.value++
-	switch (type) {
-		case('group'):
-			isGroupRootAdd.value = true
-			break
-		case ('item'):
-			isItemRootAdd.value = true
-			break;
-		default:
-			break;
-	}
+function toolAddGroup() {
+	createPopup(refSelectItem.value)
 	isTollAdd.value = true
 }
 
+function createPopup(content) {
+	const popup = AdminPopUp.new()
+	popup.on('open', () => {
+		popup.content.appendChild(content);
+	})
+	popup.on('close', async () => {
+		switch (AdminPopUp.popups.length) {
+			case 1:
+				isCreate.value = false
+				isJsonForm.value = false
+				isPopupAction.value = false
+				break
+			case 0:
+				isTollAdd.value = false
+				isCreate.value = false
+				isJsonForm.value = false
+				isPopupAction.value = false
+				break
+		}
+		if (selectedNode.value.length === 1) {
+			await getChilds(selectedNode.value[0])
+		} else {
+			reloadCatalog()
+		}
+	})
+}
+
+async function closeAllPopups() {
+	isCreate.value = false
+	isTollAdd.value = false
+	isJsonForm.value = false
+	isPopupAction.value = false
+	AdminPopUp.closeAll()
+	if (PopupEvent.value === 'create') {
+		if (selectedNode.value.length === 1) {
+			await getChilds(selectedNode.value[0])
+		} else {
+			reloadCatalog()
+		}
+	}
+	if (PopupEvent.value === 'update') {
+		if (!selectedNode.value.length || selectedNode.value[0]?.data.parentId === null) {
+			reloadCatalog()
+		} else {
+			await getChilds(getParent(selectedNode.value[0]))
+		}
+	}
+	PopupEvent.value = ''
+}
+
+function getParent(Tnode) {
+	let parentNode = null
+	slVueTreeRef.value.traverse((node, nodeModel, siblings) => {
+		if (node.data.id === Tnode.data.parentId) {
+			parentNode = node
+			return false
+		}
+	})
+	return parentNode
+}
+
 function setCatalog(catalog) {
+	_catalog.movingGroupsRootOnly = catalog.movingGroupsRootOnly
+	_catalog.name = catalog.catalogName
+	_catalog.id = catalog.catalogId
+	_catalog.slug = catalog.catalogSlug
+	_catalog.idList = catalog.idList
 	nodes.value = catalog.nodes
 }
 
-function addFolder(isNew) {
-	newFolder.value = isNew
-	modalCount.value++
-	isFolder.value = true
-}
-
-async function createNewFolder(isNew, value) {
-	selectedGroup.value = value
-	let resPost = await ky.post('', {json: {type: value, _method: 'getHTML'}}).json()
-	await getHTML(resPost)
-	addFolder(true)
-}
 
 async function getHTML(data) {
-	if (data.type === 'html') {
-		HTML.value = data.data
-	} else if (data.type === 'link') {
-		let resPost = await ky.get(data.data).text()
-		HTML.value = resPost
-	} else {
-		return
+	switch (data.type) {
+		case 'html':
+			HTML.value = data.data
+			break
+		case 'link':
+			let resPost = await ky.get(data.data).text()
+			HTML.value = resPost
+			break
+		case 'jsonForm':
+			JSONFormSchema.value = JSON.parse(data.data)
+			isJsonForm.value = true
+			break
+		default:
+			break
 	}
 }
 
-function initCreateNewItem(value) {
-	selectedItem.value = value
-	isItem.value = true
-	modalCount.value++
-}
-
-async function createNewItem() {
-	getHTMLoading.value = true
-	let resPost = await ky.post('', {json: {type: selectedItem.value, _method: 'getHTML'}}).json()
+async function createNewItem(value) {
+	let resPost = await ky.post('', {json: {type: value, _method: 'getAddHTML'}}).json()
 	await getHTML(resPost)
-	getHTMLoading.value = false
-	modalCount.value++
+	PopupEvent.value = 'create'
+	createPopup(refItemHTML.value)
+	isCreate.value = true
 }
 
-function saveFolder(data) {
-	if (newFolder.value) {
-		createFolder(data)
-	} else {
-		let selectedFolderPath = slVueTreeRef.value.getSelected().filter(e => e.isLeaf === false)[0].path
-		recurciveFindAndInsert(selectedFolderPath, false, false, folderName)
-	}
 
-	closeAllPopups()
-}
-
-function closeAllPopups() {
-	for (const parentPopUpElement of parentPopUp.value) {
-		parentPopUpElement.closePopup()
-	}
-}
-
-async function createFolder(data) {
-	data.ind = nodes.value.length
-	let res = await ky.post('', {json: {type: selectedGroup.value, data: data, _method: 'createItem'}}).json()
-	if (res.data.node) {
-		nodes.value.push(res.data.node)
-	}
-}
-
-async function updateFolder(data) {
-	let res = await ky.put('', {
+async function updateItem() {
+	let item = selectedNode.value[0]
+	let resPost = await ky.post('', {
 		json: {
-			type: selectedNode.value.data.type,
-			data: data,
-			id: selectedNode.value.data.id,
-			_method: 'updateItem'
+			type: item.data.type,
+			modelId: item.data.modelId ?? null,
+			id: item.data.id,
+			_method: 'getEditHTML'
 		}
 	}).json()
-	if (res.data.ok) {
-		closeAllPopups()
-		reloadCatalog()
-	}
+	await getHTML(resPost)
+	PopupEvent.value = 'update'
+	createPopup(refItemHTML.value)
+	isCreate.value = true
 }
 
-async function addCreatedItem(id) {
-	let data = {id: id, isNew: false, ind: nodes.value.length}
-	await createItem(data)
-	closeAllPopups()
-}
-
-async function createItem(data) {
-	data.ind = nodes.value.length
-	let res = await ky.post('', {json: {type: selectedItem.value, data: data, _method: 'createItem'}}).json()
-	if (res.data.node) {
-		nodes.value.push(res.data.node)
-	}
-}
-
-async function updateItem(data){
-	let res = await ky.put('', {
+async function updateItemDBclick(){
+	let item = JSON.parse(localStorage.getItem('selectedNode'))
+	let resPost = await ky.post('', {
 		json: {
-			type: selectedNode.value.data.type,
-			data: data,
-			id: selectedNode.value.data.id,
-			_method: 'updateItem'
+			type: item.data.type,
+			modelId: item.data.modelId ?? null,
+			id: item.data.id,
+			_method: 'getEditHTML'
 		}
 	}).json()
-	if (res.data.ok) {
-		closeAllPopups()
-		reloadCatalog()
-	}
+	await getHTML(resPost)
+	PopupEvent.value = 'update'
+	createPopup(refItemHTML.value)
+	isCreate.value = true
 }
 
-async function saveItem(data) {
-	data.isNew = true
-	await createItem(data)
-	// let selectedFolderPath = slVueTreeRef.value.getSelected().filter(e => e.isLeaf === false)[0].path
-	// recurciveFindAndInsert(selectedFolderPath, false, true, itemName)
-
-	closeAllPopups()
+function initDel() {
+	delModalShow.value = true
 }
 
-function recurciveFindAndInsert(path, nodesArr, isLeaf, title) {
-	let index = path.shift()
-	let result = null
-	if (nodesArr && nodesArr.children.length) {
-		result = nodesArr.children.find((e, i) => i === index)
-	} else {
-		result = nodes.find((e, i) => i === index)
+async function deleteItem() {
+	if (selectedNode.value.length) {
+		let res = await ky.delete('', {json: {data: selectedNode.value}}).json()
+		if (res.data.ok) removeNodes()
 	}
-	if (path.length) {
-		recurciveFindAndInsert(path, result, isLeaf, title)
-	} else {
-		if (result.children) {
-			result.children.push({title: title, isLeaf: isLeaf})
-		} else {
-			result.children = []
-			result.children.push({title: title, isLeaf: isLeaf})
-		}
-	}
-
-}
-
-function toggleVisibility(event, node) {
-	event.stopPropagation()
-	const visible = !node.data || node.data.visible !== false
-	console.log(visible)
-	slVueTreeRef.value.updateNode({path: node.path, patch: {data: {visible: !visible}}})
-	// lastEvent.value = `Node ${node.title} is ${visible ? 'visible' : 'invisible'} now`
+	delModalShow.value = false
+	selectedNode.value = []
 }
 
 function nodeSelected(nodes, event) {
+	if (nodes.length === 1) {
+		let node = nodes[0]
+		localStorage.setItem('selectedNode', JSON.stringify(node))
+		if (node.isSelected) {
+			slVueTreeRef.value.updateNode({path: node.path, patch: {isSelected: false}})
+			selectedNode.value = []
+		} else {
+			selectedNode.value = nodes
+		}
+	} else {
+		selectedNode.value = nodes
+	}
 	selectedNodesTitle.value = nodes.map((node) => node.title)[0]
-	selectedNode.value = nodes[0]
 }
 
+//TODO we need make service for bound all subcsribed dirs into single request or ours socket
 async function nodeToggled(node, event) {
-	getChilds(node)
+	let parent = getParent(node)
+	if (!node.data.parentId) {
+		recurciveRemoveSubcribes(node)
+	}
+	if (!node.isExpanded) { //if group open
+		getChilds(node)
+		if (parent) {
+			clearInterval(subcribeChildren.value[parent.data.id]) //remove subscribe from parent
+		}
+		subcribeChildren.value[node.data.id] = setInterval(() => {
+			getChilds(node)
+		}, 30000)
+	} else {
+		clearInterval(subcribeChildren.value[node.data.id])
+		if (parent && parent.children.find(e => e.isExpanded) === undefined) { // if there is a parent and the parent has all groups closed
+			subcribeChildren.value[parent.data.id] = setInterval(() => {
+				getChilds(parent)
+			}, 30000)
+		}
+	}
+
+	// for root subcriber
+	let openТodes = false
+	slVueTreeRef.value.traverse((node, nodeModel, siblings) => {
+		if (node.isExpanded) {
+			openТodes = true
+			return false
+		}
+	})
+	if (openТodes) { // if isset open groups
+		clearInterval(subcribeChildren.value['root']) // remove root subscribe
+	} else {
+		subcribeChildren.value['root'] = setInterval(() => { // add root subscribe
+			reloadCatalog()
+		}, 30000)
+	}
+}
+
+function recurciveRemoveSubcribes(node) {
+	for (const child of node.children) {
+		let subscriber = subcribeChildren.value[child.data.id]
+		if (subscriber) clearInterval(subcribeChildren.value[child.data.id])
+		if (child.children.length) recurciveRemoveSubcribes(child)
+	}
 }
 
 function recursiveSetChilds(node, Dnodes, rNodes) {
@@ -369,7 +538,7 @@ function recursiveSetChilds(node, Dnodes, rNodes) {
 
 async function getChilds(node) {
 	let res = await ky.post('', {json: {data: node, _method: 'getChilds'}}).json()
-	recursiveSetChilds(node, null, res.data.nodes)
+	recursiveSetChilds(node, null, res.data)
 }
 
 async function nodeDropped(Dnode, position, event) {
@@ -386,7 +555,7 @@ async function nodeDropped(Dnode, position, event) {
 			case 'before':
 				if (node.data.id === position.node.data.id) {
 					slVueTreeRef.value.traverse((Tnode, TnodeModel, Tsiblings) => {
-						if (Tnode.data.id === node.data.parent) {
+						if (Tnode.data.id === node.data.parentId) {
 							reqParent = Tnode
 							return false
 						}
@@ -403,111 +572,101 @@ async function nodeDropped(Dnode, position, event) {
 			if (node.level === 1) reqParent.children.push(node)
 		})
 	}
-	//console.log('Node: ', reqNode, 'parent: ', reqParent)
-
-	let res = await ky.put('', {json: {data: {reqNode: reqNode, reqParent: reqParent}, _method: 'sortOrder'}}).json()
+	// console.log('Node: ', reqNode, 'parent: ', reqParent)
+	if (_catalog.movingGroupsRootOnly === true) {
+		if (reqParent.data.id !== 0 && !reqNode.isLeaf) {
+			reloadCatalog()
+			return
+		}
+	}
+	let res = await ky.put('', {json: {data: {reqNode: reqNode, reqParent: reqParent}, _method: 'updateTree'}}).json()
 }
 
+function selectNodeRightClick(node) {
+	if (node.isSelected) return
+	slVueTreeRef.value.traverse((node, nodeModel, path) => {
+		nodeModel.isSelected = false
+	})
+	slVueTreeRef.value.updateNode({path: node.path, patch: {isSelected: true}})
+	selectedNode.value = [node]
+}
 
-async function showContextMenu(node, event) {
-	event.preventDefault()
-	if (!selectedNode.value) return
+async function getActionsContext() {
 	let res = await ky.post('', {
 		json: {
-			type: selectedNode.value.data.type,
-			data: selectedNode.value.data,
+			items: selectedNode.value,
+			type: 'context',
 			_method: 'getActions'
 		}
 	}).json()
-	if (res.data.length) {
-		actions.value = res.data
-		contextMenuIsVisible.value = true
-		const $contextMenu = contextmenu.value
+	if (res.data && res.data.length) {
+		for (const re of res.data) {
+			actionsContext.value.push(re)
+		}
+	}
+}
+
+async function showContextMenu(node, event) {
+	event.preventDefault()
+	selectNodeRightClick(node)
+	contextMenuIsVisible.value = true
+	const $contextMenu = contextmenu.value
+	if (window.innerWidth >= 769) {
 		$contextMenu.style.left = event.clientX + 'px'
 		$contextMenu.style.top = event.clientY + 'px'
+	} else {
+		$contextMenu.style.left = 0
+		$contextMenu.style.bottom = 0
 	}
+	getActionsContext()
 }
+
 
 async function initAction(id) {
-	let data = {
-		actionID: id,
-		config: selectedNode.value.data
+	let action = actionsTools.value.find(e => e.id === id) ?? actionsContext.value.find(e => e.id === id)
+	if (!action) return
+	let res
+	switch (action.type) {
+		case 'link':
+			res = await ky.put('', {json: {actionId: action.id, _method: 'getLink'}}).json()
+			if (res.data) window.open(`${res.data}`, '_blank').focus()
+			break
+		case 'basic':
+			let data = {
+				actionID: action.id,
+				items: selectedNode.value,
+				config: ''
+			}
+			await ky.put('', {json: {data: data, _method: 'handleAction'}}).json()
+			break
+		case 'external':
+			res = await ky.put('', {json: {actionId: action.id, _method: 'getPopUpHTML'}}).json()
+			if (res.data) {
+				actionHTML.value = res.data
+				createPopup(refActionPopup.value)
+				isPopupAction.value = true
+			}
+			break
+		case 'json-forms':
+			res = await ky.put('', {json: {actionId: action.id, _method: 'getPopUpHTML'}}).json()
+			actionJsonFormSchema.value = JSON.parse(res.data)
+			actionId.value = action.id
+			createPopup(refActionPopup.value)
+			isJsonForm.value = true
+			isPopupAction.value = true
 	}
-	let res = await ky.put('', {json: {type: selectedNode.value.data.type, data: data, _method: 'action'}}).json()
-	if (res.data.type === 'external') {
-		await getHTML(res.data.data)
-		modalCount.value++
-		isActionPopUp.value = true
-	}
-
 }
 
-function removeNode() {
+function removeNodes() {
 	contextMenuIsVisible.value = false
 	const $slVueTree = slVueTreeRef.value
 	const paths = $slVueTree.getSelected().map((node) => node.path)
 	$slVueTree.remove(paths)
-}
-
-function closePopup() {
-	switch (modalCount.value) {
-		case (3):
-			break;
-		case(2):
-			isFolder.value = false
-			isItem.value = false
-			break;
-		case (1):
-			isGroupRootAdd.value = false
-			isItemRootAdd.value = false
-			isActionPopUp.value = false
-			isTollAdd.value = false
-			break;
-		default:
-			isFolder.value = false
-			isItem.value = false
-			isGroupRootAdd.value = false
-			isItemRootAdd.value = false
-			isActionPopUp.value = false
-			isTollAdd.value = false
-			break;
+	if (!nodes.value.length) {
+		selectedNode.value = []
 	}
-
-	modalCount.value--
 }
+
 </script>
-
-
 <style>
-.contextmenu {
-	position: absolute;
-	background-color: white;
-	color: black;
-	border-radius: 2px;
-	cursor: pointer;
-}
-
-.contextmenu > div {
-	padding: 10px;
-}
-
-.contextmenu > div:hover {
-	background-color: rgba(100, 100, 255, 0.5);
-}
-
-.last-event {
-	color: white;
-	background-color: rgba(100, 100, 255, 0.5);
-	padding: 10px;
-	border-radius: 2px;
-}
-
-.item-icon {
-	display: inline-block;
-	text-align: left;
-	width: 20px;
-}
-.input-search{
-	height: 36px;
-}
 </style>

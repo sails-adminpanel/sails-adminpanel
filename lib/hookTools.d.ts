@@ -33,7 +33,7 @@ export default class HookTools {
      * @param hooks - array of names hooks to wait for
      * @param cb - function
      */
-    static waitForHooks(selfName: string, hooks: string[], cb: (...args: any[]) => any): void;
+    static waitForHooks(selfName: string, hooks: string[], cb: (err?: Error) => void): void;
     /**
      * Bind function `action` to router `path` with method `method`. Use policies binding from this module.
      * @param path - /path/to/bind
@@ -52,7 +52,7 @@ export default class HookTools {
      * |                '/index': 'policy'
      * |              }
      * |
-     * * - policy.js > module.exports = function (req, res, next) {
+     * * - policy.js > module.exports = function (req: ReqType, res: ResType, next) {
      *                    return next();
      *                 }
      * @param folder - folder where policies load

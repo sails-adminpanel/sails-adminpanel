@@ -9,7 +9,11 @@ export declare class ConfigHelper {
      * @param {Object|string=} modelOrName
      * @returns {boolean}
      */
-    static isId(field: any, modelOrName: any): boolean;
+    static isId(field: {
+        config: {
+            key: string;
+        };
+    }, modelOrName: string): boolean;
     /**
      * Get configured `identifierField` from adminpanel configuration.
      *
@@ -22,7 +26,7 @@ export declare class ConfigHelper {
      * @returns {string}
      * @param modelName
      */
-    static getIdentifierField(modelName: any): any;
+    static getIdentifierField(modelName: string): any;
     /**
      * Checks if CSRF protection enabled in website
      *

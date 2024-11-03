@@ -1,5 +1,6 @@
 /// <reference path="../interfaces/global.ts" />
 import "mocha";
+
 var Sails = require("./fixture/node_modules/sails").Sails;
 require("dotenv").config();
 
@@ -10,32 +11,34 @@ let sails: any
 
 before(function (done) {
 
-  this.timeout(50000);
-  const rc = require("./fixture/app-export").rc;
-  function waitForEvent(sails) {
-    return new Promise<void>((resolve) => {
-      sails.on('adminpanel:router:binded', resolve);
-    });
-  }
-  Sails().lift(rc,
-    async function (err: any, _sails: any) {
-      if (err) return done(err);
-      sails = _sails;
-      console.log("Waiting 'adminpanel:router:binded' event ...")
-      await waitForEvent(sails);
-      return done();
-    }
-  );
+	this.timeout(50000);
+	const rc = require("./fixture/app-export").rc;
+	//@ts-ignore
+	function waitForEvent(sails) {
+		return new Promise<void>((resolve) => {
+			sails.on('adminpanel:router:binded', resolve);
+		});
+	}
+
+	Sails().lift(rc,
+		async function (err: any, _sails: any) {
+			if (err) return done(err);
+			sails = _sails;
+			console.log("Waiting 'adminpanel:router:binded' event ...")
+			await waitForEvent(sails);
+			return done();
+		}
+	);
 });
 
 after(function (done) {
-  if (sails) {
-    return sails.lower(function (err: any) {
-      if (err) {
-        done();
-      }
-      done();
-    });
-  }
-  done();
+	if (sails) {
+		return sails.lower(function (err: any) {
+			if (err) {
+				done();
+			}
+			done();
+		});
+	}
+	done();
 });

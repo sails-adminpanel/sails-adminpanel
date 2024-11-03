@@ -5,7 +5,7 @@ import LinkBase from "./abstractLink";
 import UserAP from "../../models/UserAP";
 import CustomBase from "./abstractCustom";
 import { AdminpanelIcon } from "../../interfaces/adminpanelConfig";
-type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase | CustomBase);
+export type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase | CustomBase);
 export interface WidgetConfig {
     id: string;
     type: string;
@@ -38,6 +38,5 @@ export declare class WidgetHandler {
     static getWidgetsDB(id: number, auth: boolean): Promise<WidgetConfig[]>;
     static setWidgetsDB(id: number, widgets: WidgetConfig[], auth: boolean): Promise<number>;
 }
-export declare function getAllWidgets(req: any, res: any): Promise<any>;
-export declare function widgetsDB(req: any, res: any): Promise<any>;
-export {};
+export declare function getAllWidgets(req: ReqType, res: ResType): Promise<void>;
+export declare function widgetsDB(req: ReqType, res: ResType): Promise<void | import("sails-typescript").default.Response | Response>;

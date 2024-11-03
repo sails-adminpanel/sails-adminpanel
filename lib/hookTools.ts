@@ -84,8 +84,8 @@ export default class HookTools {
      * @param hooks - array of names hooks to wait for
      * @param cb - function
      */
-    public static waitForHooks(selfName: string, hooks: string[], cb: (...args) => any): void {
-        var eventsToWaitFor = [];
+    public static waitForHooks(selfName: string, hooks: string[], cb: (err?: Error)=>void): void {
+        const eventsToWaitFor = [];
         eventsToWaitFor.push("router:after");
         try {
             /**
@@ -173,22 +173,20 @@ export default class HookTools {
      * |                '/index': 'policy'
      * |              }
      * |
-     * * - policy.js > module.exports = function (req, res, next) {
+     * * - policy.js > module.exports = function (req: ReqType, res: ResType, next) {
      *                    return next();
      *                 }
      * @param folder - folder where policies load
      */
 
-    // TODO: Проблема в том что система полиси совсем не предназначена для хуков, нельзя сделать хук который будет добавлять чтото в полиси, можно сделать только полностью замеяющий хук сейчас
-
-    public static loadPolicies(folder: string) {
+    public static loadPolicies(folder: string): void {
         const normalizedPath = path.normalize(folder);
-
-        const policies = {};
+    
+        const policies: {[key: string]: ()=>void} = {};
         readdirSync(normalizedPath).forEach(function (file) {
             policies[file.split(".").slice(0, -1).join(".")] = require(normalizedPath + "/" + file);
         });
-
+    
         this.policies = policies;
     }
 }
