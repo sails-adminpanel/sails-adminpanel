@@ -1,4 +1,4 @@
-import { Fields } from "sails-adminpanel/helper/fieldsHelper";
+import { Fields } from "../helper/fieldsHelper";
 type PostParams = Record<string, string | number | boolean | object | string[] | number[] | null>;
 /**
  * Default helper that will contain all methods

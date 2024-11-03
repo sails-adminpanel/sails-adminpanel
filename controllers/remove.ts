@@ -1,7 +1,7 @@
 import { AdminUtil } from "../lib/adminUtil";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import { stdin } from "node:process";
-import { SailsModelAnyInstance } from "sails-adminpanel/interfaces/StrippedORMModel";
+import { SailsModelAnyInstance } from "../interfaces/StrippedORMModel";
 import {deleteRelationsMediaManager} from "../lib/media-manager/helpers/MediaManagerHelper";
 
 export default async function remove(req: ReqType, res: ResType) {

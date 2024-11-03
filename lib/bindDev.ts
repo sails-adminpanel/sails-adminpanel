@@ -1,5 +1,4 @@
-import { AdminpanelConfig } from "sails-adminpanel/interfaces/adminpanelConfig";
-
+import { AdminpanelConfig } from "../interfaces/adminpanelConfig";
 export default function bindDev(adminpanelConfig: AdminpanelConfig) {
     if (adminpanelConfig.models) {
         Object.keys(sails.models).forEach((modelname) => {
