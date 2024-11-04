@@ -12,9 +12,13 @@
  */
 
 /**
-* @vue/shared v3.4.37
+* @vue/runtime-dom v3.5.12
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
 
-/** @license URI.js v4.4.1 (c) 2011 Gary Court. License: http://github.com/garycourt/uri-js */
+/**
+* @vue/shared v3.5.12
+* (c) 2018-present Yuxi (Evan) You and Vue contributors
+* @license MIT
+**/
