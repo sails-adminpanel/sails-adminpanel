@@ -2,6 +2,9 @@ import sails from "sails-typescript";
 import {LineAwesomeIcon} from "./lineAwesome"
 import UserAP from "../models/UserAP";
 import GroupAP from "../models/GroupAP";
+import { EditorOptions } from "@toast-ui/editor/types/editor";
+
+export type TuiEditorOptions = EditorOptions;
 
 export type AdminpanelIcon = LineAwesomeIcon
 type FieldsTypes =
@@ -27,6 +30,9 @@ type FieldsTypes =
 	"wysiwyg" |
 	"texteditor" |
 	"word" |
+	'tui' |
+	'tuieditor' |
+	'toast-ui' |
 	"jsoneditor" |
 	"json" |
 	"array" |
@@ -321,7 +327,7 @@ export interface FieldsForms {
 	[key: string]: FormFieldConfig
 }
 
-export type ModelFieldConfig = BaseFieldConfig & {groupsAccessRight: string[]}
+export type ModelFieldConfig = (BaseFieldConfig | TuiEditorFieldConfig) & {groupsAccessRight: string[]}
 
 export interface FieldsModels {
 	[key: string]: boolean | string | ModelFieldConfig
@@ -361,6 +367,11 @@ export interface BaseFieldConfig {
 
 	/** Show as disabled element HTML */
 	disabled?: boolean
+}
+
+export interface TuiEditorFieldConfig extends BaseFieldConfig {
+	type: 'tui' | 'tuieditor' | 'toast-ui'
+	options: TuiEditorOptions
 }
 
 /**

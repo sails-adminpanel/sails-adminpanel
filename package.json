@@ -24,6 +24,7 @@
 	"deprecated": false,
 	"description": "Basic adminpanel for Sails 1x",
 	"devDependencies": {
+		"@toast-ui/editor": "^3.2.2",
 		"@ckeditor/ckeditor5-alignment": "^43.1.0",
 		"@ckeditor/ckeditor5-autoformat": "^43.1.0",
 		"@ckeditor/ckeditor5-basic-styles": "^43.1.0",
