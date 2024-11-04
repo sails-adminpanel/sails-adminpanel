@@ -54,6 +54,11 @@ const ckeditorBuild = () => {
 				libraryTarget: 'umd',
 				libraryExport: 'default'
 			},
+			resolve: {
+				alias: {
+				   '@ckeditor': Fpath.resolve(__dirname, 'node_modules', '@ckeditor')
+				}
+			 },
 			plugins: [
 				new CKEditorWebpackPlugin({
 					// UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
