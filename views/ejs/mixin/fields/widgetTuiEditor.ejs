@@ -1,0 +1,25 @@
+<div id="form-<%= key %>-tui-editor"></div>
+<textarea <%= field.config.required && 'required' %> <%= field.config.disabled && 'disabled'%> name="<%= key %>"
+    id="form-<%= key %>" hidden><%= value %></textarea>
+
+<script>
+  try {
+    console.log("IN TUI")
+    // Initialize TUI Editor
+    let options<%=key%> = <%- JSON.stringify(field.config.options) %>;
+    tuiEditor['<%= key %>']  = new toastui.Editor({
+      el: document.querySelector('#form-<%= key %>-tui-editor'),
+      height: '400px',
+      initialEditType: 'markdown',
+      previewStyle: 'vertical',
+      hideModeSwitch: true,
+      initialValue: document.querySelector('#form-<%= key %>').value || "",  // Set initial value from the textarea
+      ...options<%=key%>
+    });
+
+  } catch (e) {
+    console.log(e)
+  }
+
+
+</script>

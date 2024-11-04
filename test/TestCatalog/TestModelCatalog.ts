@@ -2,8 +2,7 @@ import {AbstractCatalog, AbstractGroup, AbstractItem, ActionHandler, Item} from 
 import * as fs from "node:fs";
 import {StorageService} from "./TestCatalog";
 import {JSONSchema4} from "json-schema";
-import sails from "@42pub/typed-sails";
-
+import sails from "sails-typescript";
 const ejs = require('ejs')
 
 

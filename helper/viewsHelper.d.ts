@@ -1,5 +1,5 @@
-import { Field } from "sails-adminpanel/helper/fieldsHelper";
-import { SailsModelAnyField, SailsModelAnyInstance } from "sails-adminpanel/interfaces/StrippedORMModel";
+import { Field } from "./fieldsHelper";
+import { SailsModelAnyField, SailsModelAnyInstance } from "../interfaces/StrippedORMModel";
 export declare class ViewsHelper {
     /**
      * Base path for all views.

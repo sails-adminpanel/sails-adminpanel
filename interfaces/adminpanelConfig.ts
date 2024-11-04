@@ -1,5 +1,10 @@
-import sails from "@42pub/typed-sails";
-import { LineAwesomeIcon } from "./lineAwesome"
+import sails from "sails-typescript";
+import {LineAwesomeIcon} from "./lineAwesome"
+import UserAP from "../models/UserAP";
+import GroupAP from "../models/GroupAP";
+import { EditorOptions } from "@toast-ui/editor/types/editor";
+
+export type TuiEditorOptions = EditorOptions;
 
 export type AdminpanelIcon = LineAwesomeIcon
 type FieldsTypes =
@@ -25,6 +30,9 @@ type FieldsTypes =
 	"wysiwyg" |
 	"texteditor" |
 	"word" |
+	'tui' |
+	'tuieditor' |
+	'toast-ui' |
 	"jsoneditor" |
 	"json" |
 	"array" |
@@ -192,6 +200,12 @@ export interface AdminpanelConfig {
 		login: string
 		password: string
 	}
+	// TODO (look in task.md)
+	registration?: {
+		enable: boolean
+		defaultUserGroup: string
+		confirmationRequired: boolean
+	}
 	/**
 	 * Enable/disable displaying createdAt and updatedAt fields in `edit` and `add` sections
 	 * */
@@ -302,14 +316,21 @@ export interface ModelConfig {
 	 * Force set primary key
 	 * */
 	identifierField?: string
+	// TODO (look in task.md)
+	userAccessRelation?: string
+	userAccessRelationCallback?: (userWithGroups: UserWithGroups, record: any) => boolean
 }
+
+type UserWithGroups = UserAP & {groups: GroupAP[]}
 
 export interface FieldsForms {
 	[key: string]: FormFieldConfig
 }
 
+export type ModelFieldConfig = (BaseFieldConfig | TuiEditorFieldConfig) & {groupsAccessRight: string[]}
+
 export interface FieldsModels {
-	[key: string]: boolean | string | BaseFieldConfig
+	[key: string]: boolean | string | ModelFieldConfig
 }
 
 interface FormFieldConfig extends BaseFieldConfig {
@@ -326,7 +347,7 @@ export interface BaseFieldConfig {
 	/**
 	 * Options for widgets like 'Navigation', 'Schedule' and 'FileUploader'
 	 * */
-	options?: NavigationOptionsField | ScheduleOptionsField | FileUploaderOptionsField | MediaManagerOptionsField
+	options?: NavigationOptionsField | ScheduleOptionsField | FileUploaderOptionsField | MediaManagerOptionsField | TuiEditorOptions
 	/**
 	 * Function that makes data modification on list view
 	 * */
@@ -346,6 +367,11 @@ export interface BaseFieldConfig {
 
 	/** Show as disabled element HTML */
 	disabled?: boolean
+}
+
+export interface TuiEditorFieldConfig extends BaseFieldConfig {
+	type: 'tui' | 'tuieditor' | 'toast-ui'
+	options: TuiEditorOptions
 }
 
 /**
@@ -471,6 +497,7 @@ export interface NavigationConfig {
 	model?: string
 	sections: string[]
 	groupField: { name: string, required: boolean }[]
+	allowContentInGroup?: boolean
 	items: NavigationItemTypeConfig[],
 	movingGroupsRootOnly: boolean
 }

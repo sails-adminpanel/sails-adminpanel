@@ -1,5 +1,7 @@
-import sails from "@42pub/typed-sails";
+import sails from "sails-typescript";
 import { LineAwesomeIcon } from "./lineAwesome";
+import UserAP from "../models/UserAP";
+import GroupAP from "../models/GroupAP";
 export type AdminpanelIcon = LineAwesomeIcon;
 type FieldsTypes = "string" | "password" | "date" | "datetime" | "time" | "integer" | "number" | "float" | "color" | "email" | "month" | "week" | "range" | "boolean" | "binary" | "text" | "longtext" | "mediumtext" | "ckeditor" | "wysiwyg" | "texteditor" | "word" | "jsoneditor" | "json" | "array" | "object" | "ace" | "html" | "xml" | "aceeditor" | "image" | "images" | "file" | "files" | "menu" | "navigation" | "schedule" | "worktime" | "association" | "association-many" | "select" | "select-many" | "table" | "geojson" | "mediamanager" | 
 /**
@@ -140,6 +142,11 @@ export interface AdminpanelConfig {
         login: string;
         password: string;
     };
+    registration?: {
+        enable: boolean;
+        defaultUserGroup: string;
+        confirmationRequired: boolean;
+    };
     /**
      * Enable/disable displaying createdAt and updatedAt fields in `edit` and `add` sections
      * */
@@ -242,12 +249,20 @@ export interface ModelConfig {
      * Force set primary key
      * */
     identifierField?: string;
+    userAccessRelation?: string;
+    userAccessRelationCallback?: (userWithGroups: UserWithGroups, record: any) => boolean;
 }
+type UserWithGroups = UserAP & {
+    groups: GroupAP[];
+};
 export interface FieldsForms {
     [key: string]: FormFieldConfig;
 }
+export type ModelFieldConfig = BaseFieldConfig & {
+    groupsAccessRight: string[];
+};
 export interface FieldsModels {
-    [key: string]: boolean | string | BaseFieldConfig;
+    [key: string]: boolean | string | ModelFieldConfig;
 }
 interface FormFieldConfig extends BaseFieldConfig {
     value?: any;
@@ -407,6 +422,7 @@ export interface NavigationConfig {
         name: string;
         required: boolean;
     }[];
+    allowContentInGroup?: boolean;
     items: NavigationItemTypeConfig[];
     movingGroupsRootOnly: boolean;
 }
