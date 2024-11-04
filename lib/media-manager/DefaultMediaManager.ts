@@ -107,6 +107,7 @@ export class DefaultMediaManager extends AbstractMediaManager {
                     .find({ where: { id: item.id } })
                     .populate("variants", { sort: "createdAt DESC" })
             )[0] as MediaManagerItem;
+            if(!file) continue
             widgetItems.push({
                 id: file.id,
                 mimeType: file.mimeType,
