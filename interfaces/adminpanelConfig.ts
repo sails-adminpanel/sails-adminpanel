@@ -392,7 +392,7 @@ export interface NavigationOptionsField {
 }
 
 export interface MediaManagerOptionsField {
-	id?: string
+	id: string
 }
 
 interface ScheduleOptionsField {

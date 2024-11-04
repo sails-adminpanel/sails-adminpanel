@@ -40,6 +40,9 @@ export interface MediaManagerWidgetJSON {
 }
 export interface MediaManagerWidgetData {
     list: MediaManagerWidgetItem[];
+    /**
+     * @deprecated Apparently this is not needed here since it is in the field config settings
+     */
     mediaManagerId: string;
 }
 export interface UploaderFile {

@@ -45,6 +45,10 @@ async function edit(req, res) {
         let reqData = requestProcessor_1.RequestProcessor.processRequest(req, fields);
         let params = {};
         params[entity.config.identifierField || sails.config.adminpanel.identifierField] = req.param('id');
+        /**
+         * Here means reqData adapt for model data, but rawReqData is processed for widget processing
+         */
+        const rawReqData = { ...reqData };
         for (let prop in reqData) {
             if (fields[prop].model.type === 'boolean') {
                 reqData[prop] = Boolean(reqData[prop]);
@@ -64,25 +68,15 @@ async function edit(req, res) {
                     delete reqData[prop];
                 }
             }
-            if (fields[prop].config.type === 'mediamanager' && fields[prop].model.type === 'association-many') {
-                if (typeof reqData[prop] === "object" && !Array.isArray(reqData[prop]) && reqData[prop] !== null) {
-                    reqData[prop] = reqData[prop].list.map((i) => i.id);
+            if (fields[prop].config.type === 'mediamanager' && typeof reqData[prop] === "string") {
+                try {
+                    const parsed = JSON.parse(reqData[prop]);
+                    rawReqData[prop] = parsed;
                 }
-                else {
-                    try {
-                        const parsed = JSON.parse(reqData[prop]);
-                        if (typeof parsed === "object" && !Array.isArray(parsed) && parsed !== null) {
-                            reqData[prop] = parsed.list.map((i) => i.id);
-                        }
-                    }
-                    catch (error) {
-                        throw `Error assign association-many mediamanager data for ${prop}, ${reqData[prop]}`;
-                    }
+                catch (error) {
+                    throw `Error assign association-many mediamanager data for ${prop}, ${reqData[prop]}`;
                 }
-                reqData[prop] = reqData[prop].filter(str => str !== '');
-                if (Array.isArray(reqData[prop]) && reqData[prop].length === 0) {
-                    delete (reqData[prop]);
-                }
+                delete reqData[prop];
             }
             if (fields[prop] && fields[prop].model && fields[prop].model.type === 'json' && reqData[prop] !== '') {
                 if (typeof reqData[prop] === "string") {
@@ -98,8 +92,8 @@ async function edit(req, res) {
                 }
             }
             // split string for association-many
-            if (fields[prop] && fields[prop].model && fields[prop].model.type === 'association-many' && reqData[prop]) {
-                reqData[prop] = reqData[prop].toString().split(",");
+            if (fields[prop] && fields[prop].model && fields[prop].model.type === 'association-many' && reqData[prop] && typeof reqData[prop] === "string") {
+                reqData[prop] = reqData[prop].split(",");
             }
             // HardFix: Long string was splitted as array of strings. https://github.com/balderdashy/sails/issues/7262
             if (fields[prop].model.type === 'string' && Array.isArray(reqData[prop])) {
@@ -113,8 +107,7 @@ async function edit(req, res) {
         }
         try {
             let newRecord = await entity.model.update(params, reqData).fetch();
-            // save associations media to json
-            await (0, MediaManagerHelper_1.saveRelationsMediaManager)(fields, reqData, entity.name, newRecord[0].id);
+            await (0, MediaManagerHelper_1.saveRelationsMediaManager)(fields, rawReqData, entity.model.identity, newRecord[0].id);
             sails.log.debug(`Record was updated: `, newRecord);
             if (req.body.jsonPopupCatalog) {
                 return res.json({ record: newRecord });
@@ -140,7 +133,7 @@ async function edit(req, res) {
             req.session.messages.adminError.push(e.message || 'Something went wrong...');
             return e;
         }
-    }
+    } // END POST
     for (const field of Object.keys(fields)) {
         if (fields[field].config.type === 'mediamanager') {
             if (fields[field].model.type === 'association-many') {
