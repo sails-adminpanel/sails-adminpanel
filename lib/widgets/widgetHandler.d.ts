@@ -18,12 +18,12 @@ export interface WidgetConfig {
     scriptUrl?: string;
     constructorName?: string;
     constructorOption?: any;
-    hideAdminPanelUI?: boolean;
     size?: {
         h: number;
         w: number;
     };
     added?: boolean;
+    hideAdminPanelUI?: boolean;
 }
 export declare class WidgetHandler {
     private static widgets;

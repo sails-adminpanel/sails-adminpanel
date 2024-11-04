@@ -1,7 +1,6 @@
 import { Attributes, ModelTypeDetection, Model } from "sails-typescript";
 import { generate }  from 'password-hash';
-import { WidgetConfig } from "sails-adminpanel/lib/widgets/widgetHandler";
-
+import { WidgetConfig } from "../lib/widgets/widgetHandler";
 let a: Attributes;
 const attributes = a = {
   id: {

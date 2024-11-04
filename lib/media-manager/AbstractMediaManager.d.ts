@@ -151,6 +151,7 @@ export declare abstract class File<T extends MediaManagerItem> {
 export declare abstract class AbstractMediaManager {
     uploadMaxBytes: number;
     uloadAllowedTypes: string[];
+    dir: string;
     /**
      * Разрешает или нет поиск по названию
      */

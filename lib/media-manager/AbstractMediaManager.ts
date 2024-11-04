@@ -183,7 +183,7 @@ export abstract class File<T extends MediaManagerItem> {
 export abstract class AbstractMediaManager {
     public uploadMaxBytes: number;
     public uloadAllowedTypes: string[];
-
+    public dir: string
     /**
      * Разрешает или нет поиск по названию
      */

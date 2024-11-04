@@ -4,7 +4,7 @@ exports.JsonFormAction = exports.HTMLAction = exports.ContextAction = exports.Li
 const AbstractCatalog_1 = require("../../lib/catalog/AbstractCatalog");
 const fs = require("node:fs");
 const TestCatalog_1 = require("./TestCatalog");
-const typed_sails_1 = require("@42pub/typed-sails");
+const sails_typescript_1 = require("sails-typescript");
 const ejs = require('ejs');
 class BaseModelItem extends AbstractCatalog_1.AbstractItem {
     constructor() {
@@ -17,11 +17,11 @@ class BaseModelItem extends AbstractCatalog_1.AbstractItem {
         this.actionHandlers = [];
     }
     async find(itemId) {
-        return await typed_sails_1.default.models[this.model].findOne({ id: itemId });
+        return await sails_typescript_1.default.models[this.model].findOne({ id: itemId });
     }
     async update(itemId, data) {
         // allowed only parentId update
-        return await typed_sails_1.default.models[this.model].update({ id: itemId }, { name: data.name, parentId: data.parentId }).fetch();
+        return await sails_typescript_1.default.models[this.model].update({ id: itemId }, { name: data.name, parentId: data.parentId }).fetch();
     }
     ;
     // @ts-ignore
@@ -34,7 +34,7 @@ class BaseModelItem extends AbstractCatalog_1.AbstractItem {
     // 	// return await StorageService.setElement(itemId, data);
     // }
     async deleteItem(itemId) {
-        await typed_sails_1.default.models[this.model].destroy({ id: itemId });
+        await sails_typescript_1.default.models[this.model].destroy({ id: itemId });
         //	await StorageService.removeElementById(itemId);
     }
     getAddHTML() {
@@ -56,10 +56,10 @@ class BaseModelItem extends AbstractCatalog_1.AbstractItem {
         if (parentId === null)
             parentId = "";
         // console.log(this.type, parentId, await sails.models[this.model].find({parentId: parentId}))
-        return await typed_sails_1.default.models[this.model].find({ parentId: parentId });
+        return await sails_typescript_1.default.models[this.model].find({ parentId: parentId });
     }
     async search(s) {
-        return await typed_sails_1.default.models[this.model].find({ name: { contains: s } });
+        return await sails_typescript_1.default.models[this.model].find({ name: { contains: s } });
     }
     updateModelItems(itemId, data, catalogId) {
         return Promise.resolve(undefined);
@@ -312,7 +312,7 @@ class ContextAction extends AbstractCatalog_1.ActionHandler {
         setTimeout(async () => {
             for (const item of items) {
                 let name = generateRandomString();
-                await typed_sails_1.default.models['group'].update({ id: item.id }, { name: name });
+                await sails_typescript_1.default.models['group'].update({ id: item.id }, { name: name });
             }
         }, 10000);
         return Promise.resolve(undefined);

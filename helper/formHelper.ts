@@ -1,6 +1,6 @@
 import * as path from "path";
 import * as fs from "fs";
-import { AdminpanelConfig } from "sails-adminpanel/interfaces/adminpanelConfig";
+import { AdminpanelConfig } from "../interfaces/adminpanelConfig";
 
 export class FormHelper {
 

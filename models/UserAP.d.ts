@@ -1,5 +1,5 @@
 import { ModelTypeDetection, Model } from "sails-typescript";
-import { WidgetConfig } from "sails-adminpanel/lib/widgets/widgetHandler";
+import { WidgetConfig } from "../lib/widgets/widgetHandler";
 declare const attributes: {
     readonly id: {
         readonly type: "number";

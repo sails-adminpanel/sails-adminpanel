@@ -20,9 +20,9 @@ export interface WidgetConfig {
 	scriptUrl?: string;
 	constructorName?: string,
 	constructorOption?:  any,
-	hideAdminPanelUI?: boolean
 	size?: { h: number; w: number; };
 	added?: boolean;
+	hideAdminPanelUI?:boolean
 };
 
 export class WidgetHandler {
@@ -144,10 +144,11 @@ export class WidgetHandler {
 	public static async getWidgetsDB(id: number, auth: boolean): Promise<WidgetConfig[]> {
 		let user: UserAP;
 		let widgets: WidgetConfig[];
+	
 		if (!auth) {
-			user = await UserAP.findOne({ login: sails.config.adminpanel.administrator?.login ?? 'admin' })
+			user = await UserAP.findOne({ login: sails.config.adminpanel.administrator?.login ?? 'admin' });
 		} else {
-			user = await UserAP.findOne({ id: id })
+			user = await UserAP.findOne({ id: id });
 		}
 		
 		if (!user || !user.widgets || user.widgets.length === 0) {
