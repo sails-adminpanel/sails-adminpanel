@@ -347,7 +347,7 @@ export interface BaseFieldConfig {
 	/**
 	 * Options for widgets like 'Navigation', 'Schedule' and 'FileUploader'
 	 * */
-	options?: NavigationOptionsField | ScheduleOptionsField | FileUploaderOptionsField | MediaManagerOptionsField
+	options?: NavigationOptionsField | ScheduleOptionsField | FileUploaderOptionsField | MediaManagerOptionsField | TuiEditorOptions
 	/**
 	 * Function that makes data modification on list view
 	 * */
