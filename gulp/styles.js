@@ -11,6 +11,7 @@ const {path, buildFolder, srcFolder} = require('./path')
 const dartSass = require('sass');
 const gulpSass = require('gulp-sass');
 const sass = gulpSass(dartSass);
+const postcssImport = require('postcss-import');
 
 const copy_styles_files = () => {
 	return merge([
@@ -44,6 +45,7 @@ const scss = () => {
 		.pipe(
 			gulpPostcss(
 				[
+					postcssImport,
 					tailwind('./tailwind.config.js'),
 					autoprefixer({
 						// grid: true,
@@ -76,6 +78,7 @@ const scssProd = () => {
 		.pipe(
 			gulpPostcss(
 				[
+					postcssImport,
 					tailwind('./tailwind.config.js'),
 					autoprefixer({
 						// grid: true,

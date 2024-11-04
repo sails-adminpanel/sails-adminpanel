@@ -4,6 +4,7 @@ import Dropzone from '../fileuploader/js/dropzone'
 import {FileUploader} from '../fileuploader/js/fileupload'
 import {EditNavigation} from '../navigation/js/editNavigation'
 import {EditSchedule} from '../schedule/js/editSchedule'
+import Editor from '@toast-ui/editor';
 import SelectPure from 'select-pure'
 import Handsontable from 'handsontable';
 import L from 'leaflet'
@@ -27,6 +28,7 @@ window.DataTable = DataTable
 window.FileUploader = FileUploader
 window.EditNavigation = EditNavigation
 window.EditSchedule = EditSchedule
+window.toastui = {Editor}
 window.SelectPure = SelectPure
 window.Handsontable = Handsontable
 window.L = L

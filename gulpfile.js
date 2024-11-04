@@ -136,7 +136,7 @@ function vueInstallStepperWatcher() {
 const build = gulp.series(reset, copy_styles_files, scss, js, ckeditorBuild);
 //const build = gulp.series(reset, copy_styles_files, scss, js);
 
-const prod = gulp.series(reset, copy_styles_files, scssProd, ckeditorBuild, vueWidgetsProd, vueInstallStepperProd, vueCatalogProd, jsProd);
+const prod = gulp.series(reset, copy_styles_files, scssProd, ckeditorBuild, vueWidgetsProd, vueInstallStepperProd, vueMediamanagerProd, vueCatalogProd, jsProd);
 // const prodInstallStepper = gulp.series(reset, copy_styles_files, scssProd, jsProd, ckeditorBuild, vueInstallStepperProd);
 
 gulp.task('default', build);
@@ -156,3 +156,5 @@ gulp.task('prodCat', vueCatalogProd)
 
 gulp.task('mm', gulp.series(vueMediamanager, gulp.parallel(serve, vueMMWatcher)))
 gulp.task('prodMediamanager', vueMediamanagerProd)
+
+gulp.task('vueInstallStepperProd', vueInstallStepperProd)
