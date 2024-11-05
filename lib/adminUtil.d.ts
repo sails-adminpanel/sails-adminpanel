@@ -1,4 +1,4 @@
-import { Entity } from "../interfaces/types";
+import { Entity, EntityType } from "../interfaces/types";
 import { ActionType, AdminpanelConfig, CreateUpdateConfig, ModelConfig } from "../interfaces/adminpanelConfig";
 import { Model } from "sails-typescript";
 import { SailsModelAnyInstance } from "../interfaces/StrippedORMModel";
@@ -66,7 +66,7 @@ export declare class AdminUtil {
      * @param {Request} req
      * @returns {?string}
      */
-    static findEntityType(req: ReqType): string;
+    static findEntityType(req: ReqType): EntityType;
     /**
      * Get entity name
      *

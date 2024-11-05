@@ -1,7 +1,6 @@
-import { Attributes, ModelTypeDetection, Model } from "sails-typescript";
+import { ModelTypeDetection, Model } from "sails-typescript";
 
-let a: Attributes;
-const attributes = a = {
+const attributes = {
   id: {
     type: "number",
     autoIncrement: true,
@@ -24,11 +23,10 @@ const attributes = a = {
 }  as const;
 
 type ModelOptions = ModelTypeDetection<typeof attributes>;
-interface GroupAP extends Partial<ModelOptions> {}
-export default GroupAP;
+export interface GroupAPRecord extends Partial<ModelOptions> {}
 
 const methods = {
-  beforeCreate(record: GroupAP, cb: (err?: Error | string) => void) {
+  beforeCreate(record: GroupAPRecord, cb: (err?: Error | string) => void) {
     cb();
   },
 };
@@ -44,7 +42,7 @@ module.exports = model;
 declare global {
   const GroupAP: Model<typeof model>;
   interface Models {
-    GroupAP: GroupAP;
+    GroupAP: GroupAPRecord;
   }
   interface AppCustomJsonTypes {
     tokens: string[]

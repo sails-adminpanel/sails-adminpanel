@@ -21,11 +21,10 @@ declare const attributes: {
     };
 };
 type ModelOptions = ModelTypeDetection<typeof attributes>;
-interface GroupAP extends Partial<ModelOptions> {
+export interface GroupAPRecord extends Partial<ModelOptions> {
 }
-export default GroupAP;
 declare const model: {
-    beforeCreate(record: GroupAP, cb: (err?: Error | string) => void): void;
+    beforeCreate(record: GroupAPRecord, cb: (err?: Error | string) => void): void;
     primaryKey: string;
     attributes: {
         readonly id: {
@@ -52,9 +51,10 @@ declare const model: {
 declare global {
     const GroupAP: Model<typeof model>;
     interface Models {
-        GroupAP: GroupAP;
+        GroupAP: GroupAPRecord;
     }
     interface AppCustomJsonTypes {
         tokens: string[];
     }
 }
+export {};

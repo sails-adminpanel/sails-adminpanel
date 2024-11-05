@@ -1,7 +1,6 @@
-import GroupAP from "../models/GroupAP";
+import {GroupAPRecord} from "../models/GroupAP";
 import {AccessRightsToken} from "../interfaces/types";
-import UserAP from "../models/UserAP";
-import userAP from "../models/UserAP";
+import {UserAPRecord} from "../models/UserAP";
 
 export class AccessRightsHelper {
 
@@ -46,7 +45,7 @@ export class AccessRightsHelper {
 			})
 	}
 
-	public static enoughPermissions(tokens: string[], user: userAP): boolean {
+	public static enoughPermissions(tokens: string[], user: UserAPRecord): boolean {
 		if (user.isAdministrator) {
 			return true;
 		}
@@ -63,11 +62,11 @@ export class AccessRightsHelper {
 		return enoughPermissions
 	}
 
-	public static havePermission(tokenId: string, user: UserAP): boolean {
+	public static havePermission(tokenId: string, user: UserAPRecord): boolean {
 		if(!sails.config.adminpanel.auth) {
 			return true
 		}
-		
+
 		if (user.isAdministrator) {
 			return true;
 		}
@@ -87,7 +86,7 @@ export class AccessRightsHelper {
 		}
 
 		let allow = false;
-		for (let group of user.groups as GroupAP[]) {
+		for (let group of user.groups as GroupAPRecord[]) {
 			if (group.tokens.includes(tokenId)) {
 				allow = true;
 				break;

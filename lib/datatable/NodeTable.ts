@@ -42,6 +42,7 @@ interface NodeOutput {
 
 export class NodeTable {
   public request: Request;
+  // TODO should be operated by DataModel, because we need access right apply
   public model: ORMModel;
   public fields: Fields;
   public fieldsArray: string[] = ['actions']
@@ -134,7 +135,7 @@ export class NodeTable {
                   break;
                 }
               }
-              
+
               if (searchStr.startsWith(">")) {
                 columnQuery = { [fieldsArray[parseInt(columnName)]]: { '>=': parseFloat(searchStr.substring(1)) } };
               } else if (searchStr.startsWith("<")) {
@@ -186,13 +187,13 @@ export class NodeTable {
 
     return { where: filter, sort: order, skip: limit[0], limit: limit[1] };
   }
-  
+
   async output(callback: (err: Error, output: NodeOutput)=>void): Promise<void> {
     try {
       const queryOptions = await this.buildQuery();
       const totalRecords = await this.model.count();
       const filteredRecords = await this.model.count(queryOptions.where);
-      //@ts-ignore todo rewrite for unuse populate chain instead populateAll 
+      //@ts-ignore todo rewrite for unuse populate chain instead populateAll
       const data = await this.model.find(queryOptions).populateAll();
       const output = {
         draw: this.request.draw !== "" ? this.request.draw : 0,
