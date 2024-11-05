@@ -1,33 +1,37 @@
-'use strict';
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.setDefaultConfig = setDefaultConfig;
-exports.getDefaultConfig = getDefaultConfig;
-exports.defaults = defaults;
-const fileStorageHelper_1 = require("../helper/fileStorageHelper");
+'use strict'
+import {AdminpanelConfig} from "../interfaces/adminpanelConfig";
+import {FileStorageHelper} from "../helper/fileStorageHelper";
 const packageJson = require('../package.json');
-const timezones = require('./timezones.json');
+const timezones = require('../lib/timezones.json');
+import * as path from "path";
+
 /**
  * Default admin config
  */
-var adminpanelConfig = {
+var adminpanelConfig: AdminpanelConfig = {
+
     /**
      * Default url prefix for admin panel
      */
     routePrefix: '\/admin',
+
     /**
      * Default path to views
      *
      * @type {?string}
      */
     pathToViews: null,
+
     /**
      * Name of model identifier field
      */
     identifierField: 'id',
+
     /**
      * Policies
      */
     policies: null,
+
     /**
      * Base navbar configuration
      */
@@ -35,9 +39,11 @@ var adminpanelConfig = {
         // List of additional actions
         additionalLinks: []
     },
+
     brand: {
         link: null
     },
+
     /**
      * List of admin pages
      */
@@ -79,21 +85,24 @@ var adminpanelConfig = {
             }
         }
     },
+
     translation: {
         locales: ['en', 'ru'],
         path: `config/locales/adminpanel`,
         defaultLocale: 'en'
     },
+
     forms: {
         path: `api/adminpanel-forms`,
         data: {},
         get: async function (slug, key) {
-            return fileStorageHelper_1.FileStorageHelper.get(slug, key);
+            return FileStorageHelper.get(slug, key)
         },
         set: async function (slug, key, value) {
-            fileStorageHelper_1.FileStorageHelper.set(slug, key, value);
+            FileStorageHelper.set(slug, key, value)
         }
     },
+
     /**
      * List of sections in head
      */
@@ -101,15 +110,19 @@ var adminpanelConfig = {
     package: packageJson,
     showVersion: true,
     timezones: timezones
-};
-function setDefaultConfig(config) {
+}
+
+
+export function setDefaultConfig(config: AdminpanelConfig) {
     adminpanelConfig = config;
 }
-function getDefaultConfig() {
+
+export function getDefaultConfig() {
     return adminpanelConfig;
 }
-function defaults() {
+
+export function defaults() {
     return {
         adminpanel: adminpanelConfig
-    };
+    }
 }

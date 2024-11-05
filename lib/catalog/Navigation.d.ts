@@ -1,5 +1,5 @@
 import { AbstractCatalog, ActionHandler, Item } from "./AbstractCatalog";
-import { NavigationConfig } from "../../interfaces/adminpanelConfig";
+import { NavigationConfig } from "../../../interfaces/adminpanelConfig";
 export interface NavItem extends Item {
     urlPath?: any;
     modelId?: string | number;

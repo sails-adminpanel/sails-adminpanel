@@ -1,4 +1,4 @@
-import {InstallStepper} from "./installStepper/installStepper";
+import {InstallStepper} from "../lib/installStepper/installStepper";
 let installStepper = InstallStepper.getInstance();
 
 export default function() {

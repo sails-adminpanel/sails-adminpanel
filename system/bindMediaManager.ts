@@ -1,5 +1,5 @@
-import { DefaultMediaManager } from "./media-manager/DefaultMediaManager";
-import { MediaManagerHandler } from "./media-manager/MediaManagerHandler";
+import { DefaultMediaManager } from "../lib/media-manager/DefaultMediaManager";
+import { MediaManagerHandler } from "../lib/media-manager/MediaManagerHandler";
 
 export default function bindMediaManager() {
 	sails.after(["hook:orm:loaded"], async () => {

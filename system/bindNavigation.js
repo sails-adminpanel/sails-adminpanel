@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = bindNavigation;
-const Navigation_1 = require("./catalog/Navigation");
-const CatalogHandler_1 = require("./catalog/CatalogHandler");
+const Navigation_1 = require("../lib/catalog/Navigation");
+const CatalogHandler_1 = require("../lib/catalog/CatalogHandler");
 function bindNavigation() {
     sails.after(["hook:orm:loaded"], async () => {
         if (sails.config.adminpanel.navigation) {

@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = bindAuthorization;
 const login_1 = require("../controllers/login");
 const initUser_1 = require("../controllers/initUser");
-const bindPolicies_1 = require("../lib/bindPolicies");
+const bindPolicies_1 = require("./bindPolicies");
 async function bindAuthorization() {
     let admins;
     try {

@@ -2,7 +2,7 @@ import _login from "../controllers/login";
 import _initUser from "../controllers/initUser";
 
 import {AdminpanelConfig} from "../interfaces/adminpanelConfig";
-import bindPolicies from "../lib/bindPolicies"
+import bindPolicies from "./bindPolicies"
 
 export default async function bindAuthorization() {
 

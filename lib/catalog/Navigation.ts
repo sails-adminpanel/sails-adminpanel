@@ -1,5 +1,5 @@
 import {AbstractCatalog, AbstractGroup, AbstractItem, ActionHandler, Item} from "./AbstractCatalog";
-import {ModelConfig, NavigationConfig} from "../../interfaces/adminpanelConfig";
+import {ModelConfig, NavigationConfig} from "../../../interfaces/adminpanelConfig";
 import * as fs from "node:fs";
 
 const ejs = require('ejs')

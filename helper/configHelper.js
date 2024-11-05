@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ConfigHelper = void 0;
-const Router_1 = require("../lib/Router");
-const defaults_1 = require("../lib/defaults");
+const Router_1 = require("../system/Router");
+const defaults_1 = require("../system/defaults");
 class ConfigHelper {
     static addModelConfig(modelConfig) {
         if (sails !== undefined && sails.config?.adminpanel !== undefined) {

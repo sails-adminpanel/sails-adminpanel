@@ -1,13 +1,13 @@
 import { AdminpanelConfig, ModelConfig } from "../interfaces/adminpanelConfig";
-import Router from "../lib/Router";
-import { getDefaultConfig, setDefaultConfig } from "../lib/defaults";
+import Router from "../system/Router";
+import { getDefaultConfig, setDefaultConfig } from "../system/defaults";
 export class ConfigHelper {
 
     public static addModelConfig(modelConfig: AdminpanelConfig["models"]): void {
         if(sails !== undefined && sails.config?.adminpanel !== undefined){
             const config = sails.config?.adminpanel
             const models = {...config.models}
-            config.models = {...models, ...modelConfig}    
+            config.models = {...models, ...modelConfig}
         } else {
             const config = getDefaultConfig()
             const models = {...config.models}

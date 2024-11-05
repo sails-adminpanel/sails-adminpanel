@@ -8,12 +8,12 @@ const { InstallStepper } = require("./lib/installStepper/installStepper");
 const CatalogHandler_1 = require("./lib/catalog/CatalogHandler");
 const MediaManagerHandler_1 = require("./lib/media-manager/MediaManagerHandler");
 module.exports = function () {
-    let libInitialize = require("./lib/initialize");
+    let libInitialize = require("./system/initialize");
     return {
         /**
          * Creating default settings for hook
          */
-        defaults: require('./lib/defaults').defaults(),
+        defaults: require('./system/defaults').defaults(),
         configure: require('./lib/configure').default(),
         initialize: async function initialize(cb) {
             await libInitialize.default(sails, cb);

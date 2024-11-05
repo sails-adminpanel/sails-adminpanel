@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = default_1;
-const installStepper_1 = require("./installStepper/installStepper");
+const installStepper_1 = require("../lib/installStepper/installStepper");
 let installStepper = installStepper_1.InstallStepper.getInstance();
 function default_1() {
     let installStepperPolicy = function (req, res, proceed) {

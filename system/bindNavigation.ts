@@ -1,5 +1,5 @@
-import {Navigation} from "./catalog/Navigation";
-import {CatalogHandler} from "./catalog/CatalogHandler";
+import {Navigation} from "../lib/catalog/Navigation";
+import {CatalogHandler} from "../lib/catalog/CatalogHandler";
 
 export default function bindNavigation() {
 	sails.after(["hook:orm:loaded"], async () => {

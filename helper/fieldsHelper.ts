@@ -216,7 +216,7 @@ export class FieldsHelper {
             if (!Model) {
                 return;
             }
-            
+
             let list: SailsModelAnyInstance[];
             try {
                 list = await Model.find({});
@@ -284,8 +284,8 @@ export class FieldsHelper {
      * @returns {Object} Empty object or pbject with list of properties
      */
     public static getFields(
-        /** @deprecated */ req: ReqType, 
-        entity: Entity, 
+        /** @deprecated */ req: ReqType,
+        entity: Entity,
         type: ActionType): Fields {
 
             if (!entity.model || !entity.model.attributes) {
@@ -297,7 +297,7 @@ export class FieldsHelper {
             //get field config for actions
             let actionConfig = AdminUtil.findActionConfig(entity, type);
             let fieldsConfig = entity.config.fields || {};
-            
+
             let modelAttributes = entity.model.attributes
 
             let that = this;
@@ -344,6 +344,7 @@ export class FieldsHelper {
                         fldConfig = { ...fldConfig, ...tmpCfg };
                     }
                 }
+                // TODO add access rights to a specific field here
                 //Checking inaction entity fields configuration. Should overwrite global one
                 if (actionConfig.fields[key] || actionConfig.fields[key] === false) {
                     //if config set to false ignoring this field

@@ -301,6 +301,7 @@ class FieldsHelper {
                     fldConfig = { ...fldConfig, ...tmpCfg };
                 }
             }
+            // TODO add access rights to a specific field here
             //Checking inaction entity fields configuration. Should overwrite global one
             if (actionConfig.fields[key] || actionConfig.fields[key] === false) {
                 //if config set to false ignoring this field
