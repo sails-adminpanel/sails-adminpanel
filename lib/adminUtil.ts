@@ -1,7 +1,7 @@
 import {Entity, EntityType} from "../interfaces/types";
 import {ActionType, AdminpanelConfig, CreateUpdateConfig, HrefConfig, ModelConfig} from "../interfaces/adminpanelConfig";
-import { Attributes, ModelTypeDetection, Model } from "sails-typescript";
-import StrippedORMModel, { SailsModelAnyInstance } from "../interfaces/StrippedORMModel";
+import { AbstractModel } from "./v4/model/AbstractModel";
+import { ModelHandler } from "./v4/model/ModelHandler";
 
 /**
  * @deprecated need refactor actions
@@ -96,23 +96,19 @@ export class AdminUtil {
 
     /**
      * Get model from system
-     *
+     * @deprecated use ModelHandler directly
      * @param {string} name
      * @returns {?Model}
      */
-    public static getModel<T extends keyof Models>(name: T): Model<Models[T]> & {attributes: SailsModelAnyInstance} | null {
+    public static getModel(name: string): AbstractModel<any> {
         //Getting model
         // console.log('admin > model > ', sails.models);
-        let Model = sails.models[name.toLowerCase()];
-        if (!Model) {
-            if (!sails) {
-                sails.log.error('No model found in sails.');
-            } else {
-                sails.log.error('No model found in sails.');
-            }
+        let model = ModelHandler.model.get(name.toLowerCase());
+        if (!model) {
+            sails.log.error(`No model found [${name}] in sails.`);
             return null;
         }
-        return Model;
+        return model;
     }
 
     /**
@@ -216,14 +212,14 @@ export class AdminUtil {
 
     /**
      * Trying to find model by request
-     *
+     * @deprecated use ModelHandler directly
      * @see AdminUtil._isValidModelConfig
      * @param {Request} req
      * @param {Object} modelConfig
      * @returns {?Model}
      */
 
-    public static findModel<T extends keyof Models>(req: ReqType, modelConfig: ModelConfig): Model<Models[T]> & { attributes: SailsModelAnyInstance } | null {
+    public static findModel<T extends keyof Models>(req: ReqType, modelConfig: ModelConfig): AbstractModel<any> {
         if (!this._isValidModelConfig(modelConfig)) {
             return null;
         }

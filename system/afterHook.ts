@@ -8,6 +8,7 @@ import Router from "./Router";
 
 import bindNavigation from "./bindNavigation";
 import bindMediaManager from "./bindMediaManager";
+import bindConfigModels from "./bindConfigModels";
 
 export default async function () {
     // Binding list of function for rendering
@@ -16,17 +17,6 @@ export default async function () {
     // bind config for views
     require('./bindConfig').default();
 
-    //@ts-ignore
-    if (sails.config.adminpanel.instances) {
-        sails.log.warn('\x1b[33m%s\x1b[0m', "sails.config.adminpanel.instances is deprecated")
-        sails.log.warn('\x1b[33m%s\x1b[0m', "use sails.config.adminpanel.models instead")
-        sails.log.warn('\x1b[33m%s\x1b[0m', "sails.config.adminpanel.instances will not be supported anymore in version 3.0.0")
-        sails.log.warn('\x1b[33m%s\x1b[0m', "!!! sails.config.adminpanel.models replaced by sails.config.adminpanel.instances !!!")
-        //@ts-ignore
-        sails.config.adminpanel.models = {...sails.config.adminpanel.instances}
-        //@ts-ignore
-        delete sails.config.adminpanel.instances;
-    }
 
     if ((process.env.DEV && process.env.NODE_ENV !== 'production') || process.env.ADMINPANEL_FORCE_BIND_DEV === "TRUE") {
         bindDev(sails.config.adminpanel)
@@ -41,12 +31,13 @@ export default async function () {
         Router.bind();
     }
 
+
+    bindConfigModels(sails.config.adminpanel);
     bindForms();
     bindDashboardWidgets();
 
 	bindNavigation();
 	bindMediaManager();
-
     //bind access rights
     bindAccessRights();
 

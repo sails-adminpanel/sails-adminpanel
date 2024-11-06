@@ -2,6 +2,7 @@ import { Fields } from '../../helper/fieldsHelper';
 import {Model} from "sails-typescript"
 // TODO: move into sails-typescript
 import { CriteriaQuery, WhereCriteriaQuery } from "sails-typescript/criteria"
+import { AbstractModel } from '../v4/model/AbstractModel';
 
 type ORMModel = Model<Models[keyof Models]> & {primaryKey: string};
 interface Request {
@@ -35,19 +36,19 @@ interface Search {
 
 interface NodeOutput {
   draw: string | number;
-  recordsTotal: Error & number;
-  recordsFiltered: Error & number;
+  recordsTotal: number;
+  recordsFiltered: number;
   data: object[];
 }
 
 export class NodeTable {
   public request: Request;
   // TODO should be operated by DataModel, because we need access right apply
-  public model: ORMModel;
+  public model: AbstractModel<any>;
   public fields: Fields;
   public fieldsArray: string[] = ['actions']
 
-  constructor(request: Request, model: ORMModel, fields: Fields) {
+  constructor(request: Request, model: AbstractModel<any>, fields: Fields) {
     this.request = request;
     this.model = model;
     this.fields = fields;

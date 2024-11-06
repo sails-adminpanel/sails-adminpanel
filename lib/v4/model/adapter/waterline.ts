@@ -1,9 +1,10 @@
+import { AbstractModel } from "../AbstractModel";
 
-class Waterline<T> extends AbstractModel<T> {
+export class Waterline<T> extends AbstractModel<T> {
     private model: any;
   
     constructor(modelname: string, model: any) {
-        super(modelname);
+        super(modelname, model.attributes, model.primaryKey, model.identity);
         if (!model) {
             throw new Error('Model instance must be provided.');
         }
@@ -15,11 +16,16 @@ class Waterline<T> extends AbstractModel<T> {
     }
   
     async findOne(id: string | number): Promise<T | null> {
-      return await this.model.findOne({ id });
+      return await this.model.findOne({ id })      
+      /** TODO: resolve populate all */
+      .populateAll();
     }
   
     async find(criteria: Partial<T> = {}): Promise<T[]> {
-      return await this.model.find(criteria);
+      return await this.model.find(criteria)
+      /** TODO: resolve populate all */
+      .populateAll();
+;
     }
   
     async updateOne(id: string | number, data: Partial<T>): Promise<T | null> {
@@ -34,9 +40,9 @@ class Waterline<T> extends AbstractModel<T> {
       return await this.model.destroyOne({ id });
     }
   
-    async destroy(criteria: Partial<T>): Promise<boolean> {
+    async destroy(criteria: Partial<T>): Promise<T[]> {
       const deletedRecords = await this.model.destroy(criteria).fetch();
-      return deletedRecords.length > 0;
+      return deletedRecords;
     }
 
     async count(criteria: Partial<T> = {}): Promise<number> {

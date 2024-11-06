@@ -1,7 +1,7 @@
-import { SailsModelAnyInstance } from "../interfaces/StrippedORMModel";
 import { ActionType, BaseFieldConfig } from "../interfaces/adminpanelConfig";
 import { Entity } from "../interfaces/types";
 import { AdminUtil } from "../lib/adminUtil";
+import { ModelAnyInstance } from "../lib/v4/model/AbstractModel";
 
 export type FieldModel = {
     allowNull?: boolean;
@@ -218,7 +218,7 @@ export class FieldsHelper {
                 return;
             }
 
-            let list: SailsModelAnyInstance[];
+            let list: ModelAnyInstance[];
             try {
                 list = await Model.find({});
             } catch (e) {

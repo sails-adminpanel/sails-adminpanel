@@ -192,7 +192,7 @@ export declare abstract class AbstractCatalog {
     getChilds(parentId: string | number | null, byItemType?: string): Promise<Item[]>;
     private _bindAccessRight;
     protected constructor(items: BaseItem<any>[]);
-    setID(id: string): void;
+    setId(id: string): void;
     /**
      * Gettind id list method
      */

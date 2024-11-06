@@ -184,6 +184,7 @@ export interface AdminpanelConfig {
     mediamanager?: MediaManagerConfig;
 }
 export interface ModelConfig {
+    adapter?: "waterline" | undefined;
     title: string;
     /**
      * Model name

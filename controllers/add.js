@@ -82,7 +82,7 @@ async function add(req, res) {
             reqData = entityAdd.entityModifier(reqData);
         }
         try {
-            let record = await entity.model.create(reqData).fetch();
+            let record = await entity.model.create(reqData);
             // save associations media to json
             await (0, MediaManagerHelper_1.saveRelationsMediaManager)(fields, rawReqData, entity.model.identity, record.id);
             sails.log.debug(`A new record was created: `, record);

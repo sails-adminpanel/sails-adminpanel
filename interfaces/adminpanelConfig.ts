@@ -246,6 +246,7 @@ export interface AdminpanelConfig {
 }
 
 export interface ModelConfig {
+	adapter?: "waterline" | undefined
 	title: string
 	/**
 	 * Model name

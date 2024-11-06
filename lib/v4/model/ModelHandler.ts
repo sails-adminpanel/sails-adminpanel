@@ -1,14 +1,20 @@
-class ModelHandler {
-    private models: Map<string, AbstractModel<any>> = new Map();
+import { AbstractModel } from "./AbstractModel";
+
+export class ModelHandler {
+    private static models: Map<string, AbstractModel<any>> = new Map();
   
-    registerModel<T>(modelName: string, modelInstance: AbstractModel<T>): void {
-        if (this.models.has(modelName)) {
-          throw new Error(`Model "${modelName}" is already registered.`);
+    static registerModel<T>(modelName: string, modelInstance: AbstractModel<T>): void {
+        const modelname = modelName.toLowerCase()
+        if (this.models.has(modelname)) {
+          throw new Error(`Model "${modelname}" is already registered.`);
         }
-        this.models.set(modelName, modelInstance);
+        this.models.set(modelname, modelInstance);
+        sails.log.debug(`Model with name [${modelname}] was registred`)
+        console.log(`Model with name [${modelname}] was registred`)
+        
     }
 
-    get model() {
+    static get model() {
         return this.models;
     }
 }

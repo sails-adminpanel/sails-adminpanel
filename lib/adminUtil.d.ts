@@ -1,7 +1,6 @@
 import { Entity, EntityType } from "../interfaces/types";
 import { ActionType, AdminpanelConfig, CreateUpdateConfig, ModelConfig } from "../interfaces/adminpanelConfig";
-import { Model } from "sails-typescript";
-import { SailsModelAnyInstance } from "../interfaces/StrippedORMModel";
+import { AbstractModel } from "./v4/model/AbstractModel";
 /**
  * @deprecated need refactor actions
  */
@@ -53,13 +52,11 @@ export declare class AdminUtil {
     static config(): AdminpanelConfig;
     /**
      * Get model from system
-     *
+     * @deprecated use ModelHandler directly
      * @param {string} name
      * @returns {?Model}
      */
-    static getModel<T extends keyof Models>(name: T): Model<Models[T]> & {
-        attributes: SailsModelAnyInstance;
-    } | null;
+    static getModel(name: string): AbstractModel<any>;
     /**
      * Get entity type
      *
@@ -108,15 +105,13 @@ export declare class AdminUtil {
     static findActionConfig(entity: Entity, actionType: ActionType): ActionConfig;
     /**
      * Trying to find model by request
-     *
+     * @deprecated use ModelHandler directly
      * @see AdminUtil._isValidModelConfig
      * @param {Request} req
      * @param {Object} modelConfig
      * @returns {?Model}
      */
-    static findModel<T extends keyof Models>(req: ReqType, modelConfig: ModelConfig): Model<Models[T]> & {
-        attributes: SailsModelAnyInstance;
-    } | null;
+    static findModel<T extends keyof Models>(req: ReqType, modelConfig: ModelConfig): AbstractModel<any>;
     /**
      * Will create entity object from request.
      *
