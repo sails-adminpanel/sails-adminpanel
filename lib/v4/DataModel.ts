@@ -6,6 +6,7 @@ import {Entity} from "../../interfaces/types";
 import {ActionType} from "../../interfaces/adminpanelConfig";
 import {Fields} from "../../helper/fieldsHelper";
 
+// RENAME DataAccessor
 export class DataModel {
   user: UserAPRecord;
   entity: Entity;
@@ -17,7 +18,8 @@ export class DataModel {
     this.type = type
   }
 
-  // TODO тут дублируем функцию FieldsHelper.getFields (оптимизированную) с учетом прав доступа
+  // TODO here we duplicate the FieldsHelper.getFields function (optimized) taking into account access rights
+  // TODO hide if there is no access for realiton model
   public getFields() {
     let a = this.entity.config.edit;
     if (typeof a !== "boolean") {
@@ -29,6 +31,7 @@ export class DataModel {
   }
 
   // associations should load taking into account another DataModel instance for keeping populated data safety
+  // remove poulateALL from Waterline adapetr
   public async loadAssociations(fields: Fields): Promise<Fields>{
     return Promise.resolve(null)
   }
