@@ -6,8 +6,8 @@ class VueCatalog {
     constructor(_catalog) {
         this.catalog = _catalog;
     }
-    setID(id) {
-        this.catalog.setID(id);
+    setId(id) {
+        this.catalog.setId(id);
     }
     getItemType(type) {
         return this.catalog.getItemType(type);

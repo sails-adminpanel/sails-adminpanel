@@ -78,8 +78,3 @@ describe('Edit Test Entity', function () {
         }
     });
 });
-async function isLoadedRouter() {
-    return new Promise((resolve, reject) => {
-        sails.on("adminpanel:router:binded", resolve);
-    });
-}

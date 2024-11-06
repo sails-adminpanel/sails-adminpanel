@@ -56,7 +56,9 @@ async function remove(req, res) {
     let destroyedRecord;
     try {
         const fieldId = entity.config.identifierField ?? sails.config.adminpanel.identifierField;
-        destroyedRecord = await entity.model.destroy(record[fieldId]).fetch();
+        const q = {};
+        q[fieldId] = record[fieldId];
+        destroyedRecord = await entity.model.destroy(q);
         // delete relations media manager
         await (0, MediaManagerHelper_1.deleteRelationsMediaManager)(entity.name, destroyedRecord);
     }

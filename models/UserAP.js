@@ -1,8 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const password_hash_1 = require("password-hash");
-let a;
-const attributes = a = {
+const attributes = {
     id: {
         type: 'number',
         autoIncrement: true,

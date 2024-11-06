@@ -40,8 +40,8 @@ export class VueCatalog {
 		this.catalog = _catalog;
 	}
 
-	setID(id: string) {
-		this.catalog.setID(id);
+	setId(id: string) {
+		this.catalog.setId(id);
 	}
 
 	getItemType(type: string) {

@@ -2,7 +2,7 @@ import SwitcherBase from "./abstractSwitch";
 import InfoBase from "./abstractInfo";
 import ActionBase from "./abstractAction";
 import LinkBase from "./abstractLink";
-import UserAP from "../../models/UserAP";
+import { UserAPRecord } from "../../models/UserAP";
 import CustomBase from "./abstractCustom";
 import { AdminpanelIcon } from "../../interfaces/adminpanelConfig";
 export type WidgetType = (SwitcherBase | InfoBase | ActionBase | LinkBase | CustomBase);
@@ -30,7 +30,7 @@ export declare class WidgetHandler {
     static add(widget: WidgetType): void;
     static getById(id: string): WidgetType | undefined;
     static removeById(id: string): void;
-    static getAll(user: UserAP): Promise<WidgetConfig[]>;
+    static getAll(user: UserAPRecord): Promise<WidgetConfig[]>;
     static getWidgetsDB(id: number, auth: boolean): Promise<WidgetConfig[]>;
     static setWidgetsDB(id: number, widgets: WidgetConfig[], auth: boolean): Promise<number>;
 }

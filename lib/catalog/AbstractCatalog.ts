@@ -297,7 +297,7 @@ export abstract class AbstractCatalog {
 		this._bindAccessRight()
 	}
 
-	public setID(id: string) {
+	public setId(id: string) {
 		this.id = id
 	}
 

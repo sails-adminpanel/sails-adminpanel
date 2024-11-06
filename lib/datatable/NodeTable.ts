@@ -2,6 +2,7 @@ import { Fields } from '../../helper/fieldsHelper';
 import {Model} from "sails-typescript"
 // TODO: move into sails-typescript
 import { CriteriaQuery, WhereCriteriaQuery } from "sails-typescript/criteria"
+import { AbstractModel } from '../v4/model/AbstractModel';
 
 type ORMModel = Model<Models[keyof Models]> & {primaryKey: string};
 interface Request {
@@ -35,18 +36,19 @@ interface Search {
 
 interface NodeOutput {
   draw: string | number;
-  recordsTotal: Error & number;
-  recordsFiltered: Error & number;
+  recordsTotal: number;
+  recordsFiltered: number;
   data: object[];
 }
 
 export class NodeTable {
   public request: Request;
-  public model: ORMModel;
+  // TODO should be operated by DataModel, because we need access right apply
+  public model: AbstractModel<any>;
   public fields: Fields;
   public fieldsArray: string[] = ['actions']
 
-  constructor(request: Request, model: ORMModel, fields: Fields) {
+  constructor(request: Request, model: AbstractModel<any>, fields: Fields) {
     this.request = request;
     this.model = model;
     this.fields = fields;
@@ -134,7 +136,7 @@ export class NodeTable {
                   break;
                 }
               }
-              
+
               if (searchStr.startsWith(">")) {
                 columnQuery = { [fieldsArray[parseInt(columnName)]]: { '>=': parseFloat(searchStr.substring(1)) } };
               } else if (searchStr.startsWith("<")) {
@@ -186,13 +188,13 @@ export class NodeTable {
 
     return { where: filter, sort: order, skip: limit[0], limit: limit[1] };
   }
-  
+
   async output(callback: (err: Error, output: NodeOutput)=>void): Promise<void> {
     try {
       const queryOptions = await this.buildQuery();
       const totalRecords = await this.model.count();
       const filteredRecords = await this.model.count(queryOptions.where);
-      //@ts-ignore todo rewrite for unuse populate chain instead populateAll 
+      //@ts-ignore todo rewrite for unuse populate chain instead populateAll
       const data = await this.model.find(queryOptions).populateAll();
       const output = {
         draw: this.request.draw !== "" ? this.request.draw : 0,

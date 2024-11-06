@@ -1,7 +1,7 @@
 import sails from "sails-typescript";
 import {LineAwesomeIcon} from "./lineAwesome"
-import UserAP from "../models/UserAP";
-import GroupAP from "../models/GroupAP";
+import {UserAPRecord} from "../models/UserAP";
+import {GroupAPRecord} from "../models/GroupAP";
 import { EditorOptions } from "@toast-ui/editor/types/editor";
 
 export type TuiEditorOptions = EditorOptions;
@@ -246,6 +246,7 @@ export interface AdminpanelConfig {
 }
 
 export interface ModelConfig {
+	adapter?: "waterline" | undefined
 	title: string
 	/**
 	 * Model name
@@ -321,13 +322,13 @@ export interface ModelConfig {
 	userAccessRelationCallback?: (userWithGroups: UserWithGroups, record: any) => boolean
 }
 
-type UserWithGroups = UserAP & {groups: GroupAP[]}
+type UserWithGroups = UserAPRecord & {groups: GroupAPRecord[]}
 
 export interface FieldsForms {
 	[key: string]: FormFieldConfig
 }
 
-export type ModelFieldConfig = (BaseFieldConfig | TuiEditorFieldConfig) & {groupsAccessRight: string[]}
+export type ModelFieldConfig = (BaseFieldConfig | TuiEditorFieldConfig) & {groupsAccessRights: string[]}
 
 export interface FieldsModels {
 	[key: string]: boolean | string | ModelFieldConfig

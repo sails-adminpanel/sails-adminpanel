@@ -1,6 +1,6 @@
 import * as path from "path";
 import { Field } from "./fieldsHelper";
-import { SailsModelAnyField, SailsModelAnyInstance } from "../interfaces/StrippedORMModel";
+import { ModelAnyField } from "../lib/v4/model/AbstractModel";
 
 export class ViewsHelper {
 
@@ -46,21 +46,21 @@ export class ViewsHelper {
      * @param {object} field
      * @param {Array} data
      */
-    public static getFieldValue(key: string, field: Field, data: SailsModelAnyInstance): SailsModelAnyField {
+    public static getFieldValue(key: string, field: Field, data: any): ModelAnyField {
         let value = data[key];
     
         if (typeof value === "object" && value !== null) {
             if (field.config.type === 'association' && !Array.isArray(value)) {
                 // Here we assert that value is an object and has the identifierField
-                return value[field.config.identifierField as keyof typeof value] as SailsModelAnyField;
+                return value[field.config.identifierField as keyof typeof value] as ModelAnyField;
             }
     
             if (Array.isArray(value) && field.config.type === 'association-many') {
-                return value.map(val => (val as any)[field.config.identifierField]) as SailsModelAnyField;
+                return value.map(val => (val as any)[field.config.identifierField]) as ModelAnyField;
             }
         }
     
-        return value as SailsModelAnyField;
+        return value as ModelAnyField;
     }
     
 
@@ -85,7 +85,7 @@ export class ViewsHelper {
      * @param {string|number|boolean|object|Array} value
      * @param {object} field
      */
-    public static getAssociationValue(value: SailsModelAnyField, field: Field): string {
+    public static getAssociationValue(value: ModelAnyField, field: Field): string {
         if (!value) {
             return '-----------';
         }

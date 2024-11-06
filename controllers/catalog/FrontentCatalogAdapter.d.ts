@@ -29,7 +29,7 @@ interface RequestData {
 export declare class VueCatalog {
     catalog: AbstractCatalog;
     constructor(_catalog: AbstractCatalog);
-    setID(id: string): void;
+    setId(id: string): void;
     getItemType(type: string): import("../../lib/catalog/AbstractCatalog").BaseItem<Item>;
     getAddHTML(item: any, loc: string): Promise<{
         type: "link" | "html" | "jsonForm";

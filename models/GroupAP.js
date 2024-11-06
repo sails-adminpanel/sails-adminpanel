@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-let a;
-const attributes = a = {
+const attributes = {
     id: {
         type: "number",
         autoIncrement: true,

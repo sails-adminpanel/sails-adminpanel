@@ -1,9 +1,11 @@
 import sails from "sails-typescript";
 import { LineAwesomeIcon } from "./lineAwesome";
-import UserAP from "../models/UserAP";
-import GroupAP from "../models/GroupAP";
+import { UserAPRecord } from "../models/UserAP";
+import { GroupAPRecord } from "../models/GroupAP";
+import { EditorOptions } from "@toast-ui/editor/types/editor";
+export type TuiEditorOptions = EditorOptions;
 export type AdminpanelIcon = LineAwesomeIcon;
-type FieldsTypes = "string" | "password" | "date" | "datetime" | "time" | "integer" | "number" | "float" | "color" | "email" | "month" | "week" | "range" | "boolean" | "binary" | "text" | "longtext" | "mediumtext" | "ckeditor" | "wysiwyg" | "texteditor" | "word" | "jsoneditor" | "json" | "array" | "object" | "ace" | "html" | "xml" | "aceeditor" | "image" | "images" | "file" | "files" | "menu" | "navigation" | "schedule" | "worktime" | "association" | "association-many" | "select" | "select-many" | "table" | "geojson" | "mediamanager" | 
+type FieldsTypes = "string" | "password" | "date" | "datetime" | "time" | "integer" | "number" | "float" | "color" | "email" | "month" | "week" | "range" | "boolean" | "binary" | "text" | "longtext" | "mediumtext" | "ckeditor" | "wysiwyg" | "texteditor" | "word" | 'tui' | 'tuieditor' | 'toast-ui' | "jsoneditor" | "json" | "array" | "object" | "ace" | "html" | "xml" | "aceeditor" | "image" | "images" | "file" | "files" | "menu" | "navigation" | "schedule" | "worktime" | "association" | "association-many" | "select" | "select-many" | "table" | "geojson" | "mediamanager" | 
 /**
  * it will be needed only for polygon data
  */
@@ -182,6 +184,7 @@ export interface AdminpanelConfig {
     mediamanager?: MediaManagerConfig;
 }
 export interface ModelConfig {
+    adapter?: "waterline" | undefined;
     title: string;
     /**
      * Model name
@@ -252,14 +255,14 @@ export interface ModelConfig {
     userAccessRelation?: string;
     userAccessRelationCallback?: (userWithGroups: UserWithGroups, record: any) => boolean;
 }
-type UserWithGroups = UserAP & {
-    groups: GroupAP[];
+type UserWithGroups = UserAPRecord & {
+    groups: GroupAPRecord[];
 };
 export interface FieldsForms {
     [key: string]: FormFieldConfig;
 }
-export type ModelFieldConfig = BaseFieldConfig & {
-    groupsAccessRight: string[];
+export type ModelFieldConfig = (BaseFieldConfig | TuiEditorFieldConfig) & {
+    groupsAccessRights: string[];
 };
 export interface FieldsModels {
     [key: string]: boolean | string | ModelFieldConfig;
@@ -277,7 +280,7 @@ export interface BaseFieldConfig {
     /**
      * Options for widgets like 'Navigation', 'Schedule' and 'FileUploader'
      * */
-    options?: NavigationOptionsField | ScheduleOptionsField | FileUploaderOptionsField | MediaManagerOptionsField;
+    options?: NavigationOptionsField | ScheduleOptionsField | FileUploaderOptionsField | MediaManagerOptionsField | TuiEditorOptions;
     /**
      * Function that makes data modification on list view
      * */
@@ -296,6 +299,10 @@ export interface BaseFieldConfig {
     isIn?: object;
     /** Show as disabled element HTML */
     disabled?: boolean;
+}
+export interface TuiEditorFieldConfig extends BaseFieldConfig {
+    type: 'tui' | 'tuieditor' | 'toast-ui';
+    options: TuiEditorOptions;
 }
 /**
  * @deprecated

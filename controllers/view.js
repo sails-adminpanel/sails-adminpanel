@@ -27,7 +27,7 @@ async function view(req, res) {
     let fields = fieldsHelper_1.FieldsHelper.getFields(req, entity, 'view');
     let record;
     try {
-        record = await entity.model.findOne(req.param('id')).populateAll();
+        record = await entity.model.findOne(req.param('id'));
     }
     catch (e) {
         sails.log.error('Admin edit error: ');

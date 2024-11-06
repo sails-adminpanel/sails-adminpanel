@@ -1,8 +1,8 @@
-import { Attributes, ModelTypeDetection, Model } from "sails-typescript";
+import { ModelTypeDetection, Model } from "sails-typescript";
 import { generate }  from 'password-hash';
 import { WidgetConfig } from "../lib/widgets/widgetHandler";
-let a: Attributes;
-const attributes = a = {
+
+const attributes= {
   id: {
     type: 'number',
     autoIncrement: true,
@@ -53,18 +53,17 @@ const attributes = a = {
 } as const;
 
 type ModelOptions = ModelTypeDetection<typeof attributes>;
-interface UserAP extends Partial<ModelOptions> {}
-export default UserAP;
+export interface UserAPRecord extends Partial<ModelOptions> {}
 
 // Методы модели
 const methods = {
-  beforeCreate(values: UserAP, cb: (err?: Error | string) => void) {
+  beforeCreate(values: UserAPRecord, cb: (err?: Error | string) => void) {
     values.passwordHashed = generate(values.login + values.password);
     values.password = 'masked';
     cb();
   },
 
-  beforeUpdate(values: UserAP, cb: (err?: Error | string) => void) {
+  beforeUpdate(values: UserAPRecord, cb: (err?: Error | string) => void) {
     if (values.password) {
       values.passwordHashed = generate(values.login + values.password);
       values.password = 'masked';
@@ -87,7 +86,7 @@ module.exports = model;
 declare global {
   const UserAP: Model<typeof model>;
   interface Models {
-    UserAP: UserAP;
+    UserAP: UserAPRecord;
   }
   interface AppCustomJsonTypes {
     widgets: WidgetConfig[]

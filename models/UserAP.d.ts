@@ -50,12 +50,11 @@ declare const attributes: {
     };
 };
 type ModelOptions = ModelTypeDetection<typeof attributes>;
-interface UserAP extends Partial<ModelOptions> {
+export interface UserAPRecord extends Partial<ModelOptions> {
 }
-export default UserAP;
 declare const model: {
-    beforeCreate(values: UserAP, cb: (err?: Error | string) => void): void;
-    beforeUpdate(values: UserAP, cb: (err?: Error | string) => void): void;
+    beforeCreate(values: UserAPRecord, cb: (err?: Error | string) => void): void;
+    beforeUpdate(values: UserAPRecord, cb: (err?: Error | string) => void): void;
     primaryKey: string;
     attributes: {
         readonly id: {
@@ -110,9 +109,10 @@ declare const model: {
 declare global {
     const UserAP: Model<typeof model>;
     interface Models {
-        UserAP: UserAP;
+        UserAP: UserAPRecord;
     }
     interface AppCustomJsonTypes {
         widgets: WidgetConfig[];
     }
 }
+export {};

@@ -1,7 +1,7 @@
-import {Entity} from "../interfaces/types";
+import {Entity, EntityType} from "../interfaces/types";
 import {ActionType, AdminpanelConfig, CreateUpdateConfig, HrefConfig, ModelConfig} from "../interfaces/adminpanelConfig";
-import { Attributes, ModelTypeDetection, Model } from "sails-typescript";
-import StrippedORMModel, { SailsModelAnyInstance } from "../interfaces/StrippedORMModel";
+import { AbstractModel } from "./v4/model/AbstractModel";
+import { ModelHandler } from "./v4/model/ModelHandler";
 
 /**
  * @deprecated need refactor actions
@@ -96,23 +96,19 @@ export class AdminUtil {
 
     /**
      * Get model from system
-     *
+     * @deprecated use ModelHandler directly
      * @param {string} name
      * @returns {?Model}
      */
-    public static getModel<T extends keyof Models>(name: T): Model<Models[T]> & {attributes: SailsModelAnyInstance} | null {
+    public static getModel(name: string): AbstractModel<any> {
         //Getting model
         // console.log('admin > model > ', sails.models);
-        let Model = sails.models[name.toLowerCase()];
-        if (!Model) {
-            if (!sails) {
-                sails.log.error('No model found in sails.');
-            } else {
-                sails.log.error('No model found in sails.');
-            }
+        let model = ModelHandler.model.get(name.toLowerCase());
+        if (!model) {
+            sails.log.error(`No model found [${name}] in sails.`);
             return null;
         }
-        return Model;
+        return model;
     }
 
     /**
@@ -121,16 +117,20 @@ export class AdminUtil {
      * @param {Request} req
      * @returns {?string}
      */
-    public static findEntityType(req: ReqType): string {
-        if (!req.param('entityType')) {
-            let entityType = req.originalUrl.split('/')[2];
-            if (!["form", "model", "wizard"].includes(entityType)) {
-                return null;
+    public static findEntityType(req: ReqType): EntityType {
+        const entityType = req.param('entityType') as EntityType | undefined;
+
+        if (!entityType) {
+            const extractedEntityType = req.originalUrl.split('/')[2] as EntityType | undefined;
+
+            if (["form", "model", "wizard"].includes(extractedEntityType)) {
+                return extractedEntityType;
             } else {
-                return entityType
+                return null;
             }
         }
-        return req.param('entityType');
+
+        return entityType;
     };
 
     /**
@@ -212,18 +212,18 @@ export class AdminUtil {
 
     /**
      * Trying to find model by request
-     *
+     * @deprecated use ModelHandler directly
      * @see AdminUtil._isValidModelConfig
      * @param {Request} req
      * @param {Object} modelConfig
      * @returns {?Model}
      */
 
-    public static findModel<T extends keyof Models>(req: ReqType, modelConfig: ModelConfig): Model<Models[T]> & { attributes: SailsModelAnyInstance } | null {
+    public static findModel<T extends keyof Models>(req: ReqType, modelConfig: ModelConfig): AbstractModel<any> {
         if (!this._isValidModelConfig(modelConfig)) {
             return null;
         }
-    
+
         const modelName = modelConfig.model as T;
         return this.getModel(modelName);
     }
@@ -250,26 +250,26 @@ export class AdminUtil {
         // Retrieve entity name and type based on the request
         const entityName = this.findEntityName(req);
         const entityType = this.findEntityType(req);
-        
+
         // Construct the entity URI
         const entityUri = `${this.config().routePrefix}/${entityType}/${entityName}`;
-        
+
         // Initialize the Entity object
         const entity: Entity = {
             name: entityName,
             uri: entityUri,
             type: entityType
         };
-        
+
         // If the entity type is "model", add additional properties
         if (entityType === "model") {
             // Find and add the model configuration to the entity
             entity.config = this.findModelConfig(req, entityName);
-            
+
             // Find and add the model itself to the entity
             entity.model = this.findModel(req, entity.config);
         }
-        
+
         // Return the completed entity object
         return entity;
     }

@@ -4,7 +4,6 @@ import * as fs from "node:fs";
 
 const ejs = require('ejs')
 import {v4 as uuid} from "uuid";
-import {JSONSchema4} from "json-schema";
 import {ViewsHelper} from "../../helper/viewsHelper";
 
 export interface NavItem extends Item {

@@ -1,8 +1,7 @@
 import { AdminUtil } from "../lib/adminUtil";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
-import { stdin } from "node:process";
-import { SailsModelAnyInstance } from "../interfaces/StrippedORMModel";
 import {deleteRelationsMediaManager} from "../lib/media-manager/helpers/MediaManagerHelper";
+import { ModelAnyField, ModelAnyInstance } from "../lib/v4/model/AbstractModel";
 
 export default async function remove(req: ReqType, res: ResType) {
     //Checking id of the record
@@ -32,9 +31,9 @@ export default async function remove(req: ReqType, res: ResType) {
     /**
      * Searching for record by model
      */
-    let record: SailsModelAnyInstance;
+    let record: ModelAnyInstance;
     try {
-        record = await entity.model.findOne(req.param('id')) as SailsModelAnyInstance;
+        record = await entity.model.findOne(req.param('id')) as ModelAnyInstance;
     } catch (e) {
         if (req.wantsJSON) {
             return res.json({
@@ -60,7 +59,11 @@ export default async function remove(req: ReqType, res: ResType) {
     let destroyedRecord;
     try {
         const fieldId = entity.config.identifierField ?? sails.config.adminpanel.identifierField;
-		destroyedRecord = await entity.model.destroy(record[fieldId] as number | string).fetch()
+		const q: Record<string, ModelAnyField> = {
+
+        }
+        q[fieldId] = record[fieldId]
+        destroyedRecord = await entity.model.destroy(q)
 
 		// delete relations media manager
 		await deleteRelationsMediaManager(entity.name, destroyedRecord)
