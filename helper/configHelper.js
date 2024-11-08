@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ConfigHelper = void 0;
 const Router_1 = require("../system/Router");
 const defaults_1 = require("../system/defaults");
+const adminUtil_1 = require("../lib/adminUtil");
 class ConfigHelper {
     static addModelConfig(modelConfig) {
         if (sails !== undefined && sails.config?.adminpanel !== undefined) {
@@ -77,5 +78,67 @@ class ConfigHelper {
     static isCsrfEnabled() {
         return (sails.config.security.csrf !== false);
     }
+    /**
+     * Normalizes field configuration from various formats.
+     *
+     * @param config Field configuration in boolean, string, or object notation
+     * @param key Field key name
+     * @param modelField Field model configuration
+     * @returns Normalized field configuration or `false` if the field should be hidden
+     */
+    static normalizeFieldConfig(config, key, modelField) {
+        if (typeof config === "undefined" || typeof key === "undefined") {
+            throw new Error('No `config` or `key` passed!');
+        }
+        // Boolean notation: `true` means field is visible; `false` means field is hidden.
+        if (typeof config === "boolean") {
+            return config ? { title: key } : false;
+        }
+        // String notation: Interpreted as the field title.
+        if (typeof config === "string") {
+            return { title: config };
+        }
+        // Object notation: Allows full customization of the field.
+        if (typeof config === "object" && config !== null) {
+            config.title = config.title || key;
+            // For association types, determine display field by checking model attributes.
+            if (["association", "association-many"].includes(config.type)) {
+                let associatedModelAttributes = {};
+                let displayField;
+                try {
+                    const associatedModel = config.type === "association"
+                        ? modelField.model.toLowerCase()
+                        : modelField.collection.toLowerCase();
+                    associatedModelAttributes =
+                        adminUtil_1.AdminUtil.getModel(associatedModel).attributes;
+                }
+                catch (e) {
+                    console.error(`Error loading model for field ${key}:`, e);
+                }
+                displayField = getDisplayField(associatedModelAttributes);
+                config = {
+                    ...config,
+                    identifierField: "id",
+                    displayField: displayField,
+                };
+            }
+            return config;
+        }
+        return false;
+    }
 }
 exports.ConfigHelper = ConfigHelper;
+/**
+ * function to determine the display field for associations.
+ * Checks if 'name' or 'label' exists in model attributes, defaults to 'id'.
+ *
+ * @param attributes Model attributes
+ * @returns Field name to use as display field
+ */
+function getDisplayField(attributes) {
+    return attributes.hasOwnProperty("name")
+        ? "name"
+        : attributes.hasOwnProperty("label")
+            ? "label"
+            : "id";
+}

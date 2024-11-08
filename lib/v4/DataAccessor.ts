@@ -6,11 +6,13 @@ import {Entity} from "../../interfaces/types";
 import {ActionType, BaseFieldConfig} from "../../interfaces/adminpanelConfig";
 import {FieldModel, Fields} from "../../helper/fieldsHelper";
 import {AdminUtil} from "../adminUtil";
+import {ConfigHelper} from "../../helper/configHelper";
 
 export class DataAccessor {
   user: UserAPRecord;
   entity: Entity;
   type: ActionType
+  fields: Fields = null;
 
   constructor(user: UserAPRecord, entity: Entity, type: ActionType) {
     this.user = user;
@@ -62,24 +64,30 @@ export class DataAccessor {
       let fldConfig: any = { key: key, title: key };
       let ignoreField = false; // if set to true, field will be removed from editor/list
 
-      // Check global entity fields configuration
+      // Check global config from file
       if (fieldsConfig[key] !== undefined) {
         // if config is set to false ignore this field
         if (fieldsConfig[key] === false) {
           ignoreField = true;
         } else {
-          fldConfig = { ...fldConfig, ...DataAccessor._normalizeFieldConfig(fieldsConfig[key], key, modelField) };
+          fldConfig = { ...fldConfig, ...ConfigHelper.normalizeFieldConfig(fieldsConfig[key], key, modelField) };
         }
       }
 
-      // Check access rights to a specific field
-      // if (actionConfig.fields[key] !== undefined) {
-      //   if (actionConfig.fields[key] === false) {
-      //     ignoreField = true;
-      //   } else {
-      //     fldConfig = { ...fldConfig, ...FieldsHelper.normalizeFieldConfig(actionConfig.fields[key], key, modelField) };
-      //   }
-      // }
+      // TODO Check access rights to a specific field
+      // TODO если у поля есть groupsAccessRight, то начинаем проверку. Если нету, значит разрешено для всех кроме дефолтного юзера (относится к defaultUserGroup )
+      // TODO в поле groupsAccessRight будут лежать "name" от GroupAP. Это будут имена групп, которым разрешен доступ.
+      //  Мы сравниваем что groupsAccessRight содержит хоть один элемент из user.groups (используем lowercase)
+      // TODO defaultUserGroup нужно создать если ее не будет
+
+      // Checking inaction entity fields configuration. Should overwrite global one
+      if (actionConfig.fields[key] !== undefined) {
+        if (actionConfig.fields[key] === false) {
+          ignoreField = true;
+        } else {
+          fldConfig = { ...fldConfig, ...ConfigHelper.normalizeFieldConfig(actionConfig.fields[key], key, modelField) };
+        }
+      }
 
       if (ignoreField) {
         return;
@@ -93,94 +101,30 @@ export class DataAccessor {
       fldConfig.type = fldConfig.type.toLowerCase();
 
       // Normalizing final config
-      fldConfig = DataAccessor._normalizeFieldConfig(fldConfig, key, modelField);
+      fldConfig = ConfigHelper.normalizeFieldConfig(fldConfig, key, modelField);
 
       // Add new field to result set
       result[key] = { config: fldConfig, model: modelField };
     });
 
+    this.fields = result;
     return result;
   }
 
   // TODO associations should load taking into account another DataModel instance for keeping populated data safety
   // TODO remove poulateALL from Waterline adapetr
-  public async loadAssociations(fields: Fields): Promise<Fields>{
+  public async getPopulatedFields(): Promise<Fields>{
+    if (this.fields) {
+      // TODO сразу делаем loadAssociations
+    } else {
+      // TODO вызываем getFields, а после делаем loadAssociations
+    }
+
+    // TODO 1. достаем модели, к которым есть связи у текущих филдов
+    // TODO 2. проверяем есль ли доступ к этим моделям через access rights helper
+    // TODO 3. если да, то прогоняем им getFields чтобы узнать к каким именно полям уже этих моделей есть доступ
+    // TODO 4. все собираем в один большой обьект и возвращаем
+
     return Promise.resolve(null)
-  }
-
-  /**
-   * Normalizes field configuration from various formats.
-   *
-   * @param config Field configuration in boolean, string, or object notation
-   * @param key Field key name
-   * @param modelField Field model configuration
-   * @returns Normalized field configuration or `false` if the field should be hidden
-   */
-  private static _normalizeFieldConfig(
-    config: string | boolean | BaseFieldConfig,
-    key: string,
-    modelField: FieldModel
-  ): false | BaseFieldConfig {
-    if (typeof config === "undefined" || typeof key === "undefined") {
-      throw new Error('No `config` or `key` passed!');
-    }
-
-    // Boolean notation: `true` means field is visible; `false` means field is hidden.
-    if (typeof config === "boolean") {
-      return config ? { title: key } : false;
-    }
-
-    // String notation: Interpreted as the field title.
-    if (typeof config === "string") {
-      return { title: config };
-    }
-
-    // Object notation: Allows full customization of the field.
-    if (typeof config === "object" && config !== null) {
-      config.title = config.title || key;
-
-      // For association types, determine display field by checking model attributes.
-      if (["association", "association-many"].includes(config.type)) {
-        let associatedModelAttributes = {};
-        let displayField: string;
-
-        try {
-          const associatedModel =
-            config.type === "association"
-              ? modelField.model.toLowerCase()
-              : modelField.collection.toLowerCase();
-          associatedModelAttributes =
-            AdminUtil.getModel(associatedModel as keyof Models).attributes;
-        } catch (e) {
-          console.error(`Error loading model for field ${key}:`, e);
-        }
-
-        displayField = DataAccessor._getDisplayField(associatedModelAttributes);
-        config = {
-          ...config,
-          identifierField: "id",
-          displayField: displayField,
-        };
-      }
-
-      return config;
-    }
-
-    return false;
-  }
-
-  /**
-   * Helper function to determine the display field for associations.
-   * Checks if 'name' or 'label' exists in model attributes, defaults to 'id'.
-   *
-   * @param attributes Model attributes
-   * @returns Field name to use as display field
-   */
-  private static _getDisplayField(attributes: any): string {
-    return attributes.hasOwnProperty("name")
-      ? "name"
-      : attributes.hasOwnProperty("label")
-        ? "label"
-        : "id";
   }
 }

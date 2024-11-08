@@ -1,4 +1,5 @@
-import { AdminpanelConfig } from "../interfaces/adminpanelConfig";
+import { AdminpanelConfig, BaseFieldConfig } from "../interfaces/adminpanelConfig";
+import { FieldModel } from "./fieldsHelper";
 export declare class ConfigHelper {
     static addModelConfig(modelConfig: AdminpanelConfig["models"]): void;
     static getConfig(): AdminpanelConfig;
@@ -33,4 +34,13 @@ export declare class ConfigHelper {
      * @returns {boolean}
      */
     static isCsrfEnabled(): boolean;
+    /**
+     * Normalizes field configuration from various formats.
+     *
+     * @param config Field configuration in boolean, string, or object notation
+     * @param key Field key name
+     * @param modelField Field model configuration
+     * @returns Normalized field configuration or `false` if the field should be hidden
+     */
+    static normalizeFieldConfig(config: string | boolean | BaseFieldConfig, key: string, modelField: FieldModel): false | BaseFieldConfig;
 }
