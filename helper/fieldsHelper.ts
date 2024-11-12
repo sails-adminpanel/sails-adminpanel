@@ -12,8 +12,16 @@ export type FieldModel = {
 }
 
 export type Field = {
-    config: BaseFieldConfig & {records: object[], file?: string};
-    model: FieldModel;
+    config: BaseFieldConfig & {
+        /** @deprecated record should not be in config anymore */
+        records?: object[]
+        file?: string
+    }
+    /** for populated fields' configs */
+    populated: {
+        [key: string]: Field
+    } | undefined
+    model: FieldModel
 }
 
 export type Fields = {

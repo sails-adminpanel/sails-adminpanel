@@ -1,14 +1,14 @@
+import {DataAccessor} from "../DataAccessor";
+
 export interface Attribute {
   type: string;
   required?: boolean;
   unique?: boolean;
   defaultsTo?: any;
   columnName?: string;
-  // Связи (ассоциации)
-  model?: string; // Связь с моделью (один к одному или многие к одному)
-  collection?: string; // Коллекция для связи "многие ко многим"
-  via?: string; // Поле, через которое осуществляется связь
-  // другие атрибуты, которые могут быть определены в модели
+  model?: string;
+  collection?: string;
+  via?: string;
 }
 
 export interface ModelAttributes {
@@ -27,7 +27,7 @@ export abstract class AbstractModel<T> {
   public readonly attributes: ModelAttributes;
   public readonly primaryKey: string;
   public readonly identity: string;
-  
+
   constructor(modelname: string, attributes: ModelAttributes, primaryKey: string, identity: string) {
     this.modelname = modelname;
     this.attributes = attributes;
@@ -35,13 +35,56 @@ export abstract class AbstractModel<T> {
     this.identity = identity;
   }
 
-  abstract create(data: T): Promise<T>;
-  abstract findOne(id: string | number): Promise<T | null>;
-  abstract find(criteria?: Partial<T>): Promise<T[]>;
-  abstract updateOne(id: string | number, data: Partial<T>): Promise<T | null>;
-  abstract update(criteria: Partial<T>, data: Partial<T>): Promise<T[]>;
-  abstract destroyOne(id: string | number): Promise<T | null>;
-  abstract destroy(criteria: Partial<T>): Promise<T[]>;
-  abstract count(criteria?: Partial<T>): Promise<number>;
+  protected abstract create(data: Partial<T>): Promise<T>;
+  protected abstract findOne(id: string | number): Promise<T | null>;
+  protected abstract find(criteria: Partial<T>): Promise<T[]>;
+  protected abstract updateOne(id: string | number, data: Partial<T>): Promise<T | null>;
+  protected abstract update(criteria: Partial<T>, data: Partial<T>): Promise<T[]>;
+  protected abstract destroyOne(id: string | number): Promise<T | null>;
+  protected abstract destroy(criteria: Partial<T>): Promise<T[]>;
+  protected abstract count(criteria: Partial<T> | undefined): Promise<number>;
+
+  public async _create(data: T, dataAccessor: DataAccessor): Promise<Partial<T>> {
+    let _data = dataAccessor.process(data);
+    let record = await this.create(_data);
+    return dataAccessor.process(record);
+  }
+
+  public async _findOne(id: string | number, dataAccessor: DataAccessor): Promise<Partial<T> | null> {
+    let record = await this.findOne(id);
+    return record ? dataAccessor.process(record) : null;
+  }
+
+  public async _find(criteria: Partial<T>, dataAccessor: DataAccessor): Promise<Partial<T>[]> {
+    criteria = dataAccessor.sanitizeUserRelationAccess(criteria);
+    let records = await this.find(criteria);
+    return records.map(record => dataAccessor.process(record));
+  }
+
+  public async _updateOne(id: string | number, data: Partial<T>, dataAccessor: DataAccessor): Promise<Partial<T> | null> {
+    let _data = dataAccessor.process(data);
+    let record = await this.updateOne(id, _data);
+    return record ? dataAccessor.process(record) : null;
+  }
+
+  public async _update(criteria: Partial<T>, data: Partial<T>, dataAccessor: DataAccessor): Promise<Partial<T>[]> {
+    let _data = dataAccessor.process(data);
+    let records = await this.update(criteria, _data);
+    return records.map(record => dataAccessor.process(record));
+  }
+
+  public async _destroyOne(id: string | number, dataAccessor: DataAccessor): Promise<Partial<T> | null> {
+    let record = await this.destroyOne(id);
+    return record ? dataAccessor.process(record) : null;
+  }
+
+  public async _destroy(criteria: Partial<T>, dataAccessor: DataAccessor): Promise<Partial<T>[]> {
+    let records = await this.destroy(criteria);
+    return records.map(record => dataAccessor.process(record));
+  }
+
+  public async _count(criteria: Partial<T> | undefined): Promise<number> {
+    return this.count(criteria);
+  }
 
 }

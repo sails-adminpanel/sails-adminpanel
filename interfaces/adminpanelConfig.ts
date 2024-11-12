@@ -318,6 +318,8 @@ export interface ModelConfig {
 	 * */
 	identifierField?: string
 	// TODO (look in task.md)
+	/** In this field we can set model field, for which we want to check user access right.
+	 *  May be association or association-many to UserAP or GroupAP */
 	userAccessRelation?: string
 	userAccessRelationCallback?: (userWithGroups: UserWithGroups, record: any) => boolean
 }

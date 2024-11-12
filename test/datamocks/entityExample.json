@@ -1,0 +1,75 @@
+{
+  "name": "test",
+  "uri": "/admin/model/test",
+  "type": "model",
+  "config": {
+    "list": {
+      "fields": {
+        "title": { "title": "Title", "tooltip": "Main title of the item" },
+        "number": { "title": "Number", "type": "number" },
+        "color": { "title": "Color", "type": "color" }
+      }
+    },
+    "add": {
+      "fields": {
+        "title": false,
+        "guardedField": {
+          "title": "Restricted Field",
+          "groupsAccessRight": ["admin", "editor"],
+          "type": "string"
+        }
+      }
+    },
+    "edit": {
+      "fields": {
+        "title": { "title": "Title", "type": "string", "required": true },
+        "color": { "title": "Color", "type": "color" },
+        "guardedField": {
+          "title": "Restricted Field",
+          "groupsAccessRight": ["admin", "manager"]
+        }
+      }
+    },
+    "remove": true,
+    "view": true,
+    "title": "Test Model Example",
+    "model": "test",
+    "fields": {
+      "title": { "title": "Title", "tooltip": "Item Description", "required": true },
+      "number": { "title": "Number", "type": "number" },
+      "guardedField": {
+        "title": "Guarded Field",
+        "groupsAccessRight": ["admin", "editor"],
+        "type": "string"
+      }
+    },
+    "icon": "flask"
+  },
+  "model": {
+    "modelname": "Test",
+    "attributes": {
+      "title": {
+        "type": "string",
+        "required": true,
+        "autoMigrations": { "unique": false, "autoIncrement": false, "columnType": "_string" }
+      },
+      "number": {
+        "type": "number",
+        "autoMigrations": { "unique": false, "autoIncrement": false, "columnType": "_number" },
+        "required": false
+      },
+      "color": {
+        "type": "string",
+        "autoMigrations": { "unique": false, "autoIncrement": false, "columnType": "_string" },
+        "required": false
+      },
+      "guardedField": {
+        "type": "string",
+        "autoMigrations": { "unique": false, "autoIncrement": false, "columnType": "_string" },
+        "required": false
+      }
+    },
+    "primaryKey": "id",
+    "identity": "test"
+  }
+}

@@ -10,8 +10,8 @@
     let selectedOptions<%=key%> = [];
     let label<%=key%>;
 
-    <% if (field.config.records && field.config.records.length) { %>
-        <% for (let opt of field.config.records) { %>
+    <% if (records && records.length) { %>
+        <% for (let opt of records) { %>
             <% if (adminpanel.viewHelper.isOptionSelected(opt[field.config.identifierField], value)) { %>
                 selectedOptions<%=key%>.push("<%= opt[field.config.identifierField] %>");
             <% } %>

@@ -29,12 +29,11 @@ async function default_1() {
         Router_1.default.bind();
     }
     (0, bindConfigModels_1.default)(sails.config.adminpanel);
-    (0, bindForms_1.default)();
-    (0, bindDashboardWidgets_1.default)();
+    await (0, bindForms_1.default)();
+    await (0, bindDashboardWidgets_1.default)();
     (0, bindNavigation_1.default)();
     (0, bindMediaManager_1.default)();
-    //bind access rights
-    (0, bindAccessRights_1.default)();
+    await (0, bindAccessRights_1.default)();
     //binding authorization
     await (0, bindAuthorization_1.default)();
     if (sails.hooks.i18n && sails.hooks.i18n.appendLocale) {
