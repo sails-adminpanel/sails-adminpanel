@@ -14,13 +14,13 @@
 <%# select %>
 <% var selectTypes = ['select'] %>
 <% if (selectTypes.includes(type)) { %>
-    <%- include("fields/select", {type: type, isIn: isIn, records: [value]}) %>
+    <%- include("fields/select") %>
 <% } %>
 
 <%# select-many %>
 <% var selectManyTypes = ['select-many'] %>
 <% if (selectManyTypes.includes(type)) { %>
-    <%- include("fields/selectMany", {type: type, isIn: isIn, records: value}) %>
+    <%- include("fields/selectMany") %>
 <% } %>
 
 <%# boolean %>

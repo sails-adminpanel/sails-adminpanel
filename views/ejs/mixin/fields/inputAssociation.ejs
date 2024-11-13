@@ -14,8 +14,8 @@
         options<%=key%>.push({label: "--- Nothing selected ---", value: "null"})
     <% } %>
 
-    <% if (records && records.length) { %>
-        <% for (let opt of records) { %>
+    <% if (value && value.length) { %>
+        <% for (let opt of value) { %>
             <% if (opt[field.config.identifierField] === value) { %>
                 selectedOption<%=key%> = "<%= opt[field.config.identifierField] %>";
             <% } %>

@@ -3,6 +3,7 @@ import {Model} from "sails-typescript"
 // TODO: move into sails-typescript
 import { CriteriaQuery, WhereCriteriaQuery } from "sails-typescript/criteria"
 import { AbstractModel } from '../v4/model/AbstractModel';
+import {DataAccessor} from "../v4/DataAccessor";
 
 type ORMModel = Model<Models[keyof Models]> & {primaryKey: string};
 interface Request {
@@ -189,13 +190,13 @@ export class NodeTable {
     return { where: filter, sort: order, skip: limit[0], limit: limit[1] };
   }
 
-  async output(callback: (err: Error, output: NodeOutput)=>void): Promise<void> {
+  async output(callback: (err: Error, output: NodeOutput)=>void, dataAccessor: DataAccessor): Promise<void> {
     try {
       const queryOptions = await this.buildQuery();
       const totalRecords = await this.model._count({});
       const filteredRecords = await this.model._count(queryOptions.where);
       //@ts-ignore todo rewrite for unuse populate chain instead populateAll
-      const data = await this.model.find(queryOptions).populateAll();
+      const data = await this.model._find(queryOptions, dataAccessor);
       const output = {
         draw: this.request.draw !== "" ? this.request.draw : 0,
         recordsTotal: totalRecords,
