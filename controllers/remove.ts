@@ -2,6 +2,7 @@ import { AdminUtil } from "../lib/adminUtil";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import {deleteRelationsMediaManager} from "../lib/media-manager/helpers/MediaManagerHelper";
 import { ModelAnyField, ModelAnyInstance } from "../lib/v4/model/AbstractModel";
+import {DataAccessor} from "../lib/v4/DataAccessor";
 
 export default async function remove(req: ReqType, res: ResType) {
     //Checking id of the record
@@ -32,8 +33,10 @@ export default async function remove(req: ReqType, res: ResType) {
      * Searching for record by model
      */
     let record: ModelAnyInstance;
+    let dataAccessor;
     try {
-        record = await entity.model.findOne(req.param('id')) as ModelAnyInstance;
+        dataAccessor = new DataAccessor(req.session.UserAP, entity, "remove");
+        record = await entity.model._findOne(req.param('id'), dataAccessor) as ModelAnyInstance;
     } catch (e) {
         if (req.wantsJSON) {
             return res.json({
@@ -63,7 +66,7 @@ export default async function remove(req: ReqType, res: ResType) {
 
         }
         q[fieldId] = record[fieldId]
-        destroyedRecord = await entity.model.destroy(q)
+        destroyedRecord = await entity.model._destroy(q, dataAccessor)
 
 		// delete relations media manager
 		await deleteRelationsMediaManager(entity.name, destroyedRecord)

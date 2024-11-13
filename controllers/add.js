@@ -3,9 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = add;
 const adminUtil_1 = require("../lib/adminUtil");
 const requestProcessor_1 = require("../lib/requestProcessor");
-const fieldsHelper_1 = require("../helper/fieldsHelper");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 const MediaManagerHelper_1 = require("../lib/media-manager/helpers/MediaManagerHelper");
+const DataAccessor_1 = require("../lib/v4/DataAccessor");
 async function add(req, res) {
     let entity = adminUtil_1.AdminUtil.findEntityObject(req);
     if (!entity.model) {
@@ -22,9 +22,9 @@ async function add(req, res) {
             return res.sendStatus(403);
         }
     }
-    let fields = fieldsHelper_1.FieldsHelper.getFields(req, entity, 'add');
+    let dataAccessor = new DataAccessor_1.DataAccessor(req.session.UserAP, entity, "add");
+    let fields = dataAccessor.getFieldsConfig();
     let data = {}; //list of field values
-    fields = await fieldsHelper_1.FieldsHelper.loadAssociations(fields);
     if (req.method.toUpperCase() === 'POST') {
         let reqData = requestProcessor_1.RequestProcessor.processRequest(req, fields);
         /**
@@ -82,7 +82,7 @@ async function add(req, res) {
             reqData = entityAdd.entityModifier(reqData);
         }
         try {
-            let record = await entity.model.create(reqData);
+            let record = await entity.model._create(reqData, dataAccessor);
             // save associations media to json
             await (0, MediaManagerHelper_1.saveRelationsMediaManager)(fields, rawReqData, entity.model.identity, record.id);
             sails.log.debug(`A new record was created: `, record);

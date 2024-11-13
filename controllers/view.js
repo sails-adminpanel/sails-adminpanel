@@ -4,6 +4,7 @@ exports.default = view;
 const adminUtil_1 = require("../lib/adminUtil");
 const fieldsHelper_1 = require("../helper/fieldsHelper");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
+const DataAccessor_1 = require("../lib/v4/DataAccessor");
 async function view(req, res) {
     //Check id
     if (!req.param('id')) {
@@ -26,8 +27,10 @@ async function view(req, res) {
     }
     let fields = fieldsHelper_1.FieldsHelper.getFields(req, entity, 'view');
     let record;
+    let dataAccessor;
     try {
-        record = await entity.model.findOne(req.param('id'));
+        dataAccessor = new DataAccessor_1.DataAccessor(req.session.UserAP, entity, "view");
+        record = await entity.model._findOne(req.param('id'), dataAccessor);
     }
     catch (e) {
         sails.log.error('Admin edit error: ');

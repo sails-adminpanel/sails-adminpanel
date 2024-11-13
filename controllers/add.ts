@@ -4,6 +4,7 @@ import {FieldsHelper} from "../helper/fieldsHelper";
 import {CreateUpdateConfig} from "../interfaces/adminpanelConfig";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import {saveRelationsMediaManager} from "../lib/media-manager/helpers/MediaManagerHelper";
+import {DataAccessor} from "../lib/v4/DataAccessor";
 
 export default async function add(req: ReqType, res: ResType) {
 	let entity = AdminUtil.findEntityObject(req);
@@ -24,14 +25,13 @@ export default async function add(req: ReqType, res: ResType) {
 		}
 	}
 
-	let fields = FieldsHelper.getFields(req, entity, 'add');
+	let dataAccessor = new DataAccessor(req.session.UserAP, entity, "add");
+	let fields = dataAccessor.getFieldsConfig();
 	let data = {}; //list of field values
-
-	fields = await FieldsHelper.loadAssociations(fields);
 
 	if (req.method.toUpperCase() === 'POST') {
 		let reqData: any = RequestProcessor.processRequest(req, fields);
-	
+
 		/**
 		 * Here means reqData adapt for model data, but rawReqData is processed for widget processing
 		 */
@@ -96,7 +96,7 @@ export default async function add(req: ReqType, res: ResType) {
 		}
 
 		try {
-			let record = await entity.model.create(reqData);
+			let record = await entity.model._create(reqData, dataAccessor);
 
 			// save associations media to json
 			await saveRelationsMediaManager(fields,  rawReqData, entity.model.identity, record.id)

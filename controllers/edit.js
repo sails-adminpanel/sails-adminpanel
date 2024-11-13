@@ -3,10 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = edit;
 const adminUtil_1 = require("../lib/adminUtil");
 const requestProcessor_1 = require("../lib/requestProcessor");
-const fieldsHelper_1 = require("../helper/fieldsHelper");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 const CatalogHandler_1 = require("../lib/catalog/CatalogHandler");
 const MediaManagerHelper_1 = require("../lib/media-manager/helpers/MediaManagerHelper");
+const DataAccessor_1 = require("../lib/v4/DataAccessor");
 async function edit(req, res) {
     //Check id
     if (!req.param('id')) {
@@ -28,18 +28,18 @@ async function edit(req, res) {
         }
     }
     let record;
+    let dataAccessor;
     try {
         const id = req.param('id');
-        record = await entity.model.findOne(id);
+        dataAccessor = new DataAccessor_1.DataAccessor(req.session.UserAP, entity, "edit");
+        record = await entity.model._findOne(id, dataAccessor);
     }
     catch (e) {
         sails.log.error('Admin edit error: ');
         sails.log.error(e);
         return res.serverError();
     }
-    let fields = fieldsHelper_1.FieldsHelper.getFields(req, entity, 'edit');
-    let reloadNeeded = false;
-    fields = await fieldsHelper_1.FieldsHelper.loadAssociations(fields);
+    let fields = dataAccessor.fields;
     // Save
     if (req.method.toUpperCase() === 'POST') {
         let reqData = requestProcessor_1.RequestProcessor.processRequest(req, fields);
@@ -106,7 +106,7 @@ async function edit(req, res) {
             reqData = entityEdit.entityModifier(reqData);
         }
         try {
-            let newRecord = await entity.model.update(params, reqData);
+            let newRecord = await entity.model._update(params, reqData, dataAccessor);
             await (0, MediaManagerHelper_1.saveRelationsMediaManager)(fields, rawReqData, entity.model.identity, newRecord[0].id);
             sails.log.debug(`Record was updated: `, newRecord);
             if (req.body.jsonPopupCatalog) {

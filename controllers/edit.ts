@@ -9,6 +9,7 @@ import {
 	saveRelationsMediaManager
 } from "../lib/media-manager/helpers/MediaManagerHelper";
 import { MediaManagerWidgetJSON } from "../lib/media-manager/AbstractMediaManager";
+import {DataAccessor} from "../lib/v4/DataAccessor";
 
 export default async function edit(req: ReqType, res: ResType) {
 	//Check id
@@ -34,19 +35,18 @@ export default async function edit(req: ReqType, res: ResType) {
 	}
 
 	let record;
+	let dataAccessor;
 	try {
 		const id = req.param('id') as string;
-		record = await entity.model.findOne(id);
+		dataAccessor = new DataAccessor(req.session.UserAP, entity, "edit");
+		record = await entity.model._findOne(id, dataAccessor);
 	} catch (e) {
 		sails.log.error('Admin edit error: ');
 		sails.log.error(e);
 		return res.serverError();
 	}
 
-	let fields = FieldsHelper.getFields(req, entity, 'edit');
-	let reloadNeeded = false;
-
-	fields = await FieldsHelper.loadAssociations(fields);
+	let fields = dataAccessor.fields;
 
 	// Save
 	if (req.method.toUpperCase() === 'POST') {
@@ -126,8 +126,8 @@ export default async function edit(req: ReqType, res: ResType) {
 			reqData = entityEdit.entityModifier(reqData);
 		}
 
-		try {	
-			let newRecord = await entity.model.update(params, reqData);
+		try {
+			let newRecord = await entity.model._update(params, reqData, dataAccessor);
 			await saveRelationsMediaManager(fields, rawReqData, entity.model.identity, newRecord[0].id)
 
 			sails.log.debug(`Record was updated: `, newRecord);

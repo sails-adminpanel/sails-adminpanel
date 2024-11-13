@@ -1,6 +1,7 @@
 import { AdminUtil } from "../lib/adminUtil";
 import { FieldsHelper } from "../helper/fieldsHelper";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
+import {DataAccessor} from "../lib/v4/DataAccessor";
 
 export default async function view(req: ReqType, res: ResType) {
     //Check id
@@ -28,8 +29,10 @@ export default async function view(req: ReqType, res: ResType) {
     let fields = FieldsHelper.getFields(req, entity, 'view');
 
     let record;
+    let dataAccessor;
     try {
-        record = await entity.model.findOne(req.param('id'));
+        dataAccessor = new DataAccessor(req.session.UserAP, entity, "view");
+        record = await entity.model._findOne(req.param('id'), dataAccessor);
     } catch (e) {
         sails.log.error('Admin edit error: ');
         sails.log.error(e);

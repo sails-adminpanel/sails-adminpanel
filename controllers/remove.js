@@ -4,6 +4,7 @@ exports.default = remove;
 const adminUtil_1 = require("../lib/adminUtil");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 const MediaManagerHelper_1 = require("../lib/media-manager/helpers/MediaManagerHelper");
+const DataAccessor_1 = require("../lib/v4/DataAccessor");
 async function remove(req, res) {
     //Checking id of the record
     if (!req.param('id')) {
@@ -30,8 +31,10 @@ async function remove(req, res) {
      * Searching for record by model
      */
     let record;
+    let dataAccessor;
     try {
-        record = await entity.model.findOne(req.param('id'));
+        dataAccessor = new DataAccessor_1.DataAccessor(req.session.UserAP, entity, "remove");
+        record = await entity.model._findOne(req.param('id'), dataAccessor);
     }
     catch (e) {
         if (req.wantsJSON) {
@@ -58,7 +61,7 @@ async function remove(req, res) {
         const fieldId = entity.config.identifierField ?? sails.config.adminpanel.identifierField;
         const q = {};
         q[fieldId] = record[fieldId];
-        destroyedRecord = await entity.model.destroy(q);
+        destroyedRecord = await entity.model._destroy(q, dataAccessor);
         // delete relations media manager
         await (0, MediaManagerHelper_1.deleteRelationsMediaManager)(entity.name, destroyedRecord);
     }

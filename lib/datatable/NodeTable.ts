@@ -192,8 +192,8 @@ export class NodeTable {
   async output(callback: (err: Error, output: NodeOutput)=>void): Promise<void> {
     try {
       const queryOptions = await this.buildQuery();
-      const totalRecords = await this.model.count();
-      const filteredRecords = await this.model.count(queryOptions.where);
+      const totalRecords = await this.model._count({});
+      const filteredRecords = await this.model._count(queryOptions.where);
       //@ts-ignore todo rewrite for unuse populate chain instead populateAll
       const data = await this.model.find(queryOptions).populateAll();
       const output = {
