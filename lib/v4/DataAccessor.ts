@@ -75,7 +75,6 @@ export class DataAccessor {
             ? actionConfig.fields[key]
             : fieldsConfig[key];
 
-      // Access control: check if field access is allowed based on groupsAccessRights
       if (combinedFieldConfig !== undefined) {
         if (combinedFieldConfig === false) {
           // if config is set to false ignore this field
@@ -155,16 +154,27 @@ export class DataAccessor {
     Object.entries(Model.attributes).forEach(([key, modelField]) => {
       const fieldConfig = mergedFieldsConfig[key];
 
-      if (!fieldConfig || typeof fieldConfig !== "object") return;
+      // If config is set to false skip this field
+      if (fieldConfig === false) return;
 
-      const hasAccess = this.checkFieldAccess(fieldConfig);
-      if (hasAccess) {
-        associatedFields[key] = {
-          config: ConfigHelper.normalizeFieldConfig(fieldConfig, key, modelField),
-          model: modelField,
-          populated: undefined, // set undefined for already populated fields
-        };
+      // Creating a basic config
+      let fldConfig: any = { key: key, title: key };
+
+      // If fieldConfig exists, normalize it and merge with the basic config
+      if (fieldConfig && typeof fieldConfig === "object") {
+        const hasAccess = this.checkFieldAccess(fieldConfig);
+
+        // Skip the field if access is denied
+        if (!hasAccess) return;
+        fldConfig = { ...fldConfig, ...ConfigHelper.normalizeFieldConfig(fieldConfig, key, modelField) };
       }
+
+      // Add the field to associatedFields regardless of config presence
+      associatedFields[key] = {
+        config: fldConfig,
+        model: modelField,
+        populated: undefined, // set undefined for already populated fields
+      };
     });
 
     return associatedFields;
