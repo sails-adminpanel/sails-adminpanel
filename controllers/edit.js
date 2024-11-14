@@ -32,7 +32,7 @@ async function edit(req, res) {
     try {
         const id = req.param('id');
         dataAccessor = new DataAccessor_1.DataAccessor(req.session.UserAP, entity, "edit");
-        record = await entity.model._findOne(id, dataAccessor);
+        record = await entity.model._findOne({ id: id }, dataAccessor);
     }
     catch (e) {
         sails.log.error('Admin edit error: ');

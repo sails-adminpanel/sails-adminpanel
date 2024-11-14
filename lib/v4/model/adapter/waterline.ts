@@ -15,8 +15,8 @@ export class Waterline<T> extends AbstractModel<T> {
     return await this.model.create(data).fetch();
   }
 
-  protected async findOne(id: string | number): Promise<T | null> {
-    return await this.model.findOne({id})
+  protected async findOne(criteria: Partial<T>): Promise<T | null> {
+    return await this.model.findOne(criteria)
       /** TODO: resolve populate all */
       .populateAll();
   }
@@ -27,16 +27,16 @@ export class Waterline<T> extends AbstractModel<T> {
       .populateAll();
   }
 
-  protected async updateOne(id: string | number, data: Partial<T>): Promise<T | null> {
-    return await this.model.updateOne({id}).set(data);
+  protected async updateOne(criteria: Partial<T>, data: Partial<T>): Promise<T | null> {
+    return await this.model.updateOne(criteria).set(data);
   }
 
   protected async update(criteria: Partial<T>, data: Partial<T>): Promise<T[]> {
     return await this.model.update(criteria).set(data).fetch();
   }
 
-  protected async destroyOne(id: string | number): Promise<T | null> {
-    return await this.model.destroyOne({id});
+  protected async destroyOne(criteria: Partial<T>): Promise<T | null> {
+    return await this.model.destroyOne(criteria);
   }
 
   protected async destroy(criteria: Partial<T>): Promise<T[]> {

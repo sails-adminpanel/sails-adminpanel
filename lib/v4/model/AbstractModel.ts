@@ -36,11 +36,11 @@ export abstract class AbstractModel<T> {
   }
 
   protected abstract create(data: Partial<T>): Promise<T>;
-  protected abstract findOne(id: string | number): Promise<T | null>;
+  protected abstract findOne(criteria: Partial<T>): Promise<T | null>;
   protected abstract find(criteria: Partial<T>): Promise<T[]>;
-  protected abstract updateOne(id: string | number, data: Partial<T>): Promise<T | null>;
+  protected abstract updateOne(criteria: Partial<T>, data: Partial<T>): Promise<T | null>;
   protected abstract update(criteria: Partial<T>, data: Partial<T>): Promise<T[]>;
-  protected abstract destroyOne(id: string | number): Promise<T | null>;
+  protected abstract destroyOne(criteria: Partial<T>): Promise<T | null>;
   protected abstract destroy(criteria: Partial<T>): Promise<T[]>;
   protected abstract count(criteria: Partial<T> | undefined): Promise<number>;
 
@@ -50,8 +50,9 @@ export abstract class AbstractModel<T> {
     return dataAccessor.process(record);
   }
 
-  public async _findOne(id: string | number, dataAccessor: DataAccessor): Promise<Partial<T> | null> {
-    let record = await this.findOne(id);
+  public async _findOne(criteria: Partial<T>, dataAccessor: DataAccessor): Promise<Partial<T> | null> {
+    criteria = dataAccessor.sanitizeUserRelationAccess(criteria);
+    let record = await this.findOne(criteria);
     return record ? dataAccessor.process(record) : null;
   }
 
@@ -61,24 +62,28 @@ export abstract class AbstractModel<T> {
     return records.map(record => dataAccessor.process(record));
   }
 
-  public async _updateOne(id: string | number, data: Partial<T>, dataAccessor: DataAccessor): Promise<Partial<T> | null> {
+  public async _updateOne(criteria: Partial<T>, data: Partial<T>, dataAccessor: DataAccessor): Promise<Partial<T> | null> {
     let _data = dataAccessor.process(data);
-    let record = await this.updateOne(id, _data);
+    criteria = dataAccessor.sanitizeUserRelationAccess(criteria);
+    let record = await this.updateOne(criteria, _data);
     return record ? dataAccessor.process(record) : null;
   }
 
   public async _update(criteria: Partial<T>, data: Partial<T>, dataAccessor: DataAccessor): Promise<Partial<T>[]> {
     let _data = dataAccessor.process(data);
+    criteria = dataAccessor.sanitizeUserRelationAccess(criteria);
     let records = await this.update(criteria, _data);
     return records.map(record => dataAccessor.process(record));
   }
 
-  public async _destroyOne(id: string | number, dataAccessor: DataAccessor): Promise<Partial<T> | null> {
-    let record = await this.destroyOne(id);
+  public async _destroyOne(criteria: Partial<T>, dataAccessor: DataAccessor): Promise<Partial<T> | null> {
+    criteria = dataAccessor.sanitizeUserRelationAccess(criteria);
+    let record = await this.destroyOne(criteria);
     return record ? dataAccessor.process(record) : null;
   }
 
   public async _destroy(criteria: Partial<T>, dataAccessor: DataAccessor): Promise<Partial<T>[]> {
+    criteria = dataAccessor.sanitizeUserRelationAccess(criteria);
     let records = await this.destroy(criteria);
     return records.map(record => dataAccessor.process(record));
   }
