@@ -83,15 +83,7 @@ export class DataAccessor {
         } else {
           if (typeof combinedFieldConfig === "object") {
             /** Access rights check (check groupsAccessRights field if exists, if not - allow to all except default user group) */
-            if (combinedFieldConfig.groupsAccessRights) {
-              // start checking access rights to the field (has 'groupsAccessRights' flag)
-              const allowedGroups = combinedFieldConfig.groupsAccessRights.map(item => item.toLowerCase());
-              const userGroups = this.user.groups.map((group: GroupAPRecord) => group.name.toLowerCase());
-              ignoreField = !userGroups.some(group => allowedGroups.includes(group));
-            } else {
-              // Deny access to "default user group" if no access rights are specified
-              ignoreField = this.user.groups.some((group: GroupAPRecord) => group.name.toLowerCase() === "default user group");
-            }
+            ignoreField = !this.checkFieldAccess(combinedFieldConfig);
           }
 
           fldConfig = { ...fldConfig, ...ConfigHelper.normalizeFieldConfig(combinedFieldConfig, key, modelField) };
@@ -179,15 +171,19 @@ export class DataAccessor {
   }
 
   private checkFieldAccess(fieldConfig: ModelFieldConfig): boolean {
-    const userGroups = this.user.groups.map((group: GroupAPRecord) => group.name.toLowerCase());
+    if (this.user.isAdministrator) {
+      return true;
+    }
+
+    const userGroups = this.user.groups?.map((group: GroupAPRecord) => group.name.toLowerCase());
 
     // Check if `groupsAccessRights` is set in the fieldConfig
     if (fieldConfig.groupsAccessRights) {
       const allowedGroups = fieldConfig.groupsAccessRights.map((item: string) => item.toLowerCase());
-      return userGroups.some(group => allowedGroups.includes(group));
+      return userGroups && userGroups.some(group => allowedGroups.includes(group));
     } else {
       // If no specific groups are allowed, deny access if the user is in "default user group"
-      return !userGroups.includes("default user group");
+      return !userGroups || !userGroups.includes("default user group");
     }
   }
 
@@ -221,6 +217,8 @@ export class DataAccessor {
         } else if (fieldConfig.config.type === 'association' && fieldValue && typeof fieldValue === 'object') {
           // process single association
           filteredRecord[fieldKey] = this.filterAssociatedRecord(fieldValue, fieldConfig.populated);
+        } else if (fieldValue === undefined || fieldValue === null) {
+          filteredRecord[fieldKey] = null;
         } else {
           sails.log.error(`Error trying to check access to field: ${fieldConfig.model.model}.${fieldKey}`)
         }
@@ -232,6 +230,10 @@ export class DataAccessor {
 
   /** Filters associated records (simplified process() function) */
   private filterAssociatedRecord<T>(associatedRecord: T, associatedFieldsConfig: { [fieldName: string]: Field }): Partial<T> {
+    if (!associatedFieldsConfig) {
+      return {}
+    }
+
     const filteredAssociatedRecord: Partial<T> = {};
     for (const assocFieldKey in associatedRecord) {
       const assocFieldConfig = associatedFieldsConfig[assocFieldKey];
@@ -251,21 +253,51 @@ export class DataAccessor {
   }
 
   public sanitizeUserRelationAccess<T>(criteria: T): Partial<T> {
-    // if (association many to many) {
-    //   sails.log не реализовано
-    // }
+    // Retrieve model configuration from Sails adminpanel config
+    const modelName = this.entity.model.modelname;
+    const modelConfig = this.entity.config;
 
-    // if (association) {
-    //   проверяем userAccessRelation из конфига и ищем в критерии поле которое лежит в  userAccessRelation в конфиге
-    // смотрим что это связь на модель UserAP или GroupAP и если нет, отказываем, если да, проверяем что это ты
-    // }
-    // TODO читаем конфиг, записываем в критерию userId на поле связи
-    // TODO есть проблема для ORM, которые связь many-to-many не позволяют искать по связи (в том числе waterline)
+    // Check if the model has `userAccessRelation` configured
+    if (!this.user.isAdministrator && modelConfig && modelConfig.userAccessRelation) {
+      // Get access field from userAccessRelation
+      const accessField = modelConfig.userAccessRelation;
+
+      // Check if the relation points to `UserAP` or `GroupAP` in the model's attributes
+      const modelAttributes = this.entity.model.attributes;
+      const relation = modelAttributes[accessField];
+
+      if (!relation || !['userap', 'groupap'].includes(relation.model.toLowerCase() || relation.collection.toLowerCase())) {
+        throw new Error(`Invalid userAccessRelation configuration for model ${modelName}`);
+      }
+
+      // Determine if the current user matches the access criteria
+      if (relation.model) {
+        if (relation.model.toLowerCase() === 'userap') {
+          // Filter by the user's ID if related to UserAP as a model
+          criteria[accessField] = this.user.id;
+        } else if (relation.model.toLowerCase() === 'groupap') {
+          // Filter by user's group membership if related to GroupAP as a model
+          const userGroups = this.user.groups?.map((group: GroupAPRecord) => group.id);
+          criteria[accessField] = { in: userGroups };
+        }
+      }
+
+      /** Warning: code was not tested, need further processing in waterline (intersects does not support in waterline) */
+      if (relation.collection) {
+        sails.log.warn(`Collection relation is not supported and was not tested. You may have an error here: ${JSON.stringify(relation, null, 2)}`)
+        if (relation.collection.toLowerCase() === 'userap') {
+          // Ensure user's ID is part of the associated collection to UserAP
+          criteria[accessField] = { contains: this.user.id };
+        } else if (relation.collection.toLowerCase() === 'groupap') {
+          // Ensure user's groups intersect with the collection to GroupAP
+          const userGroups = this.user.groups?.map((group: GroupAPRecord) => group.id);
+          criteria[accessField] = { intersects: userGroups };
+        }
+      }
+    }
+
     return criteria;
   }
-
-  // TODO сделать тест на DataAccessor на подложенных данных на метод getFieldsConfig и на process
-  // TODO запустить админку и вытащить примеры entity и конфигов для дальнейшего создания теста
 }
 
 
