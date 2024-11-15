@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FieldsHelper = void 0;
 const adminUtil_1 = require("../lib/adminUtil");
+const DataAccessor_1 = require("../lib/v4/DataAccessor");
 class FieldsHelper {
     /**
      * Will normalize a field configuration that will be loaded from config file.
@@ -167,14 +168,14 @@ class FieldsHelper {
      * @param {function=} [cb]
      * @deprecated use DataModel class
      */
-    static async loadAssociations(fields) {
+    static async loadAssociations(fields, user, action) {
         /**
          * Load all associated records for given field key
          *
          * @param {string} key
          * @param {function=} [cb]
          */
-        let loadAssoc = async function (key) {
+        let loadAssoc = async function (key, user, action) {
             if (fields[key].config.type !== 'association' && fields[key].config.type !== 'association-many') {
                 return;
             }
@@ -190,7 +191,13 @@ class FieldsHelper {
             }
             let list;
             try {
-                list = await Model.find({});
+                // adding deprecated records array to config for association widget
+                sails.log.warn("Warning: executing malicious job trying to add a huge amount of records in field config," +
+                    " please rewrite this part of code in the nearest future");
+                let entity = { name: modelName, config: sails.config.adminpanel.models[modelName],
+                    model: Model, uri: `/admin/model/${modelName}`, type: "model" };
+                let dataAccessor = new DataAccessor_1.DataAccessor(user, entity, action);
+                list = await Model._find({}, dataAccessor);
             }
             catch (e) {
                 sails.log.error(e);
@@ -200,7 +207,7 @@ class FieldsHelper {
         };
         for await (let key of Object.keys(fields)) {
             try {
-                await loadAssoc(key);
+                await loadAssoc(key, user, action);
             }
             catch (e) {
                 sails.log.error(e);

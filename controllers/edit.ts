@@ -48,6 +48,9 @@ export default async function edit(req: ReqType, res: ResType) {
 
 	let fields = dataAccessor.fields;
 
+	// add deprecated 'records' to config
+	fields = await FieldsHelper.loadAssociations(fields, req.session.UserAP, "edit");
+
 	// Save
 	if (req.method.toUpperCase() === 'POST') {
 		let reqData = RequestProcessor.processRequest(req, fields);

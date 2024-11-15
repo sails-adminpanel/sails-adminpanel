@@ -1,5 +1,6 @@
 import { ActionType, BaseFieldConfig } from "../interfaces/adminpanelConfig";
 import { Entity } from "../interfaces/types";
+import { UserAPRecord } from "../models/UserAP";
 export type FieldModel = {
     allowNull?: boolean;
     model?: string;
@@ -112,7 +113,7 @@ export declare class FieldsHelper {
      * @param {function=} [cb]
      * @deprecated use DataModel class
      */
-    static loadAssociations(fields: Fields): Promise<Fields>;
+    static loadAssociations(fields: Fields, user?: UserAPRecord, action?: ActionType): Promise<Fields>;
     /**
      * Create list of populated models
      *

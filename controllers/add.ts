@@ -27,6 +27,10 @@ export default async function add(req: ReqType, res: ResType) {
 
 	let dataAccessor = new DataAccessor(req.session.UserAP, entity, "add");
 	let fields = dataAccessor.getFieldsConfig();
+
+	// add deprecated 'records' to config
+	fields = await FieldsHelper.loadAssociations(fields, req.session.UserAP,"add");
+
 	let data = {}; //list of field values
 
 	if (req.method.toUpperCase() === 'POST') {
@@ -88,6 +92,9 @@ export default async function add(req: ReqType, res: ResType) {
 				reqData[prop] = reqData[prop].join("");
 			}
 		}
+
+		// TODO если в конфиге на этой модели есть userAccessRelation, то писать туда айдишник юзера текущего или user.groups[0] при условии что user.groups.length === 1
+		// TODO или ошибку - нельзя сохранить запись. Можно будет реализовать это через вес групп (добавить комментарий над кодом)
 
 		// callback before save entity
 		let entityAdd = entity.config.add as CreateUpdateConfig;

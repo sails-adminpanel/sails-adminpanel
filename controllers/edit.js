@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = edit;
 const adminUtil_1 = require("../lib/adminUtil");
 const requestProcessor_1 = require("../lib/requestProcessor");
+const fieldsHelper_1 = require("../helper/fieldsHelper");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 const CatalogHandler_1 = require("../lib/catalog/CatalogHandler");
 const MediaManagerHelper_1 = require("../lib/media-manager/helpers/MediaManagerHelper");
@@ -40,6 +41,8 @@ async function edit(req, res) {
         return res.serverError();
     }
     let fields = dataAccessor.fields;
+    // add deprecated 'records' to config
+    fields = await fieldsHelper_1.FieldsHelper.loadAssociations(fields, req.session.UserAP, "edit");
     // Save
     if (req.method.toUpperCase() === 'POST') {
         let reqData = requestProcessor_1.RequestProcessor.processRequest(req, fields);

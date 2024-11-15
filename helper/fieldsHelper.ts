@@ -1,7 +1,9 @@
-import { ActionType, BaseFieldConfig } from "../interfaces/adminpanelConfig";
+import {ActionType, BaseFieldConfig, ModelConfig} from "../interfaces/adminpanelConfig";
 import { Entity } from "../interfaces/types";
 import { AdminUtil } from "../lib/adminUtil";
 import { ModelAnyInstance } from "../lib/v4/model/AbstractModel";
+import {DataAccessor} from "../lib/v4/DataAccessor";
+import {UserAPRecord} from "../models/UserAP";
 
 export type FieldModel = {
     allowNull?: boolean;
@@ -201,14 +203,14 @@ export class FieldsHelper {
      * @param {function=} [cb]
      * @deprecated use DataModel class
      */
-    public static async loadAssociations(fields: Fields): Promise<Fields>{
+    public static async loadAssociations(fields: Fields, user?: UserAPRecord, action?: ActionType): Promise<Fields>{
         /**
          * Load all associated records for given field key
          *
          * @param {string} key
          * @param {function=} [cb]
          */
-        let loadAssoc = async function (key: string) {
+        let loadAssoc = async function (key: string, user?: UserAPRecord, action?: ActionType) {
             if (fields[key].config.type !== 'association' && fields[key].config.type !== 'association-many') {
                 return;
             }
@@ -228,7 +230,13 @@ export class FieldsHelper {
 
             let list: ModelAnyInstance[];
             try {
-                list = await Model.find({});
+                // adding deprecated records array to config for association widget
+                sails.log.warn("Warning: executing malicious job trying to add a huge amount of records in field config," +
+                  " please rewrite this part of code in the nearest future");
+                let entity: Entity = {name: modelName, config: sails.config.adminpanel.models[modelName] as ModelConfig,
+                    model: Model, uri: `/admin/model/${modelName}`, type: "model"};
+                let dataAccessor = new DataAccessor(user, entity, action);
+                list = await Model._find({}, dataAccessor);
             } catch (e) {
                 sails.log.error(e)
                 throw new Error("FieldsHelper > loadAssociations error");
@@ -239,7 +247,7 @@ export class FieldsHelper {
 
         for await (let key of Object.keys(fields)) {
             try {
-                await loadAssoc(key);
+                await loadAssoc(key, user, action);
             } catch (e) {
                 sails.log.error(e);
                 return e;

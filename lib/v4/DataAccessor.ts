@@ -9,6 +9,7 @@ import {AdminUtil} from "../adminUtil";
 import {ConfigHelper} from "../../helper/configHelper";
 import {GroupAPRecord} from "../../models/GroupAP";
 import {AccessRightsHelper} from "../../helper/accessRightsHelper";
+import {ModelAnyInstance} from "./model/AbstractModel";
 
 export class DataAccessor {
   user: UserAPRecord;
@@ -61,7 +62,7 @@ export class DataAccessor {
       }
 
       // Getting base field config
-      let fldConfig: any = { key: key, title: key };
+      let fldConfig: Field["config"] = { key: key, title: key };
       let ignoreField = false; // if set to true, field will be removed from editor/list
 
       /** Combine the field configuration from global and action-specific configs
@@ -158,7 +159,7 @@ export class DataAccessor {
       if (fieldConfig === false) return;
 
       // Creating a basic config
-      let fldConfig: any = { key: key, title: key };
+      let fldConfig: Field["config"] = { key: key, title: key };
 
       // If fieldConfig exists, normalize it and merge with the basic config
       if (fieldConfig && typeof fieldConfig === "object") {

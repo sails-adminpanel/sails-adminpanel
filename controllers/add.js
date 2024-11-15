@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = add;
 const adminUtil_1 = require("../lib/adminUtil");
 const requestProcessor_1 = require("../lib/requestProcessor");
+const fieldsHelper_1 = require("../helper/fieldsHelper");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 const MediaManagerHelper_1 = require("../lib/media-manager/helpers/MediaManagerHelper");
 const DataAccessor_1 = require("../lib/v4/DataAccessor");
@@ -24,6 +25,8 @@ async function add(req, res) {
     }
     let dataAccessor = new DataAccessor_1.DataAccessor(req.session.UserAP, entity, "add");
     let fields = dataAccessor.getFieldsConfig();
+    // add deprecated 'records' to config
+    fields = await fieldsHelper_1.FieldsHelper.loadAssociations(fields, req.session.UserAP, "add");
     let data = {}; //list of field values
     if (req.method.toUpperCase() === 'POST') {
         let reqData = requestProcessor_1.RequestProcessor.processRequest(req, fields);
@@ -76,6 +79,8 @@ async function add(req, res) {
                 reqData[prop] = reqData[prop].join("");
             }
         }
+        // TODO если в конфиге на этой модели есть userAccessRelation, то писать туда айдишник юзера текущего или user.groups[0] при условии что user.groups.length === 1
+        // TODO или ошибку - нельзя сохранить запись. Можно будет реализовать это через вес групп (добавить комментарий над кодом)
         // callback before save entity
         let entityAdd = entity.config.add;
         if (typeof entityAdd.entityModifier === "function") {
