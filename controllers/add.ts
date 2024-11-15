@@ -5,6 +5,7 @@ import {CreateUpdateConfig} from "../interfaces/adminpanelConfig";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import {saveRelationsMediaManager} from "../lib/media-manager/helpers/MediaManagerHelper";
 import {DataAccessor} from "../lib/v4/DataAccessor";
+import {GroupAPRecord} from "../models/GroupAP";
 
 export default async function add(req: ReqType, res: ResType) {
 	let entity = AdminUtil.findEntityObject(req);
@@ -93,9 +94,6 @@ export default async function add(req: ReqType, res: ResType) {
 			}
 		}
 
-		// TODO если в конфиге на этой модели есть userAccessRelation, то писать туда айдишник юзера текущего или user.groups[0] при условии что user.groups.length === 1
-		// TODO или ошибку - нельзя сохранить запись. Можно будет реализовать это через вес групп (добавить комментарий над кодом)
-
 		// callback before save entity
 		let entityAdd = entity.config.add as CreateUpdateConfig;
 		if (typeof entityAdd.entityModifier === "function") {
@@ -103,6 +101,34 @@ export default async function add(req: ReqType, res: ResType) {
 		}
 
 		try {
+			// Check if model has `userAccessRelation` configured
+			if (entity.config && entity.config.userAccessRelation) {
+				// Get access field from userAccessRelation
+				const accessField = entity.config.userAccessRelation;
+
+				// if userAccessRelation is not set yet
+				if (!reqData[accessField]) {
+					// Check if the relation points to `UserAP` or `GroupAP` in the model's attributes
+					const modelAttributes = entity.model.attributes;
+					const relation = modelAttributes[accessField];
+
+					if (relation && ['userap', 'groupap'].includes(relation.model.toLowerCase())) {
+						if (relation.model.toLowerCase() === 'userap') {
+							reqData[accessField] = req.session.UserAP.id;
+
+						} else if (relation.model.toLowerCase() === 'groupap') {
+							// Works only for users with only one group, later it can be resolved with group weight
+							const userGroups = req.session.UserAP.groups as GroupAPRecord[] || [];
+							if (userGroups.length === 1) {
+								reqData[accessField] = userGroups[0].id;
+							} else {
+								throw new Error('Record cannot be saved because the user is associated with none or multiple groups.');
+							}
+						}
+					}
+				}
+			}
+
 			let record = await entity.model._create(reqData, dataAccessor);
 
 			// save associations media to json
