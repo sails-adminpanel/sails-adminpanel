@@ -48,6 +48,9 @@ declare const attributes: {
     readonly widgets: {
         readonly type: "json";
     };
+    readonly isConfirmed: {
+        readonly type: "boolean";
+    };
 };
 type ModelOptions = ModelTypeDetection<typeof attributes>;
 export interface UserAPRecord extends Partial<ModelOptions> {
@@ -103,6 +106,9 @@ declare const model: {
         };
         readonly widgets: {
             readonly type: "json";
+        };
+        readonly isConfirmed: {
+            readonly type: "boolean";
         };
     };
 };

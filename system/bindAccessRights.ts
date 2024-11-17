@@ -79,10 +79,12 @@ export default async function bindAccessRights() {
   });
 
   // Default user group
-  let defaultUserGroup = await GroupAP.find({name: "Default user group"});
-  if (!defaultUserGroup) {
-    await GroupAP.create({
-      name: "Default user group", description: "Group for default users (guests) who dont have access to fields"
-    }).fetch()
+  if (sails.config.adminpanel.registration && sails.config.adminpanel.registration.enable) {
+    let defaultUserGroupRecord = await GroupAP.find({name: sails.config.adminpanel.registration.defaultUserGroup});
+    if (!defaultUserGroupRecord) {
+      await GroupAP.create({
+        name: sails.config.adminpanel.registration.defaultUserGroup, description: "Group for default users (guests) who dont have access to fields"
+      }).fetch()
+    }
   }
 }

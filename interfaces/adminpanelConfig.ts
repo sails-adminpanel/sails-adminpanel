@@ -203,7 +203,7 @@ export interface AdminpanelConfig {
 	// TODO (look in task.md)
 	registration?: {
 		enable: boolean
-		defaultUserGroup: string
+		defaultUserGroup: string // group name that is considered to be default
 		confirmationRequired: boolean
 	}
 	/**
@@ -317,7 +317,6 @@ export interface ModelConfig {
 	 * Force set primary key
 	 * */
 	identifierField?: string
-	// TODO (look in task.md)
 	/** In this field we can set model field, for which we want to check user access right.
 	 *  May be association or association-many to UserAP or GroupAP */
 	userAccessRelation?: string

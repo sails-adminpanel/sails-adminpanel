@@ -32,6 +32,11 @@ export default async function login(req: ReqType, res: ResType) {
         req.session.messages.adminError.push("Wrong username or password");
         return res.viewAdmin("login");
       } else {
+        if (sails.config.adminpanel.registration.confirmationRequired && !user.isConfirmed) {
+          req.session.messages.adminError.push("Profile is not confirmed, please contact to administrator");
+          return res.viewAdmin("login");
+        }
+
         if (passwordHash.verify(login + password, user.passwordHashed)) {
           if (user.expires && Date.now() > Date.parse(user.expires)) {
             req.session.messages.adminError.push("Profile expired, contact the administrator");

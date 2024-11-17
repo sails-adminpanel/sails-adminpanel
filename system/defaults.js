@@ -100,7 +100,12 @@ var adminpanelConfig = {
     sections: [],
     package: packageJson,
     showVersion: true,
-    timezones: timezones
+    timezones: timezones,
+    registration: {
+        enable: false,
+        defaultUserGroup: "guest",
+        confirmationRequired: true
+    }
 };
 function setDefaultConfig(config) {
     adminpanelConfig = config;

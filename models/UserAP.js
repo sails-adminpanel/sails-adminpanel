@@ -49,6 +49,9 @@ const attributes = {
     widgets: {
         type: 'json',
     },
+    isConfirmed: {
+        type: 'boolean',
+    }
 };
 // Методы модели
 const methods = {

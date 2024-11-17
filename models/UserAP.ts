@@ -50,6 +50,9 @@ const attributes= {
   widgets: {
     type: 'json',
   },
+  isConfirmed: {
+    type: 'boolean',
+  }
 } as const;
 
 type ModelOptions = ModelTypeDetection<typeof attributes>;

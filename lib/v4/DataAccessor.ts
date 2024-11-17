@@ -195,7 +195,7 @@ export class DataAccessor {
       return userGroups && userGroups.some(group => allowedGroups.includes(group));
     } else {
       // If no specific groups are allowed, deny access if the user is in "default user group"
-      return !userGroups || !userGroups.includes("default user group");
+      return !userGroups || !userGroups.includes(sails.config.adminpanel.registration?.defaultUserGroup);
     }
   }
 
