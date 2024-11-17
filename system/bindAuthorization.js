@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = bindAuthorization;
 const login_1 = require("../controllers/login");
+const register_1 = require("../controllers/register");
 const initUser_1 = require("../controllers/initUser");
 const bindPolicies_1 = require("./bindPolicies");
 async function bindAuthorization() {
@@ -65,6 +66,7 @@ async function bindAuthorization() {
     if (sails.config.adminpanel.auth) {
         sails.router.bind(baseRoute + '/login', (0, bindPolicies_1.default)(policies, login_1.default));
         sails.router.bind(baseRoute + '/logout', (0, bindPolicies_1.default)(policies, login_1.default));
+        sails.router.bind(baseRoute + '/register', (0, bindPolicies_1.default)(policies, register_1.default));
     }
 }
 ;

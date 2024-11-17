@@ -1,4 +1,5 @@
 import _login from "../controllers/login";
+import _register from "../controllers/register";
 import _initUser from "../controllers/initUser";
 
 import {AdminpanelConfig} from "../interfaces/adminpanelConfig";
@@ -73,6 +74,7 @@ export default async function bindAuthorization() {
     if (sails.config.adminpanel.auth) {
         sails.router.bind(baseRoute + '/login', bindPolicies(policies, _login));
         sails.router.bind(baseRoute + '/logout', bindPolicies(policies, _login));
+        sails.router.bind(baseRoute + '/register', bindPolicies(policies, _register));
     }
 };
 

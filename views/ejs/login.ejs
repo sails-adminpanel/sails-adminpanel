@@ -26,7 +26,7 @@
                 <div class="mb-2">
                     <h3 class="font-medium"><%= __("Welcome") %>!</h3>
                     <p>
-                        <%= __("Please log in") %>
+                        <%= __("Please log in or register if you don't have profile yet") %>
                     </p>
                 </div>
                 <div class="mb-6 last:mb-0">
@@ -58,10 +58,14 @@
                         </div>
                     </div>
                 </div>
-                <p>
-                    <button class="inline-flex justify-center items-baseline gap-1 whitespace-nowrap focus:outline-none transition-colors cursor-pointer rounded border py-2 px-3 text-white bg-blue-500 dark:bg-blue-700 dark:hover:text-slate-300 font-medium border-green-500 dark:border-gray-900 hover:bg-blue-700 dark:hover:bg-blue-900"
-                            type="submit"><%= __("Log in") %></button>
-                </p>
+                <div class="flex justify-between items-center mt-6">
+                    <button class="inline-flex justify-center items-center gap-1 whitespace-nowrap focus:outline-none transition-colors cursor-pointer rounded border py-2 px-3 text-white bg-blue-500 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-900 font-medium border-blue-500">
+                        <%= __("Log in") %>
+                    </button>
+                    <a href="/admin/model/userap/register" class="inline-flex justify-center items-center gap-1 whitespace-nowrap focus:outline-none transition-colors cursor-pointer rounded border py-2 px-3 text-white bg-gray-500 dark:bg-gray-700 hover:bg-gray-700 dark:hover:bg-gray-900 font-medium border-gray-500">
+                        <%= __("Register") %>
+                    </a>
+                </div>
             </div>
         </form>
     </div>

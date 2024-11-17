@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="/admin/assets/build/style/style.min.css"/>
+    <style>
+        .alerts {
+            padding-left: 24px !important;
+        }
+    </style>
+</head>
+<body>
+<div class="bg-gray-50 dark:bg-slate-800 dark:text-slate-100">
+    <div class="flex min-h-screen items-center justify-center bg-gradient-to-tr from-purple-400 dark:from-slate-700 via-pink-500 dark:via-slate-900 to-red-500 dark:to-slate-800">
+        <form id="registerForm" class="rounded-2xl flex-col dark:bg-slate-900/70 bg-white dark:bg-slate-900/70 flex w-4/12 lg:w-6/12 md:w-7/12 xs:w-11/12 shadow-2xl" method="post" action="/admin/model/userap/register">
+            <%- include("mixin/alerts") %>
+            <div class="flex-1 p-6">
+                <div class="mb-4">
+                    <h3 class="font-medium"><%= __("Create an Account") %></h3>
+                    <p>
+                        <%= __("Please fill out the fields below") %>
+                    </p>
+                </div>
+
+                <!-- Login -->
+                <div class="mb-6 last:mb-0">
+                    <label class="block font-bold mb-2"><%= __("Login*") %></label>
+                    <input class="px-3 py-2 max-w-full focus:ring focus:outline-none border-gray-700 rounded w-full dark:placeholder-gray-400 h-12 border bg-white dark:bg-slate-800"
+                           type="text" placeholder="<%= __("Login") %>" name="login" required/>
+                </div>
+
+                <!-- Full Name -->
+                <div class="mb-6 last:mb-0">
+                    <label class="block font-bold mb-2"><%= __("Full Name*") %></label>
+                    <input class="px-3 py-2 max-w-full focus:ring focus:outline-none border-gray-700 rounded w-full dark:placeholder-gray-400 h-12 border bg-white dark:bg-slate-800"
+                           type="text" placeholder="<%= __("Full Name") %>" name="fullName" required/>
+                </div>
+
+                <!-- Password -->
+                <div class="mb-6 last:mb-0">
+                    <label class="block font-bold mb-2"><%= __("Password*") %></label>
+                    <input class="px-3 py-2 max-w-full focus:ring focus:outline-none border-gray-700 rounded w-full dark:placeholder-gray-400 h-12 border bg-white dark:bg-slate-800"
+                           type="password" placeholder="<%= __("Password") %>" name="password" id="password" required/>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="mb-6 last:mb-0">
+                    <label class="block font-bold mb-2"><%= __("Confirm Password*") %></label>
+                    <input class="px-3 py-2 max-w-full focus:ring focus:outline-none border-gray-700 rounded w-full dark:placeholder-gray-400 h-12 border bg-white dark:bg-slate-800"
+                           type="password" placeholder="<%= __("Confirm Password") %>" name="confirmPassword" id="confirmPassword" required/>
+                    <p id="passwordError" class="text-red-500 hidden mt-2"><%= __("Passwords do not match!") %></p>
+                </div>
+
+                <!-- Email -->
+                <div class="mb-6 last:mb-0">
+                    <label class="block font-bold mb-2"><%= __("Email") %></label>
+                    <input class="px-3 py-2 max-w-full focus:ring focus:outline-none border-gray-700 rounded w-full dark:placeholder-gray-400 h-12 border bg-white dark:bg-slate-800"
+                           type="email" placeholder="<%= __("Email") %>" name="email"/>
+                </div>
+
+                <!-- Locale -->
+                <div class="mb-6 last:mb-0">
+                    <label class="block font-bold mb-2"><%= __("Locale") %></label>
+                    <select class="px-3 py-2 max-w-full focus:ring focus:outline-none border-gray-700 rounded w-full dark:placeholder-gray-400 h-12 border bg-white dark:bg-slate-800"
+                            name="locale">
+                        <option value="en" selected>en</option>
+                    </select>
+                </div>
+
+                <!-- Submit -->
+                <div class="flex justify-between items-center mt-6">
+                    <button class="inline-flex justify-center items-center gap-1 whitespace-nowrap focus:outline-none transition-colors cursor-pointer rounded border py-2 px-3 text-white bg-blue-500 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-900 font-medium border-blue-500">
+                        <%= __("Register") %>
+                    </button>
+                    <a href="/admin/model/userap/login" class="inline-flex justify-center items-center gap-1 whitespace-nowrap focus:outline-none transition-colors cursor-pointer rounded border py-2 px-3 text-white bg-gray-500 dark:bg-gray-700 hover:bg-gray-700 dark:hover:bg-gray-900 font-medium border-gray-500">
+                        <%= __("Back to Login") %>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+  const password = document.getElementById('password');
+  const confirmPassword = document.getElementById('confirmPassword');
+  const passwordError = document.getElementById('passwordError');
+
+  confirmPassword.addEventListener('input', () => {
+    if (password.value !== confirmPassword.value) {
+      passwordError.classList.remove('hidden');
+    } else {
+      passwordError.classList.add('hidden');
+    }
+  });
+</script>
+</body>
+</html>
