@@ -1,6 +1,9 @@
+import { POWCaptcha } from "../lib/v4/POWCaptcha";
 let passwordHash = require("password-hash");
 
 export default async function login(req: ReqType, res: ResType) {
+  const powCaptcha = new POWCaptcha();
+
   if (req.url.indexOf("login") >= 0) {
     if (!sails.config.adminpanel.auth) {
       return res.redirect(`${sails.config.adminpanel.routePrefix}/`);
@@ -9,6 +12,14 @@ export default async function login(req: ReqType, res: ResType) {
     if (req.method.toUpperCase() === "POST") {
       let login = req.param("login");
       let password = req.param("password");
+      let captchaSolution = req.param("captchaSolution");
+      console.log("captchaSolution", captchaSolution)
+
+      // Verify CAPTCHA solution
+      const isCaptchaValid = powCaptcha.check(captchaSolution, `login:${req.ip}`);
+      if (!isCaptchaValid) {
+        return await viewAdminMessage(req, res, "Invalid CAPTCHA solution");
+      }
 
       let user;
       try {
@@ -24,35 +35,33 @@ export default async function login(req: ReqType, res: ResType) {
         if (req.session.UserAP.isAdministrator) {
           req.session.adminPretender = req.session.UserAP;
           req.session.UserAP = user;
-          return res.sendStatus(200)
+          return res.sendStatus(200);
         }
       }
 
       if (!user) {
-        req.session.messages.adminError.push("Wrong username or password");
-        return res.viewAdmin("login");
+        return await viewAdminMessage(req, res, "Wrong username or password");
       } else {
         if (sails.config.adminpanel.registration.confirmationRequired && !user.isConfirmed && !user.isAdministrator) {
-          req.session.messages.adminError.push("Profile is not confirmed, please contact to administrator");
-          return res.viewAdmin("login");
+          return await viewAdminMessage(req, res, "Profile is not confirmed, please contact to administrator");
         }
 
         if (passwordHash.verify(login + password, user.passwordHashed)) {
           if (user.expires && Date.now() > Date.parse(user.expires)) {
-            req.session.messages.adminError.push("Profile expired, contact the administrator");
-            return res.viewAdmin("login");
+            return await viewAdminMessage(req, res, "Profile expired, contact the administrator");
           }
           req.session.UserAP = user;
           return res.redirect(`${sails.config.adminpanel.routePrefix}/`);
         } else {
-          req.session.messages.adminError.push("Wrong username or password");
-          return res.viewAdmin("login");
+          return await viewAdminMessage(req, res, "Wrong username or password");
         }
       }
     }
 
     if (req.method.toUpperCase() === "GET") {
-      return res.viewAdmin("login");
+      // Generate new CAPTCHA job
+      const captchaTask = await powCaptcha.getJob(`login:${req.ip}`);
+      return res.viewAdmin("login", { captchaTask: captchaTask });
     }
 
   } else if (req.url.indexOf("logout") >= 0) {
@@ -64,4 +73,12 @@ export default async function login(req: ReqType, res: ResType) {
     req.session.UserAP = undefined;
     res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
   }
-};
+}
+
+async function viewAdminMessage(req: ReqType, res: ResType, message: string) {
+  const powCaptcha = new POWCaptcha();
+  const captchaTask = await powCaptcha.getJob(`login:${req.ip}`);
+  req.session.messages.adminError.push(message);
+
+  return res.viewAdmin("login", { captchaTask: captchaTask });
+}

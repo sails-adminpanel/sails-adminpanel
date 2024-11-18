@@ -1,25 +1,16 @@
 export declare class POWCaptcha {
     private static taskStorage;
     private static taskQueue;
-    getJob(label: string): Promise<CaptchaJob>;
-    check(resolvedCaptcha: ResolvedCaptcha, label: string): Promise<boolean>;
+    private static readonly MAX_TASKS;
+    getJob(label: string): Promise<number[]>;
+    check(captchaSolution: string, label: string): boolean;
     private deleteTask;
 }
 export type TaskStorage = {
     [key: string]: {
-        /** Captcha Job */
-        task: CaptchaJob;
         /** Identifies the action for which it was resolved */
         label: string;
         time: number;
-        puzzle: any;
+        puzzle: Uint8Array;
     };
-};
-export type CaptchaJob = {
-    id: string;
-    task: string | number;
-};
-export type ResolvedCaptcha = {
-    id: string;
-    solution: string;
 };

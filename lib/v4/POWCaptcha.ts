@@ -1,62 +1,52 @@
-
-// TODO переписываем под 5-ю версию крипто пазла и используем в логине (на get). Солвить пазл на фронте и возвращаться на пост логина для проверки
-// TODO captcha solver прокинуть в gulp, передать на фронт и там вызвать чтобы решить каптчу и вернуть на контроллер (подложить в скрытое поле перед отправкой)
-
-let Puzzle = require("fix-esm").require("crypto-puzzle").default; // https://github.com/fabiospampinato/crypto-puzzle/issues/2
+let CryptoPuzzle = require("fix-esm").require("crypto-puzzle").default; // https://github.com/fabiospampinato/crypto-puzzle/issues/2
 import { v4 as uuid } from "uuid";
 
 export class POWCaptcha {
   private static taskStorage: TaskStorage = {};
   private static taskQueue: string[] = [];
+  private static readonly MAX_TASKS = 50000;
 
-  public async getJob(label: string): Promise<CaptchaJob> {
+  public async getJob(label: string): Promise<number[]> {
     const id = uuid();
 
-    /**
-     * Action: as example captcha adapter receive label `login:12025550184` sent task, and a client solves it
-     * When a client pass solved captcha to login user, Method User.login pass same label, and if this not matched
-     * Captcha adapter reject login.
-     * To prevent brute force, the adapter increases the complexity after several attempts.
-     */
+    if (!label) throw new Error(`Label not provided`);
 
-    if (!label) throw new Error(`label not provided`);
-
-    let difficulty = Number(process.env.CAPTCHA_POW_DIFFICUTLY) ? Number(process.env.CAPTCHA_POW_DIFFICUTLY) : 7 * 1000;
+    let difficultyDuration = Number(process.env.CAPTCHA_POW_DIFFICULTY) || 7000; // Default: 7 seconds
     let attempt = 0;
 
-    // Deleting old tasks and counting attempts
-    Object.keys(POWCaptcha.taskStorage).forEach((item) => {
-      const task = POWCaptcha.taskStorage[item];
+    // Cleanup old tasks and count attempts
+    Object.keys(POWCaptcha.taskStorage).forEach((key) => {
+      const task = POWCaptcha.taskStorage[key];
       if (task.time < Date.now() - 30 * 60 * 1000) {
-        this.deleteTask(item);
+        this.deleteTask(key); // Remove expired tasks
       } else if (task.label === label) {
         attempt++;
       }
     });
 
-    // Increasing difficulty based on attempts quantity
+    // Increase difficulty based on number of attempts
     const difficultyCoefficient = 1 + Math.floor(attempt / 7);
-    difficulty *= difficultyCoefficient;
+    difficultyDuration *= difficultyCoefficient;
 
-    const puzzle = await Puzzle.generate(difficulty);
-    const task = {
-      id: id,
-      task: JSON.stringify(puzzle.question, (key, value) =>
-        typeof value === "bigint" ? value.toString() + "n" : value
-      ),
+    // Generate the puzzle
+    const puzzleOptions = {
+      duration: difficultyDuration, // Adjust duration in milliseconds
+      message: `${id}:${label}`,
     };
 
-    // Saving task to storage
+    const puzzle = await CryptoPuzzle.generate(puzzleOptions);
+    const task: number[] = Array.from(puzzle); // storing as number of bytes
+
+    // Store the task in memory
     POWCaptcha.taskStorage[id] = {
-      task: task,
       time: Date.now(),
       label: label,
-      puzzle: puzzle,
+      puzzle: puzzle, // Original Uint8Array puzzle
     };
 
-    // Adding to queue and controlling the limit
+    // Add to queue and enforce limit
     POWCaptcha.taskQueue.push(id);
-    if (POWCaptcha.taskQueue.length > 50) {
+    if (POWCaptcha.taskQueue.length > POWCaptcha.MAX_TASKS) {
       const oldestTaskId = POWCaptcha.taskQueue.shift();
       if (oldestTaskId) this.deleteTask(oldestTaskId);
     }
@@ -64,13 +54,19 @@ export class POWCaptcha {
     return task;
   }
 
-  public async check(resolvedCaptcha: ResolvedCaptcha, label: string): Promise<boolean> {
-    const task = POWCaptcha.taskStorage[resolvedCaptcha.id];
+  public check(captchaSolution: string, label: string): boolean {
+    let taskId = captchaSolution.split(":")[0];
+    if (!taskId) {
+      return false;
+    }
+
+    const task = POWCaptcha.taskStorage[taskId];
     if (!task || task.label !== label) return false;
 
-    const puzzle = task.puzzle;
-    if (puzzle.solution === BigInt(resolvedCaptcha.solution)) {
-      this.deleteTask(resolvedCaptcha.id);
+    // Verify the solution (should be equal to puzzleOptions.message)
+    console.log("QUESTION", `${taskId}:${label}`)
+    if (`${taskId}:${label}` === captchaSolution) {
+      this.deleteTask(taskId);
       return true;
     }
 
@@ -84,21 +80,9 @@ export class POWCaptcha {
 
 export type TaskStorage = {
   [key: string]: {
-    /** Captcha Job */
-    task: CaptchaJob;
     /** Identifies the action for which it was resolved */
     label: string;
     time: number;
-    puzzle: any;
+    puzzle: Uint8Array;
   };
-};
-
-export type CaptchaJob = {
-  id: string;
-  task: string | number;
-};
-
-export type ResolvedCaptcha = {
-  id: string;
-  solution: string;
 };

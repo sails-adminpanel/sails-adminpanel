@@ -13,6 +13,7 @@ import {GeoJsonEditor} from '../geojson/geojson'
 import { AdminPopUp } from '../pop-up/admin-pop-up'
 import UploadAdapter from './ckeditor5/UploadAdapter'
 import ky from 'ky'
+import Puzzle from 'crypto-puzzle';
 
 import 'jquery-ui-dist/jquery-ui.js'
 
@@ -36,6 +37,7 @@ window.GeoJsonEditor = GeoJsonEditor
 window.AdminPopUp = AdminPopUp
 window.UploadAdapter = UploadAdapter
 window.ky = ky
+window.solveCaptcha = Puzzle.solve;
 
 import('../navigation/js/jquery-sortable-lists.min.js')
 import('bootstrap/dist/js/bootstrap.js')
