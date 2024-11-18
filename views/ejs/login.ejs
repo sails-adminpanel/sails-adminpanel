@@ -14,6 +14,33 @@
 		.alerts {
 			padding-left: 24px !important;
 		}
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 4px solid transparent;
+            border-top-color: blue;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .checkmark {
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            transition: stroke-dashoffset 0.5s ease-in-out;
+        }
+
+        .checkmark.visible {
+            stroke-dashoffset: 0;
+        }
     </style>
 </head>
 
@@ -73,33 +100,89 @@
                         <%= __("Register") %>
                     </a>
                 </div>
+
+                <!-- Captcha -->
+                <div class="bg-white rounded-lg shadow-lg p-4 mt-6 flex items-center space-x-4">
+                    <div class="relative">
+                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z" />
+                            </svg>
+                        </div>
+                        <div id="spinner" class="spinner absolute inset-0 m-auto hidden"></div>
+                    </div>
+                    <span id="robot-text" class="text-gray-600 font-semibold">I'm not a robot</span>
+                    <svg id="checkmark" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-500 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                        <path class="checkmark" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
             </div>
         </form>
     </div>
 </div>
 <script>
-	//dark-mode
-	const dark = localStorage.getItem('__dark-mode')
-	const html = document.querySelector('html')
+  // Dark-mode
+  const dark = localStorage.getItem('__dark-mode');
+  const html = document.querySelector('html');
 
-	if (dark === '1') {
-		html.classList.add('dark')
-	}
+  if (dark === '1') {
+    html.classList.add('dark');
+  }
 
-    async function solveCaptchaAndSubmit() {
+  async function solveCaptchaAndSubmit() {
+    const spinner = document.getElementById('spinner');
+    const robotText = document.getElementById('robot-text');
+    const checkmark = document.getElementById('checkmark');
+
+    try {
+      // Disable all buttons and links
+      const buttons = document.querySelectorAll('button');
+      buttons.forEach(button => button.disabled = true);
+
+      const links = document.querySelectorAll('a');
+      links.forEach(link => {
+        link.style.pointerEvents = 'none';
+        link.href = '#';
+      });
+
+      // Show spinner
+      spinner.classList.remove('hidden');
+      robotText.textContent = "Solving CAPTCHA...";
+
+      function sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      // spinner does not have time to appear, so call sleep function
+      await sleep(1000)
+
+      // Start solving
       const puzzle = new Uint8Array(<%- JSON.stringify(captchaTask) %>);
-      console.log("Start solving")
       const solution = await window.solveCaptcha(puzzle);
-      console.log("Finish solving")
+
+      // CAPTCHA solved
+      robotText.textContent = "Verification complete!";
+      spinner.classList.add('hidden');
+      checkmark.classList.remove('hidden');
+
+      // Checkmark animation
+      setTimeout(() => {
+        checkmark.querySelector('.checkmark').classList.add('visible');
+      }, 100);
 
       document.getElementById("captchaSolution").value = solution;
       document.getElementById("loginForm").submit();
+    } catch (error) {
+      console.error("Error solving CAPTCHA:", error);
+      robotText.textContent = "Error solving CAPTCHA. Try again.";
+      spinner.classList.add('hidden');
     }
+  }
 
-    document.getElementById("loginForm").addEventListener("submit", (event) => {
+  document.getElementById("loginForm").addEventListener("submit", (event) => {
     event.preventDefault();
     solveCaptchaAndSubmit();
-    });
+  });
 </script>
 </body>
 </html>
