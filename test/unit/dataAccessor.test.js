@@ -4,7 +4,7 @@ require("mocha");
 const chai_1 = require("chai");
 const DataAccessor_1 = require("../../lib/v4/DataAccessor");
 let entityMock = require("../datamocks/entityMock");
-// TODO expand test and check also about populated fields
+// TODO expand test and check another methods like sanitize
 describe('getFieldsConfig - additional cases', () => {
     let adminUser, editorUser, managerUser, defaultUser;
     let entity, instance;
@@ -63,5 +63,39 @@ describe('getFieldsConfig - additional cases', () => {
         instance = new DataAccessor_1.DataAccessor(adminUser, entity, 'add');
         const result = instance.getFieldsConfig();
         (0, chai_1.expect)(result).to.not.have.property('title'); // `title` should be ignored in `add`
+    });
+    it('`guardedField` in `populated` config for self-association', () => {
+        instance = new DataAccessor_1.DataAccessor(adminUser, entity, 'edit');
+        const result = instance.getFieldsConfig();
+        (0, chai_1.expect)(result).to.have.property('selfAssociation');
+        const populated = result.selfAssociation.populated;
+        (0, chai_1.expect)(populated).to.be.an('object');
+        (0, chai_1.expect)(populated).to.have.property('guardedField');
+        instance = new DataAccessor_1.DataAccessor(defaultUser, entity, 'edit');
+        const resultForDefault = instance.getFieldsConfig();
+        const defaultPopulated = resultForDefault.selfAssociation.populated;
+        (0, chai_1.expect)(defaultPopulated).to.be.undefined; // Default user does not have access
+    });
+    it('Association fields are populated correctly for `edit` action', () => {
+        instance = new DataAccessor_1.DataAccessor(managerUser, entity, 'edit');
+        const result = instance.getFieldsConfig();
+        const associated = result.selfAssociation.populated;
+        (0, chai_1.expect)(associated).to.be.an('object');
+        (0, chai_1.expect)(associated).to.have.property('title'); // Fields from associated model
+        (0, chai_1.expect)(associated).to.not.have.property('guardedField'); // No access for manager
+    });
+    it('Populated fields respect group access rights', () => {
+        instance = new DataAccessor_1.DataAccessor(editorUser, entity, 'add');
+        const result = instance.getFieldsConfig();
+        const associated = result.selfAssociation.populated;
+        (0, chai_1.expect)(associated).to.be.an('object');
+        (0, chai_1.expect)(associated).to.have.property('guardedField'); // Access for editor
+        (0, chai_1.expect)(associated.guardedField.config.title).to.equal('Restricted Field');
+    });
+    it('Populated fields handle missing associations gracefully', () => {
+        instance = new DataAccessor_1.DataAccessor(adminUser, entity, 'edit');
+        const result = instance.getFieldsConfig();
+        const unrelated = result.unrelatedAssociation;
+        (0, chai_1.expect)(unrelated).to.be.undefined; // Association missing
     });
 });

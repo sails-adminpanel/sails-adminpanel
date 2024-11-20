@@ -41,6 +41,11 @@
         "title": "Guarded Field",
         "groupsAccessRight": ["admin", "editor"],
         "type": "string"
+      },
+      "selfAssociation": {
+        "title": "Self Association",
+        "type": "association",
+        "model": "test"
       }
     },
     "icon": "flask"
@@ -48,26 +53,10 @@
   "model": {
     "modelname": "Test",
     "attributes": {
-      "title": {
-        "type": "string",
-        "required": true,
-        "autoMigrations": { "unique": false, "autoIncrement": false, "columnType": "_string" }
-      },
-      "number": {
-        "type": "number",
-        "autoMigrations": { "unique": false, "autoIncrement": false, "columnType": "_number" },
-        "required": false
-      },
-      "color": {
-        "type": "string",
-        "autoMigrations": { "unique": false, "autoIncrement": false, "columnType": "_string" },
-        "required": false
-      },
-      "guardedField": {
-        "type": "string",
-        "autoMigrations": { "unique": false, "autoIncrement": false, "columnType": "_string" },
-        "required": false
-      }
+      "title": { "type": "string", "required": true },
+      "number": { "type": "number" },
+      "guardedField": { "type": "string" },
+      "selfAssociation": { "model": "test" }
     },
     "primaryKey": "id",
     "identity": "test"
