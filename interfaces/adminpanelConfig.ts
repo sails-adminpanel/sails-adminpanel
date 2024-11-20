@@ -200,7 +200,6 @@ export interface AdminpanelConfig {
 		login: string
 		password: string
 	}
-	// TODO (look in task.md)
 	registration?: {
 		enable: boolean
 		defaultUserGroup: string // group name that is considered to be default
@@ -319,7 +318,10 @@ export interface ModelConfig {
 	identifierField?: string
 	/** In this field we can set model field, for which we want to check user access right.
 	 *  May be association or association-many to UserAP or GroupAP */
-	userAccessRelation?: string
+	userAccessRelation?: {
+		field: string // field that associates to the intermediate model
+		via: string // field in intermediate model that associates with userap/groupap
+	} | string
 	userAccessRelationCallback?: (userWithGroups: UserWithGroups, record: any) => boolean
 }
 

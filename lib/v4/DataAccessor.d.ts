@@ -27,5 +27,6 @@ export declare class DataAccessor {
     private filterAssociatedRecord;
     /** Process for an array of records */
     processMany<T>(records: T[]): Partial<T>[];
-    sanitizeUserRelationAccess<T>(criteria: T): Partial<T>;
+    sanitizeUserRelationAccess<T>(criteria: T): Promise<Partial<T>>;
+    setUserRelationAccess<T>(record: T): Promise<Partial<T>>;
 }

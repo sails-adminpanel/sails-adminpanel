@@ -254,7 +254,10 @@ export interface ModelConfig {
     identifierField?: string;
     /** In this field we can set model field, for which we want to check user access right.
      *  May be association or association-many to UserAP or GroupAP */
-    userAccessRelation?: string;
+    userAccessRelation?: {
+        field: string;
+        via: string;
+    } | string;
     userAccessRelationCallback?: (userWithGroups: UserWithGroups, record: any) => boolean;
 }
 type UserWithGroups = UserAPRecord & {

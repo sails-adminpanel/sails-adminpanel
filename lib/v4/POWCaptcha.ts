@@ -11,7 +11,7 @@ export class POWCaptcha {
 
     if (!label) throw new Error(`Label not provided`);
 
-    let difficultyDuration = Number(process.env.CAPTCHA_POW_DIFFICULTY) || 7000; // Default: 7 seconds
+    let difficultyDuration = Number(process.env.CAPTCHA_POW_DIFFICULTY) || 3000; // Default: 3 seconds
     let attempt = 0;
 
     // Cleanup old tasks and count attempts

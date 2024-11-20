@@ -45,45 +45,45 @@ export abstract class AbstractModel<T> {
   protected abstract count(criteria: Partial<T> | undefined): Promise<number>;
 
   public async _create(data: T, dataAccessor: DataAccessor): Promise<Partial<T>> {
-    let _data = dataAccessor.process(data);
+    let _data = await dataAccessor.setUserRelationAccess(dataAccessor.process(data));
     let record = await this.create(_data);
     return dataAccessor.process(record);
   }
 
   public async _findOne(criteria: Partial<T>, dataAccessor: DataAccessor): Promise<Partial<T> | null> {
-    criteria = dataAccessor.sanitizeUserRelationAccess(criteria);
+    criteria = await dataAccessor.sanitizeUserRelationAccess(criteria);
     let record = await this.findOne(criteria);
     return record ? dataAccessor.process(record) : null;
   }
 
   public async _find(criteria: Partial<T>, dataAccessor: DataAccessor): Promise<Partial<T>[]> {
-    criteria = dataAccessor.sanitizeUserRelationAccess(criteria);
+    criteria = await dataAccessor.sanitizeUserRelationAccess(criteria);
     let records = await this.find(criteria);
     return records.map(record => dataAccessor.process(record));
   }
 
   public async _updateOne(criteria: Partial<T>, data: Partial<T>, dataAccessor: DataAccessor): Promise<Partial<T> | null> {
     let _data = dataAccessor.process(data);
-    criteria = dataAccessor.sanitizeUserRelationAccess(criteria);
+    criteria = await dataAccessor.sanitizeUserRelationAccess(criteria);
     let record = await this.updateOne(criteria, _data);
     return record ? dataAccessor.process(record) : null;
   }
 
   public async _update(criteria: Partial<T>, data: Partial<T>, dataAccessor: DataAccessor): Promise<Partial<T>[]> {
     let _data = dataAccessor.process(data);
-    criteria = dataAccessor.sanitizeUserRelationAccess(criteria);
+    criteria = await dataAccessor.sanitizeUserRelationAccess(criteria);
     let records = await this.update(criteria, _data);
     return records.map(record => dataAccessor.process(record));
   }
 
   public async _destroyOne(criteria: Partial<T>, dataAccessor: DataAccessor): Promise<Partial<T> | null> {
-    criteria = dataAccessor.sanitizeUserRelationAccess(criteria);
+    criteria = await dataAccessor.sanitizeUserRelationAccess(criteria);
     let record = await this.destroyOne(criteria);
     return record ? dataAccessor.process(record) : null;
   }
 
   public async _destroy(criteria: Partial<T>, dataAccessor: DataAccessor): Promise<Partial<T>[]> {
-    criteria = dataAccessor.sanitizeUserRelationAccess(criteria);
+    criteria = await dataAccessor.sanitizeUserRelationAccess(criteria);
     let records = await this.destroy(criteria);
     return records.map(record => dataAccessor.process(record));
   }
