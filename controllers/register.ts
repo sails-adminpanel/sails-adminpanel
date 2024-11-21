@@ -1,5 +1,5 @@
 export default async function register(req: ReqType, res: ResType) {
-  if (!sails.config.adminpanel.auth) {
+  if (!sails.config.adminpanel.auth || sails.config.adminpanel.registration?.enable !== true) {
     return res.redirect(`${sails.config.adminpanel.routePrefix}/`);
   }
 

@@ -9,7 +9,7 @@ export declare class DataAccessor {
     user: UserAPRecord;
     entity: Entity;
     action: ActionType;
-    fields: Fields;
+    private fields;
     constructor(user: UserAPRecord, entity: Entity, action: ActionType);
     /**
      * Retrieves the fields for the given entity based on action type,

@@ -40,7 +40,7 @@ async function edit(req, res) {
         sails.log.error(e);
         return res.serverError();
     }
-    let fields = dataAccessor.fields;
+    let fields = dataAccessor.getFieldsConfig();
     // add deprecated 'records' to config
     fields = await fieldsHelper_1.FieldsHelper.loadAssociations(fields, req.session.UserAP, "edit");
     // Save

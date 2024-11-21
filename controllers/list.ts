@@ -1,6 +1,7 @@
 import { AdminUtil } from "../lib/adminUtil";
 import { FieldsHelper } from "../helper/fieldsHelper";
 import { AccessRightsHelper } from "../helper/accessRightsHelper";
+import {DataAccessor} from "../lib/v4/DataAccessor";
 
 export default async function list(req: ReqType, res: ResType) {
   let entity = AdminUtil.findEntityObject(req);
@@ -16,7 +17,8 @@ export default async function list(req: ReqType, res: ResType) {
     }
   }
 
-  let fields = FieldsHelper.getFields(req, entity, "list");
+  let dataAccessor = new DataAccessor(req.session.UserAP, entity, "list");
+  let fields = dataAccessor.getFieldsConfig();
 
   res.viewAdmin({
     entity: entity,

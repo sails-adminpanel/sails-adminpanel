@@ -26,12 +26,11 @@ export default async function view(req: ReqType, res: ResType) {
         }
     }
 
-    let fields = FieldsHelper.getFields(req, entity, 'view');
+    let dataAccessor = new DataAccessor(req.session.UserAP, entity, "view");
+    let fields = dataAccessor.getFieldsConfig();
 
     let record;
-    let dataAccessor;
     try {
-        dataAccessor = new DataAccessor(req.session.UserAP, entity, "view");
         record = await entity.model._findOne(req.param('id'), dataAccessor);
     } catch (e) {
         sails.log.error('Admin edit error: ');

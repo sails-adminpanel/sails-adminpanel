@@ -14,7 +14,7 @@ export class DataAccessor {
   user: UserAPRecord;
   entity: Entity;
   action: ActionType
-  fields: Fields = null;
+  private fields: Fields = null;
 
   constructor(user: UserAPRecord, entity: Entity, action: ActionType) {
     this.user = user;
@@ -28,6 +28,10 @@ export class DataAccessor {
    * @returns {Fields} An object with configured fields and their properties.
    */
   public getFieldsConfig(): Fields {
+    if (this.fields !== null) {
+      return this.fields;
+    }
+
     if (!this.entity.model || !this.entity.model.attributes) {
       return {};
     }
@@ -83,7 +87,7 @@ export class DataAccessor {
         } else {
           if (typeof combinedFieldConfig === "object") {
             /** Access rights check (check groupsAccessRights field if exists, if not - allow to all except default user group) */
-            ignoreField = !this.checkFieldAccess(combinedFieldConfig);
+            ignoreField = !this.checkFieldAccess(key, combinedFieldConfig);
           }
 
           fldConfig = { ...fldConfig, ...ConfigHelper.normalizeFieldConfig(combinedFieldConfig, key, modelField) };
@@ -163,7 +167,7 @@ export class DataAccessor {
 
       // If fieldConfig exists, normalize it and merge with the basic config
       if (fieldConfig && typeof fieldConfig === "object") {
-        const hasAccess = this.checkFieldAccess(fieldConfig);
+        const hasAccess = this.checkFieldAccess(key, fieldConfig);
 
         // Skip the field if access is denied
         if (!hasAccess) return;
@@ -181,7 +185,11 @@ export class DataAccessor {
     return associatedFields;
   }
 
-  private checkFieldAccess(fieldConfig: ModelFieldConfig): boolean {
+  private checkFieldAccess(key: string, fieldConfig: ModelFieldConfig): boolean {
+    if (this.entity.model.primaryKey === key) {
+      return true;
+    }
+
     if (this.user.isAdministrator) {
       return true;
     }
@@ -216,7 +224,7 @@ export class DataAccessor {
       if (!fieldConfig) continue;
 
       // Check access to the field
-      if (this.checkFieldAccess(fieldConfig.config)) {
+      if (this.checkFieldAccess(fieldKey, fieldConfig.config)) {
         const fieldType = fieldConfig.config.type;
 
         // Handle fields that are not associations
@@ -277,7 +285,7 @@ export class DataAccessor {
       const assocFieldConfig = associatedFieldsConfig[assocFieldKey];
       const assocFieldValue = associatedRecord[assocFieldKey];
 
-      if (assocFieldConfig && this.checkFieldAccess(assocFieldConfig.config)) {
+      if (assocFieldConfig && this.checkFieldAccess(assocFieldKey, assocFieldConfig.config)) {
         filteredAssociatedRecord[assocFieldKey] = assocFieldValue;
       }
     }
@@ -380,7 +388,11 @@ export class DataAccessor {
         }
 
         // Add the intermediate record ID to the criteria
-        criteria[field] = intermediateRecord.id;
+        if (typeof criteria.where !== "undefined") {
+          criteria.where[field] = intermediateRecord.id;
+        } else {
+          criteria[field] = intermediateRecord.id;
+        }
 
       }
     }

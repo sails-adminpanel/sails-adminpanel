@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = register;
 async function register(req, res) {
-    if (!sails.config.adminpanel.auth) {
+    if (!sails.config.adminpanel.auth || sails.config.adminpanel.registration?.enable !== true) {
         return res.redirect(`${sails.config.adminpanel.routePrefix}/`);
     }
     if (req.method.toUpperCase() === "POST") {

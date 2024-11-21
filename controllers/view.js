@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = view;
 const adminUtil_1 = require("../lib/adminUtil");
-const fieldsHelper_1 = require("../helper/fieldsHelper");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 const DataAccessor_1 = require("../lib/v4/DataAccessor");
 async function view(req, res) {
@@ -25,11 +24,10 @@ async function view(req, res) {
             return res.sendStatus(403);
         }
     }
-    let fields = fieldsHelper_1.FieldsHelper.getFields(req, entity, 'view');
+    let dataAccessor = new DataAccessor_1.DataAccessor(req.session.UserAP, entity, "view");
+    let fields = dataAccessor.getFieldsConfig();
     let record;
-    let dataAccessor;
     try {
-        dataAccessor = new DataAccessor_1.DataAccessor(req.session.UserAP, entity, "view");
         record = await entity.model._findOne(req.param('id'), dataAccessor);
     }
     catch (e) {

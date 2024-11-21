@@ -46,7 +46,7 @@ export default async function edit(req: ReqType, res: ResType) {
 		return res.serverError();
 	}
 
-	let fields = dataAccessor.fields;
+	let fields = dataAccessor.getFieldsConfig();
 
 	// add deprecated 'records' to config
 	fields = await FieldsHelper.loadAssociations(fields, req.session.UserAP, "edit");

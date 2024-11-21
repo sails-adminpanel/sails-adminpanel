@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = list;
 const adminUtil_1 = require("../lib/adminUtil");
-const fieldsHelper_1 = require("../helper/fieldsHelper");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
+const DataAccessor_1 = require("../lib/v4/DataAccessor");
 async function list(req, res) {
     let entity = adminUtil_1.AdminUtil.findEntityObject(req);
     if (!entity.model) {
@@ -17,7 +17,8 @@ async function list(req, res) {
             return res.sendStatus(403);
         }
     }
-    let fields = fieldsHelper_1.FieldsHelper.getFields(req, entity, "list");
+    let dataAccessor = new DataAccessor_1.DataAccessor(req.session.UserAP, entity, "list");
+    let fields = dataAccessor.getFieldsConfig();
     res.viewAdmin({
         entity: entity,
         fields: fields,

@@ -1,5 +1,4 @@
 import { ActionType, BaseFieldConfig } from "../interfaces/adminpanelConfig";
-import { Entity } from "../interfaces/types";
 import { UserAPRecord } from "../models/UserAP";
 export type FieldModel = {
     allowNull?: boolean;
@@ -121,33 +120,4 @@ export declare class FieldsHelper {
      * @returns {Array}
      */
     static getFieldsToPopulate(fields: Fields): string[];
-    /**
-     * Basically it will fetch all attributes without functions
-     *
-     * Result will be object with list of fields and its config.<br/>
-     * <code>
-     *  {
-     *      "fieldName": {
-     *          config: {
-     *              key: 'fieldKeyFromModel'
-     *              title: "Field title",
-     *              type: "string", //Or any other type. Will be fetched from model if not defined in config
-     *              // ... Other config will be added here
-     *          },
-     *          model: {
-     *              // Here will be list of properties from your model
-     *              type: 'string' //...
-     *          }
-     *      }
-     *  }
-     * </code>
-     *
-     * @param {Request} req Sails.js req object
-     * @param {Object} entity Entity object with `name`, `config`, `model` {@link AdminUtil.findEntityObject}
-     * @param {string=} [type] Type of action that config should be loaded for. Example: list, edit, add, remove, view. Defaut: list
-     * @returns {Object} Empty object or pbject with list of properties
-     * @deprecated use DataModel class
-     */
-    static getFields(
-    /** @deprecated */ req: ReqType, entity: Entity, type: ActionType): Fields;
 }

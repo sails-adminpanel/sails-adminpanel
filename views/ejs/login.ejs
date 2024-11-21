@@ -96,9 +96,11 @@
                     <button class="inline-flex justify-center items-center gap-1 whitespace-nowrap focus:outline-none transition-colors cursor-pointer rounded border py-2 px-3 text-white bg-blue-500 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-900 font-medium border-blue-500">
                         <%= __("Log in") %>
                     </button>
-                    <a href="/admin/model/userap/register" class="inline-flex justify-center items-center gap-1 whitespace-nowrap focus:outline-none transition-colors cursor-pointer rounded border py-2 px-3 text-white bg-gray-500 dark:bg-gray-700 hover:bg-gray-700 dark:hover:bg-gray-900 font-medium border-gray-500">
-                        <%= __("Register") %>
-                    </a>
+                    <% if (sails.config.adminpanel.registration?.enable === true) { %>
+                        <a href="/admin/model/userap/register" class="inline-flex justify-center items-center gap-1 whitespace-nowrap focus:outline-none transition-colors cursor-pointer rounded border py-2 px-3 text-white bg-gray-500 dark:bg-gray-700 hover:bg-gray-700 dark:hover:bg-gray-900 font-medium border-gray-500">
+                            <%= __("Register") %>
+                        </a>
+                    <% } %>
                 </div>
 
                 <!-- Captcha -->

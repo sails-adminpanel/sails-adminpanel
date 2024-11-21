@@ -69,6 +69,15 @@
                             </div>
                         </div>
                     <% } %>
+                    <% if (req.session.UserAP.isAdministrator) { %>
+                        <div class="flex flex-col gap-3">
+                            <label class="admin-panel__title" for="isConfirmed"><%= __("Is confirmed") %></label>
+                            <div class="checkbox relative">
+                                <input type="checkbox" id="isConfirmed" name="isConfirmed">
+                                <span class="check"></span>
+                            </div>
+                        </div>
+                    <% } %>
                 </div>
             </div>
 
