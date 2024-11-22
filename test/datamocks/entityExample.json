@@ -48,7 +48,8 @@
         "model": "test"
       }
     },
-    "icon": "flask"
+    "icon": "flask",
+    "userAccessRelation": "userField"
   },
   "model": {
     "modelname": "Test",
@@ -57,7 +58,8 @@
       "number": { "type": "number" },
       "color": {"type": "string"},
       "guardedField": { "type": "string" },
-      "selfAssociation": { "model": "test" }
+      "selfAssociation": { "model": "test" },
+      "userField": { "model": "UserAP" }
     },
     "primaryKey": "id",
     "identity": "test"

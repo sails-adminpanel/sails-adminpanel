@@ -3,12 +3,10 @@ import { expect } from "chai";
 import {UserAPRecord} from "../../models/UserAP";
 import {Entity} from "../../interfaces/types";
 import {DataAccessor} from "../../lib/v4/DataAccessor";
-// let DataAccessor = require("../../lib/v4/DataAccessor")
 /** Warning! Changing entityExample, change also model and config */
 let entityMock = require("../datamocks/entityExample");
 
 // TODO expand test and check another methods like sanitize
-// TODO fix with add.test.ts and hookMethods
 
 describe('Data accessor test', () => {
   let adminUser: UserAPRecord, editorUser: UserAPRecord, managerUser: UserAPRecord, defaultUser: UserAPRecord;
@@ -16,9 +14,9 @@ describe('Data accessor test', () => {
 
   beforeEach(() => {
     // Create mock users with different group permissions
-    adminUser = { groups: [{ name: "admin" }] };
+    adminUser = { isAdministrator: true, groups: [{ name: "admin" }] };
     editorUser = { groups: [{ name: "editor" }] };
-    managerUser = { groups: [{ name: "manager" }] };
+    managerUser = { id: "user123", groups: [{ name: "manager" }] };
     defaultUser = { groups: [{ name: "default user group" }] };
 
     // Make a deep copy of the Entity for each test
@@ -128,5 +126,36 @@ describe('Data accessor test', () => {
     expect(associated).to.be.an('object');
     expect(associated).to.have.property('guardedField'); // Access for editor
     expect(associated.guardedField.config.title).to.equal('Restricted Field');
+  });
+
+  it('should return criteria unchanged for administrators', async () => {
+    let {DataAccessor} = require("../../lib/v4/DataAccessor")
+
+    instance = new DataAccessor(adminUser, entity, 'add');
+    const criteria = { someField: 'value' };
+    const result = await instance.sanitizeUserRelationAccess(criteria);
+
+    expect(result).to.deep.equal(criteria);
+  });
+
+  it('should throw an error for invalid userAccessRelation configuration', async () => {
+    let {DataAccessor} = require("../../lib/v4/DataAccessor")
+
+    instance = new DataAccessor(adminUser, entity, 'add');
+    try {
+      await instance.sanitizeUserRelationAccess({});
+    } catch (error) {
+      expect(error.message).to.equal('Invalid userAccessRelation configuration for model TestModel');
+    }
+  });
+
+  it('should filter by user ID for UserAP relation', async () => {
+    let {DataAccessor} = require("../../lib/v4/DataAccessor")
+
+    instance = new DataAccessor(managerUser, entity, 'add');
+    const criteria = {};
+    const result = await instance.sanitizeUserRelationAccess(criteria);
+
+    expect(result).to.deep.equal({ userField: 'user123' });
   });
 });
