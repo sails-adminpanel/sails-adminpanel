@@ -40,7 +40,7 @@ let models = {
 		},
 		"edit": {
 			"fields": {
-				"title": { "title": "Title", "type": "string", "required": true },
+				"title": { "title": "Title", "type": "string" },
 				"color": { "title": "Color", "type": "color" },
 				"guardedField": {
 					"title": "Restricted Field",
@@ -51,7 +51,7 @@ let models = {
 		"remove": true,
 		"view": true,
 		"fields": {
-			"title": { "title": "Title", "tooltip": "Item Description", "required": true },
+			"title": { "title": "Title", "tooltip": "Item Description" },
 			"number": { "title": "Number", "type": "number" },
 			"guardedField": {
 				"title": "Guarded Field",

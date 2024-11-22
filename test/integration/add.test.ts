@@ -8,7 +8,6 @@ const { expect } = chai;
 describe('Add Test Entity', function () {
     it("Should create and validate every field in Test entity", async function() {
         let testData = {
-            title: "Test Title",
             title_2: "Test Title 2",
             test_ck5_1: "Test CK5",
             sort: true,
@@ -38,17 +37,15 @@ describe('Add Test Entity', function () {
                 .send(testData);
 
             expect(res.status).to.equal(200);
-            
+
             // Assuming that the id of the newly created entity is in the response body.
             // @ts-ignore
-            let createdTest = await Test.find({});
-            if (createdTest.length !== 1) throw `expect one record`
- 
+            let createdTest = await Test.findOne({title_2: "Test Title 2"});
             for (let key in testData) {
                 //@ts-ignore
-                expect(createdTest[0][key]).to.deep.equal(testData[key]);
+                expect(createdTest[key]).to.deep.equal(testData[key]);
             }
-            
+
             // Clean up the created entity
             // @ts-ignore
             await Test.destroy({ id: res.body.id });

@@ -8,6 +8,7 @@ import {DataAccessor} from "../../lib/v4/DataAccessor";
 let entityMock = require("../datamocks/entityExample");
 
 // TODO expand test and check another methods like sanitize
+// TODO fix with add.test.ts and hookMethods
 
 describe('Data accessor test', () => {
   let adminUser: UserAPRecord, editorUser: UserAPRecord, managerUser: UserAPRecord, defaultUser: UserAPRecord;

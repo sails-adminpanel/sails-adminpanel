@@ -101,5 +101,20 @@
 	"navigationap": "navigationap",
 	"Select Ids": "Select Ids",
 	"createdAt": "createdAt",
-	"updatedAt": "updatedAt"
+	"updatedAt": "updatedAt",
+	"Invalid new record.\nDetails:\n  Missing value for required attribute `title`.  Expected a string, but instead, got: undefined\n": "Invalid new record.\nDetails:\n  Missing value for required attribute `title`.  Expected a string, but instead, got: undefined\n",
+	"title_2": "title_2",
+	"test_ck5_1": "test_ck5_1",
+	"sort": "sort",
+	"sort_test": "sort_test",
+	"datatable": "datatable",
+	"image": "image",
+	"datetime": "datetime",
+	"date": "date",
+	"Number": "Number",
+	"schedule": "schedule",
+	"Restricted Field": "Restricted Field",
+	"Self Association": "Self Association",
+	"Color": "Color",
+	"Guarded Field": "Guarded Field"
 }

@@ -6,6 +6,7 @@ const chai_1 = require("chai");
 /** Warning! Changing entityExample, change also model and config */
 let entityMock = require("../datamocks/entityExample");
 // TODO expand test and check another methods like sanitize
+// TODO fix with add.test.ts and hookMethods
 describe('Data accessor test', () => {
     let adminUser, editorUser, managerUser, defaultUser;
     let entity, instance;

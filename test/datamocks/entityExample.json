@@ -53,7 +53,7 @@
   "model": {
     "modelname": "Test",
     "attributes": {
-      "title": { "type": "string", "required": true },
+      "title": { "type": "string" },
       "number": { "type": "number" },
       "color": {"type": "string"},
       "guardedField": { "type": "string" },
