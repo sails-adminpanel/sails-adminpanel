@@ -33,6 +33,7 @@ async function default_1(req, res) {
             }
         }
         let isAdministrator = req.body.isAdmin === "on";
+        let isConfirmed = req.body.isConfirmed === "on";
         let locale;
         if (typeof sails.config.adminpanel.translation !== "boolean") {
             locale = req.body.locale === 'default' ? sails.config.adminpanel.translation.defaultLocale : req.body.locale;
@@ -41,7 +42,7 @@ async function default_1(req, res) {
         try {
             user = await UserAP.create({ login: req.body.login, fullName: req.body.fullName, email: req.body.email,
                 password: req.body.userPassword, timezone: req.body.timezone, expires: req.body.date,
-                locale: locale, isAdministrator: isAdministrator, groups: userGroups }).fetch();
+                locale: locale, isAdministrator: isAdministrator, isConfirmed: isConfirmed, groups: userGroups }).fetch();
             sails.log.debug(`A new user was created: `, user);
             req.session.messages.adminSuccess.push('A new user was created !');
             return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap`);

@@ -59,15 +59,8 @@ export class DataAccessor {
         }
       }
 
-      // TODO uncomment after fixing widget association problem
-      // // Ignore identifier field for add action
-      // if (this.action === "add" && key === sails.config.adminpanel.identifierField) {
-      //   return;
-      // }
-
       // Getting base field config
       let fldConfig: Field["config"] = { key: key, title: key };
-      let ignoreField = false; // if set to true, field will be removed from editor/list
 
       /** Combine the field configuration from global and action-specific configs
        *  (now combine it before check, earlier was opposite).
@@ -81,21 +74,13 @@ export class DataAccessor {
             : fieldsConfig[key];
 
       if (combinedFieldConfig !== undefined) {
-        if (combinedFieldConfig === false) {
-          // if config is set to false ignore this field
-          ignoreField = true;
-        } else {
-          if (typeof combinedFieldConfig === "object") {
-            /** Access rights check (check groupsAccessRights field if exists, if not - allow to all except default user group) */
-            ignoreField = !this.checkFieldAccess(key, combinedFieldConfig);
-          }
-
-          fldConfig = { ...fldConfig, ...ConfigHelper.normalizeFieldConfig(combinedFieldConfig, key, modelField) };
+        /** Access rights check (check groupsAccessRights field if exists, if not - allow to all except default user group) */
+        let hasAccess = this.checkFieldAccess(key, combinedFieldConfig);
+        if (!hasAccess) {
+          return;
         }
-      }
 
-      if (ignoreField) {
-        return;
+        fldConfig = { ...fldConfig, ...ConfigHelper.normalizeFieldConfig(combinedFieldConfig, key, modelField) };
       }
 
       // Populate associated fields configuration if field is an association
@@ -159,14 +144,11 @@ export class DataAccessor {
     Object.entries(Model.attributes).forEach(([key, modelField]) => {
       const fieldConfig = mergedFieldsConfig[key];
 
-      // If config is set to false skip this field
-      if (fieldConfig === false) return;
-
       // Creating a basic config
       let fldConfig: Field["config"] = { key: key, title: key };
 
       // If fieldConfig exists, normalize it and merge with the basic config
-      if (fieldConfig && typeof fieldConfig === "object") {
+      if (fieldConfig) {
         const hasAccess = this.checkFieldAccess(key, fieldConfig);
 
         // Skip the field if access is denied
@@ -185,12 +167,21 @@ export class DataAccessor {
     return associatedFields;
   }
 
-  private checkFieldAccess(key: string, fieldConfig: ModelFieldConfig): boolean {
+  private checkFieldAccess(key: string, fieldConfig: ModelFieldConfig | boolean | string): boolean {
+    // If config is set to false skip this field
+    if (fieldConfig === false) {
+      return false;
+    }
+
     if (this.entity.model.primaryKey === key) {
       return true;
     }
 
     if (this.user.isAdministrator) {
+      return true;
+    }
+
+    if (typeof fieldConfig !== "object") {
       return true;
     }
 

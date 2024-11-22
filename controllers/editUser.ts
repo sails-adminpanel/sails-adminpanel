@@ -50,6 +50,7 @@ export default async function(req: ReqType, res: ResType) {
         }
 
         let isAdministrator = req.body.isAdmin === "on";
+        let isConfirmed = req.body.isConfirmed === "on";
 
         let locale: string
         if(typeof sails.config.adminpanel.translation !== "boolean") {
@@ -60,7 +61,7 @@ export default async function(req: ReqType, res: ResType) {
         try {
             updatedUser = await UserAP.update({id: user.id}, {login: req.body.login, fullName: req.body.fullName,
                 email: req.body.email, timezone: req.body.timezone, expires: req.body.date,
-                locale: locale, isAdministrator: isAdministrator, groups: userGroups}).fetch();
+                locale: locale, isAdministrator: isAdministrator, isConfirmed: isConfirmed, groups: userGroups}).fetch();
             if (req.body.userPassword) {
                 updatedUser = await UserAP.update({id: user.id}, {login: req.body.login, password: req.body.userPassword}).fetch();
             }

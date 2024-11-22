@@ -71,7 +71,9 @@ module.exports = {
 		},
 		geojson: {
 			type: 'json'
-		}
+		},
+		"guardedField": { "type": "string" },
+		"selfAssociation": { "model": "test" }
 	}
 };
 

@@ -15,7 +15,7 @@
         "title": false,
         "guardedField": {
           "title": "Restricted Field",
-          "groupsAccessRight": ["admin", "editor"],
+          "groupsAccessRights": ["admin", "editor"],
           "type": "string"
         }
       }
@@ -26,7 +26,7 @@
         "color": { "title": "Color", "type": "color" },
         "guardedField": {
           "title": "Restricted Field",
-          "groupsAccessRight": ["admin", "manager"]
+          "groupsAccessRights": ["admin", "manager"]
         }
       }
     },
@@ -39,7 +39,7 @@
       "number": { "title": "Number", "type": "number" },
       "guardedField": {
         "title": "Guarded Field",
-        "groupsAccessRight": ["admin", "editor"],
+        "groupsAccessRights": ["admin", "editor"],
         "type": "string"
       },
       "selfAssociation": {
@@ -55,6 +55,7 @@
     "attributes": {
       "title": { "type": "string", "required": true },
       "number": { "type": "number" },
+      "color": {"type": "string"},
       "guardedField": { "type": "string" },
       "selfAssociation": { "model": "test" }
     },

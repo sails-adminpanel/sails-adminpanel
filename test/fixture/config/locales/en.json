@@ -98,5 +98,8 @@
 	"Is Administrator": "Is Administrator",
 	"Leave this field empty if you don't want to change the password": "Leave this field empty if you don't want to change the password",
 	"Wrong username or password": "Wrong username or password",
-	"navigationap": "navigationap"
+	"navigationap": "navigationap",
+	"Select Ids": "Select Ids",
+	"createdAt": "createdAt",
+	"updatedAt": "updatedAt"
 }

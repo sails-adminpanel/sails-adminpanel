@@ -47,6 +47,7 @@ async function default_1(req, res) {
             }
         }
         let isAdministrator = req.body.isAdmin === "on";
+        let isConfirmed = req.body.isConfirmed === "on";
         let locale;
         if (typeof sails.config.adminpanel.translation !== "boolean") {
             locale = req.body.locale === 'default' ? sails.config.adminpanel.translation.defaultLocale : req.body.locale;
@@ -55,7 +56,7 @@ async function default_1(req, res) {
         try {
             updatedUser = await UserAP.update({ id: user.id }, { login: req.body.login, fullName: req.body.fullName,
                 email: req.body.email, timezone: req.body.timezone, expires: req.body.date,
-                locale: locale, isAdministrator: isAdministrator, groups: userGroups }).fetch();
+                locale: locale, isAdministrator: isAdministrator, isConfirmed: isConfirmed, groups: userGroups }).fetch();
             if (req.body.userPassword) {
                 updatedUser = await UserAP.update({ id: user.id }, { login: req.body.login, password: req.body.userPassword }).fetch();
             }

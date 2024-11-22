@@ -5,7 +5,6 @@ import {CreateUpdateConfig} from "../interfaces/adminpanelConfig";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import {saveRelationsMediaManager} from "../lib/media-manager/helpers/MediaManagerHelper";
 import {DataAccessor} from "../lib/v4/DataAccessor";
-import {GroupAPRecord} from "../models/GroupAP";
 
 export default async function add(req: ReqType, res: ResType) {
 	let entity = AdminUtil.findEntityObject(req);
