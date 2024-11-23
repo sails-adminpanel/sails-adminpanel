@@ -1,7 +1,7 @@
 import { AdminUtil } from "../lib/adminUtil";
 import { RequestProcessor } from "../lib/requestProcessor";
 import { FieldsHelper } from "../helper/fieldsHelper";
-import { CreateUpdateConfig, MediaManagerOptionsField } from "../interfaces/adminpanelConfig";
+import {BaseFieldConfig, CreateUpdateConfig, MediaManagerOptionsField} from "../interfaces/adminpanelConfig";
 import { AccessRightsHelper } from "../helper/accessRightsHelper";
 import { CatalogHandler } from "../lib/catalog/CatalogHandler";
 import {
@@ -77,7 +77,8 @@ export default async function edit(req: ReqType, res: ResType) {
 				reqData[prop] = null
 			}
 
-			if (fields[prop].config.type === 'select-many') {
+			let fieldConfigConfig = fields[prop].config as BaseFieldConfig;
+			if (fieldConfigConfig.type === 'select-many') {
 				reqData[prop] = reqData[prop].toString().split(",")
 			}
 
@@ -89,7 +90,7 @@ export default async function edit(req: ReqType, res: ResType) {
 				}
 			}
 
-			if (fields[prop].config.type === 'mediamanager' && typeof reqData[prop] === "string") {
+			if (fieldConfigConfig.type === 'mediamanager' && typeof reqData[prop] === "string") {
 				try {
 					const parsed = JSON.parse(reqData[prop] as string);
 					rawReqData[prop]  = parsed
@@ -161,12 +162,13 @@ export default async function edit(req: ReqType, res: ResType) {
 	} // END POST
 
 	for (const field of Object.keys(fields)) {
-		if (fields[field].config.type === 'mediamanager') {
+		let fieldConfigConfig = fields[field].config as BaseFieldConfig;
+		if (fieldConfigConfig.type === 'mediamanager') {
 			if (fields[field].model.type === 'association-many') {
-				console.log(fields[field].config.options);
+				console.log(fieldConfigConfig.options);
 				record[field] = await getRelationsMediaManager({
 					list: record[field],
-					mediaManagerId: (fields[field].config.options as MediaManagerOptionsField).id ?? "default"
+					mediaManagerId: (fieldConfigConfig.options as MediaManagerOptionsField).id ?? "default"
 				})
 			} else if (fields[field].model.type === "json") {
 				record[field] = await getRelationsMediaManager(record[field] as MediaManagerWidgetJSON)

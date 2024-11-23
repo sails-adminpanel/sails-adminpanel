@@ -13,7 +13,8 @@ export type Field = {
         key?: string
         required?: boolean
         type?: FieldsTypes
-    } | false
+        groupsAccessRights?: string[]
+    } | string | boolean
     /** for populated fields' configs */
     populated: {
         [key: string]: Field
@@ -206,10 +207,11 @@ export class FieldsHelper {
          * @param {function=} [cb]
          */
         let loadAssoc = async function (key: string, user?: UserAPRecord, action?: ActionType) {
-            if (fields[key].config.type !== 'association' && fields[key].config.type !== 'association-many') {
+            let fieldConfigConfig = fields[key].config as BaseFieldConfig & {records?: object[]};
+            if (fieldConfigConfig.type !== 'association' && fieldConfigConfig.type !== 'association-many') {
                 return;
             }
-            fields[key].config.records = [];
+            fieldConfigConfig.records = [];
 
             let modelName = fields[key].model.model || fields[key].model.collection;
 
@@ -237,7 +239,7 @@ export class FieldsHelper {
                 throw new Error("FieldsHelper > loadAssociations error");
             }
 
-            fields[key].config.records = list;
+            fieldConfigConfig.records = list;
         };
 
         for await (let key of Object.keys(fields)) {

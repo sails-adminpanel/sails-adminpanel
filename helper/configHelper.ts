@@ -1,8 +1,8 @@
 import {AdminpanelConfig, BaseFieldConfig, ModelConfig} from "../interfaces/adminpanelConfig";
 import Router from "../system/Router";
 import { getDefaultConfig, setDefaultConfig } from "../system/defaults";
-import {FieldModel} from "./fieldsHelper";
 import {AdminUtil} from "../lib/adminUtil";
+import {Attribute} from "../lib/v4/model/AbstractModel";
 export class ConfigHelper {
 
     public static addModelConfig(modelConfig: AdminpanelConfig["models"]): void {
@@ -94,7 +94,7 @@ export class ConfigHelper {
     public static normalizeFieldConfig(
       config: string | boolean | BaseFieldConfig,
       key: string,
-      modelField: FieldModel
+      modelField: Attribute
     ): false | BaseFieldConfig {
         if (typeof config === "undefined" || typeof key === "undefined") {
             throw new Error('No `config` or `key` passed!');

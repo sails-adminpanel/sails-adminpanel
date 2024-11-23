@@ -2,11 +2,8 @@ import "mocha";
 import { expect } from "chai";
 import {UserAPRecord} from "../../models/UserAP";
 import {Entity} from "../../interfaces/types";
-import {DataAccessor} from "../../lib/v4/DataAccessor";
 /** Warning! Changing entityExample, change also model and config */
 let entityMock = require("../datamocks/entityExample");
-
-// TODO expand test and check another methods like sanitize
 
 describe('Data accessor test', () => {
   let adminUser: UserAPRecord, editorUser: UserAPRecord, managerUser: UserAPRecord, defaultUser: UserAPRecord;

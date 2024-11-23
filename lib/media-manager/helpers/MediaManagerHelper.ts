@@ -28,7 +28,8 @@ export function randomFileName(filenameOrig: string, type: string, prefix: boole
  */
 export async function saveRelationsMediaManager(fields: Fields, reqData: PostParams, model: string, recordId: string) {
 	for (let prop in reqData) {
-		if (fields[prop]?.config?.type === 'mediamanager') {
+		let fieldConfigConfig = fields[prop].config as BaseFieldConfig;
+		if (fieldConfigConfig.type === 'mediamanager') {
 			let data = reqData[prop] as MediaManagerWidgetData;
 			let mediaManager = MediaManagerHandler.get(data.mediaManagerId)
 			await mediaManager.setRelations(data, model, recordId, prop)
