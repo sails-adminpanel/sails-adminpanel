@@ -3,7 +3,7 @@
  */
 import {UserAPRecord} from "../../models/UserAP";
 import {Entity} from "../../interfaces/types";
-import {ActionType, ModelFieldConfig} from "../../interfaces/adminpanelConfig";
+import {ActionType, FieldsTypes, ModelFieldConfig} from "../../interfaces/adminpanelConfig";
 import {Field, Fields} from "../../helper/fieldsHelper";
 import {AdminUtil} from "../adminUtil";
 import {ConfigHelper} from "../../helper/configHelper";
@@ -100,7 +100,7 @@ export class DataAccessor {
       // Set required and type attributes
       fldConfig.required = Boolean(fldConfig.required || modelField.required);
       // Default type for field. Could be fetched form config file or file model if not defined in config file.
-      fldConfig.type = (fldConfig.type || modelField.type).toLowerCase();
+      fldConfig.type = ((fldConfig.type || modelField.type).toLowerCase() as FieldsTypes);
 
       // Normalize final configuration
       fldConfig = ConfigHelper.normalizeFieldConfig(fldConfig, key, modelField);
@@ -135,7 +135,7 @@ export class DataAccessor {
 
     // Merge action-specific fields configuration if it exists
     let actionSpecificConfig = {};
-    if (modelConfig[this.action] && typeof modelConfig[this.action] !== "boolean") {
+    if (modelConfig[this.action] && typeof modelConfig[this.action] !== "boolean" && !["remove", "view"].includes(this.action)) {
       actionSpecificConfig = modelConfig[this.action].fields;
     }
     const mergedFieldsConfig = { ...fieldsConfig, ...actionSpecificConfig };

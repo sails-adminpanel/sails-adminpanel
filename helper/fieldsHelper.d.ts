@@ -1,23 +1,20 @@
-import { ActionType, BaseFieldConfig } from "../interfaces/adminpanelConfig";
+import { ActionType, BaseFieldConfig, FieldsTypes } from "../interfaces/adminpanelConfig";
+import { Attribute } from "../lib/v4/model/AbstractModel";
 import { UserAPRecord } from "../models/UserAP";
-export type FieldModel = {
-    allowNull?: boolean;
-    model?: string;
-    collection?: string;
-    required?: boolean;
-    type: 'association' | 'association-many' | 'number' | 'json' | 'string' | 'boolean' | 'ref';
-};
 export type Field = {
     config: BaseFieldConfig & {
         /** @deprecated record should not be in config anymore */
         records?: object[];
         file?: string;
-    };
+        key?: string;
+        required?: boolean;
+        type?: FieldsTypes;
+    } | false;
     /** for populated fields' configs */
     populated: {
         [key: string]: Field;
     } | undefined;
-    model: FieldModel;
+    model: Attribute;
 };
 export type Fields = {
     [key: string]: Field;

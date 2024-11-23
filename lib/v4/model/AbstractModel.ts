@@ -1,7 +1,7 @@
 import {DataAccessor} from "../DataAccessor";
 
 export interface Attribute {
-  type: string;
+  type: 'association' | 'association-many' | 'number' | 'json' | 'string' | 'boolean' | 'ref';
   required?: boolean;
   unique?: boolean;
   defaultsTo?: any;

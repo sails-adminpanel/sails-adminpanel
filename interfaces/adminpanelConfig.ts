@@ -7,7 +7,7 @@ import { EditorOptions } from "@toast-ui/editor/types/editor";
 export type TuiEditorOptions = EditorOptions;
 
 export type AdminpanelIcon = LineAwesomeIcon
-type FieldsTypes =
+export type FieldsTypes =
 	"string" |
 	"password" |
 	"date" |

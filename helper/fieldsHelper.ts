@@ -1,29 +1,24 @@
-import {ActionType, BaseFieldConfig, ModelConfig} from "../interfaces/adminpanelConfig";
+import {ActionType, BaseFieldConfig, FieldsTypes, ModelConfig} from "../interfaces/adminpanelConfig";
 import { Entity } from "../interfaces/types";
 import { AdminUtil } from "../lib/adminUtil";
-import { ModelAnyInstance } from "../lib/v4/model/AbstractModel";
+import {Attribute, ModelAnyInstance} from "../lib/v4/model/AbstractModel";
 import {DataAccessor} from "../lib/v4/DataAccessor";
 import {UserAPRecord} from "../models/UserAP";
-
-export type FieldModel = {
-    allowNull?: boolean;
-    model?: string;
-    collection?: string;
-    required?: boolean;
-    type: 'association' | 'association-many' | 'number' | 'json' | 'string' | 'boolean' | 'ref';
-}
 
 export type Field = {
     config: BaseFieldConfig & {
         /** @deprecated record should not be in config anymore */
         records?: object[]
         file?: string
-    }
+        key?: string
+        required?: boolean
+        type?: FieldsTypes
+    } | false
     /** for populated fields' configs */
     populated: {
         [key: string]: Field
     } | undefined
-    model: FieldModel
+    model: Attribute
 }
 
 export type Fields = {
@@ -120,7 +115,7 @@ export class FieldsHelper {
      * @returns {boolean|Object}
      * @private
      */
-    private static _normalizeFieldConfig(config: string | boolean | BaseFieldConfig , key: string, modelField: FieldModel): false | BaseFieldConfig {
+    private static _normalizeFieldConfig(config: string | boolean | BaseFieldConfig , key: string, modelField: Attribute): false | BaseFieldConfig {
         if (typeof config === "undefined" || typeof key === "undefined") {
             throw new Error('No `config` or `key` passed !');
         }

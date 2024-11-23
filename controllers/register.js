@@ -23,7 +23,10 @@ async function register(req, res) {
         }
         else {
             try {
-                await UserAP.create({ login: req.body.login, password: req.body.password, fullName: req.body.fullName, email: req.body.email, locale: req.body.locale }).fetch();
+                let userap = await UserAP.create({ login: req.body.login, password: req.body.password,
+                    fullName: req.body.fullName, email: req.body.email, locale: req.body.locale }).fetch();
+                let defaultUserGroup = await GroupAP.find({ name: sails.config.adminpanel.registration.defaultUserGroup });
+                await UserAP.addToCollection(userap.id, "groups").members([defaultUserGroup.id]);
                 return res.redirect(`${sails.config.adminpanel.routePrefix}/`);
             }
             catch (e) {

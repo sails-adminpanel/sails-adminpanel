@@ -68,7 +68,7 @@ fields: {
 If a user does not belong to one of these groups, the field will be hidden or inaccessible.
 
 - Notes: Fields without groupAccessRights are accessible by default to all users, except guest users which belong
-to "Default user group". This mechanism allows fine-grained control over the visibility of fields based on user group membership.
+to default user group, which is set in config registration field. This mechanism allows fine-grained control over the visibility of fields based on user group membership.
 
 ## Records
 
@@ -95,21 +95,6 @@ modelname: {
     }
   }
 }
-
-/** Example 2 (association-many) */
-// in model configuration
-modelname: {
-  userAccessRelation: "userGroups"
-}
-// in your model’s attributes
-{
-  attributes: {
-    userGroups: {
-      collection: "GroupAP",
-      via: "members"
-    }
-  }
-}
 ```
 
 #### Behavior of userAccessRelation
@@ -118,3 +103,6 @@ When a user accesses records, the system evaluates userAccessRelation:
 - If the field is related to GroupAP, only records where the user belongs to any group in the GroupAP relationship field are accessible.
 
 The relationship type (either model or collection) determines whether a single user or group or multiple users/groups are associated with the record.
+
+// TODO записать что работа с группами это экспериментально и юзер должен иметь всего одну групп
+// TODO описать коротко про связь через модель
