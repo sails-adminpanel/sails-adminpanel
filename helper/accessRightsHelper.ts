@@ -63,7 +63,7 @@ export class AccessRightsHelper {
 	}
 
 	public static havePermission(tokenId: string, user: UserAPRecord): boolean {
-		if(!sails.config.adminpanel.auth) {
+		if(!adminizer.config.auth) {
 			return true
 		}
 

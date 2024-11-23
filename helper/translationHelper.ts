@@ -5,11 +5,11 @@ let i18nFactory = require('i18n-2');
 
 export class TranslationHelper {
     public static loadTranslations(translationsPath: string): void {
-        let translationsConfig = sails.config.adminpanel.translation;
+        let translationsConfig = adminizer.config.translation;
 
         if ( typeof translationsConfig === "boolean") {
             if(translationsConfig as boolean === true) {
-                sails.log.warn("sails.config.adminpanel.translation is TRUE, is not mater")
+                sails.log.warn("adminizer.config.translation is TRUE, is not mater")
             }
             return
         }
@@ -66,7 +66,7 @@ export class TranslationHelper {
     }
 
     private static getI18nInstance(locale: string): any {
-        if(typeof sails.config.adminpanel.translation === "boolean") {
+        if(typeof adminizer.config.translation === "boolean") {
             throw `Transaltion is disabled`
         }
 

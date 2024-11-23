@@ -26,9 +26,9 @@ export default async function edit(req: ReqType, res: ResType) {
 		return res.redirect(entity.uri);
 	}
 
-	if (sails.config.adminpanel.auth) {
+	if (adminizer.config.auth) {
 		if (!req.session.UserAP) {
-			return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+			return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
 		} else if (!AccessRightsHelper.havePermission(`update-${entity.name}-model`, req.session.UserAP)) {
 			return res.sendStatus(403);
 		}
@@ -57,7 +57,7 @@ export default async function edit(req: ReqType, res: ResType) {
 		let params: {
 			[key: string]: number | string
 		} = {};
-		params[entity.config.identifierField || sails.config.adminpanel.identifierField] = req.param('id');
+		params[entity.config.identifierField || adminizer.config.identifierField] = req.param('id');
 
 		/**
 		 * Here means reqData adapt for model data, but rawReqData is processed for widget processing
@@ -139,8 +139,8 @@ export default async function edit(req: ReqType, res: ResType) {
 			} else {
 
 				// update navigation tree after model updated
-				if (sails.config.adminpanel.navigation) {
-					for (const section of sails.config.adminpanel.navigation.sections) {
+				if (adminizer.config.navigation) {
+					for (const section of adminizer.config.navigation.sections) {
 						let navigation = CatalogHandler.getCatalog('navigation')
 						navigation.setId(section)
 						let navItem = navigation.itemTypes.find(item => item.type === entity.name)
@@ -151,7 +151,7 @@ export default async function edit(req: ReqType, res: ResType) {
 				}
 
 				req.session.messages.adminSuccess.push('Your record was updated !');
-				return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
+				return res.redirect(`${adminizer.config.routePrefix}/model/${entity.name}`);
 			}
 		} catch (e) {
 			sails.log.error(e);

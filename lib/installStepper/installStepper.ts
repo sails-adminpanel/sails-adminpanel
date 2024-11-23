@@ -114,9 +114,9 @@ export class InstallStepper {
         let leftSteps = this.steps.filter(step => !step.isProcessed && !step.isSkipped);
 
         // set locale
-        if (typeof sails.config.adminpanel.translation !== "boolean") {
-            if (!locale || !sails.config.adminpanel.translation.locales.includes(locale)) {
-                locale = sails.config.adminpanel.translation.defaultLocale || "en";
+        if (typeof adminizer.config.translation !== "boolean") {
+            if (!locale || !adminizer.config.translation.locales.includes(locale)) {
+                locale = adminizer.config.translation.defaultLocale || "en";
             }
         } else {
             locale = "en";

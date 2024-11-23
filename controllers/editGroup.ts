@@ -6,9 +6,9 @@ export default async function editGroup(req: ReqType, res: ResType) {
 
     let entity = AdminUtil.findEntityObject(req);
 
-    if (sails.config.adminpanel.auth) {
+    if (adminizer.config.auth) {
         if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
         } else if (!AccessRightsHelper.havePermission(`update-${entity.name}-model`, req.session.UserAP)) {
             return res.sendStatus(403);
         }

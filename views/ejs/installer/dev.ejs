@@ -48,7 +48,7 @@
 
 			inputData[currentStepData.payload.data.key] = value;
 
-			$.post(`<%- sails.config.adminpanel.routePrefix %>/install/<%=stepperId%>`, {
+			$.post(`<%- adminizer.config.routePrefix %>/install/<%=stepperId%>`, {
 				inputData: JSON.stringify(inputData),
 				action: "next",
 				currentStepId: currentStepData.id
@@ -65,7 +65,7 @@
 		$("#skipButton").on('click', function () {
 			console.log("Skip Button was clicked");
 
-			$.post(`<%- sails.config.adminpanel.routePrefix %>/install/<%=stepperId%>`, {
+			$.post(`<%- adminizer.config.routePrefix %>/install/<%=stepperId%>`, {
 				action: "skip",
 				currentStepId: currentStepData.id
 			})
@@ -134,7 +134,7 @@
 				inputData[currentStepData.payload.data[i].key] = value;
 			}
 
-			$.post(`<%- sails.config.adminpanel.routePrefix %>/install/<%=stepperId%>`, {
+			$.post(`<%- adminizer.config.routePrefix %>/install/<%=stepperId%>`, {
 				inputData: JSON.stringify(inputData),
 				action: "next",
 				currentStepId: currentStepData.id
@@ -151,7 +151,7 @@
 		$("#skipButton").on('click', function () {
 			console.log("Skip Button was clicked");
 
-			$.post(`<%- sails.config.adminpanel.routePrefix %>/install/<%=stepperId%>`, {
+			$.post(`<%- adminizer.config.routePrefix %>/install/<%=stepperId%>`, {
 				action: "skip",
 				currentStepId: currentStepData.id
 			})

@@ -20,7 +20,7 @@ export class ConfigHelper {
     }
 
     public static getConfig(): AdminpanelConfig {
-        return sails.config.adminpanel;
+        return adminizer.config;
     }
 
     /**
@@ -52,7 +52,7 @@ export class ConfigHelper {
             throw new Error("Model name is not defined")
         }
 
-        let config = sails.config.adminpanel;
+        let config = adminizer.config;
         let modelConfig: ModelConfig;
         Object.keys(config.models).forEach((entityName) => {
             const model = config.models[entityName];

@@ -91,7 +91,7 @@ export class AdminUtil {
      * @returns {Object}
      */
     public static config(): AdminpanelConfig {
-        return sails.config.adminpanel;
+        return adminizer.config;
     }
 
     /**

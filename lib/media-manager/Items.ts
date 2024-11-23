@@ -16,7 +16,7 @@ export class ImageItem extends File<MediaManagerItem> {
 
     public metaModel: string = "mediamanagermetaap";
 
-    public imageSizes: imageSizes = sails.config.adminpanel.mediamanager.imageSizes || {}
+    public imageSizes: imageSizes = adminizer.config.mediamanager.imageSizes || {}
 
     constructor(urlPathPrefix: string, fileStoragePath: string) {
         super(urlPathPrefix, fileStoragePath);

@@ -21,9 +21,9 @@ export default async function remove(req: ReqType, res: ResType) {
         return res.redirect(entity.uri);
     }
 
-    if (sails.config.adminpanel.auth) {
+    if (adminizer.config.auth) {
         if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
         } else if (!AccessRightsHelper.havePermission(`delete-${entity.name}-model`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
@@ -61,7 +61,7 @@ export default async function remove(req: ReqType, res: ResType) {
 
     let destroyedRecord;
     try {
-        const fieldId = entity.config.identifierField ?? sails.config.adminpanel.identifierField;
+        const fieldId = entity.config.identifierField ?? adminizer.config.identifierField;
 		const q: Record<string, ModelAnyField> = {
 
         }

@@ -19,13 +19,13 @@ export default async function bindAuthorization() {
     /**
      * Router
      */
-    let policies = sails.config.adminpanel.policies || '';
-    let baseRoute = sails.config.adminpanel.routePrefix + '/model/:entity';
+    let policies = adminizer.config.policies || '';
+    let baseRoute = adminizer.config.routePrefix + '/model/:entity';
 
 
     let adminsCredentials: { fullName: string, login: string, password: string }[] = [];
     // if we have administrator profiles
-    let config: AdminpanelConfig = sails.config.adminpanel;
+    let config: AdminpanelConfig = adminizer.config;
 
     if (admins && admins.length) {
         for (let admin of admins) {
@@ -64,14 +64,14 @@ export default async function bindAuthorization() {
         console.groupEnd()
 
     } else { // try to create one if we don't
-        if (sails.config.adminpanel.auth) {
+        if (adminizer.config.auth) {
             sails.log.debug(`Adminpanel does not have an administrator`)
-            sails.config.adminpanel.policies.push(initUserPolicy)
-            sails.router.bind(sails.config.adminpanel.routePrefix + '/init_user', _initUser);
+            adminizer.config.policies.push(initUserPolicy)
+            sails.router.bind(adminizer.config.routePrefix + '/init_user', _initUser);
         }
     }
 
-    if (sails.config.adminpanel.auth) {
+    if (adminizer.config.auth) {
         sails.router.bind(baseRoute + '/login', bindPolicies(policies, _login));
         sails.router.bind(baseRoute + '/logout', bindPolicies(policies, _login));
         sails.router.bind(baseRoute + '/register', bindPolicies(policies, _register));
@@ -88,7 +88,7 @@ function getRandomInt(min: number, max: number) {
 async function initUserPolicy (req: ReqType, res: ResType, proceed: any) {
     let admins = await UserAP.find({isAdministrator: true});
     if(!admins.length){
-        return res.redirect(`${sails.config.adminpanel.routePrefix}/init_user`)
+        return res.redirect(`${adminizer.config.routePrefix}/init_user`)
     }
     return proceed()
 }

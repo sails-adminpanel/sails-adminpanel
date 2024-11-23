@@ -1,11 +1,11 @@
 export default async function initUser(req: ReqType, res: ResType) {
-  if (!sails.config.adminpanel.auth) {
-    return res.redirect(`${sails.config.adminpanel.routePrefix}/`);
+  if (!adminizer.config.auth) {
+    return res.redirect(`${adminizer.config.routePrefix}/`);
   }
 
   let admins = await UserAP.find({ isAdministrator: true });
   if (admins.length) {
-    res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+    res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
   }
 
   if (req.method.toUpperCase() === "POST") {
@@ -38,7 +38,7 @@ export default async function initUser(req: ReqType, res: ResType) {
       return res.viewAdmin("init_user");
     }
 
-    return res.redirect(`${sails.config.adminpanel.routePrefix}/`);
+    return res.redirect(`${adminizer.config.routePrefix}/`);
   }
 
   if (req.method.toUpperCase() === "GET") {

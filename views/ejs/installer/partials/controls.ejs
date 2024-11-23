@@ -82,7 +82,7 @@
             }
         }
 
-        fetch(`<%- sails.config.adminpanel.routePrefix %>/install/<%=stepperId%>`, {
+        fetch(`<%- adminizer.config.routePrefix %>/install/<%=stepperId%>`, {
             method: 'POST',
             body: formData
         })
@@ -106,7 +106,7 @@
             currentStepId: currentStepData.id
         };
 
-        fetch(`<%- sails.config.adminpanel.routePrefix %>/install/<%=stepperId%>`, {
+        fetch(`<%- adminizer.config.routePrefix %>/install/<%=stepperId%>`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

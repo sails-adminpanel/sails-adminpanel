@@ -9,6 +9,7 @@ import Router from "./Router";
 import bindNavigation from "./bindNavigation";
 import bindMediaManager from "./bindMediaManager";
 import bindConfigModels from "./bindConfigModels";
+import { Adminizer } from "../lib/v4/config/Adminizer";
 
 export default async function () {
   // Binding list of function for rendering
@@ -19,7 +20,7 @@ export default async function () {
 
 
   if ((process.env.DEV && process.env.NODE_ENV !== 'production') || process.env.ADMINPANEL_FORCE_BIND_DEV === "TRUE") {
-    bindDev(sails.config.adminpanel)
+    bindDev(adminizer.config)
   }
 
   if (process.env.NODE_ENV === "production") {
@@ -32,7 +33,7 @@ export default async function () {
   }
 
 
-  bindConfigModels(sails.config.adminpanel);
+  bindConfigModels(adminizer.config);
   await bindForms();
   await bindDashboardWidgets();
 
@@ -48,12 +49,15 @@ export default async function () {
       bindTranslations();
     })
   } else {
-    sails.config.adminpanel.translation = false
+    adminizer.config.translation = false
   }
 
   sails.after(["hook:i18n:loaded"], async () => {
     bindTranslations();
   })
+
+  let adminizer = new Adminizer(adminizer.config)
+  global.adminizer = adminizer;
 
   /**
    * AfterHook emit
@@ -63,3 +67,4 @@ export default async function () {
 
   return
 };
+

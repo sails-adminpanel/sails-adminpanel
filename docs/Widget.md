@@ -9,7 +9,7 @@
  * custom [CustomBase] - mount JS/html widget into dashboard widget
  
 Widgets have magic on loading sails project such as model or service. This function work on 
-`sails.config.adminpanel.autoloadWidgetsPath: string`. Widget is a class which created by abstract class and pass it in WidgetHanler.add
+`adminizer.config.autoloadWidgetsPath: string`. Widget is a class which created by abstract class and pass it in WidgetHanler.add
 
 > ⚠️ Any new Widget type must be added to `WidgetType` inside `/lib/widgets/widgetHandller.ts` file. Additionally, within this handler, the logic for the new type needs to be implemented inside the `getAll` method specifically created for the added type.
 

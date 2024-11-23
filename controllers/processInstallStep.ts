@@ -3,9 +3,9 @@ import {InstallStepper} from "../lib/installStepper/installStepper";
 import * as path from "path";
 
 export default async function processInstallStep(req: ReqType, res: ResType): Promise<void> {
-	if (sails.config.adminpanel.auth) {
+	if (adminizer.config.auth) {
 		if (!req.session.UserAP) {
-			res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+			res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
 			return
 		} else if (!AccessRightsHelper.havePermission(`process-install-step`, req.session.UserAP)) {
 			res.sendStatus(403);
@@ -17,7 +17,7 @@ export default async function processInstallStep(req: ReqType, res: ResType): Pr
 		sails.log.debug("GET REQUEST TO PROCESS INSTALL STEP")
 		let installStepper = InstallStepper.getStepper(req.params.id);
 		if (!installStepper) {
-			res.redirect(`${sails.config.adminpanel.routePrefix}`);
+			res.redirect(`${adminizer.config.routePrefix}`);
 			return
 		}
 
@@ -36,7 +36,7 @@ export default async function processInstallStep(req: ReqType, res: ResType): Pr
 			res.viewAdmin(`installer/${renderer}`, {...renderData, stepperId: installStepper.id});
 			return
 		} else {
-			res.redirect(`${sails.config.adminpanel.routePrefix}`);
+			res.redirect(`${adminizer.config.routePrefix}`);
 			return
 		}
 	}
@@ -85,10 +85,10 @@ export default async function processInstallStep(req: ReqType, res: ResType): Pr
 
 			// go back to stepper if there are more unprocessed steps, otherwise go back to /admin
 			if (installStepper.hasUnprocessedSteps()) {
-				res.redirect(`${sails.config.adminpanel.routePrefix}/install/${installStepper.id}`);
+				res.redirect(`${adminizer.config.routePrefix}/install/${installStepper.id}`);
 				return
 			} else {
-				res.redirect(`${sails.config.adminpanel.routePrefix}`);
+				res.redirect(`${adminizer.config.routePrefix}`);
 				return
 			}
 

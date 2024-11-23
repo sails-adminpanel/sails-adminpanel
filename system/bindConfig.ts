@@ -7,8 +7,8 @@ export default function bindConfig() {
     /**
      * Bind adminpanel config to views
      */
-    if (!sails.config.adminpanel.pathToViews) {
-        sails.config.adminpanel.pathToViews = ViewsHelper.getPathToEngine("ejs");
+    if (!adminizer.config.pathToViews) {
+        adminizer.config.pathToViews = ViewsHelper.getPathToEngine("ejs");
     }
     // binding locals
     if (!sails.config.views.locals) {
@@ -18,9 +18,9 @@ export default function bindConfig() {
     if (!sails.config.views.locals.adminpanel) {
         sails.config.views.locals.adminpanel = {};
     }
-    sails.config.views.locals.adminpanel.config = sails.config.adminpanel;
+    sails.config.views.locals.adminpanel.config = adminizer.config;
     sails.config.views.locals.adminpanel.viewHelper = ViewsHelper;
     sails.config.views.locals.adminpanel.fieldsHelper = FieldsHelper;
-    sails.config.views.locals.adminpanel.menuHelper = new MenuHelper(sails.config.adminpanel);
+    sails.config.views.locals.adminpanel.menuHelper = new MenuHelper(adminizer.config);
     sails.config.views.locals.adminpanel.configHelper = ConfigHelper;
 };

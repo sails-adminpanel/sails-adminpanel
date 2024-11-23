@@ -5,8 +5,8 @@ import { AdminpanelConfig } from "../interfaces/adminpanelConfig";
 export class FormHelper {
 
     public static get(slug: string): AdminpanelConfig["forms"]["data"][0] {
-        if (sails.config.adminpanel.forms && sails.config.adminpanel.forms !== null) {
-            return sails.config.adminpanel.forms.data[slug]
+        if (adminizer.config.forms && adminizer.config.forms !== null) {
+            return adminizer.config.forms.data[slug]
         } else {
             throw `Form with slug ${slug} not found`
         }
@@ -29,7 +29,7 @@ export class FormHelper {
 
                 try {
                     let jsonData = require(`${formsDirectoryPath}/${formJson}`)
-                    sails.config.adminpanel.forms.data[form] = jsonData;
+                    adminizer.config.forms.data[form] = jsonData;
                 } catch (error) {
                     sails.log.error(`Adminpanel > Error when reading ${formJson}: ${error}`);
                 }

@@ -115,7 +115,7 @@ export class DataAccessor {
 
   private getAssociatedFieldsConfig(modelName: string): { [fieldName: string]: Field } | undefined {
     const Model = AdminUtil.getModel(modelName as keyof Models);
-    if (!Model || !sails.config.adminpanel.models[modelName] || typeof sails.config.adminpanel.models[modelName] === "boolean") {
+    if (!Model || !adminizer.config.models[modelName] || typeof adminizer.config.models[modelName] === "boolean") {
       return undefined;
     }
 
@@ -128,7 +128,7 @@ export class DataAccessor {
     }
 
     const associatedFields: { [fieldName: string]: Field } = {};
-    const modelConfig = sails.config.adminpanel.models[modelName];
+    const modelConfig = adminizer.config.models[modelName];
 
     // Get the main fields configuration
     const fieldsConfig = modelConfig.fields || {};
@@ -193,7 +193,7 @@ export class DataAccessor {
       return userGroups && userGroups.some(group => allowedGroups.includes(group));
     } else {
       // If no specific groups are allowed, deny access if the user is in "default user group"
-      return !userGroups || !userGroups.includes(sails.config.adminpanel.registration?.defaultUserGroup);
+      return !userGroups || !userGroups.includes(adminizer.config.registration?.defaultUserGroup);
     }
   }
 

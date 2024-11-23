@@ -3,14 +3,14 @@ module.exports = async function (req: ReqType, res: ResType, proceed: ()=>void) 
         return proceed();
     }
 
-    if (typeof sails.config.adminpanel.translation  === 'boolean') {
+    if (typeof adminizer.config.translation  === 'boolean') {
         return proceed();
     }
 
     if (req.session.UserAP && req.session.UserAP.locale) {
         req.setLocale(req.session.UserAP.locale);
     } else {
-        req.setLocale(sails.config.adminpanel.translation.defaultLocale);
+        req.setLocale(adminizer.config.translation.defaultLocale);
     }
     return proceed()
 }

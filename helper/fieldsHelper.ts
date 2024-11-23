@@ -228,7 +228,7 @@ export class FieldsHelper {
                 // adding deprecated records array to config for association widget
                 sails.log.warn("Warning: executing malicious job trying to add a huge amount of records in field config," +
                   " please rewrite this part of code in the nearest future");
-                let entity: Entity = {name: modelName, config: sails.config.adminpanel.models[modelName] as ModelConfig,
+                let entity: Entity = {name: modelName, config: adminizer.config.models[modelName] as ModelConfig,
                     model: Model, uri: `/admin/model/${modelName}`, type: "model"};
                 let dataAccessor = new DataAccessor(user, entity, action);
                 list = await Model._find({}, dataAccessor);

@@ -68,7 +68,7 @@ export class MediaManagerAdapter {
         const isCropped = req.body.isCropped
 
         if (!isCropped) {
-            const config: MediaManagerConfig | null = sails.config.adminpanel.mediamanager || null;
+            const config: MediaManagerConfig | null = adminizer.config.mediamanager || null;
 
             //@ts-ignore
             const upload = req.file("file")._files[0].stream,
@@ -115,7 +115,7 @@ export class MediaManagerAdapter {
     }
 
     public async upload(req: ReqType, res: ResType): Promise<void> {
-        const config: MediaManagerConfig | null = sails.config.adminpanel.mediamanager || null;
+        const config: MediaManagerConfig | null = adminizer.config.mediamanager || null;
         const group = req.body.group as string
 
         //@ts-ignore

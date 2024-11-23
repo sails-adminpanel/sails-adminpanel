@@ -17,9 +17,9 @@ export default async function add(req: ReqType, res: ResType) {
 		return res.redirect(entity.uri);
 	}
 
-	if (sails.config.adminpanel.auth) {
+	if (adminizer.config.auth) {
 		if (!req.session.UserAP) {
-			return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+			return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
 		} else if (!AccessRightsHelper.havePermission(`create-${entity.name}-model`, req.session.UserAP)) {
 			return res.sendStatus(403);
 		}
@@ -110,7 +110,7 @@ export default async function add(req: ReqType, res: ResType) {
 				return res.json({record: record})
 			} else {
 				req.session.messages.adminSuccess.push('Your record was created !');
-				return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
+				return res.redirect(`${adminizer.config.routePrefix}/model/${entity.name}`);
 			}
 		} catch (e) {
 			sails.log.error(e);

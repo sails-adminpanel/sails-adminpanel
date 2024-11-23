@@ -243,7 +243,7 @@ class NavigationItem extends AbstractItem<NavItem> {
 		this.model = model.toLowerCase()
 		this.type = model.toLowerCase()
 		this.urlPath = urlPath
-		let configModel = sails.config.adminpanel.models[this.model] as ModelConfig
+		let configModel = adminizer.config.models[this.model] as ModelConfig
 		this.icon = configModel.icon ?? 'file'
 
 		const i18nFactory = require('i18n-2');

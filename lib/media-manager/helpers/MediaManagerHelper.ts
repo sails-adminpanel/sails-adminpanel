@@ -51,7 +51,7 @@ export async function getRelationsMediaManager(data: MediaManagerWidgetJSON) {
 * @param record
 */
 export async function deleteRelationsMediaManager(model: string, record: { [p: string]: string | MediaManagerWidgetItem[] }[]) {
-	let config = sails.config.adminpanel.models[model] as ModelConfig
+	let config = adminizer.config.models[model] as ModelConfig
 	for (const key of Object.keys(record[0])) {
 		let field = config.fields[key] as BaseFieldConfig
 		if (field && field.type === 'mediamanager') {

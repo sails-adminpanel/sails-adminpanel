@@ -7,8 +7,8 @@
 <div id="handsontable-<%= key %>" style="height: 500px;"></div>
 <% if (field.config.options.language) { %>
     <script src="/admin/assets/handsontable/dist/languages/<%= field.config.options.language %>.js"></script>
-<% } else if (sails.config.adminpanel.translation && sails.config.adminpanel.translation.defaultLocale) { %>
-    <script src="/admin/assets/handsontable/dist/languages/<%= sails.config.adminpanel.translation.defaultLocale.toLowerCase() %>-<%= sails.config.adminpanel.translation.defaultLocale.toUpperCase() %>.js"></script>
+<% } else if (adminizer.config.translation && adminizer.config.translation.defaultLocale) { %>
+    <script src="/admin/assets/handsontable/dist/languages/<%= adminizer.config.translation.defaultLocale.toLowerCase() %>-<%= adminizer.config.translation.defaultLocale.toUpperCase() %>.js"></script>
 <% } %>
 
 <script>
@@ -20,8 +20,8 @@
   }
 
   let container<%= key %> = document.getElementById('handsontable-<%= key %>');
-  <% if (!field.config.options.language && sails.config.adminpanel.translation && sails.config.adminpanel.translation.defaultLocale) { %>
-  <% field.config.options.language = `${sails.config.adminpanel.translation.defaultLocale.toLowerCase()}-${sails.config.adminpanel.translation.defaultLocale.toUpperCase()}` %>
+  <% if (!field.config.options.language && adminizer.config.translation && adminizer.config.translation.defaultLocale) { %>
+  <% field.config.options.language = `${adminizer.config.translation.defaultLocale.toLowerCase()}-${adminizer.config.translation.defaultLocale.toUpperCase()}` %>
   <% } %>
 
   let options<%= key %> = <%- JSON.stringify(field.config.options) %>;

@@ -22,7 +22,7 @@ export default async function(sails: any, cb: (err?: Error)=>void) {
     ];
 
     // If disabled. Do not load anything
-    if (!sails.config.adminpanel) {
+    if (!adminizer.config) {
         return cb();
     }
 
@@ -38,19 +38,19 @@ export default async function(sails: any, cb: (err?: Error)=>void) {
         return cb(new Error('For now adminpanel hook could work only with EJS template engine.'));
     }
 
-    sails.config.adminpanel.templateRootPath = ViewsHelper.BASE_VIEWS_PATH;
-    sails.config.adminpanel.rootPath = path.resolve(__dirname + "/..")
+    adminizer.config.templateRootPath = ViewsHelper.BASE_VIEWS_PATH;
+    adminizer.config.rootPath = path.resolve(__dirname + "/..")
 
     HookTools.waitForHooks("adminpanel", requiredHooks, afterHook);
 	const modelsToSkip = []
-	if(sails.config.adminpanel.navigation?.model) modelsToSkip.push('navigationap')
+	if(adminizer.config.navigation?.model) modelsToSkip.push('navigationap')
     await HookTools.bindModels(resolve(__dirname, "../models"));
 
     // add install stepper policy to check unfilled settings
     bindInstallStepper();
 
     // if (!sails.hooks.i18n.locales) sails.hooks.i18n.locales = []
-    // sails.hooks.i18n.locales = [...sails.hooks.i18n.locales, ...sails.config.adminpanel.translation.locales]
+    // sails.hooks.i18n.locales = [...sails.hooks.i18n.locales, ...adminizer.config.translation.locales]
     //     .filter(function(item, pos, self) { return self.indexOf(item) == pos })
 
     // Bind assets

@@ -14,9 +14,9 @@ In controllers you should check access rights through `havePermission` method.
 Example:
 
 ```javascript
-if (sails.config.adminpanel.auth) {
+if (adminizer.config.auth) {
         if (!req.session.UserAP) { // check that user is authorized
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
         } else if (!AccessRightsHelper.havePermission(`tokenName`, req.session.UserAP)) { // check permission
             return res.sendStatus(403);
         }

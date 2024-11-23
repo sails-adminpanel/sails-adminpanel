@@ -3,12 +3,12 @@ import {CatalogHandler} from "../lib/catalog/CatalogHandler";
 
 export default function bindNavigation() {
 	sails.after(["hook:orm:loaded"], async () => {
-		if (sails.config.adminpanel.navigation) {
+		if (adminizer.config.navigation) {
 			try {
-				sails.config.adminpanel.navigation.model = sails.config.adminpanel.navigation.model ? sails.config.adminpanel.navigation.model : 'navigationap'
-				let navigation = new Navigation(sails.config.adminpanel.navigation)
+				adminizer.config.navigation.model = adminizer.config.navigation.model ? adminizer.config.navigation.model : 'navigationap'
+				let navigation = new Navigation(adminizer.config.navigation)
 				CatalogHandler.add(navigation)
-				sails.config.adminpanel.models[sails.config.adminpanel.navigation.model.toLowerCase()] = {
+				adminizer.config.models[adminizer.config.navigation.model.toLowerCase()] = {
 					add: false,
 					edit: {
 						controller: '../controllers/navigation/edit',
@@ -26,9 +26,9 @@ export default function bindNavigation() {
 							id: false,
 						},
 					},
-					model: sails.config.adminpanel.navigation.model.toLowerCase(),
+					model: adminizer.config.navigation.model.toLowerCase(),
 					remove: false,
-					title: sails.config.adminpanel.navigation.model,
+					title: adminizer.config.navigation.model,
 					tools: [],
 					view: false
 				}

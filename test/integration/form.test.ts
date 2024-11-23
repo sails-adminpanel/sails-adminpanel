@@ -17,8 +17,8 @@ describe('Form test', function () {
 
 	it("Reading from file works", function () {
 		let formFromFile = require("../datamocks/forms/testForm.json");
-		expect("testForm" in sails.config.adminpanel.forms.data).to.be.true;
-		expect(sails.config.adminpanel.forms.data.testForm).to.equal(formFromFile);
+		expect("testForm" in adminizer.config.forms.data).to.be.true;
+		expect(adminizer.config.forms.data.testForm).to.equal(formFromFile);
 	})
 
 	it("Writing to file works", function () {
@@ -34,7 +34,7 @@ describe('Form test', function () {
 	})
 
 	it("Seeding form data", async function () {
-		let VALUE = await sails.config.adminpanel.forms.get("testForm", "test_seed_data")
+		let VALUE = await adminizer.config.forms.get("testForm", "test_seed_data")
 		console.log(VALUE)
 		expect(VALUE).to.equal("VALUE");
 	})

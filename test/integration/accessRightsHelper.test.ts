@@ -10,8 +10,8 @@ describe('Access rights helper test', function() {
     })
 
     it("Default (CRUD) tokens created for every entity test", function() {
-        let entities = sails.config.adminpanel.models;
-        let forms = sails.config.adminpanel.forms.data;
+        let entities = adminizer.config.models;
+        let forms = adminizer.config.forms.data;
 
         let entitiesAmount = Object.keys(entities).length;
         let formsAmount = Object.keys(forms).length;

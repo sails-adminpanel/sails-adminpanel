@@ -1,8 +1,8 @@
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 
 export default async function bindAccessRights() {
-  if (sails.config.adminpanel.models) {
-    let models = sails.config.adminpanel.models;
+  if (adminizer.config.models) {
+    let models = adminizer.config.models;
     for (let key of Object.keys(models)) {
       const model = models[key];
       if (typeof model !== "boolean") {
@@ -36,8 +36,8 @@ export default async function bindAccessRights() {
     }
   }
 
-  if (sails.config.adminpanel.forms && sails.config.adminpanel.forms.data) {
-    let forms = sails.config.adminpanel.forms.data;
+  if (adminizer.config.forms && adminizer.config.forms.data) {
+    let forms = adminizer.config.forms.data;
     for (let key of Object.keys(forms)) {
       let department = `Form ${key}`;
 
@@ -79,11 +79,11 @@ export default async function bindAccessRights() {
   });
 
   // Default user group
-  if (sails.config.adminpanel.registration && sails.config.adminpanel.registration.enable) {
-    let defaultUserGroupRecord = await GroupAP.find({name: sails.config.adminpanel.registration.defaultUserGroup});
+  if (adminizer.config.registration && adminizer.config.registration.enable) {
+    let defaultUserGroupRecord = await GroupAP.find({name: adminizer.config.registration.defaultUserGroup});
     if (!defaultUserGroupRecord) {
       await GroupAP.create({
-        name: sails.config.adminpanel.registration.defaultUserGroup, description: "Group for default users (guests) who dont have access to fields"
+        name: adminizer.config.registration.defaultUserGroup, description: "Group for default users (guests) who dont have access to fields"
       }).fetch()
     }
   }

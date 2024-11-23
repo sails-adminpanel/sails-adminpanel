@@ -19,10 +19,10 @@
 
 <body>
 
-<% if (sails.config.adminpanel && 
-    sails.config.adminpanel.translation && 
-    sails.config.adminpanel.translation.locales && 
-    sails.config.adminpanel.translation.defaultLocale) { %>
+<% if (adminizer.config && 
+    adminizer.config.translation && 
+    adminizer.config.translation.locales && 
+    adminizer.config.translation.defaultLocale) { %>
     <% var isLocalized = true; %>
 <% } %>
 
@@ -111,13 +111,13 @@
     <% if (isLocalized) { %>
     let localeOptions = [];
 	
-    for (let locale of <%- JSON.stringify(sails.config.adminpanel.translation.locales) %>) {
+    for (let locale of <%- JSON.stringify(adminizer.config.translation.locales) %>) {
 		localeOptions.push({label: locale, value: locale})
 	}
 
 	let locale = new SelectPure(".locale", {
 		options: localeOptions,
-		value: '<%- sails.config.adminpanel.translation.defaultLocale %>',
+		value: '<%- adminizer.config.translation.defaultLocale %>',
         autocomplete: true,
 		onChange: function (value) {
 			$('#locale').val(value)

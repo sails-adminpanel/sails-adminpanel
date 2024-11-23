@@ -63,7 +63,7 @@
                         </div>
                     <% } %>
 
-                    <% if (sails.config.adminpanel.translation) { %>
+                    <% if (adminizer.config.translation) { %>
                         <div class="flex flex-col gap-3">
                             <label class="admin-panel__title" for="locale"><%= __("Locale") %></label>
                             <div class="widget_narrow">
@@ -176,7 +176,7 @@
 </div>
 <script>
 	let timezoneOptions = [{label: "-------", value: "undefined"}];
-	for (let timezone of <%- JSON.stringify(sails.config.adminpanel.timezones) %>) {
+	for (let timezone of <%- JSON.stringify(adminizer.config.timezones) %>) {
 		timezoneOptions.push({label: timezone.name, value: timezone.id})
 	}
 	let timezone = new SelectPure(".timezone", {
@@ -188,7 +188,7 @@
 	});
 
 	let localeOptions = [{label: "default", value: "default"}];
-	for (let locale of <%- JSON.stringify(sails.config.adminpanel.translation.locales) %>) {
+	for (let locale of <%- JSON.stringify(adminizer.config.translation.locales) %>) {
 		localeOptions.push({label: locale, value: locale})
 	}
 	let locale = new SelectPure(".locale", {
@@ -220,7 +220,7 @@
 			contentType: false,
 			type: 'POST',
 			success: function (response) {
-				window.location.href = `<%- sails.config.adminpanel.routePrefix %>/`
+				window.location.href = `<%- adminizer.config.routePrefix %>/`
 			}
 		});
 	}

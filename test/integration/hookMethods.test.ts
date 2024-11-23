@@ -13,6 +13,6 @@ describe('Hook methods sails.adminpanel...', function () {
 
     sails.hooks.adminpanel.addModelConfig(categoryModel);
     //@ts-ignore
-    expect(sails.config.adminpanel.models.category.title).to.equal("Category")
+    expect(adminizer.config.models.category.title).to.equal("Category")
   })
 })

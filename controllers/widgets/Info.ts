@@ -8,9 +8,9 @@ export async function widgetInfoController(req: ReqType, res: ResType) {
 		return res.notFound();
 	}
 
-	if (sails.config.adminpanel.auth) {
+	if (adminizer.config.auth) {
 		if (!req.session.UserAP) {
-			return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+			return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
 		} else if (!AccessRightsHelper.havePermission(`widget-${widgetId}`, req.session.UserAP)) {
 			return res.sendStatus(403);
 		}

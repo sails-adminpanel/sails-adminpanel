@@ -102,11 +102,16 @@ export interface AdminpanelConfig {
 	sections?: HrefConfig[]
 	/**
 	 * Route prefix for adminpanel, admin by default
+	 * @deprecated Adminizer is middleware
 	 * */
 	routePrefix?: string
+	/**
+	 * @deprecated
+	 */
 	pathToViews?: string
 	/**
 	 * Force set primary key
+	 * @deprecated required field for each model
 	 * */
 	identifierField?: string
 	brand?: {

@@ -2,9 +2,9 @@ import {AdminUtil} from "../../lib/adminUtil";
 import {DataAccessor} from "../../lib/v4/DataAccessor";
 
 export default async function edit(req: ReqType, res: ResType) {
-	if (sails.config.adminpanel.auth) {
+	if (adminizer.config.auth) {
 		if (!req.session.UserAP) {
-			return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+			return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
 		}
 	}
 
