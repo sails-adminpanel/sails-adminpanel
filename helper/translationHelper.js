@@ -9,7 +9,7 @@ class TranslationHelper {
         let translationsConfig = adminizer.config.translation;
         if (typeof translationsConfig === "boolean") {
             if (translationsConfig === true) {
-                sails.log.warn("adminizer.config.translation is TRUE, is not mater");
+                adminizer.log.warn("adminizer.config.translation is TRUE, is not mater");
             }
             return;
         }
@@ -29,16 +29,16 @@ class TranslationHelper {
                         // sails.hooks.i18n.defaultLocale = defaultLocale;
                     }
                     catch (error) {
-                        sails.log.error(`Adminpanel > Error when reading ${locale}.json: ${error}`);
+                        adminizer.log.error(`Adminpanel > Error when reading ${locale}.json: ${error}`);
                     }
                 }
                 else {
-                    sails.log.debug(`Adminpanel > Cannot find ${locale} locale in translations directory`);
+                    adminizer.log.debug(`Adminpanel > Cannot find ${locale} locale in translations directory`);
                 }
             }
         }
         catch (e) {
-            sails.log.error("Adminpanel > Error when loading translations", e);
+            adminizer.log.error("Adminpanel > Error when loading translations", e);
         }
     }
     static translateProperties(object, locale, fields) {

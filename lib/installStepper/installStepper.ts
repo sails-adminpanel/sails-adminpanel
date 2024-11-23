@@ -24,7 +24,7 @@ export class InstallStepper {
 
 	public static addStepper(stepper?: InstallStepper) {
 		if (this.instances.find(item => item.id === stepper.id)) {
-			sails.log.debug(`Stepper with id ${stepper.id} was deleted due to creating new one`);
+			adminizer.log.debug(`Stepper with id ${stepper.id} was deleted due to creating new one`);
 			this.deleteStepper(stepper.id);
 		}
 		this.instances.push(stepper);
@@ -37,7 +37,7 @@ export class InstallStepper {
     public static deleteStepper(stepperId: string) {
 		let stepper = this.getStepper(stepperId);
 		if (!stepper.canBeClosed) {
-            sails.log.error(`Can not delete stepper: Stepper with id ${stepperId} can not be closed.`);
+            adminizer.log.error(`Can not delete stepper: Stepper with id ${stepperId} can not be closed.`);
 			throw `Can not delete stepper: Stepper with id ${stepperId} can not be closed`
 		}
 
@@ -45,9 +45,9 @@ export class InstallStepper {
 
 		if (index !== -1) {
             this.instances.splice(index, 1);
-            sails.log.info(`Stepper with id ${stepperId} has been deleted.`);
+            adminizer.log.info(`Stepper with id ${stepperId} has been deleted.`);
         } else {
-            sails.log.error(`Can not delete stepper: Stepper with id ${stepperId} not found.`);
+            adminizer.log.error(`Can not delete stepper: Stepper with id ${stepperId} not found.`);
             throw `Can not delete stepper: Stepper with id ${stepperId} not found.`
         }
     }
@@ -69,7 +69,7 @@ export class InstallStepper {
         try {
             /** As we sort steps by sortOrder, we should check that previous steps were processed */
             const stepIndex = this.steps.findIndex(item => item.id === stepId)
-            sails.log.debug("STEP INDEX", stepIndex);
+            adminizer.log.debug("STEP INDEX", stepIndex);
             for (let i = 0; i < stepIndex; i++) {
                 if (this.steps[i].canBeSkipped && this.steps[i].isSkipped) {
                     continue
@@ -89,7 +89,7 @@ export class InstallStepper {
             Object.assign(this.context, contextCopy);
 
             step.isProcessed = true;
-            sails.log.debug(`STEP ${stepId} was processed`);
+            adminizer.log.debug(`STEP ${stepId} was processed`);
 
             // call finalize method only if has description
             if (step.finallyToRun) {
@@ -99,7 +99,7 @@ export class InstallStepper {
             }
 
         } catch (e) {
-            sails.log.error(`Error processing step: ${e}`);
+            adminizer.log.error(`Error processing step: ${e}`);
             throw new Error(e);
         }
     }
@@ -142,7 +142,7 @@ export class InstallStepper {
             step.isSkipped = true;
 
         } catch (e) {
-            sails.log.error(`Error skipping step: ${e}`);
+            adminizer.log.error(`Error skipping step: ${e}`);
         }
     }
 
@@ -156,7 +156,7 @@ export class InstallStepper {
 
         const stepIndex = this.steps.findIndex(item => item.id === step.id)
         if (stepIndex !== -1) {
-            sails.log.warn(`Attention! The step has been replaced\`${step.id}\``)
+            adminizer.log.warn(`Attention! The step has been replaced\`${step.id}\``)
             this.steps[stepIndex] = step;
 
         } else {
@@ -194,7 +194,7 @@ export class InstallStepper {
                     // clear steps if all of them was processed and finalized
                     if (!this.hasUnprocessedSteps() && !this.hasUnfinalizedSteps()) {
                         this.steps = []
-                        sails.log.debug("CLEARING STEPS", this.steps)
+                        adminizer.log.debug("CLEARING STEPS", this.steps)
                         clearInterval(timer);
                     }
                 }, 5000)

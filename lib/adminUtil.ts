@@ -61,7 +61,7 @@ export class AdminUtil {
         }
 
         if (!this._isValidModelConfig(config)) {
-            sails.log.error('Wrong entity configuration, using default');
+            adminizer.log.error('Wrong entity configuration, using default');
             config = {
                 model: entityName,
                 icon: 'file',
@@ -105,7 +105,7 @@ export class AdminUtil {
         // console.log('admin > model > ', sails.models);
         let model = ModelHandler.model.get(name.toLowerCase());
         if (!model) {
-            sails.log.error(`No model found [${name}] in sails.`);
+            adminizer.log.error(`No model found [${name}] in sails.`);
             return null;
         }
         return model;
@@ -163,7 +163,7 @@ export class AdminUtil {
      */
     public static findModelConfig(req: ReqType, entityName: string): ModelConfig {
         if (!this.config().models || !this.config().models[entityName]) {
-            sails.log.error('No such route exists');
+            adminizer.log.error('No such route exists');
             return null;
         }
         return this._normalizeModelConfig(entityName, this.config().models[entityName]);

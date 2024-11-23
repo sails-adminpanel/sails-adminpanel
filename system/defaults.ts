@@ -30,7 +30,7 @@ var adminpanelConfig: AdminpanelConfig = {
     /**
      * Policies
      */
-    policies: null,
+    policies: [],
 
     /**
      * Base navbar configuration

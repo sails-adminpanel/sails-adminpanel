@@ -27,7 +27,7 @@ export async function catalogController(req: ReqType, res: ResType) {
 
 	if (id) {
 		if (idList.length && !idList.includes(id)) {
-			sails.log.error(`Catalog with id \`${id}\` not found`)
+			adminizer.log.error(`Catalog with id \`${id}\` not found`)
 			return res.sendStatus(404);
 		}
 	}

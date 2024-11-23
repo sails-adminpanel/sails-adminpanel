@@ -7,7 +7,7 @@ export default function bindTranslations() {
 
     if (typeof adminizer.config.translation  === 'boolean') {
         if(adminizer.config.translation as boolean === true) {
-            sails.log.warn("adminizer.config.translation is TRUE, is not mater")
+            adminizer.log.warn("adminizer.config.translation is TRUE, is not mater")
         }
         return
     }

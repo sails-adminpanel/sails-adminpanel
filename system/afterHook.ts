@@ -12,6 +12,7 @@ import bindConfigModels from "./bindConfigModels";
 import { Adminizer } from "../lib/v4/config/Adminizer";
 
 export default async function () {
+
   // Binding list of function for rendering
   require('./bindResView').default();
 
@@ -56,8 +57,6 @@ export default async function () {
     bindTranslations();
   })
 
-  let adminizer = new Adminizer(adminizer.config)
-  global.adminizer = adminizer;
 
   /**
    * AfterHook emit

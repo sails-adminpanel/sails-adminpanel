@@ -63,8 +63,8 @@ function bindResView() {
             if (locals.section === undefined)
                 locals.section = 'adminpanel';
             if (cb_view) {
-                sails.log.warn((new Error).stack);
-                sails.log.warn(`Detected cb_view ${cb_view}`);
+                adminizer.log.warn((new Error).stack);
+                adminizer.log.warn(`Detected cb_view ${cb_view}`);
             }
             return res.view(viewsHelper_1.ViewsHelper.getViewPath(specifiedPath), locals);
         };

@@ -23,15 +23,15 @@ export default async function editGroup(req: ReqType, res: ResType) {
     try {
         users = await UserAP.find({isAdministrator: false}).populate("groups");
     } catch (e) {
-        sails.log.error(e)
+        adminizer.log.error(e)
     }
 
     let group;
     try {
         group = await GroupAP.findOne(req.param('id')).populate("users");
     } catch(e) {
-        sails.log.error('Admin edit error: ');
-        sails.log.error(e);
+        adminizer.log.error('Admin edit error: ');
+        adminizer.log.error(e);
         return res.serverError();
     }
 
@@ -74,10 +74,10 @@ export default async function editGroup(req: ReqType, res: ResType) {
         try {
             updatedGroup = await GroupAP.update({id: group.id}, {name: req.body.name, description: req.body.description,
                 users: usersInThisGroup, tokens: tokensOfThisGroup}).fetch();
-            sails.log.debug(`Group was updated: `, updatedGroup);
+            adminizer.log.debug(`Group was updated: `, updatedGroup);
             req.session.messages.adminSuccess.push('Group was updated !');
         } catch (e) {
-            sails.log.error(e);
+            adminizer.log.error(e);
             req.session.messages.adminError.push(e.message || 'Something went wrong...');
         }
 
@@ -88,15 +88,15 @@ export default async function editGroup(req: ReqType, res: ResType) {
         try {
             group = await GroupAP.findOne(req.param('id')).populate("users");
         } catch (e) {
-            sails.log.error('Admin edit error: ');
-            sails.log.error(e);
+            adminizer.log.error('Admin edit error: ');
+            adminizer.log.error(e);
             return res.serverError();
         }
 
         try {
             users = await UserAP.find({isAdministrator: false}).populate("groups");
         } catch (e) {
-            sails.log.error(e)
+            adminizer.log.error(e)
         }
     }
 

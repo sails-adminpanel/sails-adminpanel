@@ -9,7 +9,7 @@ export class ModelHandler {
           throw new Error(`Model "${modelname}" is already registered.`);
         }
         this.models.set(modelname, modelInstance);
-        sails.log.debug(`Model with name [${modelname}] was registred`)
+        adminizer.log.debug(`Model with name [${modelname}] was registred`)
         console.log(`Model with name [${modelname}] was registred`)
         
     }

@@ -8,12 +8,12 @@ const DataAccessor_1 = require("../lib/v4/DataAccessor");
 async function remove(req, res) {
     //Checking id of the record
     if (!req.param('id')) {
-        sails.log.error(new Error('Admin panel: No id for record provided'));
+        adminizer.log.error(new Error('Admin panel: No id for record provided'));
         return res.notFound();
     }
     let entity = adminUtil_1.AdminUtil.findEntityObject(req);
     if (!entity.model) {
-        sails.log.error(new Error('Admin panel: no model found'));
+        adminizer.log.error(new Error('Admin panel: no model found'));
         return res.notFound();
     }
     if (!entity.config.remove) {
@@ -55,7 +55,7 @@ async function remove(req, res) {
         }
         return res.notFound();
     }
-    // sails.log.debug('admin > remove > record > ', record);
+    // adminizer.log.debug('admin > remove > record > ', record);
     let destroyedRecord;
     try {
         const fieldId = entity.config.identifierField ?? adminizer.config.identifierField;
@@ -66,7 +66,7 @@ async function remove(req, res) {
         await (0, MediaManagerHelper_1.deleteRelationsMediaManager)(entity.name, destroyedRecord);
     }
     catch (e) {
-        sails.log.error('adminpanel > error', e);
+        adminizer.log.error('adminpanel > error', e);
     }
     if (destroyedRecord) {
         req.session.messages.adminSuccess.push('Record was removed successfully');

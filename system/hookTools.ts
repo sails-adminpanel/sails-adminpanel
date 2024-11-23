@@ -99,7 +99,7 @@ export default class HookTools {
             });
         } catch (err) {
             if (err) {
-                sails.log.error(err)
+                adminizer.log.error(err)
                 return cb(err);
             }
         }
@@ -114,7 +114,7 @@ export default class HookTools {
      * @param method - GET or POST ot etc.
      */
     public static bindRouter(path: string, action: Action, method?: string): void {
-        sails.log.verbose("restocore > bindRouter: ", path);
+        adminizer.log.verbose("restocore > bindRouter: ", path);
         if (!path || !action) {
             throw "Cannot bind undefined path to undefined action";
         }
@@ -124,7 +124,7 @@ export default class HookTools {
         }
 
         if (!_.isFunction(action)) {
-            sails.log.error(action);
+            adminizer.log.error(action);
             throw "action must be function, not " + typeof action;
         }
 

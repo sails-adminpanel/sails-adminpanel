@@ -27,7 +27,7 @@ var adminpanelConfig = {
     /**
      * Policies
      */
-    policies: null,
+    policies: [],
     /**
      * Base navbar configuration
      */

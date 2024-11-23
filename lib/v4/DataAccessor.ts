@@ -98,7 +98,7 @@ export class DataAccessor {
           if (Model) {
             populatedModelFieldsConfig = this.getAssociatedFieldsConfig(modelName);
           } else {
-            sails.log.error(`Model not found: ${modelName}`);
+            adminizer.log.error(`Model not found: ${modelName}`);
           }
         }
       }
@@ -129,7 +129,7 @@ export class DataAccessor {
     const actionVerb = getTokenAction(this.action);
     const tokenId = `${actionVerb}-${modelName}-${this.entity.type}`;
     if (!AccessRightsHelper.havePermission(tokenId, this.user)) {
-      sails.log.warn(`No access rights to ${this.entity.type}: ${modelName}`);
+      adminizer.log.warn(`No access rights to ${this.entity.type}: ${modelName}`);
       return undefined;
     }
 
@@ -250,7 +250,7 @@ export class DataAccessor {
               : fieldValue; // If the array contains IDs, pass them as is (it can contain ids, because this function also can be called before saving something)
           } else {
             // If fieldValue is not an array, log an error
-            sails.log.error(
+            adminizer.log.error(
               `Expected array for association-many field: ${fieldConfig.model.model}.${fieldKey}, but got:`,
               fieldValue
             );
@@ -272,7 +272,7 @@ export class DataAccessor {
         }
         // Log an error for unexpected scenarios
         else {
-          sails.log.error(
+          adminizer.log.error(
             `Unexpected field configuration or value for: ${fieldConfig.model.model}.${fieldKey}`
           );
         }
@@ -340,7 +340,7 @@ export class DataAccessor {
 
         /** Warning: code was not tested, need further processing in waterline (intersects does not support in waterline) */
         if (relation.collection) {
-          sails.log.warn(`Collection relation is not supported and was not tested. You may have an error here: ${JSON.stringify(relation, null, 2)}`)
+          adminizer.log.warn(`Collection relation is not supported and was not tested. You may have an error here: ${JSON.stringify(relation, null, 2)}`)
           if (relation.collection.toLowerCase() === 'userap') {
             // Ensure user's ID is part of the associated collection to UserAP
             criteria[accessField] = { contains: this.user.id };

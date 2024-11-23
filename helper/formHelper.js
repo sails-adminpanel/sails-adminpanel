@@ -28,12 +28,12 @@ class FormHelper {
                     adminizer.config.forms.data[form] = jsonData;
                 }
                 catch (error) {
-                    sails.log.error(`Adminpanel > Error when reading ${formJson}: ${error}`);
+                    adminizer.log.error(`Adminpanel > Error when reading ${formJson}: ${error}`);
                 }
             }
         }
         catch (e) {
-            sails.log.error("Adminpanel > Error when loading forms", e);
+            adminizer.log.error("Adminpanel > Error when loading forms", e);
         }
     }
 }

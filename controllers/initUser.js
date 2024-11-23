@@ -14,13 +14,13 @@ async function initUser(req, res) {
         let locale = req.param("locale");
         let password = req.param("password");
         let confirm_password = req.param("confirm_password");
-        sails.log.debug(login, password, confirm_password, 123);
+        adminizer.log.debug(login, password, confirm_password, 123);
         if (password !== confirm_password) {
             req.session.messages.adminError.push("Password mismatch");
             return res.viewAdmin("init_user");
         }
         try {
-            sails.log.debug(`Created admin`);
+            adminizer.log.debug(`Created admin`);
             await UserAP.create({
                 login: login,
                 password: password,
@@ -31,7 +31,7 @@ async function initUser(req, res) {
             });
         }
         catch (e) {
-            sails.log.error("Could not create administrator profile", e);
+            adminizer.log.error("Could not create administrator profile", e);
             req.session.messages.adminError.push("Could not create administrator profile");
             return res.viewAdmin("init_user");
         }

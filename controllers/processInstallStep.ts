@@ -14,7 +14,7 @@ export default async function processInstallStep(req: ReqType, res: ResType): Pr
 	}
 
 	if (req.method.toUpperCase() === 'GET') {
-		sails.log.debug("GET REQUEST TO PROCESS INSTALL STEP")
+		adminizer.log.debug("GET REQUEST TO PROCESS INSTALL STEP")
 		let installStepper = InstallStepper.getStepper(req.params.id);
 		if (!installStepper) {
 			res.redirect(`${adminizer.config.routePrefix}`);
@@ -44,7 +44,7 @@ export default async function processInstallStep(req: ReqType, res: ResType): Pr
 	if (req.method.toUpperCase() === 'POST') {
 
 		try {
-			sails.log.debug("POST REQUEST TO PROCESS INSTALL STEP", req.body)
+			adminizer.log.debug("POST REQUEST TO PROCESS INSTALL STEP", req.body)
 			let installStepper = InstallStepper.getStepper(req.params.id);
 
 			const currentStepId = req.body.currentStepId;
@@ -60,7 +60,7 @@ export default async function processInstallStep(req: ReqType, res: ResType): Pr
 						let uploadedFile = await uploadFiles(filesUpstream, currentStepId);
 						uploadedFiles.push(uploadedFile);
 					} catch (error) {
-						sails.log.error('Error uploading files:', error);
+						adminizer.log.error('Error uploading files:', error);
 					}
 				}
 			}
@@ -93,14 +93,14 @@ export default async function processInstallStep(req: ReqType, res: ResType): Pr
 			}
 
 		} catch (error) {
-			sails.log.error("Error processing step:", error);
+			adminizer.log.error("Error processing step:", error);
 			res.status(500).send("Error processing step");
 			return
 		}
 	}
 
 	if (req.method.toUpperCase() === 'DELETE') {
-		sails.log.debug("DELETE REQUEST TO PROCESS INSTALL STEP", req.body)
+		adminizer.log.debug("DELETE REQUEST TO PROCESS INSTALL STEP", req.body)
 
 		try {
 			InstallStepper.deleteStepper(req.params.id);
@@ -133,13 +133,13 @@ function uploadFiles(files: ReturnType<ReqType['file']>, currentStepId: string |
 			}
 		}, (err, uploadedFiles) => {
 			if (err) {
-				sails.log.error(err);
+				adminizer.log.error(err);
 				reject(err);
 
 			} else if (uploadedFiles && uploadedFiles.length > 0) {
 				const uploadedFile = uploadedFiles[0];
 				const uploadedFileName = uploadedFile.fd;
-				sails.log.debug("DOWNLOADED FILE", uploadedFileName);
+				adminizer.log.debug("DOWNLOADED FILE", uploadedFileName);
 				resolve(uploadedFileName);
 
 			} else {

@@ -161,7 +161,7 @@ export class FieldsHelper {
                         associatedModelAttributes = AdminUtil.getModel(modelField.model.toLowerCase() as keyof Models).attributes;
                     }
                     catch (e) {
-                        sails.log.error(e);
+                        adminizer.log.error(e);
                     }
                 }
                 else if (config.type === 'association-many') {
@@ -170,7 +170,7 @@ export class FieldsHelper {
                         associatedModelAttributes = AdminUtil.getModel(modelField.collection.toLowerCase()  as keyof Models).attributes;
                     }
                     catch (e) {
-                        sails.log.error(e);
+                        adminizer.log.error(e);
                     }
                 }
                 // console.log('admin > helper > model > ', associatedModelAttributes);
@@ -216,7 +216,7 @@ export class FieldsHelper {
             let modelName = fields[key].model.model || fields[key].model.collection;
 
             if (!modelName) {
-                sails.log.error('No model found for field: ', fields[key]);
+                adminizer.log.error('No model found for field: ', fields[key]);
                 return;
             }
 
@@ -228,14 +228,14 @@ export class FieldsHelper {
             let list: ModelAnyInstance[];
             try {
                 // adding deprecated records array to config for association widget
-                sails.log.warn("Warning: executing malicious job trying to add a huge amount of records in field config," +
+                adminizer.log.warn("Warning: executing malicious job trying to add a huge amount of records in field config," +
                   " please rewrite this part of code in the nearest future");
                 let entity: Entity = {name: modelName, config: adminizer.config.models[modelName] as ModelConfig,
                     model: Model, uri: `/admin/model/${modelName}`, type: "model"};
                 let dataAccessor = new DataAccessor(user, entity, action);
                 list = await Model._find({}, dataAccessor);
             } catch (e) {
-                sails.log.error(e)
+                adminizer.log.error(e)
                 throw new Error("FieldsHelper > loadAssociations error");
             }
 
@@ -246,7 +246,7 @@ export class FieldsHelper {
             try {
                 await loadAssoc(key, user, action);
             } catch (e) {
-                sails.log.error(e);
+                adminizer.log.error(e);
                 return e;
             }
         }

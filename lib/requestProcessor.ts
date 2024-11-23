@@ -60,7 +60,7 @@ export class RequestProcessor {
                     files[elem] = file;
                 });
             } catch (e) {
-                sails.log.error(e);
+                adminizer.log.error(e);
                 return e;
             }
         }
@@ -107,7 +107,7 @@ export class RequestProcessor {
                     postParams[key] = JSON.parse(postParams[key] as string);
                 } catch (error) {
                     if (typeof postParams[key] === "string" && (postParams[key] as string).trim()) {
-                        sails.log.error(`Adminpanel > processRequest: json parse error when parsing ${postParams[key]}`, error);
+                        adminizer.log.error(`Adminpanel > processRequest: json parse error when parsing ${postParams[key]}`, error);
                     }
                 }
             }

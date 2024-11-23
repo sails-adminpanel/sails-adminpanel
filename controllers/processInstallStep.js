@@ -16,7 +16,7 @@ async function processInstallStep(req, res) {
         }
     }
     if (req.method.toUpperCase() === 'GET') {
-        sails.log.debug("GET REQUEST TO PROCESS INSTALL STEP");
+        adminizer.log.debug("GET REQUEST TO PROCESS INSTALL STEP");
         let installStepper = installStepper_1.InstallStepper.getStepper(req.params.id);
         if (!installStepper) {
             res.redirect(`${adminizer.config.routePrefix}`);
@@ -44,7 +44,7 @@ async function processInstallStep(req, res) {
     }
     if (req.method.toUpperCase() === 'POST') {
         try {
-            sails.log.debug("POST REQUEST TO PROCESS INSTALL STEP", req.body);
+            adminizer.log.debug("POST REQUEST TO PROCESS INSTALL STEP", req.body);
             let installStepper = installStepper_1.InstallStepper.getStepper(req.params.id);
             const currentStepId = req.body.currentStepId;
             const filesCounter = req.body.filesCounter;
@@ -58,7 +58,7 @@ async function processInstallStep(req, res) {
                         uploadedFiles.push(uploadedFile);
                     }
                     catch (error) {
-                        sails.log.error('Error uploading files:', error);
+                        adminizer.log.error('Error uploading files:', error);
                     }
                 }
             }
@@ -89,13 +89,13 @@ async function processInstallStep(req, res) {
             }
         }
         catch (error) {
-            sails.log.error("Error processing step:", error);
+            adminizer.log.error("Error processing step:", error);
             res.status(500).send("Error processing step");
             return;
         }
     }
     if (req.method.toUpperCase() === 'DELETE') {
-        sails.log.debug("DELETE REQUEST TO PROCESS INSTALL STEP", req.body);
+        adminizer.log.debug("DELETE REQUEST TO PROCESS INSTALL STEP", req.body);
         try {
             installStepper_1.InstallStepper.deleteStepper(req.params.id);
             res.status(200).send("OK");
@@ -126,13 +126,13 @@ function uploadFiles(files, currentStepId) {
             }
         }, (err, uploadedFiles) => {
             if (err) {
-                sails.log.error(err);
+                adminizer.log.error(err);
                 reject(err);
             }
             else if (uploadedFiles && uploadedFiles.length > 0) {
                 const uploadedFile = uploadedFiles[0];
                 const uploadedFileName = uploadedFile.fd;
-                sails.log.debug("DOWNLOADED FILE", uploadedFileName);
+                adminizer.log.debug("DOWNLOADED FILE", uploadedFileName);
                 resolve(uploadedFileName);
             }
             else {

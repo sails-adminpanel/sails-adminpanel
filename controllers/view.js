@@ -31,8 +31,8 @@ async function view(req, res) {
         record = await entity.model._findOne(req.param('id'), dataAccessor);
     }
     catch (e) {
-        sails.log.error('Admin edit error: ');
-        sails.log.error(e);
+        adminizer.log.error('Admin edit error: ');
+        adminizer.log.error(e);
         return res.serverError();
     }
     res.viewAdmin({

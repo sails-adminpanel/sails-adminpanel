@@ -27,7 +27,7 @@ async function listJson(req, res) {
         //@ts-ignore
         await nodeTable.output((err, data) => {
             if (err) {
-                sails.log.error(err);
+                adminizer.log.error(err);
                 return;
             }
             // Directly send this data as output to Datatable
@@ -36,7 +36,7 @@ async function listJson(req, res) {
         }, dataAccessor);
     }
     catch (error) {
-        sails.log.error(error);
+        adminizer.log.error(error);
     }
 }
 ;

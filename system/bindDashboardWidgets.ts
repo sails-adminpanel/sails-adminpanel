@@ -18,11 +18,11 @@ export default async function bindDashboardWidgets() {
                         WidgetHandler.add(instance);
                     }
                 } catch (error) {
-                    sails.log.error(`Error when connecting and creating an instance of a class from a file ${filePath}:`, error);
+                    adminizer.log.error(`Error when connecting and creating an instance of a class from a file ${filePath}:`, error);
                 }
             }
         } catch (err) {
-            sails.log.error('Error reading folder:', err);
+            adminizer.log.error('Error reading folder:', err);
         }
     }
 }

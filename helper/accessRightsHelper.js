@@ -66,7 +66,7 @@ class AccessRightsHelper {
             }
         }
         if (!tokenIsValid) {
-            sails.log.error("Adminpanel > Token is not valid");
+            adminizer.log.error("Adminpanel > Token is not valid");
             return false;
         }
         let allow = false;

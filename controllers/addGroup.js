@@ -18,7 +18,7 @@ async function addGroup(req, res) {
         users = await UserAP.find({ isAdministrator: false });
     }
     catch (e) {
-        sails.log.error(e);
+        adminizer.log.error(e);
     }
     let departments = accessRightsHelper_1.AccessRightsHelper.getAllDepartments();
     let groupedTokens = {};
@@ -50,12 +50,12 @@ async function addGroup(req, res) {
         try {
             group = await GroupAP.create({ name: req.body.name, description: req.body.description,
                 users: usersInThisGroup, tokens: tokensOfThisGroup }).fetch();
-            sails.log.debug(`A new group was created: `, group);
+            adminizer.log.debug(`A new group was created: `, group);
             req.session.messages.adminSuccess.push('A new group was created !');
             return res.redirect(`${adminizer.config.routePrefix}/model/groupap`);
         }
         catch (e) {
-            sails.log.error(e);
+            adminizer.log.error(e);
             req.session.messages.adminError.push(e.message || 'Something went wrong...');
         }
         // console.log(group)

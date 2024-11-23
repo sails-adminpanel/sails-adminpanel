@@ -32,9 +32,9 @@ class StorageService {
 				}
 
 				if (wasCreated) {
-					sails.log(`Created a new navigation: ${this.id}`);
+					adminizer.log.info(`Created a new navigation: ${this.id}`);
 				} else {
-					sails.log(`Found existing navigation: ${this.id}`);
+					adminizer.log.info(`Found existing navigation: ${this.id}`);
 					await this.populateFromTree(navigation.tree)
 				}
 			});

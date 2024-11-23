@@ -21,6 +21,6 @@ export default function() {
         // @ts-ignore
         adminizer.config.policies.push(installStepperPolicy)
     } else {
-        sails.log.error("Can not bind install stepper. Policies is not array");
+        adminizer.log.error("Can not bind install stepper. Policies is not array");
     }
 };

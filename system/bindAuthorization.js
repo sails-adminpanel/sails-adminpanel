@@ -11,7 +11,7 @@ async function bindAuthorization() {
         admins = await UserAP.find({ isAdministrator: true });
     }
     catch (e) {
-        sails.log.error("Error trying to find administrator", e);
+        adminizer.log.error("Error trying to find administrator", e);
         return;
     }
     /**
@@ -30,7 +30,7 @@ async function bindAuthorization() {
                 password: admin.password
             });
         }
-        sails.log.debug(`Has Administrators with login [${adminsCredentials[0].login}]`);
+        adminizer.log.debug(`Has Administrators with login [${adminsCredentials[0].login}]`);
     }
     else if (process.env.ADMINPANEL_LAZY_GEN_ADMIN_ENABLE !== undefined) {
         let adminData;
@@ -49,7 +49,7 @@ async function bindAuthorization() {
                 isActive: true, isAdministrator: true });
         }
         catch (e) {
-            sails.log.error("Could not create administrator profile", e);
+            adminizer.log.error("Could not create administrator profile", e);
             return;
         }
         console.group("Administrators credentials");
@@ -58,7 +58,7 @@ async function bindAuthorization() {
     }
     else { // try to create one if we don't
         if (adminizer.config.auth) {
-            sails.log.debug(`Adminpanel does not have an administrator`);
+            adminizer.log.debug(`Adminpanel does not have an administrator`);
             adminizer.config.policies.push(initUserPolicy);
             sails.router.bind(adminizer.config.routePrefix + '/init_user', initUser_1.default);
         }

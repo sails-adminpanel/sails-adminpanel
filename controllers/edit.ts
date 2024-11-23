@@ -41,8 +41,8 @@ export default async function edit(req: ReqType, res: ResType) {
 		dataAccessor = new DataAccessor(req.session.UserAP, entity, "edit");
 		record = await entity.model._findOne({id: id}, dataAccessor);
 	} catch (e) {
-		sails.log.error('Admin edit error: ');
-		sails.log.error(e);
+		adminizer.log.error('Admin edit error: ');
+		adminizer.log.error(e);
 		return res.serverError();
 	}
 
@@ -107,7 +107,7 @@ export default async function edit(req: ReqType, res: ResType) {
 					} catch (e) {
 						// Why it here @roman?
 						if (typeof reqData[prop] === "string" && reqData[prop].toString().replace(/(\r\n|\n|\r|\s{2,})/gm, "")) {
-							sails.log.error(JSON.stringify(reqData[prop]), e);
+							adminizer.log.error(JSON.stringify(reqData[prop]), e);
 						}
 					}
 				}
@@ -134,7 +134,7 @@ export default async function edit(req: ReqType, res: ResType) {
 			let newRecord = await entity.model._update(params, reqData, dataAccessor);
 			await saveRelationsMediaManager(fields, rawReqData, entity.model.identity, newRecord[0].id)
 
-			sails.log.debug(`Record was updated: `, newRecord);
+			adminizer.log.debug(`Record was updated: `, newRecord);
 			if (req.body.jsonPopupCatalog) {
 				return res.json({ record: newRecord })
 			} else {
@@ -155,7 +155,7 @@ export default async function edit(req: ReqType, res: ResType) {
 				return res.redirect(`${adminizer.config.routePrefix}/model/${entity.name}`);
 			}
 		} catch (e) {
-			sails.log.error(e);
+			adminizer.log.error(e);
 			req.session.messages.adminError.push(e.message || 'Something went wrong...');
 			return e;
 		}

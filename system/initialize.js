@@ -20,8 +20,11 @@ async function default_1(sails, cb) {
         'views'
     ];
     // If disabled. Do not load anything
-    if (!adminizer.config) {
+    if (!sails.config.adminpanel) {
         return cb();
+    }
+    else {
+        adminizer.init(sails.config.adminpanel);
     }
     /**
      * Initilization emit

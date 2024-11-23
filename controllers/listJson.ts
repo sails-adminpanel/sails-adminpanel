@@ -29,7 +29,7 @@ export default async function listJson(req: ReqType, res: ResType): Promise<void
         //@ts-ignore
         await nodeTable.output((err: Error, data: []): void => {
             if (err) {
-                sails.log.error(err);
+                adminizer.log.error(err);
                 return
             }
 
@@ -38,6 +38,6 @@ export default async function listJson(req: ReqType, res: ResType): Promise<void
             return
         }, dataAccessor)
     } catch (error) {
-        sails.log.error(error)
+        adminizer.log.error(error)
     }
 };

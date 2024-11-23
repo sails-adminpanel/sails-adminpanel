@@ -8,7 +8,7 @@ function bindTranslations() {
     translationHelper_1.TranslationHelper.loadTranslations(`${adminizer.config.rootPath}/translations`);
     if (typeof adminizer.config.translation === 'boolean') {
         if (adminizer.config.translation === true) {
-            sails.log.warn("adminizer.config.translation is TRUE, is not mater");
+            adminizer.log.warn("adminizer.config.translation is TRUE, is not mater");
         }
         return;
     }

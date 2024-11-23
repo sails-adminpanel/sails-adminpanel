@@ -18,7 +18,7 @@ async function default_1(req, res) {
         groups = await GroupAP.find();
     }
     catch (e) {
-        sails.log.error(e);
+        adminizer.log.error(e);
     }
     if (req.method.toUpperCase() === 'POST') {
         // console.log(req.body);
@@ -43,12 +43,12 @@ async function default_1(req, res) {
             user = await UserAP.create({ login: req.body.login, fullName: req.body.fullName, email: req.body.email,
                 password: req.body.userPassword, timezone: req.body.timezone, expires: req.body.date,
                 locale: locale, isAdministrator: isAdministrator, isConfirmed: isConfirmed, groups: userGroups }).fetch();
-            sails.log.debug(`A new user was created: `, user);
+            adminizer.log.debug(`A new user was created: `, user);
             req.session.messages.adminSuccess.push('A new user was created !');
             return res.redirect(`${adminizer.config.routePrefix}/model/userap`);
         }
         catch (e) {
-            sails.log.error(e);
+            adminizer.log.error(e);
             req.session.messages.adminError.push(e.message || 'Something went wrong...');
         }
         // console.log(user)

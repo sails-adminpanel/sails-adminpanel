@@ -61,7 +61,7 @@ export default async function add(req: ReqType, res: ResType) {
 					reqData[prop] = JSON.parse(reqData[prop]);
 				} catch (e) {
 					if (typeof reqData[prop] === "string" && reqData[prop].replace(/(\r\n|\n|\r|\s{2,})/gm, "")) {
-						sails.log.error(e);
+						adminizer.log.error(e);
 					}
 				}
 			}
@@ -106,7 +106,7 @@ export default async function add(req: ReqType, res: ResType) {
 			// save associations media to json
 			await saveRelationsMediaManager(fields,  rawReqData, entity.model.identity, record.id)
 
-			sails.log.debug(`A new record was created: `, record);
+			adminizer.log.debug(`A new record was created: `, record);
 			if (req.body.jsonPopupCatalog) {
 				return res.json({record: record})
 			} else {
@@ -114,7 +114,7 @@ export default async function add(req: ReqType, res: ResType) {
 				return res.redirect(`${adminizer.config.routePrefix}/model/${entity.name}`);
 			}
 		} catch (e) {
-			sails.log.error(e);
+			adminizer.log.error(e);
 			req.session.messages.adminError.push(e.message || 'Something went wrong...');
 			data = reqData;
 		}

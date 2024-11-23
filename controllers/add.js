@@ -51,7 +51,7 @@ async function add(req, res) {
                 }
                 catch (e) {
                     if (typeof reqData[prop] === "string" && reqData[prop].replace(/(\r\n|\n|\r|\s{2,})/gm, "")) {
-                        sails.log.error(e);
+                        adminizer.log.error(e);
                     }
                 }
             }
@@ -89,7 +89,7 @@ async function add(req, res) {
             let record = await entity.model._create(reqData, dataAccessor);
             // save associations media to json
             await (0, MediaManagerHelper_1.saveRelationsMediaManager)(fields, rawReqData, entity.model.identity, record.id);
-            sails.log.debug(`A new record was created: `, record);
+            adminizer.log.debug(`A new record was created: `, record);
             if (req.body.jsonPopupCatalog) {
                 return res.json({ record: record });
             }
@@ -99,7 +99,7 @@ async function add(req, res) {
             }
         }
         catch (e) {
-            sails.log.error(e);
+            adminizer.log.error(e);
             req.session.messages.adminError.push(e.message || 'Something went wrong...');
             data = reqData;
         }

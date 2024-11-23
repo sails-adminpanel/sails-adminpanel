@@ -24,7 +24,7 @@ export default async function form(req: ReqType, res: ResType) {
 				req.body[prop] = JSON.parse(req.body[prop]);
 			} catch (e) {
 				if (typeof req.body[prop] === "string" && req.body[prop].replace(/(\r\n|\n|\r|\s{2,})/gm, "") && e.message !== "Unexpected end of JSON input" && !/Unexpected (token .|number) in JSON at position \d/.test(e.message)) {
-					sails.log.error(JSON.stringify(req.body[prop]), e);
+					adminizer.log.error(JSON.stringify(req.body[prop]), e);
 				}
 			}
 		}
@@ -63,7 +63,7 @@ export default async function form(req: ReqType, res: ResType) {
 		try {
 			form[key].value = await adminizer.config.forms.get(slug, key);
 		} catch (e) {
-			sails.log.silly(`'${slug}' property was not found in storage, using source file`);
+			adminizer.log.silly(`'${slug}' property was not found in storage, using source file`);
 		}
 	}
 

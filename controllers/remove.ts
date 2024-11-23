@@ -7,13 +7,13 @@ import {DataAccessor} from "../lib/v4/DataAccessor";
 export default async function remove(req: ReqType, res: ResType) {
     //Checking id of the record
     if (!req.param('id')) {
-        sails.log.error(new Error('Admin panel: No id for record provided'));
+        adminizer.log.error(new Error('Admin panel: No id for record provided'));
         return res.notFound();
     }
 
     let entity = AdminUtil.findEntityObject(req);
     if (!entity.model) {
-        sails.log.error(new Error('Admin panel: no model found'));
+        adminizer.log.error(new Error('Admin panel: no model found'));
         return res.notFound();
     }
 
@@ -57,7 +57,7 @@ export default async function remove(req: ReqType, res: ResType) {
         }
         return res.notFound();
     }
-    // sails.log.debug('admin > remove > record > ', record);
+    // adminizer.log.debug('admin > remove > record > ', record);
 
     let destroyedRecord;
     try {
@@ -71,7 +71,7 @@ export default async function remove(req: ReqType, res: ResType) {
 		// delete relations media manager
 		await deleteRelationsMediaManager(entity.name, destroyedRecord)
     } catch (e) {
-        sails.log.error('adminpanel > error', e);
+        adminizer.log.error('adminpanel > error', e);
     }
 
     if (destroyedRecord) {

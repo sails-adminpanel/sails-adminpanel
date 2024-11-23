@@ -13,7 +13,7 @@ async function processInstallFinalize(req, res) {
             return res.sendStatus(403);
         }
     }
-    sails.log.debug("IN PROCESS FINALIZE", installStepper.getFinalizeStatus());
+    adminizer.log.debug("IN PROCESS FINALIZE", installStepper.getFinalizeStatus());
     return res.json(installStepper.getFinalizeStatus());
 }
 ;

@@ -10,7 +10,7 @@ const Jimp = require('jimp');
 
 export default function upload(req: ReqType, res: ResType) {
 
-    // sails.log.debug('admin > upload');
+    // adminizer.log.debug('admin > upload');
     let entity = AdminUtil.findEntityObject(req);
 
     if (adminizer.config.auth) {
@@ -34,7 +34,7 @@ export default function upload(req: ReqType, res: ResType) {
         //     return res.badRequest();
         // }
 
-        // sails.log.info(req.body);
+        // adminizer.log.info(req.body);
 
 
         // read field
@@ -160,7 +160,7 @@ export default function upload(req: ReqType, res: ResType) {
                     if (err) return res.serverError(err);
                     //@ts-ignore
                     image.write(assetsDir + filename, function (err, img) {
-                        if (err) sails.log.error("Can't save image in assets!");
+                        if (err) adminizer.log.error("Can't save image in assets!");
                     });
 
                     const width = image.bitmap.width;

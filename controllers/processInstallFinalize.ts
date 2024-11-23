@@ -11,6 +11,6 @@ export default async function processInstallFinalize(req: ReqType, res: ResType)
         }
     }
 
-    sails.log.debug("IN PROCESS FINALIZE", installStepper.getFinalizeStatus());
+    adminizer.log.debug("IN PROCESS FINALIZE", installStepper.getFinalizeStatus());
     return res.json(installStepper.getFinalizeStatus())
 };

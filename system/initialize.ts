@@ -7,10 +7,8 @@ import {resolve} from "path";
 import afterHook from "./afterHook";
 import bindInstallStepper from "./bindInstallStepper";
 
+
 export default async function(sails: any, cb: (err?: Error)=>void) {
-
-
-
     /**
      * List of hooks that required for adminpanel to work
      */
@@ -22,9 +20,12 @@ export default async function(sails: any, cb: (err?: Error)=>void) {
     ];
 
     // If disabled. Do not load anything
-    if (!adminizer.config) {
+    if (!sails.config.adminpanel) {
         return cb();
+    } else {
+        adminizer.init(sails.config.adminpanel)
     }
+
 
     /**
      * Initilization emit
@@ -37,6 +38,7 @@ export default async function(sails: any, cb: (err?: Error)=>void) {
     if (!fs.existsSync(ViewsHelper.getPathToEngine(sails.config.views.extension))) {
         return cb(new Error('For now adminpanel hook could work only with EJS template engine.'));
     }
+
 
     adminizer.config.templateRootPath = ViewsHelper.BASE_VIEWS_PATH;
     adminizer.config.rootPath = path.resolve(__dirname + "/..")

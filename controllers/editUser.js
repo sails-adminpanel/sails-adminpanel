@@ -22,8 +22,8 @@ async function default_1(req, res) {
         user = await UserAP.findOne(req.param('id')).populate("groups");
     }
     catch (e) {
-        sails.log.error('Admin edit error: ');
-        sails.log.error(e);
+        adminizer.log.error('Admin edit error: ');
+        adminizer.log.error(e);
         return res.serverError();
     }
     let groups;
@@ -31,7 +31,7 @@ async function default_1(req, res) {
         groups = await GroupAP.find();
     }
     catch (e) {
-        sails.log.error(e);
+        adminizer.log.error(e);
     }
     let reloadNeeded = false;
     if (req.method.toUpperCase() === 'POST') {
@@ -60,11 +60,11 @@ async function default_1(req, res) {
             if (req.body.userPassword) {
                 updatedUser = await UserAP.update({ id: user.id }, { login: req.body.login, password: req.body.userPassword }).fetch();
             }
-            sails.log.debug(`User was updated: `, updatedUser);
+            adminizer.log.debug(`User was updated: `, updatedUser);
             req.session.messages.adminSuccess.push('User was updated !');
         }
         catch (e) {
-            sails.log.error(e);
+            adminizer.log.error(e);
             req.session.messages.adminError.push(e.message || 'Something went wrong...');
         }
         reloadNeeded = true;
@@ -74,15 +74,15 @@ async function default_1(req, res) {
             user = await UserAP.findOne(req.param('id')).populate("groups");
         }
         catch (e) {
-            sails.log.error('Admin edit error: ');
-            sails.log.error(e);
+            adminizer.log.error('Admin edit error: ');
+            adminizer.log.error(e);
             return res.serverError();
         }
         try {
             groups = await GroupAP.find();
         }
         catch (e) {
-            sails.log.error(e);
+            adminizer.log.error(e);
         }
     }
     return res.viewAdmin("editUser", { entity: entity, user: user, groups: groups });
