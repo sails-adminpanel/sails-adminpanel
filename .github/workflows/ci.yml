@@ -38,7 +38,7 @@ jobs:
             if [[ $version == *"build"* ]]; then
               if ! vercmp "$version" "$current_version"; then
                   echo "remove expired build version: $version"
-                  npm dist-tag remove $PACKAGE@$version
+                  npm unpublish $PACKAGE@$version
               fi
             fi
           done
