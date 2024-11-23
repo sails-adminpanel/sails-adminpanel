@@ -20,7 +20,7 @@ class ConfigHelper {
         Router_1.default.bind();
     }
     static getConfig() {
-        return sails.config.adminpanel;
+        return adminizer.config;
     }
     /**
      * Checks if given field is identifier of model
@@ -48,7 +48,7 @@ class ConfigHelper {
         if (!modelName) {
             throw new Error("Model name is not defined");
         }
-        let config = sails.config.adminpanel;
+        let config = adminizer.config;
         let modelConfig;
         Object.keys(config.models).forEach((entityName) => {
             const model = config.models[entityName];

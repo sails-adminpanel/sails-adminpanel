@@ -17,11 +17,11 @@ async function bindAuthorization() {
     /**
      * Router
      */
-    let policies = sails.config.adminpanel.policies || '';
-    let baseRoute = sails.config.adminpanel.routePrefix + '/model/:entity';
+    let policies = adminizer.config.policies || '';
+    let baseRoute = adminizer.config.routePrefix + '/model/:entity';
     let adminsCredentials = [];
     // if we have administrator profiles
-    let config = sails.config.adminpanel;
+    let config = adminizer.config;
     if (admins && admins.length) {
         for (let admin of admins) {
             adminsCredentials.push({
@@ -57,13 +57,13 @@ async function bindAuthorization() {
         console.groupEnd();
     }
     else { // try to create one if we don't
-        if (sails.config.adminpanel.auth) {
+        if (adminizer.config.auth) {
             sails.log.debug(`Adminpanel does not have an administrator`);
-            sails.config.adminpanel.policies.push(initUserPolicy);
-            sails.router.bind(sails.config.adminpanel.routePrefix + '/init_user', initUser_1.default);
+            adminizer.config.policies.push(initUserPolicy);
+            sails.router.bind(adminizer.config.routePrefix + '/init_user', initUser_1.default);
         }
     }
-    if (sails.config.adminpanel.auth) {
+    if (adminizer.config.auth) {
         sails.router.bind(baseRoute + '/login', (0, bindPolicies_1.default)(policies, login_1.default));
         sails.router.bind(baseRoute + '/logout', (0, bindPolicies_1.default)(policies, login_1.default));
         sails.router.bind(baseRoute + '/register', (0, bindPolicies_1.default)(policies, register_1.default));
@@ -78,7 +78,7 @@ function getRandomInt(min, max) {
 async function initUserPolicy(req, res, proceed) {
     let admins = await UserAP.find({ isAdministrator: true });
     if (!admins.length) {
-        return res.redirect(`${sails.config.adminpanel.routePrefix}/init_user`);
+        return res.redirect(`${adminizer.config.routePrefix}/init_user`);
     }
     return proceed();
 }

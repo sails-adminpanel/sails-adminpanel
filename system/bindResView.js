@@ -55,9 +55,9 @@ function bindResView() {
             if (!locals) {
                 locals = {};
             }
-            locals.theme = sails.config.adminpanel.theme || 'light';
-            locals.scripts = sails.config.adminpanel.scripts || {};
-            locals.scripts = sails.config.adminpanel.scripts || {};
+            locals.theme = adminizer.config.theme || 'light';
+            locals.scripts = adminizer.config.scripts || {};
+            locals.scripts = adminizer.config.scripts || {};
             locals.havePermission = accessRightsHelper_1.AccessRightsHelper.havePermission;
             locals.enoughPermissions = accessRightsHelper_1.AccessRightsHelper.enoughPermissions;
             if (locals.section === undefined)
@@ -71,9 +71,9 @@ function bindResView() {
         next();
     };
     // Bind to /admin
-    sails.router.bind(sails.config.adminpanel.routePrefix, bindResFunctions);
+    sails.router.bind(adminizer.config.routePrefix, bindResFunctions);
     // Bind to /admin/*
-    sails.router.bind(sails.config.adminpanel.routePrefix + '\/*', bindResFunctions);
+    sails.router.bind(adminizer.config.routePrefix + '\/*', bindResFunctions);
     sails.emit("adminpanel:viewadmin:loaded");
 }
 ;

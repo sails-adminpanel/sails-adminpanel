@@ -6,8 +6,8 @@ let passwordHash = require("password-hash");
 async function login(req, res) {
     const powCaptcha = new POWCaptcha_1.POWCaptcha();
     if (req.url.indexOf("login") >= 0) {
-        if (!sails.config.adminpanel.auth) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/`);
+        if (!adminizer.config.auth) {
+            return res.redirect(`${adminizer.config.routePrefix}/`);
         }
         if (req.method.toUpperCase() === "POST") {
             let login = req.param("login");
@@ -40,7 +40,7 @@ async function login(req, res) {
                 return await viewAdminMessage(req, res, "Wrong username or password");
             }
             else {
-                if (sails.config.adminpanel.registration.confirmationRequired && !user.isConfirmed && !user.isAdministrator) {
+                if (adminizer.config.registration.confirmationRequired && !user.isConfirmed && !user.isAdministrator) {
                     return await viewAdminMessage(req, res, "Profile is not confirmed, please contact to administrator");
                 }
                 if (passwordHash.verify(login + password, user.passwordHashed)) {
@@ -48,7 +48,7 @@ async function login(req, res) {
                         return await viewAdminMessage(req, res, "Profile expired, contact the administrator");
                     }
                     req.session.UserAP = user;
-                    return res.redirect(`${sails.config.adminpanel.routePrefix}/`);
+                    return res.redirect(`${adminizer.config.routePrefix}/`);
                 }
                 else {
                     return await viewAdminMessage(req, res, "Wrong username or password");
@@ -65,10 +65,10 @@ async function login(req, res) {
         if (req.session.adminPretender && req.session.adminPretender.id && req.session.UserAP && req.session.UserAP.id) {
             req.session.UserAP = req.session.adminPretender;
             req.session.adminPretender = {};
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/`);
+            return res.redirect(`${adminizer.config.routePrefix}/`);
         }
         req.session.UserAP = undefined;
-        res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+        res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
     }
 }
 async function viewAdminMessage(req, res, message) {

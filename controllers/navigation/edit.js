@@ -4,9 +4,9 @@ exports.default = edit;
 const adminUtil_1 = require("../../lib/adminUtil");
 const DataAccessor_1 = require("../../lib/v4/DataAccessor");
 async function edit(req, res) {
-    if (sails.config.adminpanel.auth) {
+    if (adminizer.config.auth) {
         if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
         }
     }
     let entity = adminUtil_1.AdminUtil.findEntityObject(req);

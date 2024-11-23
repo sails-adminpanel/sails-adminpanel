@@ -6,9 +6,9 @@ const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 function upload(req, res) {
     //console.log('admin > CK-upload');
     let entity = adminUtil_1.AdminUtil.findEntityObject(req);
-    if (sails.config.adminpanel.auth) {
+    if (adminizer.config.auth) {
         if (!req.session.UserAP) {
-            res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
             return;
         }
         else if (!accessRightsHelper_1.AccessRightsHelper.enoughPermissions([

@@ -8,9 +8,9 @@ async function catalogController(req, res) {
     const slug = req.param('slug');
     let id = req.param('id') ? req.param('id') : '';
     const postfix = id ? `${slug}-${id}` : `${slug}`;
-    if (sails.config.adminpanel.auth) {
+    if (adminizer.config.auth) {
         if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
         }
         else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`catalog-${postfix}`, req.session.UserAP)) {
             return res.sendStatus(403);

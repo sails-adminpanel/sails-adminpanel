@@ -19,7 +19,7 @@ class ViewsHelper {
      * @returns {string}
      */
     static getViewPath(view) {
-        return path.resolve(sails.config.adminpanel.pathToViews, view);
+        return path.resolve(adminizer.config.pathToViews, view);
     }
     /**
      *

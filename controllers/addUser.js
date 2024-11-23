@@ -5,9 +5,9 @@ const adminUtil_1 = require("../lib/adminUtil");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 async function default_1(req, res) {
     let entity = adminUtil_1.AdminUtil.findEntityObject(req);
-    if (sails.config.adminpanel.auth) {
+    if (adminizer.config.auth) {
         if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
         }
         else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`create-${entity.name}-model`, req.session.UserAP)) {
             return res.sendStatus(403);
@@ -35,8 +35,8 @@ async function default_1(req, res) {
         let isAdministrator = req.body.isAdmin === "on";
         let isConfirmed = req.body.isConfirmed === "on";
         let locale;
-        if (typeof sails.config.adminpanel.translation !== "boolean") {
-            locale = req.body.locale === 'default' ? sails.config.adminpanel.translation.defaultLocale : req.body.locale;
+        if (typeof adminizer.config.translation !== "boolean") {
+            locale = req.body.locale === 'default' ? adminizer.config.translation.defaultLocale : req.body.locale;
         }
         let user;
         try {
@@ -45,7 +45,7 @@ async function default_1(req, res) {
                 locale: locale, isAdministrator: isAdministrator, isConfirmed: isConfirmed, groups: userGroups }).fetch();
             sails.log.debug(`A new user was created: `, user);
             req.session.messages.adminSuccess.push('A new user was created !');
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/userap`);
         }
         catch (e) {
             sails.log.error(e);

@@ -5,9 +5,9 @@ const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 const installStepper_1 = require("../lib/installStepper/installStepper");
 const path = require("path");
 async function processInstallStep(req, res) {
-    if (sails.config.adminpanel.auth) {
+    if (adminizer.config.auth) {
         if (!req.session.UserAP) {
-            res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
             return;
         }
         else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`process-install-step`, req.session.UserAP)) {
@@ -19,7 +19,7 @@ async function processInstallStep(req, res) {
         sails.log.debug("GET REQUEST TO PROCESS INSTALL STEP");
         let installStepper = installStepper_1.InstallStepper.getStepper(req.params.id);
         if (!installStepper) {
-            res.redirect(`${sails.config.adminpanel.routePrefix}`);
+            res.redirect(`${adminizer.config.routePrefix}`);
             return;
         }
         if (installStepper.hasUnprocessedSteps() || installStepper.hasUnfinalizedSteps()) {
@@ -38,7 +38,7 @@ async function processInstallStep(req, res) {
             return;
         }
         else {
-            res.redirect(`${sails.config.adminpanel.routePrefix}`);
+            res.redirect(`${adminizer.config.routePrefix}`);
             return;
         }
     }
@@ -80,11 +80,11 @@ async function processInstallStep(req, res) {
             }
             // go back to stepper if there are more unprocessed steps, otherwise go back to /admin
             if (installStepper.hasUnprocessedSteps()) {
-                res.redirect(`${sails.config.adminpanel.routePrefix}/install/${installStepper.id}`);
+                res.redirect(`${adminizer.config.routePrefix}/install/${installStepper.id}`);
                 return;
             }
             else {
-                res.redirect(`${sails.config.adminpanel.routePrefix}`);
+                res.redirect(`${adminizer.config.routePrefix}`);
                 return;
             }
         }

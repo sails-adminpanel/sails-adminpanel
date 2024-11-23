@@ -13,6 +13,6 @@ describe('Hook methods sails.adminpanel...', function () {
         };
         sails.hooks.adminpanel.addModelConfig(categoryModel);
         //@ts-ignore
-        (0, chai_1.expect)(sails.config.adminpanel.models.category.title).to.equal("Category");
+        (0, chai_1.expect)(adminizer.config.models.category.title).to.equal("Category");
     });
 });

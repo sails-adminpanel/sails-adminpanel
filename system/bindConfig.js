@@ -9,8 +9,8 @@ function bindConfig() {
     /**
      * Bind adminpanel config to views
      */
-    if (!sails.config.adminpanel.pathToViews) {
-        sails.config.adminpanel.pathToViews = viewsHelper_1.ViewsHelper.getPathToEngine("ejs");
+    if (!adminizer.config.pathToViews) {
+        adminizer.config.pathToViews = viewsHelper_1.ViewsHelper.getPathToEngine("ejs");
     }
     // binding locals
     if (!sails.config.views.locals) {
@@ -20,10 +20,10 @@ function bindConfig() {
     if (!sails.config.views.locals.adminpanel) {
         sails.config.views.locals.adminpanel = {};
     }
-    sails.config.views.locals.adminpanel.config = sails.config.adminpanel;
+    sails.config.views.locals.adminpanel.config = adminizer.config;
     sails.config.views.locals.adminpanel.viewHelper = viewsHelper_1.ViewsHelper;
     sails.config.views.locals.adminpanel.fieldsHelper = fieldsHelper_1.FieldsHelper;
-    sails.config.views.locals.adminpanel.menuHelper = new menuHelper_1.MenuHelper(sails.config.adminpanel);
+    sails.config.views.locals.adminpanel.menuHelper = new menuHelper_1.MenuHelper(adminizer.config);
     sails.config.views.locals.adminpanel.configHelper = configHelper_1.ConfigHelper;
 }
 ;

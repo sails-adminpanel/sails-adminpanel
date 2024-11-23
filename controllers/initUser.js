@@ -2,12 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = initUser;
 async function initUser(req, res) {
-    if (!sails.config.adminpanel.auth) {
-        return res.redirect(`${sails.config.adminpanel.routePrefix}/`);
+    if (!adminizer.config.auth) {
+        return res.redirect(`${adminizer.config.routePrefix}/`);
     }
     let admins = await UserAP.find({ isAdministrator: true });
     if (admins.length) {
-        res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+        res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
     }
     if (req.method.toUpperCase() === "POST") {
         let login = req.param("login");
@@ -35,7 +35,7 @@ async function initUser(req, res) {
             req.session.messages.adminError.push("Could not create administrator profile");
             return res.viewAdmin("init_user");
         }
-        return res.redirect(`${sails.config.adminpanel.routePrefix}/`);
+        return res.redirect(`${adminizer.config.routePrefix}/`);
     }
     if (req.method.toUpperCase() === "GET") {
         return res.viewAdmin("init_user");

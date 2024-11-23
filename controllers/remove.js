@@ -19,9 +19,9 @@ async function remove(req, res) {
     if (!entity.config.remove) {
         return res.redirect(entity.uri);
     }
-    if (sails.config.adminpanel.auth) {
+    if (adminizer.config.auth) {
         if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
         }
         else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`delete-${entity.name}-model`, req.session.UserAP)) {
             return res.sendStatus(403);
@@ -58,7 +58,7 @@ async function remove(req, res) {
     // sails.log.debug('admin > remove > record > ', record);
     let destroyedRecord;
     try {
-        const fieldId = entity.config.identifierField ?? sails.config.adminpanel.identifierField;
+        const fieldId = entity.config.identifierField ?? adminizer.config.identifierField;
         const q = {};
         q[fieldId] = record[fieldId];
         destroyedRecord = await entity.model._destroy(q, dataAccessor);

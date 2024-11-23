@@ -5,9 +5,9 @@ const adminUtil_1 = require("../lib/adminUtil");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 async function addGroup(req, res) {
     let entity = adminUtil_1.AdminUtil.findEntityObject(req);
-    if (sails.config.adminpanel.auth) {
+    if (adminizer.config.auth) {
         if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
         }
         else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`create-${entity.name}-model`, req.session.UserAP)) {
             return res.sendStatus(403);
@@ -52,7 +52,7 @@ async function addGroup(req, res) {
                 users: usersInThisGroup, tokens: tokensOfThisGroup }).fetch();
             sails.log.debug(`A new group was created: `, group);
             req.session.messages.adminSuccess.push('A new group was created !');
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/groupap`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/groupap`);
         }
         catch (e) {
             sails.log.error(e);

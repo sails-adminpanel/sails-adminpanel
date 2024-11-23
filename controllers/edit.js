@@ -20,9 +20,9 @@ async function edit(req, res) {
     if (!entity.config.edit) {
         return res.redirect(entity.uri);
     }
-    if (sails.config.adminpanel.auth) {
+    if (adminizer.config.auth) {
         if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
         }
         else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`update-${entity.name}-model`, req.session.UserAP)) {
             return res.sendStatus(403);
@@ -47,7 +47,7 @@ async function edit(req, res) {
     if (req.method.toUpperCase() === 'POST') {
         let reqData = requestProcessor_1.RequestProcessor.processRequest(req, fields);
         let params = {};
-        params[entity.config.identifierField || sails.config.adminpanel.identifierField] = req.param('id');
+        params[entity.config.identifierField || adminizer.config.identifierField] = req.param('id');
         /**
          * Here means reqData adapt for model data, but rawReqData is processed for widget processing
          */
@@ -118,8 +118,8 @@ async function edit(req, res) {
             }
             else {
                 // update navigation tree after model updated
-                if (sails.config.adminpanel.navigation) {
-                    for (const section of sails.config.adminpanel.navigation.sections) {
+                if (adminizer.config.navigation) {
+                    for (const section of adminizer.config.navigation.sections) {
                         let navigation = CatalogHandler_1.CatalogHandler.getCatalog('navigation');
                         navigation.setId(section);
                         let navItem = navigation.itemTypes.find(item => item.type === entity.name);
@@ -129,7 +129,7 @@ async function edit(req, res) {
                     }
                 }
                 req.session.messages.adminSuccess.push('Your record was updated !');
-                return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
+                return res.redirect(`${adminizer.config.routePrefix}/model/${entity.name}`);
             }
         }
         catch (e) {

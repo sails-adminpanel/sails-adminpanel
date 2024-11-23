@@ -8,9 +8,9 @@ const Jimp = require('jimp');
 function upload(req, res) {
     // sails.log.debug('admin > upload');
     let entity = adminUtil_1.AdminUtil.findEntityObject(req);
-    if (sails.config.adminpanel.auth) {
+    if (adminizer.config.auth) {
         if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
         }
         else if (!accessRightsHelper_1.AccessRightsHelper.enoughPermissions([
             `update-${entity.name}-model`,
@@ -37,7 +37,7 @@ function upload(req, res) {
         // TODO: wizards
         // Need rewrite to EntityConfig in config adminpanel.
         // Громоздко потомучто в конфиге сделали неодинаковые типы для ENTITY
-        let adminpanelConfig = sails.config.adminpanel;
+        let adminpanelConfig = adminizer.config;
         if (entity.type === 'model') {
             const model = adminpanelConfig.models[entity.name];
             if (typeof model !== "boolean") {

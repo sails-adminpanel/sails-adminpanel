@@ -51,7 +51,7 @@ class AccessRightsHelper {
         return enoughPermissions;
     }
     static havePermission(tokenId, user) {
-        if (!sails.config.adminpanel.auth) {
+        if (!adminizer.config.auth) {
             return true;
         }
         if (user.isAdministrator) {

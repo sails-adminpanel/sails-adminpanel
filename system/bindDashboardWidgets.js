@@ -5,12 +5,12 @@ const widgetHandler_1 = require("../lib/widgets/widgetHandler");
 const fs = require("fs");
 const path = require("path");
 async function bindDashboardWidgets() {
-    if (sails.config.adminpanel.dashboard && typeof sails.config.adminpanel.dashboard !== "boolean" && sails.config.adminpanel.dashboard.autoloadWidgetsPath) {
+    if (adminizer.config.dashboard && typeof adminizer.config.dashboard !== "boolean" && adminizer.config.dashboard.autoloadWidgetsPath) {
         try {
-            const files = fs.readdirSync(sails.config.adminpanel.dashboard.autoloadWidgetsPath);
+            const files = fs.readdirSync(adminizer.config.dashboard.autoloadWidgetsPath);
             const jsFiles = files.filter(file => file.endsWith('.js'));
             for (const file of jsFiles) {
-                const filePath = path.join(process.cwd(), sails.config.adminpanel.dashboard.autoloadWidgetsPath, file);
+                const filePath = path.join(process.cwd(), adminizer.config.dashboard.autoloadWidgetsPath, file);
                 try {
                     const _import = require(filePath);
                     if (_import.default) {

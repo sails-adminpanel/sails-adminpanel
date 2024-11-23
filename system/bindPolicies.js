@@ -10,8 +10,8 @@ sails.after(["hook:policies:loaded"], () => {
         for (let policy of policiesDir) {
             if (path.extname(policy).toLowerCase() === ".js") {
                 let policyFile = require(__dirname + "/../policies/" + policy);
-                if (typeof policyFile === "function" && Array.isArray(sails.config.adminpanel.policies)) {
-                    sails.config.adminpanel.policies.push(policyFile);
+                if (typeof policyFile === "function" && Array.isArray(adminizer.config.policies)) {
+                    adminizer.config.policies.push(policyFile);
                 }
                 else {
                     sails.log.error(`Adminpanel > Policy ${policyFile} is not a function`);

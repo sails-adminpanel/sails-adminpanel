@@ -44,7 +44,7 @@ class Router {
          * List or one policy that should be bound to actions
          * @type {string|Array}
          */
-        let config = sails.config.adminpanel;
+        let config = adminizer.config;
         let policies = config.policies || "";
         /**
          * Widgets All
