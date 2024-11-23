@@ -41,7 +41,8 @@ async function add(req, res) {
             if (reqData[prop] === "" && fields[prop].model.allowNull === true) {
                 reqData[prop] = null;
             }
-            if (fields[prop].config.type === 'select-many') {
+            let fieldConfigConfig = fields[prop].config;
+            if (fieldConfigConfig.type === 'select-many') {
                 reqData[prop] = reqData[prop].split(",");
             }
             if (fields[prop] && fields[prop].model && fields[prop].model.type === 'json' && reqData[prop] !== '') {
@@ -54,7 +55,7 @@ async function add(req, res) {
                     }
                 }
             }
-            if (fields[prop].config.type === 'mediamanager' && typeof reqData[prop] === "string") {
+            if (fieldConfigConfig.type === 'mediamanager' && typeof reqData[prop] === "string") {
                 try {
                     const parsed = JSON.parse(reqData[prop]);
                     rawReqData[prop] = parsed;

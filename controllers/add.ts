@@ -1,7 +1,7 @@
 import {AdminUtil} from "../lib/adminUtil";
 import {RequestProcessor} from "../lib/requestProcessor";
 import {FieldsHelper} from "../helper/fieldsHelper";
-import {CreateUpdateConfig} from "../interfaces/adminpanelConfig";
+import {BaseFieldConfig, CreateUpdateConfig} from "../interfaces/adminpanelConfig";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import {saveRelationsMediaManager} from "../lib/media-manager/helpers/MediaManagerHelper";
 import {DataAccessor} from "../lib/v4/DataAccessor";
@@ -51,7 +51,8 @@ export default async function add(req: ReqType, res: ResType) {
 				reqData[prop] = null
 			}
 
-			if (fields[prop].config.type === 'select-many') {
+			let fieldConfigConfig = fields[prop].config as BaseFieldConfig;
+			if (fieldConfigConfig.type === 'select-many') {
 				reqData[prop] = reqData[prop].split(",")
 			}
 
@@ -65,7 +66,7 @@ export default async function add(req: ReqType, res: ResType) {
 				}
 			}
 
-			if (fields[prop].config.type === 'mediamanager' && typeof reqData[prop] === "string") {
+			if (fieldConfigConfig.type === 'mediamanager' && typeof reqData[prop] === "string") {
 				try {
 					const parsed = JSON.parse(reqData[prop] as string);
 					rawReqData[prop]  = parsed

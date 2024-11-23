@@ -176,10 +176,11 @@ class FieldsHelper {
          * @param {function=} [cb]
          */
         let loadAssoc = async function (key, user, action) {
-            if (fields[key].config.type !== 'association' && fields[key].config.type !== 'association-many') {
+            let fieldConfigConfig = fields[key].config;
+            if (fieldConfigConfig.type !== 'association' && fieldConfigConfig.type !== 'association-many') {
                 return;
             }
-            fields[key].config.records = [];
+            fieldConfigConfig.records = [];
             let modelName = fields[key].model.model || fields[key].model.collection;
             if (!modelName) {
                 sails.log.error('No model found for field: ', fields[key]);
@@ -203,7 +204,7 @@ class FieldsHelper {
                 sails.log.error(e);
                 throw new Error("FieldsHelper > loadAssociations error");
             }
-            fields[key].config.records = list;
+            fieldConfigConfig.records = list;
         };
         for await (let key of Object.keys(fields)) {
             try {

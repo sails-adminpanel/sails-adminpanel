@@ -1,6 +1,7 @@
 import * as path from "path";
 import { Field } from "./fieldsHelper";
 import { ModelAnyField } from "../lib/v4/model/AbstractModel";
+import {BaseFieldConfig} from "../interfaces/adminpanelConfig";
 
 export class ViewsHelper {
 
@@ -48,21 +49,22 @@ export class ViewsHelper {
      */
     public static getFieldValue(key: string, field: Field, data: any): ModelAnyField {
         let value = data[key];
-    
+
         if (typeof value === "object" && value !== null) {
-            if (field.config.type === 'association' && !Array.isArray(value)) {
+            let fieldConfigConfig = field.config as BaseFieldConfig;
+            if (fieldConfigConfig.type === 'association' && !Array.isArray(value)) {
                 // Here we assert that value is an object and has the identifierField
-                return value[field.config.identifierField as keyof typeof value] as ModelAnyField;
+                return value[fieldConfigConfig.identifierField as keyof typeof value] as ModelAnyField;
             }
-    
-            if (Array.isArray(value) && field.config.type === 'association-many') {
-                return value.map(val => (val as any)[field.config.identifierField]) as ModelAnyField;
+
+            if (Array.isArray(value) && fieldConfigConfig.type === 'association-many') {
+                return value.map(val => (val as any)[fieldConfigConfig.identifierField]) as ModelAnyField;
             }
         }
-    
+
         return value as ModelAnyField;
     }
-    
+
 
     /**
      * Check if given option equals value or is in array
@@ -89,20 +91,21 @@ export class ViewsHelper {
         if (!value) {
             return '-----------';
         }
-    
-        const displayField = field.config.displayField || 'id';
-    
+
+        let fieldConfigConfig = field.config as BaseFieldConfig;
+        const displayField = fieldConfigConfig.displayField || 'id';
+
         if (Array.isArray(value)) {
             return value
                 .map(val => (val as unknown as { [key: string]: any })[displayField])
                 .join('<br/>');
         }
-    
+
         if (typeof value === 'object' && value !== null) {
             return (value as { [key: string]: any })[displayField];
         }
-    
+
         return String(value);
     }
-    
+
 }

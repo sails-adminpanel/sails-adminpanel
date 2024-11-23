@@ -62,7 +62,8 @@ async function edit(req, res) {
             if (reqData[prop] === "" && fields[prop].model.allowNull === true) {
                 reqData[prop] = null;
             }
-            if (fields[prop].config.type === 'select-many') {
+            let fieldConfigConfig = fields[prop].config;
+            if (fieldConfigConfig.type === 'select-many') {
                 reqData[prop] = reqData[prop].toString().split(",");
             }
             // delete property from association-many and association if empty
@@ -71,7 +72,7 @@ async function edit(req, res) {
                     delete reqData[prop];
                 }
             }
-            if (fields[prop].config.type === 'mediamanager' && typeof reqData[prop] === "string") {
+            if (fieldConfigConfig.type === 'mediamanager' && typeof reqData[prop] === "string") {
                 try {
                     const parsed = JSON.parse(reqData[prop]);
                     rawReqData[prop] = parsed;
@@ -138,12 +139,13 @@ async function edit(req, res) {
         }
     } // END POST
     for (const field of Object.keys(fields)) {
-        if (fields[field].config.type === 'mediamanager') {
+        let fieldConfigConfig = fields[field].config;
+        if (fieldConfigConfig.type === 'mediamanager') {
             if (fields[field].model.type === 'association-many') {
-                console.log(fields[field].config.options);
+                console.log(fieldConfigConfig.options);
                 record[field] = await (0, MediaManagerHelper_1.getRelationsMediaManager)({
                     list: record[field],
-                    mediaManagerId: fields[field].config.options.id ?? "default"
+                    mediaManagerId: fieldConfigConfig.options.id ?? "default"
                 });
             }
             else if (fields[field].model.type === "json") {

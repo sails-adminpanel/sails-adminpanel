@@ -9,7 +9,8 @@ export type Field = {
         key?: string;
         required?: boolean;
         type?: FieldsTypes;
-    } | false;
+        groupsAccessRights?: string[];
+    } | string | boolean;
     /** for populated fields' configs */
     populated: {
         [key: string]: Field;

@@ -8,6 +8,7 @@ export interface Attribute {
     model?: string;
     collection?: string;
     via?: string;
+    allowNull?: boolean;
 }
 export interface ModelAttributes {
     [key: string]: Attribute;

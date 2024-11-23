@@ -1,5 +1,5 @@
 import { AdminpanelConfig, BaseFieldConfig } from "../interfaces/adminpanelConfig";
-import { FieldModel } from "./fieldsHelper";
+import { Attribute } from "../lib/v4/model/AbstractModel";
 export declare class ConfigHelper {
     static addModelConfig(modelConfig: AdminpanelConfig["models"]): void;
     static getConfig(): AdminpanelConfig;
@@ -42,5 +42,5 @@ export declare class ConfigHelper {
      * @param modelField Field model configuration
      * @returns Normalized field configuration or `false` if the field should be hidden
      */
-    static normalizeFieldConfig(config: string | boolean | BaseFieldConfig, key: string, modelField: FieldModel): false | BaseFieldConfig;
+    static normalizeFieldConfig(config: string | boolean | BaseFieldConfig, key: string, modelField: Attribute): false | BaseFieldConfig;
 }

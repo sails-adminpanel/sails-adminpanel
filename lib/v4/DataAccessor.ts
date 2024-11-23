@@ -3,7 +3,13 @@
  */
 import {UserAPRecord} from "../../models/UserAP";
 import {Entity} from "../../interfaces/types";
-import {ActionType, FieldsTypes, ModelFieldConfig} from "../../interfaces/adminpanelConfig";
+import {
+  ActionType,
+  BaseFieldConfig,
+  FieldsModels,
+  FieldsTypes,
+  ModelFieldConfig
+} from "../../interfaces/adminpanelConfig";
 import {Field, Fields} from "../../helper/fieldsHelper";
 import {AdminUtil} from "../adminUtil";
 import {ConfigHelper} from "../../helper/configHelper";
@@ -134,9 +140,21 @@ export class DataAccessor {
     const fieldsConfig = modelConfig.fields || {};
 
     // Merge action-specific fields configuration if it exists
-    let actionSpecificConfig = {};
-    if (modelConfig[this.action] && typeof modelConfig[this.action] !== "boolean" && !["remove", "view"].includes(this.action)) {
-      actionSpecificConfig = modelConfig[this.action].fields;
+    let actionSpecificConfig: FieldsModels = {};
+    if (modelConfig && typeof modelConfig === "object" && typeof modelConfig['add'] !== "boolean" && typeof modelConfig['edit'] !== "boolean" && typeof modelConfig['list'] !== "boolean") {
+      switch (this.action) {
+        case "add":
+          actionSpecificConfig = modelConfig['add'].fields;
+          break;
+        case "edit":
+          actionSpecificConfig = modelConfig['edit'].fields;
+          break;
+        case "list":
+          actionSpecificConfig = modelConfig['list'].fields;
+          break;
+        default:
+          throw `Action type error: unknown type [${this.action}]`
+      }
     }
     const mergedFieldsConfig = { ...fieldsConfig, ...actionSpecificConfig };
 
@@ -167,7 +185,7 @@ export class DataAccessor {
     return associatedFields;
   }
 
-  private checkFieldAccess(key: string, fieldConfig: ModelFieldConfig | boolean | string): boolean {
+  private checkFieldAccess(key: string, fieldConfig: Field["config"]): boolean {
     // If config is set to false skip this field
     if (fieldConfig === false) {
       return false;
@@ -216,7 +234,8 @@ export class DataAccessor {
 
       // Check access to the field
       if (this.checkFieldAccess(fieldKey, fieldConfig.config)) {
-        const fieldType = fieldConfig.config.type;
+        const fieldConfigConfig = fieldConfig.config as BaseFieldConfig; // in this.fields configs are only objects
+        const fieldType = fieldConfigConfig.type;
 
         // Handle fields that are not associations
         if (fieldType !== 'association' && fieldType !== 'association-many') {
@@ -227,9 +246,7 @@ export class DataAccessor {
           if (Array.isArray(fieldValue)) {
             // If the field value is an array of objects
             filteredRecord[fieldKey] = fieldValue.every(item => typeof item === 'object')
-              ? fieldValue.map(associatedRecord =>
-                this.filterAssociatedRecord(associatedRecord, fieldConfig.populated)
-              )
+              ? fieldValue.map(associatedRecord => this.filterAssociatedRecord(associatedRecord, fieldConfig.populated))
               : fieldValue; // If the array contains IDs, pass them as is (it can contain ids, because this function also can be called before saving something)
           } else {
             // If fieldValue is not an array, log an error
@@ -379,7 +396,7 @@ export class DataAccessor {
         }
 
         // Add the intermediate record ID to the criteria
-        if (typeof criteria.where !== "undefined") {
+        if (criteria.where && typeof criteria.where !== "undefined") {
           criteria.where[field] = intermediateRecord.id;
         } else {
           criteria[field] = intermediateRecord.id;

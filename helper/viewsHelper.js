@@ -39,12 +39,13 @@ class ViewsHelper {
     static getFieldValue(key, field, data) {
         let value = data[key];
         if (typeof value === "object" && value !== null) {
-            if (field.config.type === 'association' && !Array.isArray(value)) {
+            let fieldConfigConfig = field.config;
+            if (fieldConfigConfig.type === 'association' && !Array.isArray(value)) {
                 // Here we assert that value is an object and has the identifierField
-                return value[field.config.identifierField];
+                return value[fieldConfigConfig.identifierField];
             }
-            if (Array.isArray(value) && field.config.type === 'association-many') {
-                return value.map(val => val[field.config.identifierField]);
+            if (Array.isArray(value) && fieldConfigConfig.type === 'association-many') {
+                return value.map(val => val[fieldConfigConfig.identifierField]);
             }
         }
         return value;
@@ -74,7 +75,8 @@ class ViewsHelper {
         if (!value) {
             return '-----------';
         }
-        const displayField = field.config.displayField || 'id';
+        let fieldConfigConfig = field.config;
+        const displayField = fieldConfigConfig.displayField || 'id';
         if (Array.isArray(value)) {
             return value
                 .map(val => val[displayField])

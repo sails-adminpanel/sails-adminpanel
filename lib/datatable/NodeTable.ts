@@ -4,6 +4,7 @@ import {Model} from "sails-typescript"
 import { CriteriaQuery, WhereCriteriaQuery } from "sails-typescript/criteria"
 import { AbstractModel } from '../v4/model/AbstractModel';
 import {DataAccessor} from "../v4/DataAccessor";
+import {BaseFieldConfig} from "../../interfaces/adminpanelConfig";
 
 type ORMModel = Model<Models[keyof Models]> & {primaryKey: string};
 interface Request {
@@ -219,14 +220,15 @@ export class NodeTable {
     data.forEach((elem: any) => {
       let row: any = [elem[this.model.primaryKey ?? 'id']];
       Object.keys(this.fields).forEach((key: string) => {
-        if (this.fields[key].config.displayModifier) {
-          row.push(this.fields[key].config.displayModifier(elem[key]));
+        let fieldConfigConfig = this.fields[key].config as BaseFieldConfig;
+        if (fieldConfigConfig.displayModifier) {
+          row.push(fieldConfigConfig.displayModifier(elem[key]));
         } else if (this.fields[key].model && this.fields[key].model.model) {
           // Обработка связей типа "belongsTo"
           if (!elem[key]) {
             row.push(null);
           } else {
-            row.push(elem[key][this.fields[key].config.displayField]);
+            row.push(elem[key][fieldConfigConfig.displayField]);
           }
         } else if (this.fields[key].model.type === "association-many" || this.fields[key].model.type === "association") {
           if (!elem[key] || elem[key].length === 0) {
@@ -234,10 +236,10 @@ export class NodeTable {
           } else {
             let displayValues: string[] = [];
             elem[key].forEach((item: any) => {
-              if (item[this.fields[key].config.displayField]) {
-                displayValues.push(item[this.fields[key].config.displayField]);
+              if (item[fieldConfigConfig.displayField]) {
+                displayValues.push(item[fieldConfigConfig.displayField]);
               } else {
-                displayValues.push(item[this.fields[key].config.identifierField]);
+                displayValues.push(item[fieldConfigConfig.identifierField]);
               }
             });
             row.push(displayValues.join(', '));
