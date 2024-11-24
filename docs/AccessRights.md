@@ -104,5 +104,12 @@ When a user accesses records, the system evaluates userAccessRelation:
 
 The relationship type (either model or collection) determines whether a single user or group or multiple users/groups are associated with the record.
 
-// TODO записать что работа с группами это экспериментально и юзер должен иметь всего одну групп
-// TODO описать коротко про связь через модель
+#### Important notes
+- All GroupAP functionality is experimental and can work unstable. Also, user should be related to only one group for proper work
+- You can also use set userAccessRelation through the intermediate model:
+```javascript
+userAccessRelation: {
+      field: "owner", // field in your model which associates to the intermediate model
+      via: "adminpaneluser" // // field in intermediate model that associates with userap/groupap
+    }
+```
