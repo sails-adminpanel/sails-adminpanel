@@ -15,6 +15,7 @@ import {AdminUtil} from "../adminUtil";
 import {ConfigHelper} from "../../helper/configHelper";
 import {GroupAPRecord} from "../../models/GroupAP";
 import {AccessRightsHelper} from "../../helper/accessRightsHelper";
+import {ModelAnyField} from "./model/AbstractModel";
 
 export class DataAccessor {
   user: UserAPRecord;
@@ -245,9 +246,9 @@ export class DataAccessor {
         else if (fieldType === 'association-many') {
           if (Array.isArray(fieldValue)) {
             // If the field value is an array of objects
-            filteredRecord[fieldKey] = fieldValue.every(item => typeof item === 'object')
+            filteredRecord[fieldKey] = (fieldValue.every(item => typeof item === 'object')
               ? fieldValue.map(associatedRecord => this.filterAssociatedRecord(associatedRecord, fieldConfig.populated))
-              : fieldValue; // If the array contains IDs, pass them as is (it can contain ids, because this function also can be called before saving something)
+              : fieldValue) as T[Extract<keyof T, string>]; // If the array contains IDs, pass them as is (it can contain ids, because this function also can be called before saving something)
           } else {
             // If fieldValue is not an array, log an error
             adminizer.log.error(
@@ -260,7 +261,7 @@ export class DataAccessor {
         else if (fieldType === 'association') {
           if (fieldValue && typeof fieldValue === 'object') {
             // If the field value is an object
-            filteredRecord[fieldKey] = this.filterAssociatedRecord(fieldValue, fieldConfig.populated);
+            filteredRecord[fieldKey] = this.filterAssociatedRecord(fieldValue, fieldConfig.populated) as T[Extract<keyof T, string>];
           } else {
             // If the field value is an ID or null, pass it as is (it can contain id, because this function also can be called before saving something)
             filteredRecord[fieldKey] = fieldValue;
@@ -307,6 +308,8 @@ export class DataAccessor {
   }
 
   public async sanitizeUserRelationAccess<T>(criteria: T): Promise<Partial<T>> {
+    let sanitizedCriteria: Partial<T> = {};
+
     // Retrieve model configuration from Sails adminpanel config
     const modelName = this.entity.model.modelname;
     const modelConfig = this.entity.config;
@@ -330,11 +333,11 @@ export class DataAccessor {
         if (relation.model) {
           if (relation.model.toLowerCase() === 'userap') {
             // Filter by the user's ID if related to UserAP as a model
-            criteria[accessField] = this.user.id;
+            sanitizedCriteria = { ...sanitizedCriteria, [accessField]: this.user.id };
           } else if (relation.model.toLowerCase() === 'groupap') {
             // Filter by user's group membership if related to GroupAP as a model
             const userGroups = this.user.groups?.map((group: GroupAPRecord) => group.id);
-            criteria[accessField] = { in: userGroups };
+            sanitizedCriteria = { ...sanitizedCriteria, [accessField]: { in: userGroups } };
           }
         }
 
@@ -343,11 +346,11 @@ export class DataAccessor {
           adminizer.log.warn(`Collection relation is not supported and was not tested. You may have an error here: ${JSON.stringify(relation, null, 2)}`)
           if (relation.collection.toLowerCase() === 'userap') {
             // Ensure user's ID is part of the associated collection to UserAP
-            criteria[accessField] = { contains: this.user.id };
+            sanitizedCriteria = { ...sanitizedCriteria, [accessField]: { contains: this.user.id } };
           } else if (relation.collection.toLowerCase() === 'groupap') {
             // Ensure user's groups intersect with the collection to GroupAP
             const userGroups = this.user.groups?.map((group: GroupAPRecord) => group.id);
-            criteria[accessField] = { intersects: userGroups };
+            sanitizedCriteria = { ...sanitizedCriteria, [accessField]: { intersects: userGroups } };
           }
         }
 
@@ -396,19 +399,25 @@ export class DataAccessor {
         }
 
         // Add the intermediate record ID to the criteria
-        if (criteria.where && typeof criteria.where !== "undefined") {
-          criteria.where[field] = intermediateRecord.id;
-        } else {
-          criteria[field] = intermediateRecord.id;
-        }
-
+        sanitizedCriteria = { ...sanitizedCriteria, [field]: intermediateRecord.id }
       }
+    }
+
+    // TODO fix types when deleting waterline
+    // @ts-ignore
+    if (criteria.where) {
+      // @ts-ignore
+      criteria.where = {...criteria.where, ...sanitizedCriteria};
+    } else {
+      criteria = {...criteria, ...sanitizedCriteria}
     }
 
     return criteria;
   }
 
   public async setUserRelationAccess<T>(record: T): Promise<Partial<T>> {
+    let updatedRecord: Partial<T> = { ...record };
+
     // Check if model has `userAccessRelation` configured
     if (this.entity.config && this.entity.config.userAccessRelation) {
       // Get access field from userAccessRelation
@@ -417,8 +426,8 @@ export class DataAccessor {
         let accessField = userAccessRelation;
 
         // only admin can set user access relation manually
-        if (record[accessField] && !this.user.isAdministrator) {
-          delete record[accessField];
+        if (updatedRecord[accessField as keyof T] && !this.user.isAdministrator) {
+          delete updatedRecord[accessField as keyof T];
         }
 
         // Check if the relation points to `UserAP` or `GroupAP` in the model's attributes
@@ -427,13 +436,13 @@ export class DataAccessor {
 
         if (relation && ['userap', 'groupap'].includes(relation.model.toLowerCase())) {
           if (relation.model.toLowerCase() === 'userap') {
-            record[accessField] = this.user.id;
+            updatedRecord[accessField as keyof T] = this.user.id as T[keyof T];
 
           } else if (relation.model.toLowerCase() === 'groupap') {
             // Works only for users with only one group, later it can be resolved with group weight
             const userGroups = this.user.groups as GroupAPRecord[] || [];
             if (userGroups.length === 1) {
-              record[accessField] = userGroups[0].id;
+              updatedRecord[accessField as keyof T] = userGroups[0].id as T[keyof T];
             } else {
               throw new Error('Record cannot be saved because the user is associated with none or multiple groups.');
             }
@@ -444,8 +453,8 @@ export class DataAccessor {
         const { field, via } = userAccessRelation;
 
         // only admin can set user access relation manually
-        if (record[field] && !this.user.isAdministrator) {
-          delete record[field];
+        if (updatedRecord[field as keyof T] && !this.user.isAdministrator) {
+          delete updatedRecord[field as keyof T];
         }
 
         // Get attributes of the current model and validate the intermediate relation
@@ -489,11 +498,11 @@ export class DataAccessor {
         }
 
         // Set the ID of the intermediate record to the main record's field
-        record[field] = intermediateRecord.id;
+        updatedRecord[field as keyof T] = intermediateRecord.id as T[keyof T];
       }
     }
 
-    return record;
+    return updatedRecord;
   }
 }
 

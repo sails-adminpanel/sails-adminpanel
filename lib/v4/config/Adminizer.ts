@@ -24,6 +24,7 @@ export class Adminizer {
           warn: (...args: any[]) => sails.log.warn(...args),
           error: (...args: any[]) => sails.log.error(...args),
           debug: (...args: any[]) => sails.log.debug(...args),
+          verbose: (...args: any[]) => sails.log.debug(...args),
           silly: (...args: any[]) => sails.log.silly(...args)
       };
     }

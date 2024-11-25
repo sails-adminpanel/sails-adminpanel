@@ -11,6 +11,7 @@ describe('Data accessor test', () => {
         // Create mock users with different group permissions
         adminUser = { isAdministrator: true, groups: [{ name: "admin" }] };
         editorUser = { groups: [{ name: "editor" }] };
+        // @ts-ignore
         managerUser = { id: "user123", groups: [{ name: "manager" }] };
         defaultUser = { groups: [{ name: "default user group" }] };
         // Make a deep copy of the Entity for each test
