@@ -1,5 +1,4 @@
-'use strict';
-
+/// <reference path="./interfaces/global.ts" />
 import { WidgetHandler } from "./lib/widgets/widgetHandler";
 
 const { MenuHelper } = require('./helper/menuHelper');
@@ -10,6 +9,11 @@ const {InstallStepper} = require("./lib/installStepper/installStepper");
 
 import {CatalogHandler} from "./lib/catalog/CatalogHandler";
 import { MediaManagerHandler } from "./lib/media-manager/MediaManagerHandler";
+import { Adminizer } from "./lib/v4/config/Adminizer";
+
+let adminizer = new Adminizer()
+//@ts-ignore problem need to fix
+global.adminizer = adminizer;
 
 module.exports = function () {
 

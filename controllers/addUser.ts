@@ -5,9 +5,9 @@ export default async function(req: ReqType, res: ResType) {
 
     let entity = AdminUtil.findEntityObject(req);
 
-    if (sails.config.adminpanel.auth) {
+    if (adminizer.config.auth) {
         if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
         } else if (!AccessRightsHelper.havePermission(`create-${entity.name}-model`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
@@ -17,7 +17,7 @@ export default async function(req: ReqType, res: ResType) {
     try {
         groups = await GroupAP.find();
     } catch (e) {
-        sails.log.error(e)
+        adminizer.log.error(e)
     }
 
     if (req.method.toUpperCase() === 'POST') {
@@ -35,10 +35,11 @@ export default async function(req: ReqType, res: ResType) {
         }
 
         let isAdministrator = req.body.isAdmin === "on";
+        let isConfirmed = req.body.isConfirmed === "on";
 
         let locale: string
-        if(typeof sails.config.adminpanel.translation !== "boolean") {
-            locale = req.body.locale === 'default' ? sails.config.adminpanel.translation.defaultLocale : req.body.locale;
+        if(typeof adminizer.config.translation !== "boolean") {
+            locale = req.body.locale === 'default' ? adminizer.config.translation.defaultLocale : req.body.locale;
         }
 
 
@@ -46,12 +47,12 @@ export default async function(req: ReqType, res: ResType) {
         try {
             user = await UserAP.create({login: req.body.login, fullName: req.body.fullName, email: req.body.email,
                 password: req.body.userPassword, timezone: req.body.timezone, expires: req.body.date,
-                locale: locale, isAdministrator: isAdministrator, groups: userGroups}).fetch()
-            sails.log.debug(`A new user was created: `, user);
+                locale: locale, isAdministrator: isAdministrator, isConfirmed: isConfirmed, groups: userGroups}).fetch()
+            adminizer.log.debug(`A new user was created: `, user);
             req.session.messages.adminSuccess.push('A new user was created !');
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/usersap`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/userap`);
         } catch (e) {
-            sails.log.error(e);
+            adminizer.log.error(e);
             req.session.messages.adminError.push(e.message || 'Something went wrong...');
         }
 

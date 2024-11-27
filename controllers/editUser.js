@@ -5,9 +5,9 @@ const adminUtil_1 = require("../lib/adminUtil");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 async function default_1(req, res) {
     let entity = adminUtil_1.AdminUtil.findEntityObject(req);
-    if (sails.config.adminpanel.auth) {
+    if (adminizer.config.auth) {
         if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
         }
         else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`update-${entity.name}-model`, req.session.UserAP)) {
             return res.sendStatus(403);
@@ -22,8 +22,8 @@ async function default_1(req, res) {
         user = await UserAP.findOne(req.param('id')).populate("groups");
     }
     catch (e) {
-        sails.log.error('Admin edit error: ');
-        sails.log.error(e);
+        adminizer.log.error('Admin edit error: ');
+        adminizer.log.error(e);
         return res.serverError();
     }
     let groups;
@@ -31,7 +31,7 @@ async function default_1(req, res) {
         groups = await GroupAP.find();
     }
     catch (e) {
-        sails.log.error(e);
+        adminizer.log.error(e);
     }
     let reloadNeeded = false;
     if (req.method.toUpperCase() === 'POST') {
@@ -47,23 +47,24 @@ async function default_1(req, res) {
             }
         }
         let isAdministrator = req.body.isAdmin === "on";
+        let isConfirmed = req.body.isConfirmed === "on";
         let locale;
-        if (typeof sails.config.adminpanel.translation !== "boolean") {
-            locale = req.body.locale === 'default' ? sails.config.adminpanel.translation.defaultLocale : req.body.locale;
+        if (typeof adminizer.config.translation !== "boolean") {
+            locale = req.body.locale === 'default' ? adminizer.config.translation.defaultLocale : req.body.locale;
         }
         let updatedUser;
         try {
             updatedUser = await UserAP.update({ id: user.id }, { login: req.body.login, fullName: req.body.fullName,
                 email: req.body.email, timezone: req.body.timezone, expires: req.body.date,
-                locale: locale, isAdministrator: isAdministrator, groups: userGroups }).fetch();
+                locale: locale, isAdministrator: isAdministrator, isConfirmed: isConfirmed, groups: userGroups }).fetch();
             if (req.body.userPassword) {
                 updatedUser = await UserAP.update({ id: user.id }, { login: req.body.login, password: req.body.userPassword }).fetch();
             }
-            sails.log.debug(`User was updated: `, updatedUser);
+            adminizer.log.debug(`User was updated: `, updatedUser);
             req.session.messages.adminSuccess.push('User was updated !');
         }
         catch (e) {
-            sails.log.error(e);
+            adminizer.log.error(e);
             req.session.messages.adminError.push(e.message || 'Something went wrong...');
         }
         reloadNeeded = true;
@@ -73,15 +74,15 @@ async function default_1(req, res) {
             user = await UserAP.findOne(req.param('id')).populate("groups");
         }
         catch (e) {
-            sails.log.error('Admin edit error: ');
-            sails.log.error(e);
+            adminizer.log.error('Admin edit error: ');
+            adminizer.log.error(e);
             return res.serverError();
         }
         try {
             groups = await GroupAP.find();
         }
         catch (e) {
-            sails.log.error(e);
+            adminizer.log.error(e);
         }
     }
     return res.viewAdmin("editUser", { entity: entity, user: user, groups: groups });

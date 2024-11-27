@@ -51,7 +51,7 @@
                         </div>
                     <% } %>
 
-                    <% if (sails.config.adminpanel.translation) { %>
+                    <% if (adminizer.config.translation) { %>
                         <div class="flex flex-col gap-3">
                             <label class="admin-panel__title" for="locale"><%= __("Locale") %></label>
                             <div class="widget_narrow">
@@ -65,6 +65,15 @@
                             <label class="admin-panel__title" for="isAdmin"><%= __("Is Administrator") %></label>
                             <div class="checkbox relative">
                                 <input type="checkbox" id="isAdmin" name="isAdmin">
+                                <span class="check"></span>
+                            </div>
+                        </div>
+                    <% } %>
+                    <% if (req.session.UserAP.isAdministrator) { %>
+                        <div class="flex flex-col gap-3">
+                            <label class="admin-panel__title" for="isConfirmed"><%= __("Is confirmed") %></label>
+                            <div class="checkbox relative">
+                                <input type="checkbox" id="isConfirmed" name="isConfirmed">
                                 <span class="check"></span>
                             </div>
                         </div>
@@ -129,7 +138,7 @@
 </div>
 <script>
 	let timezoneOptions = [{label: "-------", value: "undefined"}];
-	for (let timezone of <%- JSON.stringify(sails.config.adminpanel.timezones) %>) {
+	for (let timezone of <%- JSON.stringify(adminizer.config.timezones) %>) {
 		timezoneOptions.push({label: timezone.name, value: timezone.id})
 	}
 	let timezone = new SelectPure(".timezone", {
@@ -140,7 +149,7 @@
 	});
 
 	let localeOptions = [{label: "default", value: "default"}];
-	for (let locale of <%- JSON.stringify(sails.config.adminpanel.translation.locales) %>) {
+	for (let locale of <%- JSON.stringify(adminizer.config.translation.locales) %>) {
 		localeOptions.push({label: locale, value: locale})
 	}
 	let locale = new SelectPure(".locale", {

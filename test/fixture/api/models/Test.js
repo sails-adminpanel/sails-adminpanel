@@ -9,8 +9,7 @@ module.exports = {
 
 	attributes: {
 		title: {
-			type: 'string',
-			required: true
+			type: 'string'
 		},
 		title_2: {
 			type: 'string'
@@ -71,7 +70,9 @@ module.exports = {
 		},
 		geojson: {
 			type: 'json'
-		}
+		},
+		"guardedField": { "type": "string" },
+		"selfAssociation": { "model": "test" }
 	}
 };
 

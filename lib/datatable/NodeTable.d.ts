@@ -1,5 +1,6 @@
 import { Fields } from '../../helper/fieldsHelper';
 import { AbstractModel } from '../v4/model/AbstractModel';
+import { DataAccessor } from "../v4/DataAccessor";
 interface Request {
     start: string;
     length: string;
@@ -40,7 +41,7 @@ export declare class NodeTable {
     order(): string;
     filter(): any;
     buildQuery(): Promise<any>;
-    output(callback: (err: Error, output: NodeOutput) => void): Promise<void>;
+    output(callback: (err: Error, output: NodeOutput) => void, dataAccessor: DataAccessor): Promise<void>;
     mapData(data: {
         [key: string]: any;
     }): object[];

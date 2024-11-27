@@ -57,7 +57,7 @@ export class WidgetHandler {
 
 	public static getAll(user: UserAPRecord): Promise<WidgetConfig[]> {
 		let widgets: WidgetConfig[] = []
-		let config = sails.config.adminpanel;
+		let config = adminizer.config;
 		if (this.widgets.length) {
 			let id_key = 0
 			for (const widget of this.widgets) {
@@ -146,14 +146,14 @@ export class WidgetHandler {
 		let widgets: WidgetConfig[];
 
 		if (!auth) {
-			user = await UserAP.findOne({ login: sails.config.adminpanel.administrator?.login ?? 'admin' });
+			user = await UserAP.findOne({ login: adminizer.config.administrator?.login ?? 'admin' });
 		} else {
 			user = await UserAP.findOne({ id: id });
 		}
 
 		if (!user || !user.widgets || user.widgets.length === 0) {
-			if (sails.config.adminpanel.dashboard && typeof sails.config.adminpanel.dashboard !== "boolean" && sails.config.adminpanel.dashboard.defaultWidgets) {
-				let defaultWidgets = sails.config.adminpanel.dashboard.defaultWidgets;
+			if (adminizer.config.dashboard && typeof adminizer.config.dashboard !== "boolean" && adminizer.config.dashboard.defaultWidgets) {
+				let defaultWidgets = adminizer.config.dashboard.defaultWidgets;
 				widgets = await this.getAll(user);
 				widgets.forEach(widget => {
 					if (defaultWidgets.includes(widget.id.split("__")[0])) {
@@ -171,7 +171,7 @@ export class WidgetHandler {
 
 	public static async setWidgetsDB(id: number, widgets: WidgetConfig[], auth: boolean): Promise<number> {
 		if (!auth) {
-			let updatedUser = await UserAP.updateOne({ login: sails.config.adminpanel.administrator?.login ?? 'admin' }, { widgets: widgets })
+			let updatedUser = await UserAP.updateOne({ login: adminizer.config.administrator?.login ?? 'admin' }, { widgets: widgets })
 			return updatedUser.id
 		} else {
 			let updatedUser = await UserAP.updateOne({ id: id }, { widgets: widgets })
@@ -183,9 +183,9 @@ export class WidgetHandler {
 
 // TODO: move to folder controlles
 export async function getAllWidgets(req: ReqType, res: ResType): Promise<void> {
-	if (sails.config.adminpanel.auth) {
+	if (adminizer.config.auth) {
 		if (!req.session.UserAP) {
-			res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+			res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
 			return
 		} else if (!AccessRightsHelper.havePermission(`widgets`, req.session.UserAP)) {
 			res.sendStatus(403);
@@ -207,10 +207,10 @@ export async function getAllWidgets(req: ReqType, res: ResType): Promise<void> {
 // TODO: move in controller folder
 export async function widgetsDB(req: ReqType, res: ResType) {
 	let id: number = 0
-	let auth = sails.config.adminpanel.auth
+	let auth = adminizer.config.auth
 	if (auth) {
 		if (!req.session.UserAP) {
-			return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+			return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
 		} else if (!AccessRightsHelper.havePermission(`widgets`, req.session.UserAP)) {
 			return res.sendStatus(403);
 		}

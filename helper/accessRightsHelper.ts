@@ -63,7 +63,7 @@ export class AccessRightsHelper {
 	}
 
 	public static havePermission(tokenId: string, user: UserAPRecord): boolean {
-		if(!sails.config.adminpanel.auth) {
+		if(!adminizer.config.auth) {
 			return true
 		}
 
@@ -81,7 +81,7 @@ export class AccessRightsHelper {
 		}
 
 		if (!tokenIsValid) {
-			sails.log.error("Adminpanel > Token is not valid");
+			adminizer.log.error("Adminpanel > Token is not valid");
 			return false;
 		}
 

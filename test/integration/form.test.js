@@ -16,8 +16,8 @@ describe('Form test', function () {
     });
     it("Reading from file works", function () {
         let formFromFile = require("../datamocks/forms/testForm.json");
-        (0, chai_1.expect)("testForm" in sails.config.adminpanel.forms.data).to.be.true;
-        (0, chai_1.expect)(sails.config.adminpanel.forms.data.testForm).to.equal(formFromFile);
+        (0, chai_1.expect)("testForm" in adminizer.config.forms.data).to.be.true;
+        (0, chai_1.expect)(adminizer.config.forms.data.testForm).to.equal(formFromFile);
     });
     it("Writing to file works", function () {
         chai.request(process.env.HTTP_TEST_LOCALHOST)
@@ -31,7 +31,7 @@ describe('Form test', function () {
         });
     });
     it("Seeding form data", async function () {
-        let VALUE = await sails.config.adminpanel.forms.get("testForm", "test_seed_data");
+        let VALUE = await adminizer.config.forms.get("testForm", "test_seed_data");
         console.log(VALUE);
         (0, chai_1.expect)(VALUE).to.equal("VALUE");
     });

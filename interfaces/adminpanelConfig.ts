@@ -7,7 +7,7 @@ import { EditorOptions } from "@toast-ui/editor/types/editor";
 export type TuiEditorOptions = EditorOptions;
 
 export type AdminpanelIcon = LineAwesomeIcon
-type FieldsTypes =
+export type FieldsTypes =
 	"string" |
 	"password" |
 	"date" |
@@ -102,11 +102,16 @@ export interface AdminpanelConfig {
 	sections?: HrefConfig[]
 	/**
 	 * Route prefix for adminpanel, admin by default
+	 * @deprecated Adminizer is middleware
 	 * */
 	routePrefix?: string
+	/**
+	 * @deprecated
+	 */
 	pathToViews?: string
 	/**
 	 * Force set primary key
+	 * @deprecated required field for each model
 	 * */
 	identifierField?: string
 	brand?: {
@@ -200,10 +205,9 @@ export interface AdminpanelConfig {
 		login: string
 		password: string
 	}
-	// TODO (look in task.md)
 	registration?: {
 		enable: boolean
-		defaultUserGroup: string
+		defaultUserGroup: string // group name that is considered to be default
 		confirmationRequired: boolean
 	}
 	/**
@@ -241,6 +245,9 @@ export interface AdminpanelConfig {
 	 *  Path to modules views
 	 */
 	modulesViewsPath?: string
+
+	/** @deprecated */
+	templateRootPath?: string
 
 	mediamanager?: MediaManagerConfig
 }
@@ -317,8 +324,12 @@ export interface ModelConfig {
 	 * Force set primary key
 	 * */
 	identifierField?: string
-	// TODO (look in task.md)
-	userAccessRelation?: string
+	/** In this field we can set model field, for which we want to check user access right.
+	 *  May be association or association-many to UserAP or GroupAP */
+	userAccessRelation?: {
+		field: string // field that associates to the intermediate model
+		via: string // field in intermediate model that associates with userap/groupap
+	} | string
 	userAccessRelationCallback?: (userWithGroups: UserWithGroups, record: any) => boolean
 }
 

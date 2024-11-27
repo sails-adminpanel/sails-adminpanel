@@ -47,7 +47,7 @@ class MediaManagerAdapter {
         const group = req.body.group;
         const isCropped = req.body.isCropped;
         if (!isCropped) {
-            const config = sails.config.adminpanel.mediamanager || null;
+            const config = adminizer.config.mediamanager || null;
             //@ts-ignore
             const upload = req.file("file")._files[0].stream, headers = upload.headers, byteCount = upload.byteCount, settings = {
                 allowedTypes: config?.allowMIME ?? [],
@@ -84,7 +84,7 @@ class MediaManagerAdapter {
         });
     }
     async upload(req, res) {
-        const config = sails.config.adminpanel.mediamanager || null;
+        const config = adminizer.config.mediamanager || null;
         const group = req.body.group;
         //@ts-ignore
         const upload = req.file("file")._files[0].stream, headers = upload.headers, byteCount = upload.byteCount, settings = {

@@ -6,10 +6,10 @@ const fs = require("fs");
 let i18nFactory = require('i18n-2');
 class TranslationHelper {
     static loadTranslations(translationsPath) {
-        let translationsConfig = sails.config.adminpanel.translation;
+        let translationsConfig = adminizer.config.translation;
         if (typeof translationsConfig === "boolean") {
             if (translationsConfig === true) {
-                sails.log.warn("sails.config.adminpanel.translation is TRUE, is not mater");
+                adminizer.log.warn("adminizer.config.translation is TRUE, is not mater");
             }
             return;
         }
@@ -29,16 +29,16 @@ class TranslationHelper {
                         // sails.hooks.i18n.defaultLocale = defaultLocale;
                     }
                     catch (error) {
-                        sails.log.error(`Adminpanel > Error when reading ${locale}.json: ${error}`);
+                        adminizer.log.error(`Adminpanel > Error when reading ${locale}.json: ${error}`);
                     }
                 }
                 else {
-                    sails.log.debug(`Adminpanel > Cannot find ${locale} locale in translations directory`);
+                    adminizer.log.debug(`Adminpanel > Cannot find ${locale} locale in translations directory`);
                 }
             }
         }
         catch (e) {
-            sails.log.error("Adminpanel > Error when loading translations", e);
+            adminizer.log.error("Adminpanel > Error when loading translations", e);
         }
     }
     static translateProperties(object, locale, fields) {
@@ -61,7 +61,7 @@ class TranslationHelper {
         return translateObject(object);
     }
     static getI18nInstance(locale) {
-        if (typeof sails.config.adminpanel.translation === "boolean") {
+        if (typeof adminizer.config.translation === "boolean") {
             throw `Transaltion is disabled`;
         }
         const i18n = new i18nFactory({ ...sails.config.i18n, directory: sails.config.i18n.localesDirectory, extension: ".json" });

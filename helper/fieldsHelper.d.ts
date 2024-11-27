@@ -1,18 +1,21 @@
-import { ActionType, BaseFieldConfig } from "../interfaces/adminpanelConfig";
-import { Entity } from "../interfaces/types";
-export type FieldModel = {
-    allowNull?: boolean;
-    model?: string;
-    collection?: string;
-    required?: boolean;
-    type: 'association' | 'association-many' | 'number' | 'json' | 'string' | 'boolean' | 'ref';
-};
+import { ActionType, BaseFieldConfig, FieldsTypes } from "../interfaces/adminpanelConfig";
+import { Attribute } from "../lib/v4/model/AbstractModel";
+import { UserAPRecord } from "../models/UserAP";
 export type Field = {
     config: BaseFieldConfig & {
-        records: object[];
+        /** @deprecated record should not be in config anymore */
+        records?: object[];
         file?: string;
-    };
-    model: FieldModel;
+        key?: string;
+        required?: boolean;
+        type?: FieldsTypes;
+        groupsAccessRights?: string[];
+    } | string | boolean;
+    /** for populated fields' configs */
+    populated: {
+        [key: string]: Field;
+    } | undefined;
+    model: Attribute;
 };
 export type Fields = {
     [key: string]: Field;
@@ -107,7 +110,7 @@ export declare class FieldsHelper {
      * @param {function=} [cb]
      * @deprecated use DataModel class
      */
-    static loadAssociations(fields: Fields): Promise<Fields>;
+    static loadAssociations(fields: Fields, user?: UserAPRecord, action?: ActionType): Promise<Fields>;
     /**
      * Create list of populated models
      *
@@ -115,33 +118,4 @@ export declare class FieldsHelper {
      * @returns {Array}
      */
     static getFieldsToPopulate(fields: Fields): string[];
-    /**
-     * Basically it will fetch all attributes without functions
-     *
-     * Result will be object with list of fields and its config.<br/>
-     * <code>
-     *  {
-     *      "fieldName": {
-     *          config: {
-     *              key: 'fieldKeyFromModel'
-     *              title: "Field title",
-     *              type: "string", //Or any other type. Will be fetched from model if not defined in config
-     *              // ... Other config will be added here
-     *          },
-     *          model: {
-     *              // Here will be list of properties from your model
-     *              type: 'string' //...
-     *          }
-     *      }
-     *  }
-     * </code>
-     *
-     * @param {Request} req Sails.js req object
-     * @param {Object} entity Entity object with `name`, `config`, `model` {@link AdminUtil.findEntityObject}
-     * @param {string=} [type] Type of action that config should be loaded for. Example: list, edit, add, remove, view. Defaut: list
-     * @returns {Object} Empty object or pbject with list of properties
-     * @deprecated use DataModel class
-     */
-    static getFields(
-    /** @deprecated */ req: ReqType, entity: Entity, type: ActionType): Fields;
 }

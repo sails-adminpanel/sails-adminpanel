@@ -5,11 +5,11 @@ let i18nFactory = require('i18n-2');
 
 export class TranslationHelper {
     public static loadTranslations(translationsPath: string): void {
-        let translationsConfig = sails.config.adminpanel.translation;
+        let translationsConfig = adminizer.config.translation;
 
         if ( typeof translationsConfig === "boolean") {
             if(translationsConfig as boolean === true) {
-                sails.log.warn("sails.config.adminpanel.translation is TRUE, is not mater")
+                adminizer.log.warn("adminizer.config.translation is TRUE, is not mater")
             }
             return
         }
@@ -30,14 +30,14 @@ export class TranslationHelper {
                         sails.hooks.i18n.appendLocale(locale, jsonData);
                         // sails.hooks.i18n.defaultLocale = defaultLocale;
                     } catch (error) {
-                        sails.log.error(`Adminpanel > Error when reading ${locale}.json: ${error}`);
+                        adminizer.log.error(`Adminpanel > Error when reading ${locale}.json: ${error}`);
                     }
                 } else {
-                    sails.log.debug(`Adminpanel > Cannot find ${locale} locale in translations directory`)
+                    adminizer.log.debug(`Adminpanel > Cannot find ${locale} locale in translations directory`)
                 }
             }
         } catch (e) {
-            sails.log.error("Adminpanel > Error when loading translations", e)
+            adminizer.log.error("Adminpanel > Error when loading translations", e)
         }
     }
 
@@ -66,7 +66,7 @@ export class TranslationHelper {
     }
 
     private static getI18nInstance(locale: string): any {
-        if(typeof sails.config.adminpanel.translation === "boolean") {
+        if(typeof adminizer.config.translation === "boolean") {
             throw `Transaltion is disabled`
         }
 

@@ -4,9 +4,9 @@ exports.default = normalizeNavigationConfig;
 const widgetHelper_1 = require("../helper/widgetHelper");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 async function normalizeNavigationConfig(req, res) {
-    if (sails.config.adminpanel.auth) {
+    if (adminizer.config.auth) {
         if (!req.session.UserAP) {
-            res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
             return;
         }
         else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`update-${req.param("entityName")}-${req.param("entityType")}`, req.session.UserAP)) {
@@ -17,7 +17,7 @@ async function normalizeNavigationConfig(req, res) {
     let editNavigationWidgetConfig;
     let entityType = req.param("entityType");
     if (entityType === "model") {
-        const entity = sails.config.adminpanel[`${entityType}s`][req.param("entityName")];
+        const entity = adminizer.config[`${entityType}s`][req.param("entityName")];
         if (typeof entity !== "boolean") {
             const fieldConfig = entity.fields[req.body.key];
             if (typeof fieldConfig !== "string" && typeof fieldConfig === "object" && 'options' in fieldConfig) {
@@ -27,7 +27,7 @@ async function normalizeNavigationConfig(req, res) {
         }
     }
     else {
-        const fieldConfig = sails.config.adminpanel[`${entityType}s`].data[req.param("entityName")][req.body.key];
+        const fieldConfig = adminizer.config[`${entityType}s`].data[req.param("entityName")][req.body.key];
         if (typeof fieldConfig === "object" && 'options' in fieldConfig) {
             //@ts-ignore
             editNavigationWidgetConfig = fieldConfig.options;

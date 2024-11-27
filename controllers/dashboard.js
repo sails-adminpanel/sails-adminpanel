@@ -9,8 +9,8 @@ exports.default = default_1;
  * @returns {dashboardController}
  */
 function default_1(req, res) {
-    if (sails.config.adminpanel.auth && !req.session.UserAP) {
-        return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+    if (adminizer.config.auth && !req.session.UserAP) {
+        return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
     }
     return res.viewAdmin('dashboard', { entity: "entity" });
 }

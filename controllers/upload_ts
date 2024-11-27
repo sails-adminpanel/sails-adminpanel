@@ -10,12 +10,12 @@ const Jimp = require('jimp');
 
 export default function upload(req: ReqType, res: ResType) {
 
-    // sails.log.debug('admin > upload');
+    // adminizer.log.debug('admin > upload');
     let entity = AdminUtil.findEntityObject(req);
 
-    if (sails.config.adminpanel.auth) {
+    if (adminizer.config.auth) {
         if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
         } else if (!AccessRightsHelper.enoughPermissions([
             `update-${entity.name}-model`,
             `create-${entity.name}-model`,
@@ -34,7 +34,7 @@ export default function upload(req: ReqType, res: ResType) {
         //     return res.badRequest();
         // }
 
-        // sails.log.info(req.body);
+        // adminizer.log.info(req.body);
 
 
         // read field
@@ -50,7 +50,7 @@ export default function upload(req: ReqType, res: ResType) {
         // TODO: wizards
         // Need rewrite to EntityConfig in config adminpanel.
         // Громоздко потомучто в конфиге сделали неодинаковые типы для ENTITY
-        let adminpanelConfig = sails.config.adminpanel as AdminpanelConfig
+        let adminpanelConfig = adminizer.config as AdminpanelConfig
         if (entity.type === 'model'){
             const model = adminpanelConfig.models[entity.name]; 
             if(typeof model !== "boolean") {
@@ -160,7 +160,7 @@ export default function upload(req: ReqType, res: ResType) {
                     if (err) return res.serverError(err);
                     //@ts-ignore
                     image.write(assetsDir + filename, function (err, img) {
-                        if (err) sails.log.error("Can't save image in assets!");
+                        if (err) adminizer.log.error("Can't save image in assets!");
                     });
 
                     const width = image.bitmap.width;

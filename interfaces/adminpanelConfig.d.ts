@@ -5,7 +5,7 @@ import { GroupAPRecord } from "../models/GroupAP";
 import { EditorOptions } from "@toast-ui/editor/types/editor";
 export type TuiEditorOptions = EditorOptions;
 export type AdminpanelIcon = LineAwesomeIcon;
-type FieldsTypes = "string" | "password" | "date" | "datetime" | "time" | "integer" | "number" | "float" | "color" | "email" | "month" | "week" | "range" | "boolean" | "binary" | "text" | "longtext" | "mediumtext" | "ckeditor" | "wysiwyg" | "texteditor" | "word" | 'tui' | 'tuieditor' | 'toast-ui' | "jsoneditor" | "json" | "array" | "object" | "ace" | "html" | "xml" | "aceeditor" | "image" | "images" | "file" | "files" | "menu" | "navigation" | "schedule" | "worktime" | "association" | "association-many" | "select" | "select-many" | "table" | "geojson" | "mediamanager" | 
+export type FieldsTypes = "string" | "password" | "date" | "datetime" | "time" | "integer" | "number" | "float" | "color" | "email" | "month" | "week" | "range" | "boolean" | "binary" | "text" | "longtext" | "mediumtext" | "ckeditor" | "wysiwyg" | "texteditor" | "word" | 'tui' | 'tuieditor' | 'toast-ui' | "jsoneditor" | "json" | "array" | "object" | "ace" | "html" | "xml" | "aceeditor" | "image" | "images" | "file" | "files" | "menu" | "navigation" | "schedule" | "worktime" | "association" | "association-many" | "select" | "select-many" | "table" | "geojson" | "mediamanager" | 
 /**
  * it will be needed only for polygon data
  */
@@ -46,11 +46,16 @@ export interface AdminpanelConfig {
     sections?: HrefConfig[];
     /**
      * Route prefix for adminpanel, admin by default
+     * @deprecated Adminizer is middleware
      * */
     routePrefix?: string;
+    /**
+     * @deprecated
+     */
     pathToViews?: string;
     /**
      * Force set primary key
+     * @deprecated required field for each model
      * */
     identifierField?: string;
     brand?: {
@@ -181,6 +186,8 @@ export interface AdminpanelConfig {
      *  Path to modules views
      */
     modulesViewsPath?: string;
+    /** @deprecated */
+    templateRootPath?: string;
     mediamanager?: MediaManagerConfig;
 }
 export interface ModelConfig {
@@ -252,7 +259,12 @@ export interface ModelConfig {
      * Force set primary key
      * */
     identifierField?: string;
-    userAccessRelation?: string;
+    /** In this field we can set model field, for which we want to check user access right.
+     *  May be association or association-many to UserAP or GroupAP */
+    userAccessRelation?: {
+        field: string;
+        via: string;
+    } | string;
     userAccessRelationCallback?: (userWithGroups: UserWithGroups, record: any) => boolean;
 }
 type UserWithGroups = UserAPRecord & {

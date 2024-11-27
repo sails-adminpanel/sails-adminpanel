@@ -14,6 +14,7 @@
         options<%=key%>.push({label: "--- Nothing selected ---", value: "null"})
     <% } %>
 
+    // TODO field.config.records is deprecated, widget should be rewritten to get records by controller request
     <% if (field.config.records && field.config.records.length) { %>
         <% for (let opt of field.config.records) { %>
             <% if (opt[field.config.identifierField] === value) { %>

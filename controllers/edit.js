@@ -7,6 +7,7 @@ const fieldsHelper_1 = require("../helper/fieldsHelper");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 const CatalogHandler_1 = require("../lib/catalog/CatalogHandler");
 const MediaManagerHelper_1 = require("../lib/media-manager/helpers/MediaManagerHelper");
+const DataAccessor_1 = require("../lib/v4/DataAccessor");
 async function edit(req, res) {
     //Check id
     if (!req.param('id')) {
@@ -19,32 +20,34 @@ async function edit(req, res) {
     if (!entity.config.edit) {
         return res.redirect(entity.uri);
     }
-    if (sails.config.adminpanel.auth) {
+    if (adminizer.config.auth) {
         if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
         }
         else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`update-${entity.name}-model`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
     }
     let record;
+    let dataAccessor;
     try {
         const id = req.param('id');
-        record = await entity.model.findOne(id);
+        dataAccessor = new DataAccessor_1.DataAccessor(req.session.UserAP, entity, "edit");
+        record = await entity.model._findOne({ id: id }, dataAccessor);
     }
     catch (e) {
-        sails.log.error('Admin edit error: ');
-        sails.log.error(e);
+        adminizer.log.error('Admin edit error: ');
+        adminizer.log.error(e);
         return res.serverError();
     }
-    let fields = fieldsHelper_1.FieldsHelper.getFields(req, entity, 'edit');
-    let reloadNeeded = false;
-    fields = await fieldsHelper_1.FieldsHelper.loadAssociations(fields);
+    let fields = dataAccessor.getFieldsConfig();
+    // add deprecated 'records' to config
+    fields = await fieldsHelper_1.FieldsHelper.loadAssociations(fields, req.session.UserAP, "edit");
     // Save
     if (req.method.toUpperCase() === 'POST') {
         let reqData = requestProcessor_1.RequestProcessor.processRequest(req, fields);
         let params = {};
-        params[entity.config.identifierField || sails.config.adminpanel.identifierField] = req.param('id');
+        params[entity.config.identifierField || adminizer.config.identifierField] = req.param('id');
         /**
          * Here means reqData adapt for model data, but rawReqData is processed for widget processing
          */
@@ -59,7 +62,8 @@ async function edit(req, res) {
             if (reqData[prop] === "" && fields[prop].model.allowNull === true) {
                 reqData[prop] = null;
             }
-            if (fields[prop].config.type === 'select-many') {
+            let fieldConfigConfig = fields[prop].config;
+            if (fieldConfigConfig.type === 'select-many') {
                 reqData[prop] = reqData[prop].toString().split(",");
             }
             // delete property from association-many and association if empty
@@ -68,7 +72,7 @@ async function edit(req, res) {
                     delete reqData[prop];
                 }
             }
-            if (fields[prop].config.type === 'mediamanager' && typeof reqData[prop] === "string") {
+            if (fieldConfigConfig.type === 'mediamanager' && typeof reqData[prop] === "string") {
                 try {
                     const parsed = JSON.parse(reqData[prop]);
                     rawReqData[prop] = parsed;
@@ -86,7 +90,7 @@ async function edit(req, res) {
                     catch (e) {
                         // Why it here @roman?
                         if (typeof reqData[prop] === "string" && reqData[prop].toString().replace(/(\r\n|\n|\r|\s{2,})/gm, "")) {
-                            sails.log.error(JSON.stringify(reqData[prop]), e);
+                            adminizer.log.error(JSON.stringify(reqData[prop]), e);
                         }
                     }
                 }
@@ -106,16 +110,16 @@ async function edit(req, res) {
             reqData = entityEdit.entityModifier(reqData);
         }
         try {
-            let newRecord = await entity.model.update(params, reqData);
+            let newRecord = await entity.model._update(params, reqData, dataAccessor);
             await (0, MediaManagerHelper_1.saveRelationsMediaManager)(fields, rawReqData, entity.model.identity, newRecord[0].id);
-            sails.log.debug(`Record was updated: `, newRecord);
+            adminizer.log.debug(`Record was updated: `, newRecord);
             if (req.body.jsonPopupCatalog) {
                 return res.json({ record: newRecord });
             }
             else {
                 // update navigation tree after model updated
-                if (sails.config.adminpanel.navigation) {
-                    for (const section of sails.config.adminpanel.navigation.sections) {
+                if (adminizer.config.navigation) {
+                    for (const section of adminizer.config.navigation.sections) {
                         let navigation = CatalogHandler_1.CatalogHandler.getCatalog('navigation');
                         navigation.setId(section);
                         let navItem = navigation.itemTypes.find(item => item.type === entity.name);
@@ -125,22 +129,23 @@ async function edit(req, res) {
                     }
                 }
                 req.session.messages.adminSuccess.push('Your record was updated !');
-                return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
+                return res.redirect(`${adminizer.config.routePrefix}/model/${entity.name}`);
             }
         }
         catch (e) {
-            sails.log.error(e);
+            adminizer.log.error(e);
             req.session.messages.adminError.push(e.message || 'Something went wrong...');
             return e;
         }
     } // END POST
     for (const field of Object.keys(fields)) {
-        if (fields[field].config.type === 'mediamanager') {
+        let fieldConfigConfig = fields[field].config;
+        if (fieldConfigConfig.type === 'mediamanager') {
             if (fields[field].model.type === 'association-many') {
-                console.log(fields[field].config.options);
+                console.log(fieldConfigConfig.options);
                 record[field] = await (0, MediaManagerHelper_1.getRelationsMediaManager)({
                     list: record[field],
-                    mediaManagerId: fields[field].config.options.id ?? "default"
+                    mediaManagerId: fieldConfigConfig.options.id ?? "default"
                 });
             }
             else if (fields[field].model.type === "json") {

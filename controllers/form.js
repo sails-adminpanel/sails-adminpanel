@@ -9,9 +9,9 @@ async function form(req, res) {
     if (!slug) {
         return res.notFound();
     }
-    if (sails.config.adminpanel.auth) {
+    if (adminizer.config.auth) {
         if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
         }
         else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`update-${slug}-form`, req.session.UserAP)) {
             return res.sendStatus(403);
@@ -25,7 +25,7 @@ async function form(req, res) {
             }
             catch (e) {
                 if (typeof req.body[prop] === "string" && req.body[prop].replace(/(\r\n|\n|\r|\s{2,})/gm, "") && e.message !== "Unexpected end of JSON input" && !/Unexpected (token .|number) in JSON at position \d/.test(e.message)) {
-                    sails.log.error(JSON.stringify(req.body[prop]), e);
+                    adminizer.log.error(JSON.stringify(req.body[prop]), e);
                 }
             }
         }
@@ -45,20 +45,20 @@ async function form(req, res) {
             }
         }
         for (let field of Object.keys(req.body)) {
-            await sails.config.adminpanel.forms.set(slug, field, req.body[field]);
+            await adminizer.config.forms.set(slug, field, req.body[field]);
         }
         for (let field of checkboxes) {
             if (!req.body[field]) {
-                await sails.config.adminpanel.forms.set(slug, field, false);
+                await adminizer.config.forms.set(slug, field, false);
             }
         }
     }
     for (let key of Object.keys(form)) {
         try {
-            form[key].value = await sails.config.adminpanel.forms.get(slug, key);
+            form[key].value = await adminizer.config.forms.get(slug, key);
         }
         catch (e) {
-            sails.log.silly(`'${slug}' property was not found in storage, using source file`);
+            adminizer.log.silly(`'${slug}' property was not found in storage, using source file`);
         }
     }
     res.viewAdmin("form", { formData: form, slug: slug });

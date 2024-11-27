@@ -1,4 +1,5 @@
 import { Fields } from "../helper/fieldsHelper";
+import {BaseFieldConfig} from "../interfaces/adminpanelConfig";
 
 let queryString = require('querystring');
 type PostParams = Record<string, string | number | boolean | object | string[] | number[] | null >;
@@ -37,7 +38,8 @@ export class RequestProcessor {
     public static async processFiles(req: ReqType, fields: Fields) {
         let fileFieldKeys = [];
         for (let key in fields) {
-            if (fields[key].config && fields[key].config.file) {
+            let fieldConfigConfig = fields[key].config as BaseFieldConfig & {file: string};
+            if (fields[key].config && fieldConfigConfig.file) {
                 fileFieldKeys.push(key)
             }
         }
@@ -58,7 +60,7 @@ export class RequestProcessor {
                     files[elem] = file;
                 });
             } catch (e) {
-                sails.log.error(e);
+                adminizer.log.error(e);
                 return e;
             }
         }
@@ -81,40 +83,40 @@ export class RequestProcessor {
     public static processRequest(req: ReqType, fields: Fields): PostParams {
         let data = req.allParams();
         let postParams: PostParams = {};
-    
+
         for (let key of Object.keys(data)) {
             if (fields[key]) {
                 postParams[key] = data[key];
             }
         }
-    
+
         for (let key in postParams) {
             let field = fields[key];
-    
+
             if (field.model.type === 'boolean') {
                 postParams[key] = ['true', '1', 'yes', "TRUE", "on"].includes(postParams[key].toString().toLowerCase());
                 continue;
             }
-    
+
             if (field.model.type === 'number') {
                 postParams[key] = parseFloat(postParams[key] as string);
             }
-    
+
             if (field.model.type === 'json') {
                 try {
                     postParams[key] = JSON.parse(postParams[key] as string);
                 } catch (error) {
                     if (typeof postParams[key] === "string" && (postParams[key] as string).trim()) {
-                        sails.log.error(`Adminpanel > processRequest: json parse error when parsing ${postParams[key]}`, error);
+                        adminizer.log.error(`Adminpanel > processRequest: json parse error when parsing ${postParams[key]}`, error);
                     }
                 }
             }
-    
+
             if (field.model.type === 'association' && !postParams[key]) {
                 delete postParams[key];
             }
         }
-    
+
         return postParams;
     }
 }

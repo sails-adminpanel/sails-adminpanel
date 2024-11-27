@@ -8,7 +8,9 @@
 		"@jsonforms/vue-vanilla": "^3.4.1",
 		"@sails-adminpanel/sl-vue-tree-next": "^0.0.15",
 		"axios": "^1.7.7",
+		"crypto-puzzle": "^5.0.2",
 		"db-migrate": "^0.11.14",
+		"fix-esm": "^1.0.1",
 		"i18n-2": "0.7.3",
 		"image-size": "^1.1.1",
 		"jimp": "=0.2.28",
@@ -24,7 +26,6 @@
 	"deprecated": false,
 	"description": "Basic adminpanel for Sails 1x",
 	"devDependencies": {
-		"@toast-ui/editor": "^3.2.2",
 		"@ckeditor/ckeditor5-alignment": "^43.3.0",
 		"@ckeditor/ckeditor5-autoformat": "^43.3.0",
 		"@ckeditor/ckeditor5-basic-styles": "^43.3.0",
@@ -58,6 +59,7 @@
 		"@eslint/js": "^9.14.0",
 		"@interactjs/core": "1.10.27",
 		"@interactjs/utils": "1.10.27",
+		"@toast-ui/editor": "^3.2.2",
 		"@types/chai": "^4.3.20",
 		"@types/eslint__js": "^8.42.3",
 		"@types/express": "^4.17.21",
@@ -145,6 +147,7 @@
 	"scripts": {
 		"gulp": "gulp prod",
 		"test": "ts-mocha test/bootstrap.ts './test/{,!(fixture)/**}/*.test.ts' --exit",
+		"test-da": "ts-mocha test/bootstrap.ts './test/{,!(fixture)/**}/dataAccessor.test.ts' --exit",
 		"test:js": "mocha test/bootstrap.js './test/{,!(fixture)/**}/*.test.js' --exit",
 		"test:init": "npm i && cd ./test/fixture && npm i --no-package-lock && cd -",
 		"test:init-win": "npm i && cd test\\fixture && rmdir /s/Q node_modules && npm i --no-package-lock",

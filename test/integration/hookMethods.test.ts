@@ -3,16 +3,16 @@ import { expect } from "chai";
 
 describe('Hook methods sails.adminpanel...', function () {
   it("addModelConfig", async function () {
-    let testModel = {
-      test: {
-        title: "test",
-        model: "test",
-        icon: "test"
+    let categoryModel = {
+      category: {
+        title: 'Category',
+        model: 'category',
+        icon: 'cat'
       }
     }
 
-    sails.hooks.adminpanel.addModelConfig(testModel);
+    sails.hooks.adminpanel.addModelConfig(categoryModel);
     //@ts-ignore
-    expect(sails.config.adminpanel.models.test.title).to.equal("test")
+    expect(adminizer.config.models.category.title).to.equal("Category")
   })
 })

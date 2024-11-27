@@ -32,9 +32,9 @@ class StorageService {
 				}
 
 				if (wasCreated) {
-					sails.log(`Created a new navigation: ${this.id}`);
+					adminizer.log.info(`Created a new navigation: ${this.id}`);
 				} else {
-					sails.log(`Found existing navigation: ${this.id}`);
+					adminizer.log.info(`Found existing navigation: ${this.id}`);
 					await this.populateFromTree(navigation.tree)
 				}
 			});
@@ -243,7 +243,7 @@ class NavigationItem extends AbstractItem<NavItem> {
 		this.model = model.toLowerCase()
 		this.type = model.toLowerCase()
 		this.urlPath = urlPath
-		let configModel = sails.config.adminpanel.models[this.model] as ModelConfig
+		let configModel = adminizer.config.models[this.model] as ModelConfig
 		this.icon = configModel.icon ?? 'file'
 
 		const i18nFactory = require('i18n-2');

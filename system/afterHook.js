@@ -17,7 +17,7 @@ async function default_1() {
     // bind config for views
     require('./bindConfig').default();
     if ((process.env.DEV && process.env.NODE_ENV !== 'production') || process.env.ADMINPANEL_FORCE_BIND_DEV === "TRUE") {
-        (0, bindDev_1.default)(sails.config.adminpanel);
+        (0, bindDev_1.default)(adminizer.config);
     }
     if (process.env.NODE_ENV === "production") {
         sails.on('lifted', async function () {
@@ -28,13 +28,12 @@ async function default_1() {
     else {
         Router_1.default.bind();
     }
-    (0, bindConfigModels_1.default)(sails.config.adminpanel);
-    (0, bindForms_1.default)();
-    (0, bindDashboardWidgets_1.default)();
+    (0, bindConfigModels_1.default)(adminizer.config);
+    await (0, bindForms_1.default)();
+    await (0, bindDashboardWidgets_1.default)();
     (0, bindNavigation_1.default)();
     (0, bindMediaManager_1.default)();
-    //bind access rights
-    (0, bindAccessRights_1.default)();
+    await (0, bindAccessRights_1.default)();
     //binding authorization
     await (0, bindAuthorization_1.default)();
     if (sails.hooks.i18n && sails.hooks.i18n.appendLocale) {
@@ -43,7 +42,7 @@ async function default_1() {
         });
     }
     else {
-        sails.config.adminpanel.translation = false;
+        adminizer.config.translation = false;
     }
     sails.after(["hook:i18n:loaded"], async () => {
         (0, bindTranslations_1.default)();

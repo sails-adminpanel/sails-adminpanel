@@ -61,9 +61,9 @@ export default function bindResView() {
             if (!locals) {
                 locals = {};
             }
-            locals.theme = sails.config.adminpanel.theme || 'light';
-            locals.scripts = sails.config.adminpanel.scripts || {};
-            locals.scripts = sails.config.adminpanel.scripts || {};
+            locals.theme = adminizer.config.theme || 'light';
+            locals.scripts = adminizer.config.scripts || {};
+            locals.scripts = adminizer.config.scripts || {};
             locals.havePermission = AccessRightsHelper.havePermission;
             locals.enoughPermissions = AccessRightsHelper.enoughPermissions;
 
@@ -71,8 +71,8 @@ export default function bindResView() {
             if (locals.section === undefined) locals.section = 'adminpanel';
 
             if(cb_view){
-                sails.log.warn((new Error).stack)
-                sails.log.warn(`Detected cb_view ${cb_view}`)
+                adminizer.log.warn((new Error).stack)
+                adminizer.log.warn(`Detected cb_view ${cb_view}`)
             }
             return res.view(ViewsHelper.getViewPath(specifiedPath), locals, );
         };
@@ -81,8 +81,8 @@ export default function bindResView() {
     };
 
     // Bind to /admin
-    sails.router.bind(sails.config.adminpanel.routePrefix, bindResFunctions);
+    sails.router.bind(adminizer.config.routePrefix, bindResFunctions);
     // Bind to /admin/*
-    sails.router.bind(sails.config.adminpanel.routePrefix + '\/*', bindResFunctions);
+    sails.router.bind(adminizer.config.routePrefix + '\/*', bindResFunctions);
     sails.emit("adminpanel:viewadmin:loaded")
 };

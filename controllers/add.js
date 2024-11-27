@@ -6,6 +6,7 @@ const requestProcessor_1 = require("../lib/requestProcessor");
 const fieldsHelper_1 = require("../helper/fieldsHelper");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 const MediaManagerHelper_1 = require("../lib/media-manager/helpers/MediaManagerHelper");
+const DataAccessor_1 = require("../lib/v4/DataAccessor");
 async function add(req, res) {
     let entity = adminUtil_1.AdminUtil.findEntityObject(req);
     if (!entity.model) {
@@ -14,17 +15,19 @@ async function add(req, res) {
     if (!entity.config?.add) {
         return res.redirect(entity.uri);
     }
-    if (sails.config.adminpanel.auth) {
+    if (adminizer.config.auth) {
         if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
         }
         else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`create-${entity.name}-model`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
     }
-    let fields = fieldsHelper_1.FieldsHelper.getFields(req, entity, 'add');
+    let dataAccessor = new DataAccessor_1.DataAccessor(req.session.UserAP, entity, "add");
+    let fields = dataAccessor.getFieldsConfig();
+    // add deprecated 'records' to config
+    fields = await fieldsHelper_1.FieldsHelper.loadAssociations(fields, req.session.UserAP, "add");
     let data = {}; //list of field values
-    fields = await fieldsHelper_1.FieldsHelper.loadAssociations(fields);
     if (req.method.toUpperCase() === 'POST') {
         let reqData = requestProcessor_1.RequestProcessor.processRequest(req, fields);
         /**
@@ -38,7 +41,8 @@ async function add(req, res) {
             if (reqData[prop] === "" && fields[prop].model.allowNull === true) {
                 reqData[prop] = null;
             }
-            if (fields[prop].config.type === 'select-many') {
+            let fieldConfigConfig = fields[prop].config;
+            if (fieldConfigConfig.type === 'select-many') {
                 reqData[prop] = reqData[prop].split(",");
             }
             if (fields[prop] && fields[prop].model && fields[prop].model.type === 'json' && reqData[prop] !== '') {
@@ -47,11 +51,11 @@ async function add(req, res) {
                 }
                 catch (e) {
                     if (typeof reqData[prop] === "string" && reqData[prop].replace(/(\r\n|\n|\r|\s{2,})/gm, "")) {
-                        sails.log.error(e);
+                        adminizer.log.error(e);
                     }
                 }
             }
-            if (fields[prop].config.type === 'mediamanager' && typeof reqData[prop] === "string") {
+            if (fieldConfigConfig.type === 'mediamanager' && typeof reqData[prop] === "string") {
                 try {
                     const parsed = JSON.parse(reqData[prop]);
                     rawReqData[prop] = parsed;
@@ -82,20 +86,20 @@ async function add(req, res) {
             reqData = entityAdd.entityModifier(reqData);
         }
         try {
-            let record = await entity.model.create(reqData);
+            let record = await entity.model._create(reqData, dataAccessor);
             // save associations media to json
             await (0, MediaManagerHelper_1.saveRelationsMediaManager)(fields, rawReqData, entity.model.identity, record.id);
-            sails.log.debug(`A new record was created: `, record);
+            adminizer.log.debug(`A new record was created: `, record);
             if (req.body.jsonPopupCatalog) {
                 return res.json({ record: record });
             }
             else {
                 req.session.messages.adminSuccess.push('Your record was created !');
-                return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
+                return res.redirect(`${adminizer.config.routePrefix}/model/${entity.name}`);
             }
         }
         catch (e) {
-            sails.log.error(e);
+            adminizer.log.error(e);
             req.session.messages.adminError.push(e.message || 'Something went wrong...');
             data = reqData;
         }

@@ -51,7 +51,7 @@ class AccessRightsHelper {
         return enoughPermissions;
     }
     static havePermission(tokenId, user) {
-        if (!sails.config.adminpanel.auth) {
+        if (!adminizer.config.auth) {
             return true;
         }
         if (user.isAdministrator) {
@@ -66,7 +66,7 @@ class AccessRightsHelper {
             }
         }
         if (!tokenIsValid) {
-            sails.log.error("Adminpanel > Token is not valid");
+            adminizer.log.error("Adminpanel > Token is not valid");
             return false;
         }
         let allow = false;

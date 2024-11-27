@@ -1,9 +1,10 @@
 import {AdminUtil} from "../lib/adminUtil";
 import {RequestProcessor} from "../lib/requestProcessor";
 import {FieldsHelper} from "../helper/fieldsHelper";
-import {CreateUpdateConfig} from "../interfaces/adminpanelConfig";
+import {BaseFieldConfig, CreateUpdateConfig} from "../interfaces/adminpanelConfig";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import {saveRelationsMediaManager} from "../lib/media-manager/helpers/MediaManagerHelper";
+import {DataAccessor} from "../lib/v4/DataAccessor";
 
 export default async function add(req: ReqType, res: ResType) {
 	let entity = AdminUtil.findEntityObject(req);
@@ -16,22 +17,25 @@ export default async function add(req: ReqType, res: ResType) {
 		return res.redirect(entity.uri);
 	}
 
-	if (sails.config.adminpanel.auth) {
+	if (adminizer.config.auth) {
 		if (!req.session.UserAP) {
-			return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+			return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
 		} else if (!AccessRightsHelper.havePermission(`create-${entity.name}-model`, req.session.UserAP)) {
 			return res.sendStatus(403);
 		}
 	}
 
-	let fields = FieldsHelper.getFields(req, entity, 'add');
-	let data = {}; //list of field values
+	let dataAccessor = new DataAccessor(req.session.UserAP, entity, "add");
+	let fields = dataAccessor.getFieldsConfig();
 
-	fields = await FieldsHelper.loadAssociations(fields);
+	// add deprecated 'records' to config
+	fields = await FieldsHelper.loadAssociations(fields, req.session.UserAP,"add");
+
+	let data = {}; //list of field values
 
 	if (req.method.toUpperCase() === 'POST') {
 		let reqData: any = RequestProcessor.processRequest(req, fields);
-	
+
 		/**
 		 * Here means reqData adapt for model data, but rawReqData is processed for widget processing
 		 */
@@ -47,7 +51,8 @@ export default async function add(req: ReqType, res: ResType) {
 				reqData[prop] = null
 			}
 
-			if (fields[prop].config.type === 'select-many') {
+			let fieldConfigConfig = fields[prop].config as BaseFieldConfig;
+			if (fieldConfigConfig.type === 'select-many') {
 				reqData[prop] = reqData[prop].split(",")
 			}
 
@@ -56,12 +61,12 @@ export default async function add(req: ReqType, res: ResType) {
 					reqData[prop] = JSON.parse(reqData[prop]);
 				} catch (e) {
 					if (typeof reqData[prop] === "string" && reqData[prop].replace(/(\r\n|\n|\r|\s{2,})/gm, "")) {
-						sails.log.error(e);
+						adminizer.log.error(e);
 					}
 				}
 			}
 
-			if (fields[prop].config.type === 'mediamanager' && typeof reqData[prop] === "string") {
+			if (fieldConfigConfig.type === 'mediamanager' && typeof reqData[prop] === "string") {
 				try {
 					const parsed = JSON.parse(reqData[prop] as string);
 					rawReqData[prop]  = parsed
@@ -96,20 +101,20 @@ export default async function add(req: ReqType, res: ResType) {
 		}
 
 		try {
-			let record = await entity.model.create(reqData);
+			let record = await entity.model._create(reqData, dataAccessor);
 
 			// save associations media to json
 			await saveRelationsMediaManager(fields,  rawReqData, entity.model.identity, record.id)
 
-			sails.log.debug(`A new record was created: `, record);
+			adminizer.log.debug(`A new record was created: `, record);
 			if (req.body.jsonPopupCatalog) {
 				return res.json({record: record})
 			} else {
 				req.session.messages.adminSuccess.push('Your record was created !');
-				return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
+				return res.redirect(`${adminizer.config.routePrefix}/model/${entity.name}`);
 			}
 		} catch (e) {
-			sails.log.error(e);
+			adminizer.log.error(e);
 			req.session.messages.adminError.push(e.message || 'Something went wrong...');
 			data = reqData;
 		}

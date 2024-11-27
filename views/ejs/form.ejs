@@ -1,5 +1,5 @@
 <%- include("head") %>
-<% var entity = {uri: sails.config.adminpanel.routePrefix + '/form/' + slug, config: {model: false}} %>
+<% var entity = {uri: adminizer.config.routePrefix + '/form/' + slug, config: {model: false}} %>
 <%- include("headContent", {entity: entity}) %>
 <div class="content__body">
     <div class="flex gap-3">
@@ -10,7 +10,7 @@
             </button>
         </a>
     </div>
-    <form id="form" action="<%- sails.config.adminpanel.routePrefix %>/form/<%= slug %>" method="POST"
+    <form id="form" action="<%- adminizer.config.routePrefix %>/form/<%= slug %>" method="POST"
           enctype="multipart/form-data">
         <%# global variables %>
         <script>

@@ -37,7 +37,7 @@ export default class Router {
 	@debounce(2000)
 	static bind(): void {
 		if (this.onlyOnce) {
-			sails.log.error(`This method allowed for run only one time`);
+			adminizer.log.error(`This method allowed for run only one time`);
 			return;
 		}
 
@@ -45,7 +45,7 @@ export default class Router {
 		 * List or one policy that should be bound to actions
 		 * @type {string|Array}
 		 */
-		let config = sails.config.adminpanel;
+		let config = adminizer.config;
 		let policies = config.policies || "";
 
 		/**
@@ -124,12 +124,12 @@ export default class Router {
 				 * Add support only routes created for boolean true
 				 */
 				if (typeof modelConfig === "boolean" && modelConfig === true) {
-					sails.log.debug(`Adminpanel create CRUD routes for \`${model}\` by boolean true`)
+					adminizer.log.debug(`Adminpanel create CRUD routes for \`${model}\` by boolean true`)
 					sails.router.bind(`${config.routePrefix}/model/${model}/add`, bindPolicies(policies, _add));
 					sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, bindPolicies(policies, _edit));
 					sails.router.bind(`${config.routePrefix}/model/${model}/remove/:id`, bindPolicies(policies, _remove));
 				} else if (typeof modelConfig !== "boolean") {
-					sails.log.debug(`Adminpanel create CRUD routes for \`${model}\` by ModelConfig`)
+					adminizer.log.debug(`Adminpanel create CRUD routes for \`${model}\` by ModelConfig`)
 
 					/**
 					 * Create new record
@@ -160,7 +160,7 @@ export default class Router {
 						sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, bindPolicies(policies, _edit));
 					}
 				} else {
-					sails.log.silly(`Adminpanel skip create CRUD routes for model: ${model}`)
+					adminizer.log.silly(`Adminpanel skip create CRUD routes for model: ${model}`)
 				}
 			}
 		}

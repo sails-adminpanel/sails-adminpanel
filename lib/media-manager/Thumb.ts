@@ -8,7 +8,6 @@ export class MediaManagerThumb {
         
         const manager = MediaManagerHandler.get(managerId)
         const path = await manager.getOrigin(id)
-console.log(path,1111222)
         const baseThumbPath = `${process.cwd()}/.tmp/thumbs`
         if (!await fileExists(baseThumbPath)) await fs.mkdir(baseThumbPath);
         

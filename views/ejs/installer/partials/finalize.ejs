@@ -62,7 +62,7 @@
 <script>
     async function updateProgressBar() {
         try {
-            const response = await fetch('<%- sails.config.adminpanel.routePrefix %>/install/<%=stepperId%>/finalize');
+            const response = await fetch('<%- adminizer.config.routePrefix %>/install/<%=stepperId%>/finalize');
             const data = await response.json();
 
             const { status, finalizeList } = data;
@@ -109,7 +109,7 @@
             // Process finalize step if all promises are fulfilled
             if (progress === 100) {
 
-                fetch(`<%- sails.config.adminpanel.routePrefix %>/install/<%=stepperId%>`, {
+                fetch(`<%- adminizer.config.routePrefix %>/install/<%=stepperId%>`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -146,7 +146,7 @@
     $("#skipButton").on('click', function () {
 			console.log("Skip Button was clicked");
 
-			$.post(`<%- sails.config.adminpanel.routePrefix %>/install/<%=stepperId%>`, {
+			$.post(`<%- adminizer.config.routePrefix %>/install/<%=stepperId%>`, {
 				action: "skip",
 				currentStepId: currentStepData.id
 			})

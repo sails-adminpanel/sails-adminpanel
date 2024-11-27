@@ -1,6 +1,7 @@
 import { AdminUtil } from "../lib/adminUtil";
 import { FieldsHelper } from "../helper/fieldsHelper";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
+import {DataAccessor} from "../lib/v4/DataAccessor";
 
 export default async function view(req: ReqType, res: ResType) {
     //Check id
@@ -17,22 +18,23 @@ export default async function view(req: ReqType, res: ResType) {
         return res.notFound();
     }
 
-    if (sails.config.adminpanel.auth) {
+    if (adminizer.config.auth) {
         if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
         } else if (!AccessRightsHelper.havePermission(`read-${entity.name}-model`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
     }
 
-    let fields = FieldsHelper.getFields(req, entity, 'view');
+    let dataAccessor = new DataAccessor(req.session.UserAP, entity, "view");
+    let fields = dataAccessor.getFieldsConfig();
 
     let record;
     try {
-        record = await entity.model.findOne(req.param('id'));
+        record = await entity.model._findOne(req.param('id'), dataAccessor);
     } catch (e) {
-        sails.log.error('Admin edit error: ');
-        sails.log.error(e);
+        adminizer.log.error('Admin edit error: ');
+        adminizer.log.error(e);
         return res.serverError();
     }
 

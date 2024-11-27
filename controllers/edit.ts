@@ -1,7 +1,7 @@
 import { AdminUtil } from "../lib/adminUtil";
 import { RequestProcessor } from "../lib/requestProcessor";
 import { FieldsHelper } from "../helper/fieldsHelper";
-import { CreateUpdateConfig, MediaManagerOptionsField } from "../interfaces/adminpanelConfig";
+import {BaseFieldConfig, CreateUpdateConfig, MediaManagerOptionsField} from "../interfaces/adminpanelConfig";
 import { AccessRightsHelper } from "../helper/accessRightsHelper";
 import { CatalogHandler } from "../lib/catalog/CatalogHandler";
 import {
@@ -9,6 +9,7 @@ import {
 	saveRelationsMediaManager
 } from "../lib/media-manager/helpers/MediaManagerHelper";
 import { MediaManagerWidgetJSON } from "../lib/media-manager/AbstractMediaManager";
+import {DataAccessor} from "../lib/v4/DataAccessor";
 
 export default async function edit(req: ReqType, res: ResType) {
 	//Check id
@@ -25,28 +26,30 @@ export default async function edit(req: ReqType, res: ResType) {
 		return res.redirect(entity.uri);
 	}
 
-	if (sails.config.adminpanel.auth) {
+	if (adminizer.config.auth) {
 		if (!req.session.UserAP) {
-			return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+			return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
 		} else if (!AccessRightsHelper.havePermission(`update-${entity.name}-model`, req.session.UserAP)) {
 			return res.sendStatus(403);
 		}
 	}
 
 	let record;
+	let dataAccessor;
 	try {
 		const id = req.param('id') as string;
-		record = await entity.model.findOne(id);
+		dataAccessor = new DataAccessor(req.session.UserAP, entity, "edit");
+		record = await entity.model._findOne({id: id}, dataAccessor);
 	} catch (e) {
-		sails.log.error('Admin edit error: ');
-		sails.log.error(e);
+		adminizer.log.error('Admin edit error: ');
+		adminizer.log.error(e);
 		return res.serverError();
 	}
 
-	let fields = FieldsHelper.getFields(req, entity, 'edit');
-	let reloadNeeded = false;
+	let fields = dataAccessor.getFieldsConfig();
 
-	fields = await FieldsHelper.loadAssociations(fields);
+	// add deprecated 'records' to config
+	fields = await FieldsHelper.loadAssociations(fields, req.session.UserAP, "edit");
 
 	// Save
 	if (req.method.toUpperCase() === 'POST') {
@@ -54,7 +57,7 @@ export default async function edit(req: ReqType, res: ResType) {
 		let params: {
 			[key: string]: number | string
 		} = {};
-		params[entity.config.identifierField || sails.config.adminpanel.identifierField] = req.param('id');
+		params[entity.config.identifierField || adminizer.config.identifierField] = req.param('id');
 
 		/**
 		 * Here means reqData adapt for model data, but rawReqData is processed for widget processing
@@ -74,7 +77,8 @@ export default async function edit(req: ReqType, res: ResType) {
 				reqData[prop] = null
 			}
 
-			if (fields[prop].config.type === 'select-many') {
+			let fieldConfigConfig = fields[prop].config as BaseFieldConfig;
+			if (fieldConfigConfig.type === 'select-many') {
 				reqData[prop] = reqData[prop].toString().split(",")
 			}
 
@@ -86,7 +90,7 @@ export default async function edit(req: ReqType, res: ResType) {
 				}
 			}
 
-			if (fields[prop].config.type === 'mediamanager' && typeof reqData[prop] === "string") {
+			if (fieldConfigConfig.type === 'mediamanager' && typeof reqData[prop] === "string") {
 				try {
 					const parsed = JSON.parse(reqData[prop] as string);
 					rawReqData[prop]  = parsed
@@ -103,7 +107,7 @@ export default async function edit(req: ReqType, res: ResType) {
 					} catch (e) {
 						// Why it here @roman?
 						if (typeof reqData[prop] === "string" && reqData[prop].toString().replace(/(\r\n|\n|\r|\s{2,})/gm, "")) {
-							sails.log.error(JSON.stringify(reqData[prop]), e);
+							adminizer.log.error(JSON.stringify(reqData[prop]), e);
 						}
 					}
 				}
@@ -126,18 +130,18 @@ export default async function edit(req: ReqType, res: ResType) {
 			reqData = entityEdit.entityModifier(reqData);
 		}
 
-		try {	
-			let newRecord = await entity.model.update(params, reqData);
+		try {
+			let newRecord = await entity.model._update(params, reqData, dataAccessor);
 			await saveRelationsMediaManager(fields, rawReqData, entity.model.identity, newRecord[0].id)
 
-			sails.log.debug(`Record was updated: `, newRecord);
+			adminizer.log.debug(`Record was updated: `, newRecord);
 			if (req.body.jsonPopupCatalog) {
 				return res.json({ record: newRecord })
 			} else {
 
 				// update navigation tree after model updated
-				if (sails.config.adminpanel.navigation) {
-					for (const section of sails.config.adminpanel.navigation.sections) {
+				if (adminizer.config.navigation) {
+					for (const section of adminizer.config.navigation.sections) {
 						let navigation = CatalogHandler.getCatalog('navigation')
 						navigation.setId(section)
 						let navItem = navigation.itemTypes.find(item => item.type === entity.name)
@@ -148,22 +152,23 @@ export default async function edit(req: ReqType, res: ResType) {
 				}
 
 				req.session.messages.adminSuccess.push('Your record was updated !');
-				return res.redirect(`${sails.config.adminpanel.routePrefix}/model/${entity.name}`);
+				return res.redirect(`${adminizer.config.routePrefix}/model/${entity.name}`);
 			}
 		} catch (e) {
-			sails.log.error(e);
+			adminizer.log.error(e);
 			req.session.messages.adminError.push(e.message || 'Something went wrong...');
 			return e;
 		}
 	} // END POST
 
 	for (const field of Object.keys(fields)) {
-		if (fields[field].config.type === 'mediamanager') {
+		let fieldConfigConfig = fields[field].config as BaseFieldConfig;
+		if (fieldConfigConfig.type === 'mediamanager') {
 			if (fields[field].model.type === 'association-many') {
-				console.log(fields[field].config.options);
+				console.log(fieldConfigConfig.options);
 				record[field] = await getRelationsMediaManager({
 					list: record[field],
-					mediaManagerId: (fields[field].config.options as MediaManagerOptionsField).id ?? "default"
+					mediaManagerId: (fieldConfigConfig.options as MediaManagerOptionsField).id ?? "default"
 				})
 			} else if (fields[field].model.type === "json") {
 				record[field] = await getRelationsMediaManager(record[field] as MediaManagerWidgetJSON)

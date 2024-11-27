@@ -10,6 +10,7 @@
     let selectedOptions<%=key%> = [];
     let label<%=key%>;
 
+    // TODO field.config.records is deprecated, widget should be rewritten to get records by controller request
     <% if (field.config.records && field.config.records.length) { %>
         <% for (let opt of field.config.records) { %>
             <% if (adminpanel.viewHelper.isOptionSelected(opt[field.config.identifierField], value)) { %>

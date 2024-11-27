@@ -37,14 +37,14 @@ class Router {
      */
     static bind() {
         if (this.onlyOnce) {
-            sails.log.error(`This method allowed for run only one time`);
+            adminizer.log.error(`This method allowed for run only one time`);
             return;
         }
         /**
          * List or one policy that should be bound to actions
          * @type {string|Array}
          */
-        let config = sails.config.adminpanel;
+        let config = adminizer.config;
         let policies = config.policies || "";
         /**
          * Widgets All
@@ -108,13 +108,13 @@ class Router {
                  * Add support only routes created for boolean true
                  */
                 if (typeof modelConfig === "boolean" && modelConfig === true) {
-                    sails.log.debug(`Adminpanel create CRUD routes for \`${model}\` by boolean true`);
+                    adminizer.log.debug(`Adminpanel create CRUD routes for \`${model}\` by boolean true`);
                     sails.router.bind(`${config.routePrefix}/model/${model}/add`, (0, bindPolicies_1.default)(policies, add_1.default));
                     sails.router.bind(`${config.routePrefix}/model/${model}/edit/:id`, (0, bindPolicies_1.default)(policies, edit_1.default));
                     sails.router.bind(`${config.routePrefix}/model/${model}/remove/:id`, (0, bindPolicies_1.default)(policies, remove_1.default));
                 }
                 else if (typeof modelConfig !== "boolean") {
-                    sails.log.debug(`Adminpanel create CRUD routes for \`${model}\` by ModelConfig`);
+                    adminizer.log.debug(`Adminpanel create CRUD routes for \`${model}\` by ModelConfig`);
                     /**
                      * Create new record
                      */
@@ -149,7 +149,7 @@ class Router {
                     }
                 }
                 else {
-                    sails.log.silly(`Adminpanel skip create CRUD routes for model: ${model}`);
+                    adminizer.log.silly(`Adminpanel skip create CRUD routes for model: ${model}`);
                 }
             }
         }

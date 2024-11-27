@@ -23,6 +23,9 @@ async function default_1(sails, cb) {
     if (!sails.config.adminpanel) {
         return cb();
     }
+    else {
+        adminizer.init(sails.config.adminpanel);
+    }
     /**
      * Initilization emit
      * This call is used so that other hooks can know that the admin panel is present in the panel, and can activate their logic.
@@ -32,17 +35,17 @@ async function default_1(sails, cb) {
     if (!fs.existsSync(viewsHelper_1.ViewsHelper.getPathToEngine(sails.config.views.extension))) {
         return cb(new Error('For now adminpanel hook could work only with EJS template engine.'));
     }
-    sails.config.adminpanel.templateRootPath = viewsHelper_1.ViewsHelper.BASE_VIEWS_PATH;
-    sails.config.adminpanel.rootPath = path.resolve(__dirname + "/..");
+    adminizer.config.templateRootPath = viewsHelper_1.ViewsHelper.BASE_VIEWS_PATH;
+    adminizer.config.rootPath = path.resolve(__dirname + "/..");
     hookTools_1.default.waitForHooks("adminpanel", requiredHooks, afterHook_1.default);
     const modelsToSkip = [];
-    if (sails.config.adminpanel.navigation?.model)
+    if (adminizer.config.navigation?.model)
         modelsToSkip.push('navigationap');
     await hookTools_1.default.bindModels((0, path_1.resolve)(__dirname, "../models"));
     // add install stepper policy to check unfilled settings
     (0, bindInstallStepper_1.default)();
     // if (!sails.hooks.i18n.locales) sails.hooks.i18n.locales = []
-    // sails.hooks.i18n.locales = [...sails.hooks.i18n.locales, ...sails.config.adminpanel.translation.locales]
+    // sails.hooks.i18n.locales = [...sails.hooks.i18n.locales, ...adminizer.config.translation.locales]
     //     .filter(function(item, pos, self) { return self.indexOf(item) == pos })
     // Bind assets
     (0, bindAssets_1.default)();

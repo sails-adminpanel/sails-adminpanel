@@ -28,7 +28,8 @@ export function randomFileName(filenameOrig: string, type: string, prefix: boole
  */
 export async function saveRelationsMediaManager(fields: Fields, reqData: PostParams, model: string, recordId: string) {
 	for (let prop in reqData) {
-		if (fields[prop]?.config?.type === 'mediamanager') {
+		let fieldConfigConfig = fields[prop].config as BaseFieldConfig;
+		if (fieldConfigConfig.type === 'mediamanager') {
 			let data = reqData[prop] as MediaManagerWidgetData;
 			let mediaManager = MediaManagerHandler.get(data.mediaManagerId)
 			await mediaManager.setRelations(data, model, recordId, prop)
@@ -51,7 +52,7 @@ export async function getRelationsMediaManager(data: MediaManagerWidgetJSON) {
 * @param record
 */
 export async function deleteRelationsMediaManager(model: string, record: { [p: string]: string | MediaManagerWidgetItem[] }[]) {
-	let config = sails.config.adminpanel.models[model] as ModelConfig
+	let config = adminizer.config.models[model] as ModelConfig
 	for (const key of Object.keys(record[0])) {
 		let field = config.fields[key] as BaseFieldConfig
 		if (field && field.type === 'mediamanager') {

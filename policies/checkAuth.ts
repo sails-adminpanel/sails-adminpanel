@@ -1,11 +1,11 @@
 module.exports = async function (req: ReqType, res: ResType, proceed: ()=>void) {
     let locale: string = ""
     
-    if (typeof sails.config.adminpanel.translation  !== 'boolean') {
-        locale = sails.config.adminpanel.translation.defaultLocale
+    if (typeof adminizer.config.translation  !== 'boolean') {
+        locale = adminizer.config.translation.defaultLocale
     }
 
-    if (!sails.config.adminpanel.auth) {
+    if (!adminizer.config.auth) {
         if (req.session.UserAP) {
             req.session.UserAP.isAdministrator = true;
         } else {

@@ -14,9 +14,9 @@ In controllers you should check access rights through `havePermission` method.
 Example:
 
 ```javascript
-if (sails.config.adminpanel.auth) {
+if (adminizer.config.auth) {
         if (!req.session.UserAP) { // check that user is authorized
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
         } else if (!AccessRightsHelper.havePermission(`tokenName`, req.session.UserAP)) { // check permission
             return res.sendStatus(403);
         }
@@ -46,4 +46,70 @@ module.exports.adminpanel = {
         password: 'string'
     }
 }
+```
+
+## Fields
+
+Each field can have its own access rights using the `groupAccessRights` attribute. This attribute defines which user groups
+are permitted to view or modify a specific field.
+
+```javascript
+fields: {
+  title: { "title": "Title", "tooltip": "Main title of the item" },
+  guardedField: {
+    title: "Restricted Field",
+    type: "string",
+    groupsAccessRight: ["admins", "editors"]
+  }
+}
+```
+
+- In this example: `guardedField` is only accessible to users in the admin and editor groups.
+If a user does not belong to one of these groups, the field will be hidden or inaccessible.
+
+- Notes: Fields without groupAccessRights are accessible by default to all users, except guest users which belong
+to default user group, which is set in config registration field. This mechanism allows fine-grained control over the visibility of fields based on user group membership.
+
+## Records
+
+To control access to specific records, use the `userAccessRelation` field in your model’s configuration. This allows you to
+specify a relationship field in your model that associates records with UserAP or GroupAP, enforcing access only for related users or groups.
+
+#### How to Configure Record Access Control
+- Define the Relationship Field: In your model, add a field that establishes a relationship (either model or collection) with
+the UserAP or GroupAP model. This field will serve as the basis for checking user or group associations.
+- Set `userAccessRelation` in the Model Configuration: In the model configuration, specify the name of the relationship field
+in the userAccessRelation attribute. This allows the system to filter records based on whether a user belongs to a specified group or is directly associated with the record.
+
+```javascript
+/** Example 1 (association) */
+// in model configuration
+modelname: {
+  userAccessRelation: "owner"
+}
+// in your model’s attributes
+{
+  attributes: {
+    owner: {
+      model: "UserAP"
+    }
+  }
+}
+```
+
+#### Behavior of userAccessRelation
+When a user accesses records, the system evaluates userAccessRelation:
+- If the field is related to UserAP, only records where the user ID matches the UserAP relationship field are accessible.
+- If the field is related to GroupAP, only records where the user belongs to any group in the GroupAP relationship field are accessible.
+
+The relationship type (either model or collection) determines whether a single user or group or multiple users/groups are associated with the record.
+
+#### Important notes
+- All GroupAP functionality is experimental and can work unstable. Also, user should be related to only one group for proper work
+- You can also use set userAccessRelation through the intermediate model:
+```javascript
+userAccessRelation: {
+      field: "owner", // field in your model which associates to the intermediate model
+      via: "adminpaneluser" // // field in intermediate model that associates with userap/groupap
+    }
 ```

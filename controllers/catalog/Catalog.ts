@@ -7,9 +7,9 @@ export async function catalogController(req: ReqType, res: ResType) {
 	let id = req.param('id') ? req.param('id') : '';
 
 	const postfix = id ? `${slug}-${id}` : `${slug}`
-	if (sails.config.adminpanel.auth) {
+	if (adminizer.config.auth) {
 		if (!req.session.UserAP) {
-			return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+			return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
 		} else if (!AccessRightsHelper.havePermission(`catalog-${postfix}`, req.session.UserAP)) {
 			return res.sendStatus(403);
 		}
@@ -27,7 +27,7 @@ export async function catalogController(req: ReqType, res: ResType) {
 
 	if (id) {
 		if (idList.length && !idList.includes(id)) {
-			sails.log.error(`Catalog with id \`${id}\` not found`)
+			adminizer.log.error(`Catalog with id \`${id}\` not found`)
 			return res.sendStatus(404);
 		}
 	}

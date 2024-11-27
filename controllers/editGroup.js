@@ -5,9 +5,9 @@ const adminUtil_1 = require("../lib/adminUtil");
 const accessRightsHelper_1 = require("../helper/accessRightsHelper");
 async function editGroup(req, res) {
     let entity = adminUtil_1.AdminUtil.findEntityObject(req);
-    if (sails.config.adminpanel.auth) {
+    if (adminizer.config.auth) {
         if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
         }
         else if (!accessRightsHelper_1.AccessRightsHelper.havePermission(`update-${entity.name}-model`, req.session.UserAP)) {
             return res.sendStatus(403);
@@ -22,15 +22,15 @@ async function editGroup(req, res) {
         users = await UserAP.find({ isAdministrator: false }).populate("groups");
     }
     catch (e) {
-        sails.log.error(e);
+        adminizer.log.error(e);
     }
     let group;
     try {
         group = await GroupAP.findOne(req.param('id')).populate("users");
     }
     catch (e) {
-        sails.log.error('Admin edit error: ');
-        sails.log.error(e);
+        adminizer.log.error('Admin edit error: ');
+        adminizer.log.error(e);
         return res.serverError();
     }
     let departments = accessRightsHelper_1.AccessRightsHelper.getAllDepartments();
@@ -64,11 +64,11 @@ async function editGroup(req, res) {
         try {
             updatedGroup = await GroupAP.update({ id: group.id }, { name: req.body.name, description: req.body.description,
                 users: usersInThisGroup, tokens: tokensOfThisGroup }).fetch();
-            sails.log.debug(`Group was updated: `, updatedGroup);
+            adminizer.log.debug(`Group was updated: `, updatedGroup);
             req.session.messages.adminSuccess.push('Group was updated !');
         }
         catch (e) {
-            sails.log.error(e);
+            adminizer.log.error(e);
             req.session.messages.adminError.push(e.message || 'Something went wrong...');
         }
         reloadNeeded = true;
@@ -78,15 +78,15 @@ async function editGroup(req, res) {
             group = await GroupAP.findOne(req.param('id')).populate("users");
         }
         catch (e) {
-            sails.log.error('Admin edit error: ');
-            sails.log.error(e);
+            adminizer.log.error('Admin edit error: ');
+            adminizer.log.error(e);
             return res.serverError();
         }
         try {
             users = await UserAP.find({ isAdministrator: false }).populate("groups");
         }
         catch (e) {
-            sails.log.error(e);
+            adminizer.log.error(e);
         }
     }
     // console.log("GROUP", group)

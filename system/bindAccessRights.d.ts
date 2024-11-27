@@ -1,1 +1,1 @@
-export default function bindAccessRights(): void;
+export default function bindAccessRights(): Promise<void>;

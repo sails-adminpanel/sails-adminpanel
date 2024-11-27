@@ -30,7 +30,7 @@ var adminpanelConfig: AdminpanelConfig = {
     /**
      * Policies
      */
-    policies: null,
+    policies: [],
 
     /**
      * Base navbar configuration
@@ -48,7 +48,7 @@ var adminpanelConfig: AdminpanelConfig = {
      * List of admin pages
      */
     models: {
-        usersap: {
+        userap: {
             title: "Users AP",
             model: "userap",
             icon: "users",
@@ -73,7 +73,7 @@ var adminpanelConfig: AdminpanelConfig = {
                 }
             }
         },
-        groupsap: {
+        groupap: {
             title: "Groups AP",
             model: "groupap",
             icon: "users-cog",
@@ -109,7 +109,13 @@ var adminpanelConfig: AdminpanelConfig = {
     sections: [],
     package: packageJson,
     showVersion: true,
-    timezones: timezones
+    timezones: timezones,
+
+    registration: {
+        enable: false,
+        defaultUserGroup: "guest",
+        confirmationRequired: true
+    }
 }
 
 

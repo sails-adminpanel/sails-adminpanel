@@ -1,6 +1,7 @@
 import sails from "sails-typescript";
 import {AdminpanelConfig} from "./adminpanelConfig";
 import {UserAPRecord} from "../models/UserAP";
+import { Adminizer } from "../lib/v4/config/Adminizer";
 
 type sailsConfig = typeof sails.config;
 
@@ -15,6 +16,7 @@ type reqSession = {
 
 
 declare global {
+	const adminizer: Adminizer;
 	interface Sails extends sails.Sails {
 		helpers: any;
 		models: any;
@@ -56,3 +58,5 @@ declare global {
 	};
 	type PropType<TObj, TProp extends keyof TObj> = TObj[TProp];
 }
+
+export {};

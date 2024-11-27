@@ -6,9 +6,9 @@ export default async function addGroup(req: ReqType, res: ResType) {
 
     let entity = AdminUtil.findEntityObject(req);
 
-    if (sails.config.adminpanel.auth) {
+    if (adminizer.config.auth) {
         if (!req.session.UserAP) {
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
         } else if (!AccessRightsHelper.havePermission(`create-${entity.name}-model`, req.session.UserAP)) {
             return res.sendStatus(403);
         }
@@ -18,7 +18,7 @@ export default async function addGroup(req: ReqType, res: ResType) {
     try {
         users = await UserAP.find({isAdministrator: false});
     } catch (e) {
-        sails.log.error(e)
+        adminizer.log.error(e)
     }
 
     let departments = AccessRightsHelper.getAllDepartments();
@@ -61,11 +61,11 @@ export default async function addGroup(req: ReqType, res: ResType) {
             group = await GroupAP.create({name: req.body.name, description: req.body.description,
                 users: usersInThisGroup, tokens: tokensOfThisGroup}).fetch()
 
-            sails.log.debug(`A new group was created: `, group);
+            adminizer.log.debug(`A new group was created: `, group);
             req.session.messages.adminSuccess.push('A new group was created !');
-            return res.redirect(`${sails.config.adminpanel.routePrefix}/model/groupsap`);
+            return res.redirect(`${adminizer.config.routePrefix}/model/groupap`);
         } catch (e) {
-            sails.log.error(e);
+            adminizer.log.error(e);
             req.session.messages.adminError.push(e.message || 'Something went wrong...');
         }
 

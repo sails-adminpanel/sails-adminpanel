@@ -6,9 +6,9 @@ export async function mediaManagerController(req: ReqType, res: ResType) {
 	const method = req.method.toUpperCase();
 	let id = req.param('id') ? req.param('id') : '';
 
-	if (sails.config.adminpanel.auth) {
+	if (adminizer.config.auth) {
 		if (!req.session.UserAP) {
-			return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+			return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
 		} else if (!AccessRightsHelper.havePermission(`catalog-${id}`, req.session.UserAP)) {
 			return res.sendStatus(403);
 		}

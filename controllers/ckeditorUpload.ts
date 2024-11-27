@@ -6,9 +6,9 @@ export default function upload(req: ReqType, res: ResType): void {
 	//console.log('admin > CK-upload');
 	let entity = AdminUtil.findEntityObject(req);
 
-	if (sails.config.adminpanel.auth) {
+	if (adminizer.config.auth) {
 		if (!req.session.UserAP) {
-			res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+			res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
 			return
 		} else if (!AccessRightsHelper.enoughPermissions([
 			`update-${entity.name}-model`,

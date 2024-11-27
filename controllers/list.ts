@@ -1,6 +1,7 @@
 import { AdminUtil } from "../lib/adminUtil";
 import { FieldsHelper } from "../helper/fieldsHelper";
 import { AccessRightsHelper } from "../helper/accessRightsHelper";
+import {DataAccessor} from "../lib/v4/DataAccessor";
 
 export default async function list(req: ReqType, res: ResType) {
   let entity = AdminUtil.findEntityObject(req);
@@ -8,15 +9,16 @@ export default async function list(req: ReqType, res: ResType) {
     return res.notFound();
   }
 
-  if (sails.config.adminpanel.auth) {
+  if (adminizer.config.auth) {
     if (!req.session.UserAP) {
-      return res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
+      return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
     } else if (!AccessRightsHelper.havePermission(`read-${entity.name}-model`, req.session.UserAP)) {
       return res.sendStatus(403);
     }
   }
 
-  let fields = FieldsHelper.getFields(req, entity, "list");
+  let dataAccessor = new DataAccessor(req.session.UserAP, entity, "list");
+  let fields = dataAccessor.getFieldsConfig();
 
   res.viewAdmin({
     entity: entity,

@@ -5,8 +5,8 @@ const path = require("path");
 const fs = require("fs");
 class FormHelper {
     static get(slug) {
-        if (sails.config.adminpanel.forms && sails.config.adminpanel.forms !== null) {
-            return sails.config.adminpanel.forms.data[slug];
+        if (adminizer.config.forms && adminizer.config.forms !== null) {
+            return adminizer.config.forms.data[slug];
         }
         else {
             throw `Form with slug ${slug} not found`;
@@ -25,15 +25,15 @@ class FormHelper {
                 let form = path.basename(formJson, '.json');
                 try {
                     let jsonData = require(`${formsDirectoryPath}/${formJson}`);
-                    sails.config.adminpanel.forms.data[form] = jsonData;
+                    adminizer.config.forms.data[form] = jsonData;
                 }
                 catch (error) {
-                    sails.log.error(`Adminpanel > Error when reading ${formJson}: ${error}`);
+                    adminizer.log.error(`Adminpanel > Error when reading ${formJson}: ${error}`);
                 }
             }
         }
         catch (e) {
-            sails.log.error("Adminpanel > Error when loading forms", e);
+            adminizer.log.error("Adminpanel > Error when loading forms", e);
         }
     }
 }
