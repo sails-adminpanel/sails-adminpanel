@@ -1,5 +1,5 @@
 import { Field } from "./fieldsHelper";
-import { SailsModelAnyField, SailsModelAnyInstance } from "../interfaces/StrippedORMModel";
+import { ModelAnyField } from "../lib/v4/model/AbstractModel";
 export declare class ViewsHelper {
     /**
      * Base path for all views.
@@ -32,7 +32,7 @@ export declare class ViewsHelper {
      * @param {object} field
      * @param {Array} data
      */
-    static getFieldValue(key: string, field: Field, data: SailsModelAnyInstance): SailsModelAnyField;
+    static getFieldValue(key: string, field: Field, data: any): ModelAnyField;
     /**
      * Check if given option equals value or is in array
      *
@@ -47,5 +47,5 @@ export declare class ViewsHelper {
      * @param {string|number|boolean|object|Array} value
      * @param {object} field
      */
-    static getAssociationValue(value: SailsModelAnyField, field: Field): string;
+    static getAssociationValue(value: ModelAnyField, field: Field): string;
 }

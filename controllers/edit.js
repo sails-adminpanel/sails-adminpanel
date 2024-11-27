@@ -30,7 +30,7 @@ async function edit(req, res) {
     let record;
     try {
         const id = req.param('id');
-        record = await entity.model.findOne(id).populateAll();
+        record = await entity.model.findOne(id);
     }
     catch (e) {
         sails.log.error('Admin edit error: ');
@@ -106,7 +106,7 @@ async function edit(req, res) {
             reqData = entityEdit.entityModifier(reqData);
         }
         try {
-            let newRecord = await entity.model.update(params, reqData).fetch();
+            let newRecord = await entity.model.update(params, reqData);
             await (0, MediaManagerHelper_1.saveRelationsMediaManager)(fields, rawReqData, entity.model.identity, newRecord[0].id);
             sails.log.debug(`Record was updated: `, newRecord);
             if (req.body.jsonPopupCatalog) {
@@ -117,7 +117,7 @@ async function edit(req, res) {
                 if (sails.config.adminpanel.navigation) {
                     for (const section of sails.config.adminpanel.navigation.sections) {
                         let navigation = CatalogHandler_1.CatalogHandler.getCatalog('navigation');
-                        navigation.setID(section);
+                        navigation.setId(section);
                         let navItem = navigation.itemTypes.find(item => item.type === entity.name);
                         if (navItem) {
                             await navItem.updateModelItems(newRecord[0].id, { record: newRecord[0] }, section);

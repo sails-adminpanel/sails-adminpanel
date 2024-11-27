@@ -3,7 +3,7 @@ import InfoBase from "./abstractInfo";
 import ActionBase from "./abstractAction";
 import LinkBase from "./abstractLink";
 import { AccessRightsHelper } from "../../helper/accessRightsHelper";
-import UserAP from "../../models/UserAP";
+import { UserAPRecord } from "../../models/UserAP";
 import CustomBase from "./abstractCustom";
 import { AdminpanelIcon } from "../../interfaces/adminpanelConfig";
 
@@ -55,7 +55,7 @@ export class WidgetHandler {
 		}
 	}
 
-	public static getAll(user: UserAP): Promise<WidgetConfig[]> {
+	public static getAll(user: UserAPRecord): Promise<WidgetConfig[]> {
 		let widgets: WidgetConfig[] = []
 		let config = sails.config.adminpanel;
 		if (this.widgets.length) {
@@ -142,15 +142,15 @@ export class WidgetHandler {
 	}
 
 	public static async getWidgetsDB(id: number, auth: boolean): Promise<WidgetConfig[]> {
-		let user: UserAP;
+		let user: UserAPRecord;
 		let widgets: WidgetConfig[];
-	
+
 		if (!auth) {
 			user = await UserAP.findOne({ login: sails.config.adminpanel.administrator?.login ?? 'admin' });
 		} else {
 			user = await UserAP.findOne({ id: id });
 		}
-		
+
 		if (!user || !user.widgets || user.widgets.length === 0) {
 			if (sails.config.adminpanel.dashboard && typeof sails.config.adminpanel.dashboard !== "boolean" && sails.config.adminpanel.dashboard.defaultWidgets) {
 				let defaultWidgets = sails.config.adminpanel.dashboard.defaultWidgets;
@@ -164,10 +164,10 @@ export class WidgetHandler {
 		} else {
 			widgets = user.widgets;
 		}
-		
+
 		return widgets;
 	}
-	
+
 
 	public static async setWidgetsDB(id: number, widgets: WidgetConfig[], auth: boolean): Promise<number> {
 		if (!auth) {
@@ -186,20 +186,20 @@ export async function getAllWidgets(req: ReqType, res: ResType): Promise<void> {
 	if (sails.config.adminpanel.auth) {
 		if (!req.session.UserAP) {
 			res.redirect(`${sails.config.adminpanel.routePrefix}/model/userap/login`);
-			return 
+			return
 		} else if (!AccessRightsHelper.havePermission(`widgets`, req.session.UserAP)) {
 			res.sendStatus(403);
-			return 
+			return
 		}
 	}
 
 	if (req.method.toUpperCase() === 'GET') {
 		try {
 			res.json({ widgets: await WidgetHandler.getAll(req.session.UserAP) })
-			return 
+			return
 		} catch (e) {
 			res.serverError(e)
-			return 
+			return
 		}
 	}
 }

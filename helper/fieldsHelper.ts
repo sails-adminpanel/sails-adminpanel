@@ -1,7 +1,7 @@
-import { SailsModelAnyInstance } from "../interfaces/StrippedORMModel";
 import { ActionType, BaseFieldConfig } from "../interfaces/adminpanelConfig";
 import { Entity } from "../interfaces/types";
 import { AdminUtil } from "../lib/adminUtil";
+import { ModelAnyInstance } from "../lib/v4/model/AbstractModel";
 
 export type FieldModel = {
     allowNull?: boolean;
@@ -191,6 +191,7 @@ export class FieldsHelper {
      *
      * @param {Object} fields
      * @param {function=} [cb]
+     * @deprecated use DataModel class
      */
     public static async loadAssociations(fields: Fields): Promise<Fields>{
         /**
@@ -216,8 +217,8 @@ export class FieldsHelper {
             if (!Model) {
                 return;
             }
-            
-            let list: SailsModelAnyInstance[];
+
+            let list: ModelAnyInstance[];
             try {
                 list = await Model.find({});
             } catch (e) {
@@ -282,10 +283,11 @@ export class FieldsHelper {
      * @param {Object} entity Entity object with `name`, `config`, `model` {@link AdminUtil.findEntityObject}
      * @param {string=} [type] Type of action that config should be loaded for. Example: list, edit, add, remove, view. Defaut: list
      * @returns {Object} Empty object or pbject with list of properties
+     * @deprecated use DataModel class
      */
     public static getFields(
-        /** @deprecated */ req: ReqType, 
-        entity: Entity, 
+        /** @deprecated */ req: ReqType,
+        entity: Entity,
         type: ActionType): Fields {
 
             if (!entity.model || !entity.model.attributes) {
@@ -297,7 +299,7 @@ export class FieldsHelper {
             //get field config for actions
             let actionConfig = AdminUtil.findActionConfig(entity, type);
             let fieldsConfig = entity.config.fields || {};
-            
+
             let modelAttributes = entity.model.attributes
 
             let that = this;
@@ -344,6 +346,7 @@ export class FieldsHelper {
                         fldConfig = { ...fldConfig, ...tmpCfg };
                     }
                 }
+                // TODO add access rights to a specific field here
                 //Checking inaction entity fields configuration. Should overwrite global one
                 if (actionConfig.fields[key] || actionConfig.fields[key] === false) {
                     //if config set to false ignoring this field

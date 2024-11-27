@@ -105,6 +105,7 @@ export declare class FieldsHelper {
      *
      * @param {Object} fields
      * @param {function=} [cb]
+     * @deprecated use DataModel class
      */
     static loadAssociations(fields: Fields): Promise<Fields>;
     /**
@@ -139,6 +140,7 @@ export declare class FieldsHelper {
      * @param {Object} entity Entity object with `name`, `config`, `model` {@link AdminUtil.findEntityObject}
      * @param {string=} [type] Type of action that config should be loaded for. Example: list, edit, add, remove, view. Defaut: list
      * @returns {Object} Empty object or pbject with list of properties
+     * @deprecated use DataModel class
      */
     static getFields(
     /** @deprecated */ req: ReqType, entity: Entity, type: ActionType): Fields;

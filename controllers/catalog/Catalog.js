@@ -38,7 +38,7 @@ async function catalogController(req, res) {
         const vueCatalog = new FrontentCatalogAdapter_1.VueCatalog(_catalog);
         if (!vueCatalog)
             return res.status(404);
-        vueCatalog.setID(id);
+        vueCatalog.setId(id);
         const item = vueCatalog.getItemType(data.type);
         switch (method) {
             case 'POST':

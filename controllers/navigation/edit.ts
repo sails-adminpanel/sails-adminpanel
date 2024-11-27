@@ -2,6 +2,6 @@ import {AdminUtil} from "../../lib/adminUtil";
 
 export default async function edit(req: ReqType, res: ResType) {
 	let entity = AdminUtil.findEntityObject(req);
-	let record:any = await entity.model.findOne(req.param('id')).populateAll();
+	let record:any = await entity.model.findOne(req.param('id'));
 	return res.redirect(`/admin/catalog/navigation/${record.label}`)
 }

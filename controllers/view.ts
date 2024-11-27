@@ -29,7 +29,7 @@ export default async function view(req: ReqType, res: ResType) {
 
     let record;
     try {
-        record = await entity.model.findOne(req.param('id')).populateAll();
+        record = await entity.model.findOne(req.param('id'));
     } catch (e) {
         sails.log.error('Admin edit error: ');
         sails.log.error(e);

@@ -1,16 +1,16 @@
 import sails from "sails-typescript";
 import {AdminpanelConfig} from "./adminpanelConfig";
-import UserAP from "../models/UserAP";
+import {UserAPRecord} from "../models/UserAP";
 
 type sailsConfig = typeof sails.config;
 
 type reqSession = {
-	UserAP: UserAP
+	UserAP: UserAPRecord
 	messages: {
 		adminError: string[],
 		adminSuccess: string[]
 	}
-	adminPretender?: UserAP
+	adminPretender?: UserAPRecord
 }
 
 

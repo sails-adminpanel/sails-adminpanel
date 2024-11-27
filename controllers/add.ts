@@ -96,7 +96,7 @@ export default async function add(req: ReqType, res: ResType) {
 		}
 
 		try {
-			let record = await entity.model.create(reqData).fetch();
+			let record = await entity.model.create(reqData);
 
 			// save associations media to json
 			await saveRelationsMediaManager(fields,  rawReqData, entity.model.identity, record.id)
