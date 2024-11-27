@@ -236,7 +236,7 @@ export class FieldsHelper {
                 list = await Model._find({}, dataAccessor);
             } catch (e) {
                 adminizer.log.error(e)
-                throw new Error("FieldsHelper > loadAssociations error");
+                throw new Error(`FieldsHelper > loadAssociations error ${[fields, user, action]}`);
             }
 
             fieldConfigConfig.records = list;
