@@ -35,6 +35,7 @@ class Router {
     /**
      * The idea is that all methods within the first 3 seconds after start call this method, and as soon as all have been loaded, the loading will be blocked
      */
+    //@ts-ignore >> TODO: create debounce instead use utils-decorators, !!! keep it ignored because problem with uses in external projects
     static bind() {
         if (this.onlyOnce) {
             adminizer.log.error(`This method allowed for run only one time`);
