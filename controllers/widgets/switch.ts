@@ -2,7 +2,7 @@ import {AccessRightsHelper} from "../../helper/accessRightsHelper";
 import SwitchBase from "../../lib/widgets/abstractSwitch";
 import {WidgetHandler} from "../../lib/widgets/widgetHandler";
 
-export async function widgetSwitchController(req: ReqType, res: ResType) {
+export async function widgetSwitchController(req: ReqTypeAP, res: ResTypeAP) {
 	let widgetId = req.param('widgetId');
 	if (!widgetId) {
 		return res.notFound();

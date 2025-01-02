@@ -5,7 +5,7 @@
  * @param {*} res
  * @returns {dashboardController}
  */
-export default function welcome(req: ReqType, res: ResType) {
+export default function welcome(req: ReqTypeAP, res: ResTypeAP) {
 
     if (adminizer.config.auth && !req.session.UserAP) {
         return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);

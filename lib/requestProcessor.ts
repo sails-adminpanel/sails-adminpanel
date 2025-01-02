@@ -19,7 +19,7 @@ export class RequestProcessor {
      * @param {Object} params
      * @returns {String}
      */
-    public static addGetParams(req: ReqType, params: {}): string {
+    public static addGetParams(req: ReqTypeAP, params: {}): string {
         if (!req || typeof req.query !== "object") throw new Error('Wrong request given !');
         if (typeof params !== "object") {
             params = {};
@@ -35,7 +35,7 @@ export class RequestProcessor {
      * @param {Object} fields List of fileds config
      * @param {Function=} [cb]
      */
-    public static async processFiles(req: ReqType, fields: Fields) {
+    public static async processFiles(req: ReqTypeAP, fields: Fields) {
         let fileFieldKeys = [];
         for (let key in fields) {
             let fieldConfigConfig = fields[key].config as BaseFieldConfig & {file: string};
@@ -80,7 +80,7 @@ export class RequestProcessor {
      * @returns {Object} List of processed values from request
      */
 
-    public static processRequest(req: ReqType, fields: Fields): PostParams {
+    public static processRequest(req: ReqTypeAP, fields: Fields): PostParams {
         let data = req.allParams();
         let postParams: PostParams = {};
 

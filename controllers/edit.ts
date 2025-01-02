@@ -11,7 +11,7 @@ import {
 import { MediaManagerWidgetJSON } from "../lib/media-manager/AbstractMediaManager";
 import {DataAccessor} from "../lib/v4/DataAccessor";
 
-export default async function edit(req: ReqType, res: ResType) {
+export default async function edit(req: ReqTypeAP, res: ResTypeAP) {
 	//Check id
 	if (!req.param('id')) {
 		return res.notFound();

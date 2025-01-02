@@ -44,7 +44,7 @@ In this example `logging.js` policy will be applied first and `policyCallback.js
 ```javascript
 module.exports.adminpanel = {
 
-    policies: function(req: ReqType, res: ResType, next) {
+    policies: function(req: ReqTypeAP, res: ResTypeAP, next) {
         console.log(req.session.UserAP.name)
         return next();
     },
@@ -61,12 +61,12 @@ This policy will be applied to all admin panel routes.
 module.exports.adminpanel = {
 
     policies: [
-        function(req: ReqType, res: ResType, next) {
+        function(req: ReqTypeAP, res: ResTypeAP, next) {
             console.log(req.session.UserAP.name)
             return next();
         },
 
-        function(req: ReqType, res: ResType, next) {
+        function(req: ReqTypeAP, res: ResTypeAP, next) {
             userCallback(req.session.UserAP)
             return next();
         }

@@ -1,4 +1,4 @@
-export default async function initUser(req: ReqType, res: ResType) {
+export default async function initUser(req: ReqTypeAP, res: ResTypeAP) {
   if (!adminizer.config.auth) {
     return res.redirect(`${adminizer.config.routePrefix}/`);
   }

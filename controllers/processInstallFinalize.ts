@@ -2,7 +2,7 @@ import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import {InstallStepper} from "../lib/installStepper/installStepper";
 let installStepper = InstallStepper.getInstance();
 
-export default async function processInstallFinalize(req: ReqType, res: ResType) {
+export default async function processInstallFinalize(req: ReqTypeAP, res: ResTypeAP) {
     if (adminizer.config.auth) {
         if (!req.session.UserAP) {
             return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);

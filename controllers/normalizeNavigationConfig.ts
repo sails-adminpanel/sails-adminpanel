@@ -2,7 +2,7 @@ import { WidgetHelper } from "../helper/widgetHelper";
 import { AccessRightsHelper } from "../helper/accessRightsHelper";
 import { NavigationOptionsField } from "../interfaces/adminpanelConfig";
 
-export default async function normalizeNavigationConfig(req: ReqType, res: ResType): Promise<void> {
+export default async function normalizeNavigationConfig(req: ReqTypeAP, res: ResTypeAP): Promise<void> {
 
     if (adminizer.config.auth) {
         if (!req.session.UserAP) {

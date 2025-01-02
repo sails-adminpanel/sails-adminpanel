@@ -4,7 +4,7 @@ import { AccessRightsHelper } from "../helper/accessRightsHelper";
 import { NodeTable } from "../lib/datatable/NodeTable";
 import {DataAccessor} from "../lib/v4/DataAccessor";
 
-export default async function listJson(req: ReqType, res: ResType): Promise<void> {
+export default async function listJson(req: ReqTypeAP, res: ResTypeAP): Promise<void> {
     try {
 
         let entity = AdminUtil.findEntityObject(req);

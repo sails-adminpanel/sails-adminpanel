@@ -1,7 +1,7 @@
 import { AdminUtil } from "../lib/adminUtil";
 import { AccessRightsHelper } from "../helper/accessRightsHelper";
 
-export default function upload(req: ReqType, res: ResType): void {
+export default function upload(req: ReqTypeAP, res: ResTypeAP): void {
 
 	//console.log('admin > CK-upload');
 	let entity = AdminUtil.findEntityObject(req);

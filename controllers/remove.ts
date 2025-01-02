@@ -4,7 +4,7 @@ import {deleteRelationsMediaManager} from "../lib/media-manager/helpers/MediaMan
 import { ModelAnyField, ModelAnyInstance } from "../lib/v4/model/AbstractModel";
 import {DataAccessor} from "../lib/v4/DataAccessor";
 
-export default async function remove(req: ReqType, res: ResType) {
+export default async function remove(req: ReqTypeAP, res: ResTypeAP) {
     //Checking id of the record
     if (!req.param('id')) {
         adminizer.log.error(new Error('Admin panel: No id for record provided'));

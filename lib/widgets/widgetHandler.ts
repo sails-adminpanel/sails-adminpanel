@@ -182,7 +182,7 @@ export class WidgetHandler {
 }
 
 // TODO: move to folder controlles
-export async function getAllWidgets(req: ReqType, res: ResType): Promise<void> {
+export async function getAllWidgets(req: ReqTypeAP, res: ResTypeAP): Promise<void> {
 	if (adminizer.config.auth) {
 		if (!req.session.UserAP) {
 			res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
@@ -205,7 +205,7 @@ export async function getAllWidgets(req: ReqType, res: ResType): Promise<void> {
 }
 
 // TODO: move in controller folder
-export async function widgetsDB(req: ReqType, res: ResType) {
+export async function widgetsDB(req: ReqTypeAP, res: ResTypeAP) {
 	let id: number = 0
 	let auth = adminizer.config.auth
 	if (auth) {

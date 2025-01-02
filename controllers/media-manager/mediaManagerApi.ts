@@ -2,7 +2,7 @@ import { AccessRightsHelper } from "../../helper/accessRightsHelper";
 import { MediaManagerHandler } from "../../lib/media-manager/MediaManagerHandler";
 import { MediaManagerAdapter } from "./mediaManagerAdapter";
 
-export async function mediaManagerController(req: ReqType, res: ResType) {
+export async function mediaManagerController(req: ReqTypeAP, res: ResTypeAP) {
 	const method = req.method.toUpperCase();
 	let id = req.param('id') ? req.param('id') : '';
 

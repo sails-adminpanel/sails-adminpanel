@@ -1,4 +1,4 @@
-module.exports = async function (req: ReqType, res: ResType, proceed: ()=>void) {
+module.exports = async function (req: ReqTypeAP, res: ResTypeAP, proceed: ()=>void) {
     let locale: string = ""
     
     if (typeof adminizer.config.translation  !== 'boolean') {

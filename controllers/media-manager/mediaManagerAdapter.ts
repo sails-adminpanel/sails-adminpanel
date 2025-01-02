@@ -9,12 +9,12 @@ export class MediaManagerAdapter {
         this.manager = manager;
     }
 
-    public async delete(req: ReqType, res: ResType) {
+    public async delete(req: ReqTypeAP, res: ResTypeAP) {
         await this.manager.delete(req.body.item);
         return res.send({ msg: "ok" });
     }
 
-    public async get(req: ReqType, res: ResType) {
+    public async get(req: ReqTypeAP, res: ResTypeAP) {
         let type = req.query.type as string;
         interface resultType {
             data: MediaManagerItem[];
@@ -43,7 +43,7 @@ export class MediaManagerAdapter {
         });
     }
 
-    public async search(req: ReqType, res: ResType) {
+    public async search(req: ReqTypeAP, res: ResTypeAP) {
         let s = req.body.s as string;
         let type = req.body.type as string;
         let data: MediaManagerItem[];
@@ -55,13 +55,13 @@ export class MediaManagerAdapter {
         return res.send({ data: data });
     }
 
-    public async getVariants(req: ReqType, res: ResType) {
+    public async getVariants(req: ReqTypeAP, res: ResTypeAP) {
         return res.send({
             data: await this.manager.getVariants(req.body.item),
         });
     }
 
-    public async uploadVariant(req: ReqType, res: ResType): Promise<void> {
+    public async uploadVariant(req: ReqTypeAP, res: ResTypeAP): Promise<void> {
         const item: MediaManagerItem = JSON.parse(req.body.item);
         let filename = randomFileName(req.body.name, "", true);
         const group = req.body.group as string
@@ -114,7 +114,7 @@ export class MediaManagerAdapter {
         });
     }
 
-    public async upload(req: ReqType, res: ResType): Promise<void> {
+    public async upload(req: ReqTypeAP, res: ResTypeAP): Promise<void> {
         const config: MediaManagerConfig | null = adminizer.config.mediamanager || null;
         const group = req.body.group as string
 
@@ -175,11 +175,11 @@ export class MediaManagerAdapter {
         // }
     }
 
-    public async getMeta(req: ReqType, res: ResType) {
+    public async getMeta(req: ReqTypeAP, res: ResTypeAP) {
         return res.send({ data: await this.manager.getMeta(req.body.item) });
     }
 
-    public async setMeta(req: ReqType, res: ResType): Promise<void> {
+    public async setMeta(req: ReqTypeAP, res: ResTypeAP): Promise<void> {
         try {
             await this.manager.setMeta(req.body.item, req.body.data)
             res.send({ massage: 'ok' });

@@ -37,7 +37,7 @@ declare global {
 	}
 
 	const sails: Sails;
-	type ReqType = sails.Request & {
+	type ReqTypeAP = sails.Request & {
 		session: reqSession,
 		_parsedUrl: {
 			pathname: string
@@ -47,7 +47,7 @@ declare global {
 			[key: string]: string
 		}
 	};
-	type ResType = sails.Response & {
+	type ResTypeAP = sails.Response & {
 		viewAdmin<T>(variables: T): void
 		viewAdmin<T>(template: string, variables: T): void
 		/**

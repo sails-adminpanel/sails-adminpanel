@@ -117,7 +117,7 @@ export class AdminUtil {
      * @param {Request} req
      * @returns {?string}
      */
-    public static findEntityType(req: ReqType): EntityType {
+    public static findEntityType(req: ReqTypeAP): EntityType {
         const entityType = req.param('entityType') as EntityType | undefined;
 
         if (!entityType) {
@@ -139,7 +139,7 @@ export class AdminUtil {
      * @param {Request} req
      * @returns {?string}
      */
-    public static findEntityName(req: ReqType): string {
+    public static findEntityName(req: ReqTypeAP): string {
       if (!req.param('entityName')) {
           let entityType = req.originalUrl.split('/')[2];
           let entityName = req.originalUrl.split('/')[3];
@@ -161,7 +161,7 @@ export class AdminUtil {
      * @param {String} entityName
      * @returns {?Object}
      */
-    public static findModelConfig(req: ReqType, entityName: string): ModelConfig {
+    public static findModelConfig(req: ReqTypeAP, entityName: string): ModelConfig {
         if (!this.config().models || !this.config().models[entityName]) {
             adminizer.log.error('No such route exists');
             return null;
@@ -219,7 +219,7 @@ export class AdminUtil {
      * @returns {?Model}
      */
 
-    public static findModel<T extends keyof Models>(req: ReqType, modelConfig: ModelConfig): AbstractModel<any> {
+    public static findModel<T extends keyof Models>(req: ReqTypeAP, modelConfig: ModelConfig): AbstractModel<any> {
         if (!this._isValidModelConfig(modelConfig)) {
             return null;
         }
@@ -246,7 +246,7 @@ export class AdminUtil {
      * @param req
      * @returns {Object}
      */
-    public static findEntityObject(req: ReqType): Entity {
+    public static findEntityObject(req: ReqTypeAP): Entity {
         // Retrieve entity name and type based on the request
         const entityName = this.findEntityName(req);
         const entityType = this.findEntityType(req);

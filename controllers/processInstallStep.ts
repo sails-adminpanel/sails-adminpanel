@@ -2,7 +2,7 @@ import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import {InstallStepper} from "../lib/installStepper/installStepper";
 import * as path from "path";
 
-export default async function processInstallStep(req: ReqType, res: ResType): Promise<void> {
+export default async function processInstallStep(req: ReqTypeAP, res: ResTypeAP): Promise<void> {
 	if (adminizer.config.auth) {
 		if (!req.session.UserAP) {
 			res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);
@@ -116,7 +116,7 @@ export default async function processInstallStep(req: ReqType, res: ResType): Pr
 	return
 };
 
-function uploadFiles(files: ReturnType<ReqType['file']>, currentStepId: string | number) {
+function uploadFiles(files: ReturnType<ReqTypeAP['file']>, currentStepId: string | number) {
 	// TODO: Investigate system hang when trying to save a file, and execution of the code after save block does not process.
 	//  The system seems to only proceed after encountering a timeout error.
 	//  This issue is ruining the ability to upload multiple files.

@@ -1,7 +1,7 @@
 import { POWCaptcha } from "../lib/v4/POWCaptcha";
 let passwordHash = require("password-hash");
 
-export default async function login(req: ReqType, res: ResType) {
+export default async function login(req: ReqTypeAP, res: ResTypeAP) {
   const powCaptcha = new POWCaptcha();
 
   if (req.url.indexOf("login") >= 0) {
@@ -75,7 +75,7 @@ export default async function login(req: ReqType, res: ResType) {
   }
 }
 
-async function viewAdminMessage(req: ReqType, res: ResType, message: string) {
+async function viewAdminMessage(req: ReqTypeAP, res: ResTypeAP, message: string) {
   const powCaptcha = new POWCaptcha();
   const captchaTask = await powCaptcha.getJob(`login:${req.ip}`);
   req.session.messages.adminError.push(message);

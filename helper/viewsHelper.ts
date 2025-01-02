@@ -36,7 +36,7 @@ export class ViewsHelper {
      * @param {IncomingMessage} req
      * @param {string} key Types: adminError|adminSuccess
      */
-    public static hasMessages(req: ReqType, key: "adminError" | "adminSuccess") {
+    public static hasMessages(req: ReqTypeAP, key: "adminError" | "adminSuccess") {
         return (req.session.messages && req.session.messages[key]);
     }
 

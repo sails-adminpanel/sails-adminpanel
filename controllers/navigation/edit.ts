@@ -1,7 +1,7 @@
 import {AdminUtil} from "../../lib/adminUtil";
 import {DataAccessor} from "../../lib/v4/DataAccessor";
 
-export default async function edit(req: ReqType, res: ResType) {
+export default async function edit(req: ReqTypeAP, res: ResTypeAP) {
 	if (adminizer.config.auth) {
 		if (!req.session.UserAP) {
 			return res.redirect(`${adminizer.config.routePrefix}/model/userap/login`);

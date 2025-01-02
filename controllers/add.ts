@@ -6,7 +6,7 @@ import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import {saveRelationsMediaManager} from "../lib/media-manager/helpers/MediaManagerHelper";
 import {DataAccessor} from "../lib/v4/DataAccessor";
 
-export default async function add(req: ReqType, res: ResType) {
+export default async function add(req: ReqTypeAP, res: ResTypeAP) {
 	let entity = AdminUtil.findEntityObject(req);
 
 	if (!entity.model) {

@@ -2,7 +2,7 @@ import {AccessRightsHelper} from "../../helper/accessRightsHelper";
 import ActionBase from "../../lib/widgets/abstractAction";
 import {WidgetHandler} from "../../lib/widgets/widgetHandler";
 
-export async function widgetActionController(req: ReqType, res: ResType) {
+export async function widgetActionController(req: ReqTypeAP, res: ResTypeAP) {
 	let widgetId = req.param('widgetId');
 	if (!widgetId) {
 		return res.notFound();

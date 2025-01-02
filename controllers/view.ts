@@ -3,7 +3,7 @@ import { FieldsHelper } from "../helper/fieldsHelper";
 import {AccessRightsHelper} from "../helper/accessRightsHelper";
 import {DataAccessor} from "../lib/v4/DataAccessor";
 
-export default async function view(req: ReqType, res: ResType) {
+export default async function view(req: ReqTypeAP, res: ResTypeAP) {
     //Check id
     if (!req.param('id')) {
         return res.notFound();

@@ -85,7 +85,7 @@ function getRandomInt(min: number, max: number) {
 }
 
 
-async function initUserPolicy (req: ReqType, res: ResType, proceed: any) {
+async function initUserPolicy (req: ReqTypeAP, res: ResTypeAP, proceed: any) {
     let admins = await UserAP.find({isAdministrator: true});
     if(!admins.length){
         return res.redirect(`${adminizer.config.routePrefix}/init_user`)

@@ -3,7 +3,7 @@ import {AccessRightsHelper} from "../helper/accessRightsHelper";
 
 export default function bindResView() {
 
-    let bindResFunctions = function (req: ReqType, res: ResType, next: ()=>void) {
+    let bindResFunctions = function (req: ReqTypeAP, res: ResTypeAP, next: ()=>void) {
 
         /**
          * Guess view name by request
@@ -11,7 +11,7 @@ export default function bindResView() {
          * @param {IncomingMessage} req
          * @returns {string}
          */
-        let guessViewName = function (req: ReqType) {
+        let guessViewName = function (req: ReqTypeAP) {
             if (!req || !req.route || !req.route.path || typeof req.route.path !== "string") {
                 return '';
             }

@@ -2,7 +2,7 @@ import {AccessRightsHelper} from "../../helper/accessRightsHelper";
 import CustomBase from "../../lib/widgets/abstractCustom";
 import {WidgetHandler} from "../../lib/widgets/widgetHandler";
 
-export async function widgetCustomController(req: ReqType, res: ResType) {
+export async function widgetCustomController(req: ReqTypeAP, res: ResTypeAP) {
 	let widgetId = req.param('widgetId');
 	if (!widgetId) {
 		return res.notFound();

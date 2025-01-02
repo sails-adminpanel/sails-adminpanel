@@ -3,7 +3,7 @@ import { FieldsHelper } from "../helper/fieldsHelper";
 import { AccessRightsHelper } from "../helper/accessRightsHelper";
 import {DataAccessor} from "../lib/v4/DataAccessor";
 
-export default async function list(req: ReqType, res: ResType) {
+export default async function list(req: ReqTypeAP, res: ResTypeAP) {
   let entity = AdminUtil.findEntityObject(req);
   if (!entity.model) {
     return res.notFound();

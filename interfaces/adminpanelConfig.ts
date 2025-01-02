@@ -62,9 +62,9 @@ export type FieldsTypes =
 	 */
 	"geo-polygon"
 
-type ReqType = sails.Request;
-type ResType = sails.Response;
-type PolicyMiddleware = (req: ReqType, res: ResType, proceed: () => void) => Promise<void>
+type ReqTypeAP = sails.Request;
+type ResTypeAP = sails.Response;
+type PolicyMiddleware = (req: ReqTypeAP, res: ResTypeAP, proceed: () => void) => Promise<void>
 
 type SetFunction = (slug: string, key: string, data: any) => Promise<void>;
 type GetFunction = (slug: string, key: string) => Promise<any>;

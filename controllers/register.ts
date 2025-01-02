@@ -1,4 +1,4 @@
-export default async function register(req: ReqType, res: ResType) {
+export default async function register(req: ReqTypeAP, res: ResTypeAP) {
   if (!adminizer.config.auth || adminizer.config.registration?.enable !== true) {
     return res.redirect(`${adminizer.config.routePrefix}/`);
   }
