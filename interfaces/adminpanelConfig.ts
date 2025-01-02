@@ -246,6 +246,9 @@ export interface AdminpanelConfig {
 	 */
 	modulesViewsPath?: string
 
+	/** @deprecated */
+	templateRootPath?: string
+
 	mediamanager?: MediaManagerConfig
 }
 
@@ -514,10 +517,25 @@ export interface NavigationConfig {
 export interface MediaManagerConfig {
 	allowMIME?: string[]
 	maxByteSize?: number
+	/** post processing images for each sizes */
 	imageSizes?: {
 		[key: string]: {
 			width: number
 			height: number
 		}
 	},
+	multipleSelect?: boolean, /** by default - true  */
+	imageCropBeforeUpload?: boolean,
+	/* width and height more preferred, aspeсt-ratio cannot used with any restriction  **/
+	imageRestrictions?: {
+		aspectRatio?: aspectRatio,
+		width?: number,
+		height?: number,
+		maxWidth?: number,
+		minWidth?: number,
+		maxHeight?: number,
+		minHeight?: number
+	}
 }
+
+type aspectRatio = `${number}:${number}`

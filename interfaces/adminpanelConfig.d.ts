@@ -186,6 +186,8 @@ export interface AdminpanelConfig {
      *  Path to modules views
      */
     modulesViewsPath?: string;
+    /** @deprecated */
+    templateRootPath?: string;
     mediamanager?: MediaManagerConfig;
 }
 export interface ModelConfig {

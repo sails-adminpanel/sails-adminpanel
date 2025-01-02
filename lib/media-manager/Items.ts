@@ -2,7 +2,7 @@ import { File, MediaManagerItem, MediaFileType, UploaderFile, imageSizes, SortCr
 import { randomFileName, populateVariants } from "./helpers/MediaManagerHelper";
 import sizeOf from "image-size";
 import * as sharp from "sharp";
-import * as fs from 'fs';
+import * as fs from 'fs/promises';
 import * as path from 'path';
 
 interface Meta {
@@ -62,30 +62,44 @@ export class ImageItem extends File<MediaManagerItem> {
     }
 
     public async upload(file: UploaderFile, filename: string, origFileName: string, group: string): Promise<MediaManagerItem[]> {
+        // Путь к копии файла
+        const destinationPath = path.join(this.dir, filename);
+        console.log('************************');
+        console.log('copyFile', destinationPath);
+        
+        // Копируем файл в `this.path`
+        await fs.copyFile(file.fd, destinationPath);
+    
+    
+        console.log('file.fd', file.fd);
+        console.log('************************');
+        // Используем `destinationPath` для дальнейшей обработки файла
         let parent: MediaManagerItem = await sails.models[this.model]
             .create({
                 parent: null,
                 mimeType: file.type,
                 size: file.size,
-                path: file.fd,
+                path: destinationPath, // путь уже к скопированному файлу
                 group: group,
                 tag: "origin",
                 filename: origFileName,
                 url: `/${this.path}/${filename}`,
             })
             .fetch();
-
+    
         await this.createMeta(parent.id);
-        await this.addFileMeta(file.fd, parent.id)
-
-        // create file variants
+        await this.addFileMeta(destinationPath, parent.id); // путь к скопированному файлу
+    
+        // Создаем варианты файла
         if (Object.keys(this.imageSizes).length) {
             await this.createVariants(file, parent, filename, group);
         }
-
-        const item = (await sails.models[this.model].find({ where: { id: parent.id }, }).populate("variants").populate("meta"))[0] as MediaManagerItem;
-        item.variants = await populateVariants(item.variants, this.model)
-        return [item]
+        // Удаляем исходный файл
+        await fs.unlink(file.fd);
+    
+        const item = (await sails.models[this.model].find({ where: { id: parent.id } }).populate("variants").populate("meta"))[0] as MediaManagerItem;
+        item.variants = await populateVariants(item.variants, this.model);
+        return [item];
     }
 
     public async getVariants(id: string): Promise<MediaManagerItem[]> {
@@ -173,16 +187,19 @@ export class ImageItem extends File<MediaManagerItem> {
         }
     }
 
-    protected async resizeImage(input: string, output: string, width: number, height: number,) {
-        // Get the directory from the output path
+    protected async resizeImage(input: string, output: string, width: number, height: number) {
+        // Получаем директорию из пути для выходного файла
         const outputDir = path.dirname(output);
-
-        // Check if the directory exists, and create it if it doesn't
-        if (!fs.existsSync(outputDir)) {
-            fs.mkdirSync(outputDir, { recursive: true });
+    
+        // Проверяем, существует ли директория
+        try {
+            await fs.access(outputDir);
+        } catch {
+            // Создаем директорию, если она не существует
+            await fs.mkdir(outputDir, { recursive: true });
         }
-
-        // Resize the image and save it to the output path
+    
+        // Изменяем размер изображения и сохраняем его в указанный путь
         return await sharp(input)
             .resize({ width: width, height: height })
             .toFile(output);

@@ -26,6 +26,8 @@ async function register(req, res) {
                 let userap = await UserAP.create({ login: req.body.login, password: req.body.password,
                     fullName: req.body.fullName, email: req.body.email, locale: req.body.locale }).fetch();
                 let defaultUserGroup = await GroupAP.find({ name: adminizer.config.registration.defaultUserGroup });
+                // TODO move UserAP to abstract model
+                // @ts-ignore
                 await UserAP.addToCollection(userap.id, "groups").members([defaultUserGroup.id]);
                 return res.redirect(`${adminizer.config.routePrefix}/`);
             }

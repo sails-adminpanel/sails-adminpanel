@@ -9,6 +9,7 @@ export declare class Adminizer {
         warn: (...args: any[]) => any;
         error: (...args: any[]) => any;
         debug: (...args: any[]) => any;
+        verbose: (...args: any[]) => any;
         silly: (...args: any[]) => any;
     };
 }
