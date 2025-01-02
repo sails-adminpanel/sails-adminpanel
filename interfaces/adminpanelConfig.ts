@@ -2,10 +2,11 @@ import sails from "sails-typescript";
 import {LineAwesomeIcon} from "./lineAwesome"
 import {UserAPRecord} from "../models/UserAP";
 import {GroupAPRecord} from "../models/GroupAP";
+
+//@ts-ignore
 import { EditorOptions } from "@toast-ui/editor/types/editor";
 
 export type TuiEditorOptions = EditorOptions;
-
 export type AdminpanelIcon = LineAwesomeIcon
 export type FieldsTypes =
 	"string" |
