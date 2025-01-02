@@ -1,12 +1,9 @@
 /// <reference path="./interfaces/global.ts" />
 import { WidgetHandler } from "./lib/widgets/widgetHandler";
-
-const { MenuHelper } = require('./helper/menuHelper');
+import "./interfaces/global"
 const { ConfigHelper } = require('./helper/configHelper');
-
 const { AccessRightsHelper } = require('./helper/accessRightsHelper');
 const {InstallStepper} = require("./lib/installStepper/installStepper");
-
 import {CatalogHandler} from "./lib/catalog/CatalogHandler";
 import { MediaManagerHandler } from "./lib/media-manager/MediaManagerHandler";
 import { Adminizer } from "./lib/v4/config/Adminizer";
@@ -14,7 +11,6 @@ import { Adminizer } from "./lib/v4/config/Adminizer";
 let adminizer = new Adminizer()
 //@ts-ignore problem need to fix
 global.adminizer = adminizer;
-
 module.exports = function () {
 
     let libInitialize =  require("./system/initialize");

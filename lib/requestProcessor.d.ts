@@ -14,7 +14,7 @@ export declare class RequestProcessor {
      * @param {Object} params
      * @returns {String}
      */
-    static addGetParams(req: ReqType, params: {}): string;
+    static addGetParams(req: ReqTypeAP, params: {}): string;
     /**
      * Will fetch all files from request. That should be stored
      *
@@ -22,7 +22,7 @@ export declare class RequestProcessor {
      * @param {Object} fields List of fileds config
      * @param {Function=} [cb]
      */
-    static processFiles(req: ReqType, fields: Fields): Promise<any>;
+    static processFiles(req: ReqTypeAP, fields: Fields): Promise<any>;
     /**
      * Will try to find all fields that should be used in model
      *
@@ -32,6 +32,6 @@ export declare class RequestProcessor {
      * @see AdminUtil#getFields to know what data should be passed into fields
      * @returns {Object} List of processed values from request
      */
-    static processRequest(req: ReqType, fields: Fields): PostParams;
+    static processRequest(req: ReqTypeAP, fields: Fields): PostParams;
 }
 export {};

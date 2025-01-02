@@ -1,1 +1,1 @@
-export declare function thumbController(req: ReqType, res: ResType): Promise<void>;
+export declare function thumbController(req: ReqTypeAP, res: ResTypeAP): Promise<void>;

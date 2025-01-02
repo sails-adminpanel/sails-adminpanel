@@ -10,9 +10,9 @@ export type FieldsTypes = "string" | "password" | "date" | "datetime" | "time" |
  * it will be needed only for polygon data
  */
 "geo-polygon";
-type ReqType = sails.Request;
-type ResType = sails.Response;
-type PolicyMiddleware = (req: ReqType, res: ResType, proceed: () => void) => Promise<void>;
+type ReqTypeAP = sails.Request;
+type ResTypeAP = sails.Response;
+type PolicyMiddleware = (req: ReqTypeAP, res: ResTypeAP, proceed: () => void) => Promise<void>;
 type SetFunction = (slug: string, key: string, data: any) => Promise<void>;
 type GetFunction = (slug: string, key: string) => Promise<any>;
 export type ActionType = "list" | "edit" | "add" | "remove" | "view";
@@ -448,11 +448,24 @@ export interface NavigationConfig {
 export interface MediaManagerConfig {
     allowMIME?: string[];
     maxByteSize?: number;
+    /** post processing images for each sizes */
     imageSizes?: {
         [key: string]: {
             width: number;
             height: number;
         };
     };
+    multipleSelect?: boolean; /** by default - true  */
+    imageCropBeforeUpload?: boolean;
+    imageRestrictions?: {
+        aspectRatio?: aspectRatio;
+        width?: number;
+        height?: number;
+        maxWidth?: number;
+        minWidth?: number;
+        maxHeight?: number;
+        minHeight?: number;
+    };
 }
+type aspectRatio = `${number}:${number}`;
 export {};

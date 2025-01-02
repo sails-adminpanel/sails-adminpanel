@@ -1,7 +1,7 @@
 /**
  * Type for functions that is controllers
  */
-export type Action = (req: ReqType, res: ResType) => Promise<any>;
+export type Action = (req: ReqTypeAP, res: ResTypeAP) => Promise<any>;
 /**
  * Provide tools for hooks. Has only static methods.
  */
@@ -52,7 +52,7 @@ export default class HookTools {
      * |                '/index': 'policy'
      * |              }
      * |
-     * * - policy.js > module.exports = function (req: ReqType, res: ResType, next) {
+     * * - policy.js > module.exports = function (req: ReqTypeAP, res: ResTypeAP, next) {
      *                    return next();
      *                 }
      * @param folder - folder where policies load

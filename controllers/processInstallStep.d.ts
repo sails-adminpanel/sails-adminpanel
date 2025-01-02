@@ -1,1 +1,1 @@
-export default function processInstallStep(req: ReqType, res: ResType): Promise<void>;
+export default function processInstallStep(req: ReqTypeAP, res: ResTypeAP): Promise<void>;

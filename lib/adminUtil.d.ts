@@ -63,14 +63,14 @@ export declare class AdminUtil {
      * @param {Request} req
      * @returns {?string}
      */
-    static findEntityType(req: ReqType): EntityType;
+    static findEntityType(req: ReqTypeAP): EntityType;
     /**
      * Get entity name
      *
      * @param {Request} req
      * @returns {?string}
      */
-    static findEntityName(req: ReqType): string;
+    static findEntityName(req: ReqTypeAP): string;
     /**
      * Searches for config from admin panel
      *
@@ -78,7 +78,7 @@ export declare class AdminUtil {
      * @param {String} entityName
      * @returns {?Object}
      */
-    static findModelConfig(req: ReqType, entityName: string): ModelConfig;
+    static findModelConfig(req: ReqTypeAP, entityName: string): ModelConfig;
     /**
      * Will get action config from configuration file depending to given action
      *
@@ -111,7 +111,7 @@ export declare class AdminUtil {
      * @param {Object} modelConfig
      * @returns {?Model}
      */
-    static findModel<T extends keyof Models>(req: ReqType, modelConfig: ModelConfig): AbstractModel<any>;
+    static findModel<T extends keyof Models>(req: ReqTypeAP, modelConfig: ModelConfig): AbstractModel<any>;
     /**
      * Will create entity object from request.
      *
@@ -130,6 +130,6 @@ export declare class AdminUtil {
      * @param req
      * @returns {Object}
      */
-    static findEntityObject(req: ReqType): Entity;
+    static findEntityObject(req: ReqTypeAP): Entity;
 }
 export {};

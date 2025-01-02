@@ -34,5 +34,5 @@ export declare class WidgetHandler {
     static getWidgetsDB(id: number, auth: boolean): Promise<WidgetConfig[]>;
     static setWidgetsDB(id: number, widgets: WidgetConfig[], auth: boolean): Promise<number>;
 }
-export declare function getAllWidgets(req: ReqType, res: ResType): Promise<void>;
-export declare function widgetsDB(req: ReqType, res: ResType): Promise<void | import("sails-typescript").default.Response>;
+export declare function getAllWidgets(req: ReqTypeAP, res: ResTypeAP): Promise<void>;
+export declare function widgetsDB(req: ReqTypeAP, res: ResTypeAP): Promise<void | import("sails-typescript").default.Response>;

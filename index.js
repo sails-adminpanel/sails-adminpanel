@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="./interfaces/global.ts" />
 const widgetHandler_1 = require("./lib/widgets/widgetHandler");
+require("./interfaces/global");
 const { MenuHelper } = require('./helper/menuHelper');
 const { ConfigHelper } = require('./helper/configHelper');
 const { AccessRightsHelper } = require('./helper/accessRightsHelper');

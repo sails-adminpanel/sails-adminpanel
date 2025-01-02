@@ -24,7 +24,7 @@ export declare class ViewsHelper {
      * @param {IncomingMessage} req
      * @param {string} key Types: adminError|adminSuccess
      */
-    static hasMessages(req: ReqType, key: "adminError" | "adminSuccess"): string[];
+    static hasMessages(req: ReqTypeAP, key: "adminError" | "adminSuccess"): string[];
     /**
      * Get needed field value from dat provided.
      *

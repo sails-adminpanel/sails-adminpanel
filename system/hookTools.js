@@ -146,7 +146,7 @@ class HookTools {
      * |                '/index': 'policy'
      * |              }
      * |
-     * * - policy.js > module.exports = function (req: ReqType, res: ResType, next) {
+     * * - policy.js > module.exports = function (req: ReqTypeAP, res: ResTypeAP, next) {
      *                    return next();
      *                 }
      * @param folder - folder where policies load

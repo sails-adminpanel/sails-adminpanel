@@ -1,1 +1,1 @@
-export default function normalizeNavigationConfig(req: ReqType, res: ResType): Promise<void>;
+export default function normalizeNavigationConfig(req: ReqTypeAP, res: ResTypeAP): Promise<void>;
