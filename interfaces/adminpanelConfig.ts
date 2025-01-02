@@ -340,7 +340,7 @@ export interface FieldsForms {
 	[key: string]: FormFieldConfig
 }
 
-export type ModelFieldConfig = (BaseFieldConfig | TuiEditorFieldConfig) & {groupsAccessRights: string[]}
+export type ModelFieldConfig = (BaseFieldConfig | TuiEditorFieldConfig) & {groupsAccessRights?: string[]}
 
 export interface FieldsModels {
 	[key: string]: boolean | string | ModelFieldConfig

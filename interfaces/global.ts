@@ -32,7 +32,7 @@ declare global {
 
 	interface _sailsConfig extends sailsConfig {
 		adminpanel: AdminpanelConfig;
-
+		//@ts-ignore
 		[key: string]: any | object;
 	}
 
