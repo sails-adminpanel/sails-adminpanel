@@ -8,12 +8,12 @@
 
 ---
 
-🚚 **This project has moved!**  
+🚚 🚚 🚚 **This project has moved!**  🚚 🚚 🚚
 You can now find it at: [https://github.com/adminization/adminizer](https://github.com/adminization/adminizer)
 
 > Please note: this is no longer a Sails hook — it has been refactored into a standalone middleware for any HTTP server.
 
-If you're interested in maintaining this legacy repository, feel free to [create an issue](https://github.com/your-repo/issues) and get in touch.
+If you're interested in maintaining this legacy repository, feel free to [create an issue](https://github.com/sails-adminpanel/sails-adminpanel/issues) and get in touch.
 
 Thanks for your attention!
 
