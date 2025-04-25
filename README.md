@@ -6,6 +6,19 @@
 # sails-adminpanel
 <span class="badge-npmversion"><a href="https://npmjs.org/package/sails-adminpanel" title="View this project on NPM"><img src="https://img.shields.io/npm/v/sails-adminpanel.svg" alt="NPM version" /></a></span>
 
+---
+
+🚚 **This project has moved!**  
+You can now find it at: [https://github.com/adminization/adminizer](https://github.com/adminization/adminizer)
+
+> Please note: this is no longer a Sails hook — it has been refactored into a standalone middleware for any HTTP server.
+
+If you're interested in maintaining this legacy repository, feel free to [create an issue](https://github.com/your-repo/issues) and get in touch.
+
+Thanks for your attention!
+
+---
+
 **Only for use sails  > v1.5**
 
 ## SailsJS Discord community
