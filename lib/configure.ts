@@ -1,4 +1,4 @@
-export default function ToConfigure() {
+export function ToConfigure() {
 
     return function configure() {
         // Check for disable admin panel
@@ -21,4 +21,4 @@ export default function ToConfigure() {
             sails.config.adminpanel.routePrefix = '/' + sails.config.adminpanel.routePrefix;
         }
     };
-};
+}

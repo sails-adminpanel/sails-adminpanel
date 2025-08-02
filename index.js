@@ -1,12 +1,14 @@
 'use strict';
-Object.defineProperty(exports, "__esModule", { value: true });
-const widgetHandler_1 = require("./lib/widgets/widgetHandler");
-const { MenuHelper } = require('./helper/menuHelper');
-const { ConfigHelper } = require('./helper/configHelper');
-const { AccessRightsHelper } = require('./helper/accessRightsHelper');
-const { InstallStepper } = require("./lib/installStepper/installStepper");
-const CatalogHandler_1 = require("./lib/catalog/CatalogHandler");
-const MediaManagerHandler_1 = require("./lib/media-manager/MediaManagerHandler");
+// import { WidgetHandler } from "./lib/widgets/widgetHandler";
+//
+// const { MenuHelper } = require('./helper/menuHelper');
+// const { ConfigHelper } = require('./helper/configHelper');
+//
+// const { AccessRightsHelper } = require('./helper/accessRightsHelper');
+// const {InstallStepper} = require("./lib/installStepper/installStepper");
+//
+// import {CatalogHandler} from "./lib/catalog/CatalogHandler";
+// import { MediaManagerHandler } from "./lib/media-manager/MediaManagerHandler";
 module.exports = function () {
     let libInitialize = require("./lib/initialize");
     return {
@@ -14,7 +16,7 @@ module.exports = function () {
          * Creating default settings for hook
          */
         defaults: require('./lib/defaults').defaults(),
-        configure: require('./lib/configure').default(),
+        configure: require('./lib/configure').ToConfigure(),
         initialize: async function initialize(cb) {
             await libInitialize.default(sails, cb);
         },
@@ -24,14 +26,14 @@ module.exports = function () {
         addGroup: function (key, title) {
             throw `Not implemented adminpanel index file addGroup`;
         },
-        addModelConfig: ConfigHelper.addModelConfig,
-        registerAccessToken: AccessRightsHelper.registerToken,
-        getAllAccessTokens: AccessRightsHelper.getTokens,
-        havePermission: AccessRightsHelper.havePermission,
-        enoughPermissions: AccessRightsHelper.enoughPermissions,
-        getInstallStepper: () => InstallStepper,
-        getWidgetHandler: () => widgetHandler_1.WidgetHandler,
-        getCatalogHandler: () => CatalogHandler_1.CatalogHandler,
-        getMediaManagerHandler: () => MediaManagerHandler_1.MediaManagerHandler,
+        // addModelConfig: ConfigHelper.addModelConfig,
+        // registerAccessToken: AccessRightsHelper.registerToken,
+        // getAllAccessTokens: AccessRightsHelper.getTokens,
+        // havePermission: AccessRightsHelper.havePermission,
+        // enoughPermissions: AccessRightsHelper.enoughPermissions,
+        // getInstallStepper: () => InstallStepper,
+        // getWidgetHandler: () => WidgetHandler,
+        // getCatalogHandler: () => CatalogHandler,
+        // getMediaManagerHandler: () => MediaManagerHandler,
     };
 };

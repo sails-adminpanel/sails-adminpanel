@@ -1,115 +1,171 @@
-'use strict'
-import {AdminpanelConfig} from "../interfaces/adminpanelConfig";
-import {FileStorageHelper} from "../helper/fileStorageHelper";
-const packageJson = require('../package.json');
-const timezones = require('./timezones.json');
-import * as path from "path";
+import {AdminpanelConfig} from "adminizer";
+
+const path = require('path');
+const loadESM = require('./esmLoader.cjs');
+
+let FileStorageHelper: typeof import('adminizer/helpers/fileStorageHelper').FileStorageHelper,
+	timezones: { id: string; name: string; }[]
+
+(async () => {
+	try {
+		const helperPath = {
+			fileStorage: path.join('..', 'node_modules', 'adminizer', 'helpers', 'fileStorageHelper.js'),
+			timezones: path.join('..', 'node_modules', 'adminizer', 'lib', 'timezones.js')
+		};
+		FileStorageHelper = await loadESM(helperPath.fileStorage, 'FileStorageHelper');
+		timezones = await loadESM(helperPath.timezones, 'timezones');
+	} catch (err) {
+		console.error('Error init:', err);
+		process.exit(1);
+	}
+})();
+
 
 /**
  * Default admin config
  */
-var adminpanelConfig: AdminpanelConfig = {
+let adminpanelConfig: AdminpanelConfig = {
+	/** Default route prefix */
+	routePrefix: '/adminizer',
 
-    /**
-     * Default url prefix for admin panel
-     */
-    routePrefix: '\/admin',
+	/**
+	 * Name of model identifier field
+	 */
+	identifierField: 'id',
 
-    /**
-     * Default path to views
-     *
-     * @type {?string}
-     */
-    pathToViews: null,
+	/**
+	 * Policies
+	 */
+	policies: [],
 
-    /**
-     * Name of model identifier field
-     */
-    identifierField: 'id',
+	/**
+	 * Base navbar configuration
+	 */
+	navbar: {
+		// List of additional actions
+		additionalLinks: []
+	},
 
-    /**
-     * Policies
-     */
-    policies: null,
+	brand: {
+		link: ''
+	},
 
-    /**
-     * Base navbar configuration
-     */
-    navbar: {
-        // List of additional actions
-        additionalLinks: []
-    },
+	/**
+	 * List of admin pages
+	 */
+	models: {
+		UserAP: {
+			title: "Users",
+			model: "userap",
+			icon: "people",
+			navbar: {
+				section: "System"
+			},
+			add: {
+				controller: "../controllers/addUser"
+			},
+			edit: {
+				controller: "../controllers/editUser"
+			},
+			fields:{
+				login: {
+					title: 'User login',
+				},
+				fullName: {
+					title: 'Full Name'
+				},
+				password: {
+					title: 'Password',
+				},
+				isAdministrator: {
+					title: 'is administrator'
+				},
+				isConfirme:{
+					title: 'is confirme'
+				}
+			},
+			list: {
+				fields: {
+					createdAt: false,
+					updatedAt: false,
+					id: false,
+					email: false,
+					passwordHashed: false,
+					timezone: false,
+					locale: false,
+					isDeleted: false,
+					isActive: false,
+					groups: false
+				}
+			}
+		},
+		GroupAP: {
+			title: "Groups",
+			model: "groupap",
+			icon: "group_add",
+			navbar: {
+				section: "System"
+			},
+			add: {
+				controller: "../controllers/addGroup"
+			},
+			edit: {
+				controller: "../controllers/editGroup"
+			},
+			list: {
+				fields: {
+					createdAt: false,
+					updatedAt: false,
+					id: false,
+				}
+			}
+		}
+	},
 
-    brand: {
-        link: null
-    },
+	translation: {
+		locales: ['en', 'ru'],
+		path: `config/locales/adminpanel`,
+		defaultLocale: 'en'
+	},
 
-    /**
-     * List of admin pages
-     */
-    models: {
-        usersap: {
-            title: "Users AP",
-            model: "userap",
-            icon: "users",
-            add: {
-                controller: "../controllers/addUser"
-            },
-            edit: {
-                controller: "../controllers/editUser"
-            },
-            list: {
-                fields: {
-                    createdAt: false,
-                    updatedAt: false,
-                    id: false,
-                    email: false,
-                    passwordHashed: false,
-                    timezone: false,
-                    locale: false,
-                    isDeleted: false,
-                    isActive: false,
-                    groups: false
-                }
-            }
-        },
-        groupsap: {
-            title: "Groups AP",
-            model: "groupap",
-            icon: "users-cog",
-            add: {
-                controller: "../controllers/addGroup"
-            },
-            edit: {
-                controller: "../controllers/editGroup"
-            }
-        }
-    },
+	forms: {
+		path: `api/adminpanel-forms`,
+		data: {},
+		get: async function (slug, key) {
+			return FileStorageHelper.get(slug, key)
+		},
+		set: async function (slug, key, value) {
+			FileStorageHelper.set(slug, key, value)
+		}
+	},
 
-    translation: {
-        locales: ['en', 'ru'],
-        path: `config/locales/adminpanel`,
-        defaultLocale: 'en'
-    },
+	/**
+	 * List of sections in head
+	 */
+	sections: [],
+	package: {version: "4.0.0"},
+	showVersion: true,
+	timezones: timezones,
+	styles: [],
+	scripts: {
+		header: [],
+		footer: []
+	},
 
-    forms: {
-        path: `api/adminpanel-forms`,
-        data: {},
-        get: async function (slug, key) {
-            return FileStorageHelper.get(slug, key)
-        },
-        set: async function (slug, key, value) {
-            FileStorageHelper.set(slug, key, value)
-        }
-    },
+	security: {
+		csrf: true
+	},
 
-    /**
-     * List of sections in head
-     */
-    sections: [],
-    package: packageJson,
-    showVersion: true,
-    timezones: timezones
+	registration: {
+		enable: false,
+		defaultUserGroup: "guest",
+		confirmationRequired: true
+	},
+
+	auth: {
+		enable: false,
+		captcha: true
+	}
 }
 
 

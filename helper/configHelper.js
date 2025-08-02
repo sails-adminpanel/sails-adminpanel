@@ -1,26 +1,26 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ConfigHelper = void 0;
-const Router_1 = require("../lib/Router");
-const defaults_1 = require("../lib/defaults");
-class ConfigHelper {
-    static addModelConfig(modelConfig) {
-        if (sails !== undefined && sails.config?.adminpanel !== undefined) {
-            const config = sails.config?.adminpanel;
-            const models = { ...config.models };
-            config.models = { ...models, ...modelConfig };
+import { AdminpanelConfig, ModelConfig } from "../interfaces/adminpanelConfig";
+import Router from "../lib/Router";
+import { getDefaultConfig, setDefaultConfig } from "../lib/defaults";
+export class ConfigHelper {
+
+    public static addModelConfig(modelConfig: AdminpanelConfig["models"]): void {
+        if(sails !== undefined && sails.config?.adminpanel !== undefined){
+            const config = sails.config?.adminpanel
+            const models = {...config.models}
+            config.models = {...models, ...modelConfig}    
+        } else {
+            const config = getDefaultConfig()
+            const models = {...config.models}
+            config.models = {...models, ...modelConfig}
+            setDefaultConfig(config)
         }
-        else {
-            const config = (0, defaults_1.getDefaultConfig)();
-            const models = { ...config.models };
-            config.models = { ...models, ...modelConfig };
-            (0, defaults_1.setDefaultConfig)(config);
-        }
-        Router_1.default.bind();
+        Router.bind()
     }
-    static getConfig() {
+
+    public static getConfig(): AdminpanelConfig {
         return sails.config.adminpanel;
     }
+
     /**
      * Checks if given field is identifier of model
      *
@@ -28,9 +28,10 @@ class ConfigHelper {
      * @param {Object|string=} modelOrName
      * @returns {boolean}
      */
-    static isId(field, modelOrName) {
+    public static isId(field: { config: { key: string; }; }, modelOrName: string): boolean {
         return (field.config.key == this.getIdentifierField(modelOrName));
     }
+
     /**
      * Get configured `identifierField` from adminpanel configuration.
      *
@@ -43,39 +44,40 @@ class ConfigHelper {
      * @returns {string}
      * @param modelName
      */
-    static getIdentifierField(modelName) {
+    public static getIdentifierField(modelName: string) {
+
         if (!modelName) {
-            throw new Error("Model name is not defined");
+            throw new Error("Model name is not defined")
         }
+
         let config = sails.config.adminpanel;
-        let modelConfig;
+        let modelConfig: ModelConfig;
         Object.keys(config.models).forEach((entityName) => {
             const model = config.models[entityName];
-            if (typeof model !== "boolean") {
+            if(typeof model !== "boolean") {
                 if (model.model === modelName.toLowerCase()) {
-                    if (typeof config.models[entityName] !== "boolean") {
-                        modelConfig = config.models[entityName];
+                    if(typeof config.models[entityName] !== "boolean") {
+                        modelConfig = config.models[entityName] as ModelConfig
                     }
                 }
             }
-        });
+        })
+
         if (modelConfig && modelConfig.identifierField) {
             return modelConfig.identifierField;
-        }
-        else if (sails.models[modelName.toLowerCase()].primaryKey) {
-            return sails.models[modelName.toLowerCase()].primaryKey;
-        }
-        else {
-            throw new Error("ConfigHelper > Identifier field was not found");
+        } else if (sails.models[modelName.toLowerCase()].primaryKey) {
+            return sails.models[modelName.toLowerCase()].primaryKey
+        } else {
+            throw new Error("ConfigHelper > Identifier field was not found")
         }
     }
+
     /**
      * Checks if CSRF protection enabled in website
      *
      * @returns {boolean}
      */
-    static isCsrfEnabled() {
+    public static isCsrfEnabled() {
         return (sails.config.security.csrf !== false);
     }
 }
-exports.ConfigHelper = ConfigHelper;

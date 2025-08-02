@@ -1,37 +1,57 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.MenuHelper = void 0;
-let _ = require("lodash"); // заменить lodash реджексом
-class MenuHelper {
-    constructor(config) {
-        MenuHelper.config = config;
+/**
+ * Menu helper
+ *
+ * @constructor
+ */
+import {ActionType, AdminpanelConfig, HrefConfig, ModelConfig} from "../interfaces/adminpanelConfig";
+
+export type MenuItem = { 
+    link: string; 
+    title: string; 
+    id: string; 
+    actions: HrefConfig[]; 
+    icon: string; 
+    accessRightsToken: string; 
+    entityName?: string; 
+}
+
+let _ = require("lodash") // заменить lodash реджексом
+export class MenuHelper {
+
+    private static config: any;
+
+    constructor(config: AdminpanelConfig) {
+        MenuHelper.config = config
     }
+
     /**
      * Checks if brand exists
      *
      * @returns {boolean}
      */
-    static hasBrand() {
+    public static hasBrand() {
         return Boolean(this.config.brand && this.config.brand.link);
     }
+
     /**
      * Get menu brand link
      *
      * @returns {string}
      */
-    static getBrandLink() {
+    public static getBrandLink() {
         if (!this.config.brand || !this.config.brand.link || typeof this.config.brand.link !== "object" ||
             !this.config.brand.link.link) {
             return '/admin';
         }
         return this.config.brand.link.link;
     }
+
     /**
      * Get menu brand title
      *
      * @returns {string}
      */
-    getBrandTitle() {
+    public getBrandTitle() {
         if (!MenuHelper.config.brand || !MenuHelper.config.brand.link) {
             return 'Sails-adminpanel';
         }
@@ -43,6 +63,7 @@ class MenuHelper {
         }
         return 'Sails-adminpanel';
     }
+
     /**
      * Check if global actions buttons added to action
      *
@@ -50,8 +71,9 @@ class MenuHelper {
      * @param {string=} [action] Defaults to `list`
      * @returns {boolean}
      */
-    hasGlobalActions(modelConfig, action) {
+    public hasGlobalActions(modelConfig: ModelConfig, action: ActionType): boolean {
         action = action ?? 'list';
+
         const config = modelConfig[action];
         if (typeof config === "object" && config !== null && 'actions' in config) {
             if (!config.actions || !config.actions.global) {
@@ -59,11 +81,12 @@ class MenuHelper {
             }
             let actions = config.actions.global;
             return actions.length > 0;
-        }
-        else {
+        } else {
             return false;
         }
+        
     }
+
     /**
      * Check if inline actions buttons added to action
      *
@@ -71,15 +94,19 @@ class MenuHelper {
      * @param {string=} [action] Defaults to `list`
      * @returns {boolean}
      */
-    hasInlineActions(modelConfig, action) {
+    public hasInlineActions(modelConfig: ModelConfig, action: ActionType): boolean {
         action = action ?? 'list';
+    
         const config = modelConfig[action];
+    
         if (typeof config !== "object" || config === null || !('actions' in config) || !config.actions.inline) {
             return false;
         }
+    
         const actions = config.actions.inline;
         return actions.length > 0;
     }
+    
     /**
      * Get list of custom global buttons for action
      *
@@ -87,17 +114,22 @@ class MenuHelper {
      * @param {string=} [action]
      * @returns {Array}
      */
-    getGlobalActions(modelConfig, action) {
+    public getGlobalActions(modelConfig: ModelConfig, action: ActionType): HrefConfig[] {
         action = action ?? 'list';
+    
         if (!this.hasGlobalActions(modelConfig, action)) {
             return [];
         }
+    
         const config = modelConfig[action];
+    
         if (typeof config === "object" && config !== null && 'actions' in config && config.actions.global) {
             return config.actions.global;
         }
+    
         return [];
     }
+    
     /**
      * Get list of custom inline buttons for action
      *
@@ -105,17 +137,23 @@ class MenuHelper {
      * @param {string=} [action]
      * @returns {Array}
      */
-    getInlineActions(modelConfig, action) {
+    public getInlineActions(modelConfig: ModelConfig, action: ActionType): HrefConfig[] {
         action = action || 'list';
+    
         if (!this.hasInlineActions(modelConfig, action)) {
             return [];
         }
+    
         const config = modelConfig[action];
+    
         if (typeof config === "object" && config !== null && 'actions' in config && config.actions.inline) {
             return config.actions.inline;
         }
+    
         return [];
     }
+    
+
     /**
      * Replace fields in given URL and binds to model fields.
      *
@@ -126,8 +164,8 @@ class MenuHelper {
      * @param {Object} model
      * @returns {string}
      */
-    static replaceModelFields(url, model) {
-        let words = (str, pat) => {
+    public static replaceModelFields(url: string, model: { [x: string]: string; }): string {
+        let words = (str: string, pat: RegExp) => {
             pat = pat || /\w+/g;
             str = str.toLowerCase();
             return str.match(pat);
@@ -138,30 +176,32 @@ class MenuHelper {
         }
         let split = words(url, /\:+[a-z\-_]*/gi);
         // Replacing props
-        split.forEach(function (word) {
+        split.forEach(function(word) {
             let variable = word.replace(':', '');
             if (model && model[variable]) {
                 url = url.replace(word, model[variable]);
             }
         });
+
         return url;
     }
+
     /**
      * Get list of entity menus that was not bound to groups
      *
      * @returns {Array}
      */
-    getMenuItems() {
-        let menus = [];
+    public getMenuItems(): MenuItem[] {
+        let menus: MenuItem[] = [];
         if (MenuHelper.config.navbar.additionalLinks && MenuHelper.config.navbar.additionalLinks.length > 0) {
-            MenuHelper.config.navbar.additionalLinks.forEach(function (additionalLink) {
+            MenuHelper.config.navbar.additionalLinks.forEach(function(additionalLink: { link: any; title: string; disabled: any; id: any; subItems: any; icon: any; accessRightsToken: any; }) {
                 if (!additionalLink.link || !additionalLink.title || additionalLink.disabled) {
                     return;
                 }
                 menus.push({
                     link: additionalLink.link,
                     title: additionalLink.title,
-                    id: additionalLink.id || additionalLink.title.replace(" ", "_"),
+                    id: additionalLink.id || additionalLink.title.replace(" ","_"),
                     actions: additionalLink.subItems || null,
                     icon: additionalLink.icon || null,
                     accessRightsToken: additionalLink.accessRightsToken || null
@@ -169,7 +209,7 @@ class MenuHelper {
             });
         }
         if (MenuHelper.config.models) {
-            Object.entries(MenuHelper.config.models).forEach(function ([key, val]) {
+            Object.entries<ModelConfig>(MenuHelper.config.models).forEach(function([key, val]) {
                 if (!val.hide) {
                     if (val.tools && val.tools.length > 0 && val.tools[0].id !== "overview") {
                         val.tools.unshift({
@@ -178,21 +218,21 @@ class MenuHelper {
                             title: 'Overview',
                             icon: "list",
                             accessRightsToken: `read-${key}-model`
-                        });
+                        })
                     }
                     menus.push({
                         link: MenuHelper.config.routePrefix + '/model/' + key,
                         title: val.title || key,
                         icon: val.icon || null,
                         actions: val.tools || null,
-                        id: val.title ? val.title.replace(" ", "_") : key,
+                        id: val.title ? val.title.replace(" ","_") : key,
                         entityName: key,
                         accessRightsToken: `read-${key}-model`
                     });
                 }
             });
         }
+
         return menus;
     }
 }
-exports.MenuHelper = MenuHelper;

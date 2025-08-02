@@ -1,1 +1,1 @@
-export default function ToConfigure(): () => void;
+export declare function ToConfigure(): () => void;
