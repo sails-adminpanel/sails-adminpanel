@@ -6,10 +6,11 @@
 // import {resolve} from "path";
 // import afterHook from "./afterHook";
 // import bindInstallStepper from "./bindInstallStepper";
-
+import {Adminizer, WaterlineAdapter} from "adminizer";
+const Waterline = require('waterline');
 
 export default async function (sails: any, cb: (err?: Error)=>void) {
-
+	console.log(WaterlineAdapter)
     /**
      * List of hooks that required for adminpanel to work
      */
@@ -31,7 +32,23 @@ export default async function (sails: any, cb: (err?: Error)=>void) {
      */
 
     sails.emit('Adminpanel:initialization');
-	console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
+	console.log('test hook >>>>>>>>>>>>>>>>')
+
+	const orm = new Waterline();
+
+	await WaterlineAdapter.registerSystemModels(orm);
+
+	const ontology = await new Promise((resolve, reject) => {
+		orm.initialize(sails.config.models, (err: any, ontology: any) => {
+			if (err) return reject(err);
+			resolve(ontology);
+		});
+	});
+
+	const waterlineAdapter = new WaterlineAdapter({ orm, ontology });
+	const adminizer = new Adminizer([waterlineAdapter]);
+	console.log(adminizer)
+
     //Check views engine and check if folder with templates exist
     // if (!fs.existsSync(ViewsHelper.getPathToEngine(sails.config.views.extension))) {
     //     return cb(new Error('For now adminpanel hook could work only with EJS template engine.'));

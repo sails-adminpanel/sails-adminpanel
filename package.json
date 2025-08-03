@@ -3,11 +3,11 @@
 		"url": "https://github.com/sails-adminpanel/sails-adminpanel/issues"
 	},
 	"dependencies": {
-		"adminizer": "next",
-		"esbuild": "^0.19.0"
+		"adminizer": "next"
 	},
 	"devDependencies": {
-		"@42pub/typed-sails": "^1.0.1"
+		"@42pub/typed-sails": "^1.0.1",
+		"@types/waterline": "^0.13.9"
 	},
 	"deprecated": false,
 	"description": "Basic adminpanel for Sails 1x",
