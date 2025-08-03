@@ -1,4 +1,3 @@
-
 <p align="center">
   <img alt="Redox" width="346" src="assets/identy/logo.svg">
 </p>
@@ -181,3 +180,23 @@ csrf: false
 ## License
 
 MIT
+
+---
+## Automatic adminizer import fix
+
+To ensure correct work with Sails v1.5+ and Node.js 22+, after installing dependencies you must run the script:
+
+```bash
+node ./local_modules/sails-adminpanel/fix-adminizer-imports.js
+```
+
+This script will automatically fix all import statements in the adminizer module to avoid ES module errors.
+
+It is recommended to add it to the postinstall section of your project's package.json:
+
+```json
+"postinstall": "node ./node_modules/sails-adminpanel/fix-adminizer-imports.js"
+```
+
+Now, after every dependency installation, imports will be fixed automatically.
+---
