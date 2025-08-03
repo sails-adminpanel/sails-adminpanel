@@ -21,7 +21,8 @@ module.exports = function () {
         /**
          * Creating default settings for hook
          */
-        defaults: require('./lib/defaults').defaults(),
+        // defaults: require('./lib/defaults').defaults(),
+        defaults: {},
 
         configure: require('./lib/configure').ToConfigure(),
 

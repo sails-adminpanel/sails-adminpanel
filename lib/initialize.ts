@@ -7,14 +7,9 @@
 // import afterHook from "./afterHook";
 // import bindInstallStepper from "./bindInstallStepper";
 
-const loadAdminizer = require('../adminLoader.cjs');
-
-
 
 export default async function (sails: any, cb: (err?: Error)=>void) {
 
-	const Adminizer = await loadAdminizer();
-	console.log(Adminizer)
     /**
      * List of hooks that required for adminpanel to work
      */

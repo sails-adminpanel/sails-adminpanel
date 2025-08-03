@@ -157,10 +157,10 @@ The UI of the project is designed with the Tailwind CSS framework, providing a m
 
 ### CKeditor5
 
-- **Custom Build File:** `assets/src/scripts/ckeditor5/app.js`
+- **Custom Build File:** `assets/src/scripts/ckeditor5/app.ts`
 - **Gulp Task:** `gulp ckeditorBuild`
 
-The CKeditor5 section indicates the custom build file location for CKeditor5, which can be found at `assets/src/scripts/ckeditor5/app.js`. Additionally, there is a Gulp task named `gulp ckeditorBuild` associated with building CKeditor5.
+The CKeditor5 section indicates the custom build file location for CKeditor5, which can be found at `assets/src/scripts/ckeditor5/app.ts`. Additionally, there is a Gulp task named `gulp ckeditorBuild` associated with building CKeditor5.
 
 These details provide information on the project's build process, specifically related to Gulp tasks and CKeditor5 customization.
 
