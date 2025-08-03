@@ -32,6 +32,8 @@
 		"isHook": true,
 		"hookName": "adminpanel"
 	},
-	"scripts": {},
+  "scripts": {
+	"postinstall": "node ./fix-adminizer-imports.js"
+  },
 	"version": "4.0.0"
 }
