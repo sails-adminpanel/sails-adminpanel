@@ -3,10 +3,14 @@
 		"url": "https://github.com/sails-adminpanel/sails-adminpanel/issues"
 	},
 	"dependencies": {
-		"adminizer": "next"
+		"adminizer": "next",
+		"lodash": "^4.17.21",
+		"sails-disk": "^2.1.2"
 	},
+	"type": "module",
 	"devDependencies": {
 		"@42pub/typed-sails": "^1.0.1",
+		"@types/lodash": "^4.17.20",
 		"@types/waterline": "^0.13.9"
 	},
 	"deprecated": false,
@@ -32,8 +36,8 @@
 		"isHook": true,
 		"hookName": "adminpanel"
 	},
-  "scripts": {
-	"postinstall": "node ./fix-adminizer-imports.js"
-  },
+	"scripts": {
+		"postinstall": "node ./fix-adminizer-imports.js"
+	},
 	"version": "4.0.0"
 }
