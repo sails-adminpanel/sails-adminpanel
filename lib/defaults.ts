@@ -26,7 +26,7 @@ let FileStorageHelper: typeof import('adminizer/helpers/fileStorageHelper').File
  */
 let adminpanelConfig: AdminpanelConfig = {
 	/** Default route prefix */
-	routePrefix: '/adminizer',
+	routePrefix: '/admin',
 
 	/**
 	 * Name of model identifier field

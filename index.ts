@@ -11,6 +11,7 @@
 // import {CatalogHandler} from "./lib/catalog/CatalogHandler";
 // import { MediaManagerHandler } from "./lib/media-manager/MediaManagerHandler";
 
+
 module.exports = function () {
 
     let libInitialize =  require("./lib/initialize");
