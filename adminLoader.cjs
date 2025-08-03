@@ -8,6 +8,15 @@ const moduleCache = new Map();
 
 // 2. Функция разрешения путей
 function resolveModule(importingPath, specifier) {
+	// Если это не относительный путь, пытаемся найти в node_modules
+	if (!specifier.startsWith('.') && !path.isAbsolute(specifier)) {
+		try {
+			return require.resolve(specifier, { paths: [path.dirname(importingPath)] });
+		} catch (e) {
+			// Если не найден через require.resolve, продолжаем обычный поиск
+		}
+	}
+	
 	const baseDir = path.dirname(importingPath);
 	const extensions = ['', '.js', '/index.js'];
 
