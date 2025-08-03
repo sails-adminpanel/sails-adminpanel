@@ -23,13 +23,19 @@ function fixImportsInFile(filePath) {
     const content = fs.readFileSync(filePath, 'utf8');
     let hasChanges = false;
     
-    // Расширенное регулярное выражение для поиска всех импортов без .js
-    const importRegex = /import\s+([^;]+)\s+from\s+['"]((\.{1,2}|\/)[^'";]*?)(?<!\.js)['"]/g;
+    // Универсальное регулярное выражение для поиска всех импортов без расширения
+    const importRegex = /import\s+([^;]+)\s+from\s+['"]([^'"]+?)['"]/g;
     let newContent = content.replace(importRegex, (match, imports, importPath) => {
-        // Проверяем, не заканчивается ли путь уже на .js
-        if (importPath.endsWith('.js')) {
+        // Пропускаем импорты из node_modules (не относительные пути)
+        if (!importPath.startsWith('.') && !importPath.startsWith('/')) {
             return match;
         }
+        
+        // Пропускаем импорты, которые уже имеют расширение
+        if (importPath.match(/\.\w+$/)) {
+            return match;
+        }
+        
         return `import ${imports} from "${importPath}.js"`;
     });
     if (newContent !== content) {
