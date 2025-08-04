@@ -1,39 +1,38 @@
-'use strict';
-// import { WidgetHandler } from "./lib/widgets/widgetHandler";
-//
-// const { MenuHelper } = require('./helper/menuHelper');
-// const { ConfigHelper } = require('./helper/configHelper');
-//
-// const { AccessRightsHelper } = require('./helper/accessRightsHelper');
-// const {InstallStepper} = require("./lib/installStepper/installStepper");
-//
-// import {CatalogHandler} from "./lib/catalog/CatalogHandler";
-// import { MediaManagerHandler } from "./lib/media-manager/MediaManagerHandler";
-module.exports = function () {
-    let libInitialize = require("./lib/initialize");
+// CommonJS entry point для Sails.js
+// Динамически загружает ESM модуль
+
+module.exports = function sailsAdminpanel() {
     return {
-        /**
-         * Creating default settings for hook
-         */
-        defaults: require('./lib/defaults').defaults(),
-        configure: require('./lib/configure').ToConfigure(),
-        initialize: async function initialize(cb) {
-            await libInitialize.default(sails, cb);
+        // Default configuration for the hook
+        defaults: function() {
+            return {
+                adminpanel: {
+                    routePrefix: '/admin',
+                    auth: false
+                }
+            };
         },
-        addMenuItem: function (link, label, icon, group) {
-            throw `Not implemented adminpanel index file addMenuItem`;
+        
+        // Configure hook
+        configure: function() {
+            // Configuration logic here
         },
-        addGroup: function (key, title) {
-            throw `Not implemented adminpanel index file addGroup`;
-        },
-        // addModelConfig: ConfigHelper.addModelConfig,
-        // registerAccessToken: AccessRightsHelper.registerToken,
-        // getAllAccessTokens: AccessRightsHelper.getTokens,
-        // havePermission: AccessRightsHelper.havePermission,
-        // enoughPermissions: AccessRightsHelper.enoughPermissions,
-        // getInstallStepper: () => InstallStepper,
-        // getWidgetHandler: () => WidgetHandler,
-        // getCatalogHandler: () => CatalogHandler,
-        // getMediaManagerHandler: () => MediaManagerHandler,
+        
+        // Initialize the hook - здесь загружаем ESM
+        initialize: async function(cb) {
+            try {
+                console.log('🔄 Loading adminpanel ESM module...');
+                
+                // Динамически импортируем ESM модуль
+                const { default: initializeESM } = await import('./lib/initialize.mjs');
+                
+                // Вызываем ESM инициализацию
+                await initializeESM(sails, this);
+                cb();
+            } catch (error) {
+                console.error('❌ Failed to load adminpanel ESM module:', error);
+                cb(error);
+            }
+        }
     };
 };

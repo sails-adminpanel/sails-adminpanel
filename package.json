@@ -7,7 +7,6 @@
 		"lodash": "^4.17.21",
 		"sails-disk": "^2.1.2"
 	},
-	"type": "module",
 	"devDependencies": {
 		"@42pub/typed-sails": "^1.0.1",
 		"@types/lodash": "^4.17.20",

@@ -1,7 +1,55 @@
 // #!/usr/bin/env node
 
 // const fs = require('fs');
-// const path = require('path');
+// const path =     
+    console.log(`🎉 Fixed ${fixedFiles} files with import issues`);
+    
+    // Дополнительно исправляем проблемы с import.meta.dirname
+    fixImportMetaDirname();
+}
+
+// Функция для исправления import.meta.dirname в adminizer
+function fixImportMetaDirname() {
+    console.log('🔧 Fixing import.meta.dirname issues...');
+    
+    const filesToFix = [
+        './node_modules/adminizer/lib/v4/PolicyManager.js',
+        './node_modules/adminizer/lib/v4/model/adapter/waterline.js',
+        './node_modules/adminizer/lib/v4/model/adapter/sequelize.js',
+        './node_modules/adminizer/lib/Adminizer.js',
+        './node_modules/adminizer/system/bindAssets.js',
+        './node_modules/adminizer/system/bindMediaManager.js',
+        './node_modules/adminizer/system/bindInertia.js',
+        './node_modules/adminizer/system/bindModels.js',
+        './node_modules/adminizer/helpers/viteHelper.js'
+    ];
+    
+    let fixedMetaFiles = 0;
+    filesToFix.forEach(file => {
+        if (fs.existsSync(file) && fixImportMetaDirnameInFile(file)) {
+            fixedMetaFiles++;
+        }
+    });
+    
+    console.log(`🎯 Fixed ${fixedMetaFiles} files with import.meta.dirname issues`);
+}
+
+// Функция для исправления import.meta.dirname в отдельном файле
+function fixImportMetaDirnameInFile(filePath) {
+    const content = fs.readFileSync(filePath, 'utf8');
+    
+    // Заменяем все вхождения import.meta.dirname на fallback
+    const fixedContent = content.replace(
+        /import\.meta\.dirname/g,
+        '(import.meta.dirname || path.dirname(import.meta.url ? new URL(import.meta.url).pathname : __filename))'
+    );
+    
+    if (content !== fixedContent) {
+        fs.writeFileSync(filePath, fixedContent);
+        console.log(`✅ Fixed import.meta.dirname in: ${filePath}`);
+        return true;
+    }
+    return false;quire('path');
 
 // // Функция для рекурсивного поиска всех .js файлов
 // function findJSFiles(dir, fileList = []) {
