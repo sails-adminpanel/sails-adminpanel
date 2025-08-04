@@ -14,6 +14,7 @@ let FileStorageHelper: typeof import('adminizer/helpers/fileStorageHelper').File
 		};
 		FileStorageHelper = await loadESM(helperPath.fileStorage, 'FileStorageHelper');
 		timezones = await loadESM(helperPath.timezones, 'timezones');
+		console.log('dasdsadasdasdadasds')
 	} catch (err) {
 		console.error('Error init:', err);
 		process.exit(1);
