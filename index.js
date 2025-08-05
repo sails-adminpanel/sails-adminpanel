@@ -1,38 +1,37 @@
-// CommonJS entry point для Sails.js
-// Динамически загружает ESM модуль
-
-module.exports = function sailsAdminpanel() {
+'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
+const widgetHandler_1 = require("./lib/widgets/widgetHandler");
+const { MenuHelper } = require('./helper/menuHelper');
+const { ConfigHelper } = require('./helper/configHelper');
+const { AccessRightsHelper } = require('./helper/accessRightsHelper');
+const { InstallStepper } = require("./lib/installStepper/installStepper");
+const CatalogHandler_1 = require("./lib/catalog/CatalogHandler");
+const MediaManagerHandler_1 = require("./lib/media-manager/MediaManagerHandler");
+module.exports = function () {
+    let libInitialize = require("./lib/initialize");
     return {
-        // Default configuration for the hook
-        defaults: function() {
-            return {
-                adminpanel: {
-                    routePrefix: '/admin',
-                    auth: false
-                }
-            };
+        /**
+         * Creating default settings for hook
+         */
+        defaults: require('./lib/defaults').defaults(),
+        configure: require('./lib/configure').default(),
+        initialize: async function initialize(cb) {
+            await libInitialize.default(sails, cb);
         },
-        
-        // Configure hook
-        configure: function() {
-            // Configuration logic here
+        addMenuItem: function (link, label, icon, group) {
+            throw `Not implemented adminpanel index file addMenuItem`;
         },
-        
-        // Initialize the hook - здесь загружаем ESM
-        initialize: async function(cb) {
-            try {
-                console.log('🔄 Loading adminpanel ESM module...');
-                
-                // Динамически импортируем ESM модуль
-                const { default: initializeESM } = await import('./lib/initialize.mjs');
-                
-                // Вызываем ESM инициализацию
-                await initializeESM(sails, this);
-                cb();
-            } catch (error) {
-                console.error('❌ Failed to load adminpanel ESM module:', error);
-                cb(error);
-            }
-        }
+        addGroup: function (key, title) {
+            throw `Not implemented adminpanel index file addGroup`;
+        },
+        addModelConfig: ConfigHelper.addModelConfig,
+        registerAccessToken: AccessRightsHelper.registerToken,
+        getAllAccessTokens: AccessRightsHelper.getTokens,
+        havePermission: AccessRightsHelper.havePermission,
+        enoughPermissions: AccessRightsHelper.enoughPermissions,
+        getInstallStepper: () => InstallStepper,
+        getWidgetHandler: () => widgetHandler_1.WidgetHandler,
+        getCatalogHandler: () => CatalogHandler_1.CatalogHandler,
+        getMediaManagerHandler: () => MediaManagerHandler_1.MediaManagerHandler,
     };
 };
