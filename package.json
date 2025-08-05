@@ -26,7 +26,7 @@
 		"adminpanel"
 	],
 	"license": "MIT",
-	"main": "1111index.js",
+	"main": "index.js",
 	"name": "sails-adminpanel",
 	"repository": {
 		"type": "git",
