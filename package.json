@@ -6,7 +6,7 @@
 	"dependencies": {
 		"adminizer": "next",
 		"lodash": "^4.17.21",
-		"sails-disk": "^2.1.2"
+		"chalk": "^5.4.1"
 	},
 	"devDependencies": {
 		"@42pub/typed-sails": "^1.0.1",
