@@ -19,7 +19,7 @@ module.exports = function sailsAdminpanel() {
             // Configuration logic here
         },
 		initialize: async function initialize(cb) {
-			await libInitialize.default(sails, cb);
+			await libInitialize.default(cb);
 		},
     };
 };
