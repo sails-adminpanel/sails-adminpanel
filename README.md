@@ -15,17 +15,14 @@ You can now find it at: [https://github.com/adminization/adminizer](https://gith
 If you're interested in maintaining this legacy repository, feel free to [create an issue](https://github.com/sails-adminpanel/sails-adminpanel/issues) and get in touch.
 
 Thanks for your attention!
-
 ---
 
-**Only for use sails  > v1.5**
-
-## SailsJS Discord community
-**Community Link:** [Join SailsJS Discord Community](http://discord-sails.42.pub)
-Feel free to use this link to connect with the community and engage in discussions or ask any questions you may have.
-
-
 ## About
+
+> **Note:**  
+> This project is now fully integrated and wrapped by [adminizer](https://github.com/adminization/adminizer).  
+> All features and usage remain the same, but you no longer need to use previous wrappers or extra modules.  
+> Please use adminizer for future updates and improvements.
 
 The admin panel offers automatic generation capabilities, ensuring ease of use, and includes features such as internationalization, user and group access rights, policy enforcement, and a modern user interface. In the near future, installation steps will be provided for a smoother setup experience.
 
@@ -47,7 +44,6 @@ Key Features and Components:
 - **FileUploaderWidget:** Utilize a widget for convenient file uploading functionalities.
 - **Navbar:** Manage the navigation bar for easy access to different sections.
 - **Translations:** Implement internationalization features for multiple language support.
-- **Forms:** Create and manage forms for data input and manipulation.
 - **Catalog:** Create tree structure catalogs based on models or any other elements
 - **NavigationWidget:** Utilize a widget to enhance navigation capabilities.
 - **Widget:** General reference to customizable and extensible components.
@@ -62,9 +58,6 @@ To install this hook, you will need to run:
 ```bash
 npm install sails-adminpanel
 ```
-
-### i18n
-> Currently, we have to patch sails framework, so you install our patches for using all functionality. Without these patches, i18n will not work. [Read how to install the patch](https://www.npmjs.com/package/muddy-water)
 
 ### Configuration
 Then you will need to create a config file for the admin panel generator into `config/adminpanel.js`
@@ -105,16 +98,22 @@ module.exports.adminpanel = {
 ```
 
 And your admin panel will be accessible under: `http://127.0.0.1:port/admin`
+
 ## Documentation & Types
 
-For comprehensive information on configuration and usage, it is highly recommended to refer to the [docs](https://github.com/sails-adminpanel/sails-adminpanel/tree/master/docs) folder within the project repository. The documentation provides detailed insights into various aspects of the admin panel, including configuration options and usage guidelines.
+For comprehensive information on configuration and usage, it is highly recommended to refer to the [docs](https://github.com/adminization/adminizer/tree/main/docs) folder within the project repository. The documentation provides detailed insights into various aspects of the admin panel, including configuration options and usage guidelines.
 
 When working with TypeScript in the project, it is advisable to explore the type definitions located in the `/interfaces/adminpanelConfig.d.ts` file. This TypeScript definition file outlines the types and structures associated with the admin panel configuration. It serves as a valuable resource for understanding the available options and ensuring type safety when configuring the admin panel.
+
+> **TypeScript Typings:**  
+> If you need type definitions, you should import them directly from `adminizer`.  
+> The sails-adminpanel wrapper no longer contains any typings or type helpers.
+
 
 For projects utilizing TypeScript, consider the following example:
 
 ```typescript
-import { ModelConfig, AdminpanelConfig } from "sails-adminpanel/interfaces/adminpanelConfig";
+import { ModelConfig, AdminpanelConfig } from "adminizer";
 
 let models: { [key: string]: ModelConfig } = {
   // Define your model configurations here
@@ -141,62 +140,12 @@ module.exports.adminpanel = config;
 This TypeScript example demonstrates how to structure model configurations and the overall admin panel configuration. Utilizing TypeScript enhances code clarity, provides autocompletion support, and helps prevent potential configuration errors.
 
 
-## UI Reference
-
-The UI of the project is designed with the Tailwind CSS framework, providing a modern and responsive user interface.
-
-### Gulp
-
-- **Main Gulp File:** `gulpfile.js`
-
-### Gulp Commands
-
-- `gulp` - Executes in development mode.
-- `gulp prod` - Executes in production mode.
-
-### CKeditor5
-
-- **Custom Build File:** `assets/src/scripts/ckeditor5/app.ts`
-- **Gulp Task:** `gulp ckeditorBuild`
-
-The CKeditor5 section indicates the custom build file location for CKeditor5, which can be found at `assets/src/scripts/ckeditor5/app.ts`. Additionally, there is a Gulp task named `gulp ckeditorBuild` associated with building CKeditor5.
-
-These details provide information on the project's build process, specifically related to Gulp tasks and CKeditor5 customization.
-
-## TODO:
-1. Check csrf for fileUpload
-2. Docs finish
-3. Add disabled fields to all widgets
-
-
 ## Problems
-for fileUploader (readmore in TODO)
 
-```javascript
-csrf: false
-```
+> **ESM Import Issue:**  
+> Please note that this project has a known issue with ESM imports.  
+> To ensure proper functionality, it is recommended to run the project using [tsx](https://github.com/esbuild-kit/tsx).
 
 
 ## License
-
 MIT
-
----
-## Automatic adminizer import fix
-
-To ensure correct work with Sails v1.5+ and Node.js 22+, after installing dependencies you must run the script:
-
-```bash
-node ./local_modules/sails-adminpanel/fix-adminizer-imports.js
-```
-
-This script will automatically fix all import statements in the adminizer module to avoid ES module errors.
-
-It is recommended to add it to the postinstall section of your project's package.json:
-
-```json
-"postinstall": "node ./node_modules/sails-adminpanel/fix-adminizer-imports.js"
-```
-
-Now, after every dependency installation, imports will be fixed automatically.
----
