@@ -2,6 +2,7 @@ name: Run tests
 on:
   push:
     branches-ignore:
+      - main
       - master
       - next
 jobs:
