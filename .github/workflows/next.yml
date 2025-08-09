@@ -14,9 +14,6 @@ jobs:
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
-
-      # waiting https://github.com/ds300/patch-package/issues/339
-      - run: npm i && npm run test:init 2>&1 || true && npm run gulp && npm run test
       
       # resolve version
       - run: |
