@@ -152,5 +152,5 @@
 		"bulid:js": "npx gulp js && npx gulp jsProd",
 		"tslint": "npx eslint ."
 	},
-	"version": "3.3.0"
+	"version": "3.3.1"
 }
