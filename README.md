@@ -19,9 +19,9 @@ Thanks for your attention!
 
 ## About
 
-> **Note:**  
-> This project is now fully integrated and wrapped by [adminizer](https://github.com/adminization/adminizer).  
-> All features and usage remain the same, but you no longer need to use previous wrappers or extra modules.  
+> **Note:**
+> This project is now fully integrated and wrapped by [adminizer](https://github.com/adminization/adminizer).
+> All features and usage remain the same, but you no longer need to use previous wrappers or extra modules.
 > Please use adminizer for future updates and improvements.
 
 The admin panel offers automatic generation capabilities, ensuring ease of use, and includes features such as internationalization, user and group access rights, policy enforcement, and a modern user interface. In the near future, installation steps will be provided for a smoother setup experience.
@@ -105,8 +105,8 @@ For comprehensive information on configuration and usage, it is highly recommend
 
 When working with TypeScript in the project, it is advisable to explore the type definitions located in the `/interfaces/adminpanelConfig.d.ts` file. This TypeScript definition file outlines the types and structures associated with the admin panel configuration. It serves as a valuable resource for understanding the available options and ensuring type safety when configuring the admin panel.
 
-> **TypeScript Typings:**  
-> If you need type definitions, you should import them directly from `adminizer`.  
+> **TypeScript Typings:**
+> If you need type definitions, you should import them directly from `adminizer`.
 > The sails-adminpanel wrapper no longer contains any typings or type helpers.
 
 
@@ -142,10 +142,44 @@ This TypeScript example demonstrates how to structure model configurations and t
 
 ## Problems
 
-> **ESM Import Issue:**  
-> Please note that this project has a known issue with ESM imports.  
+> **ESM Import Issue:**
+> Please note that this project has a known issue with ESM imports.
 > To ensure proper functionality, it is recommended to run the project using [tsx](https://github.com/esbuild-kit/tsx).
 
+
+## Modules
+
+To use the modules, you need to embed the code in **bootstrap** sails.
+```javascript
+sails.on('Adminpanel:afterHook:loaded', () => {
+	const adminizer = sails.hooks.adminpanel.adminizer;
+
+	adminizer.emitter.on('adminizer:loaded', () => {
+		const policies = adminizer.config.policies;
+
+		const moduleHandler = (req, res) => {
+			if (req.adminizer.config.auth.enable && !req.user) {
+				return res.redirect(`${req.adminizer.config.routePrefix}/model/userap/login`);
+			}
+
+			return req.Inertia.render({
+				component: 'module',
+				props: {
+					moduleComponent: `/public/ComponentB.es.js`,
+					message: 'Hello from Adminizer',
+				}
+			});
+		};
+
+		adminizer.app.all(
+			`${adminizer.config.routePrefix}/module-test`,
+			adminizer.policyManager.bindPolicies(policies, moduleHandler)
+		);
+	})
+})
+```
+
+Through **props**, you must pass the public path to the assembled React component (see [docs](https://github.com/adminization/adminizer/tree/main/docs)). The remaining options in **props** may vary depending on the tasks. For example: `message: 'Hello from Adminizer'`
 
 ## License
 MIT
