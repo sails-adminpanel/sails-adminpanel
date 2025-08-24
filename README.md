@@ -146,6 +146,13 @@ This TypeScript example demonstrates how to structure model configurations and t
 > Please note that this project has a known issue with ESM imports.
 > To ensure proper functionality, it is recommended to run the project using [tsx](https://github.com/esbuild-kit/tsx).
 
+### Public dir
+By default, the adminizer now processes static files by itself. You will need additional configuration for Sails:
+```javascript
+bind: {
+  public: false
+}
+```
 
 ## Modules
 
