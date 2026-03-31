@@ -98,7 +98,8 @@ exports.up = function (db, callback) {
     columns: {
     "id": {
         "type": "serial",
-        "autoIncrement": true
+        "autoIncrement": true,
+        "primaryKey": true
     },
     "groupap_users": {
         "type": "bigint"
