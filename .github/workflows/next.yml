@@ -4,7 +4,7 @@ on:
     branches:
       - alpha
       - next
-      - version-4x
+      - v4x
 jobs:
   build:
     runs-on: ubuntu-latest
