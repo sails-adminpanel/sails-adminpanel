@@ -27,6 +27,10 @@
 	"license": "MIT",
 	"main": "index.js",
 	"name": "sails-adminpanel",
+	"scripts": {
+		"test": "vitest run",
+		"test:watch": "vitest"
+	},
 	"repository": {
 		"type": "git",
 		"url": "git+ssh://git@github.com/sails-adminpanel/sails-adminpanel.git"
@@ -35,5 +39,5 @@
 		"isHook": true,
 		"hookName": "adminpanel"
 	},
-	"version": "4.0.0"
+	"version": "5.0.0"
 }
