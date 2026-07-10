@@ -18,9 +18,15 @@ jobs:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
 
+      # npm 11+ is required for OIDC trusted publishing (token exchange);
+      # node's bundled npm 10 publishes unauthenticated and the registry
+      # masks that as E404. npm@latest (12.x) has a broken global install
+      # (MODULE_NOT_FOUND: sigstore), so pin to 11.
+      - run: npm install -g npm@11
+
       # resolve version: use the workflow run number as the build suffix
       - run: |
           set -x
           VERLOC=$(cat package.json | jq -r '.["version"]')
           jq -r '.version = "'${VERLOC}'-build.'${GITHUB_RUN_NUMBER}'"' package.json > /tmp/package.json && mv /tmp/package.json ./package.json
-      - run: npm publish --tag ${GITHUB_REF##*/} --access public
+      - run: npm publish --tag ${GITHUB_REF##*/} --provenance --access public
