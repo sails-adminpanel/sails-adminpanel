@@ -4,7 +4,7 @@
 		"url": "https://github.com/sails-adminpanel/sails-adminpanel/issues"
 	},
 	"dependencies": {
-		"adminizer": "4.6.0-build.220",
+		"adminizer": "4.7.0-build.224",
 		"lodash": "^4.17.21"
 	},
 	"devDependencies": {
@@ -35,5 +35,5 @@
 		"isHook": true,
 		"hookName": "adminpanel"
 	},
-	"version": "4.5.0"
+	"version": "4.7.0-build.224"
 }
