@@ -23,4 +23,4 @@ jobs:
           set -x
           VERLOC=$(cat package.json | jq -r '.["version"]')
           jq -r '.version = "'${VERLOC}'-build.'${GITHUB_RUN_NUMBER}'"' package.json > /tmp/package.json && mv /tmp/package.json ./package.json
-      - run: npm publish --tag ${GITHUB_REF##*/} --provenance --access public
+      - run: npm publish --tag ${GITHUB_REF##*/} --access public
