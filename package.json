@@ -35,5 +35,5 @@
 		"isHook": true,
 		"hookName": "adminpanel"
 	},
-	"version": "4.7.0-build.224"
+	"version": "4.7.0"
 }
