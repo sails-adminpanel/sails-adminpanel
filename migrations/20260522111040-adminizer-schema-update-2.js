@@ -58,10 +58,10 @@ exports.up = function (db, callback) {
         "type": "boolean"
     },
     "createdAt": {
-        "type": "bigint"
+        "type": "timestamptz"
     },
     "updatedAt": {
-        "type": "bigint"
+        "type": "timestamptz"
     }
 },
     ifNotExists: true
@@ -127,10 +127,10 @@ exports.up = function (db, callback) {
         "type": "bigint"
     },
     "createdAt": {
-        "type": "bigint"
+        "type": "timestamptz"
     },
     "updatedAt": {
-        "type": "bigint"
+        "type": "timestamptz"
     }
 },
     ifNotExists: true
@@ -162,10 +162,10 @@ exports.up = function (db, callback) {
         "type": "bigint"
     },
     "createdAt": {
-        "type": "bigint"
+        "type": "timestamptz"
     },
     "updatedAt": {
-        "type": "bigint"
+        "type": "timestamptz"
     }
 },
     ifNotExists: true
