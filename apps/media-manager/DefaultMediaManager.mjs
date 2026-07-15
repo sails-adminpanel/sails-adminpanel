@@ -36,7 +36,6 @@ export class DefaultMediaManager extends AbstractMediaManager {
 	}
 
 	async getAll(limit, skip, sort, group) {
-		console.log('dadaa>>>>>>>>>', this.runtime)
 		const media = this.runtime.models.get(mediaManagerModelNames.media);
 		const where = {parent: null, group};
 		const data = await media.find({

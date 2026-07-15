@@ -10,6 +10,8 @@ import {mediaManagerModelNames} from  "./DefaultMediaManager.mjs"
 
 export class ImageItem extends File {
     type = "image";
+	runtime;
+	imageSizes;
 
     constructor(
         runtime,
@@ -18,6 +20,8 @@ export class ImageItem extends File {
         imageSizes = {}
     ) {
         super(urlPathPrefix, fileStoragePath);
+		this.runtime = runtime;
+		this.imageSizes = imageSizes;
     }
 
      media() {
