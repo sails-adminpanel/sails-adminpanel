@@ -27,3 +27,4 @@ ejs2
 package-lock.json
 dist
 lib/SailsORMAdapter.js
+.claude/settings.json
